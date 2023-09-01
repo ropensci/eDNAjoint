@@ -1,0 +1,16 @@
+.Rproj.user
+inst/doc
+src/eDNAjoint.so
+src/RcppExports.o
+src/stanExports_joint_catchability_negbin.o
+src/stanExports_joint_catchability_pois.o
+src/stanExports_joint_cov_catchability_negbin.o
+src/stanExports_joint_cov_catchability_pois.o
+src/stanExports_joint_cov_negbin.o
+src/stanExports_joint_cov_pois.o
+src/stanExports_joint_negbin.o
+src/stanExports_joint_pois.o
+src/stanExports_traditional_catchability_negbin.o
+src/stanExports_traditional_catchability_pois.o
+src/stanExports_traditional_negbin.o
+src/stanExports_traditional_pois.o

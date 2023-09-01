@@ -1,0 +1,40 @@
+Package: eDNAjoint
+Title: Joint Modeling of Traditional and Environmental DNA Survey Data
+Version: 0.1
+Maintainer: Abigail G. Keller <agkeller@berkeley.edu>
+Authors@R: 
+    c(person("Abigail G.", "Keller", role = c("aut", "cre"), email="agkeller@berkeley.edu"),
+    person("Ryan P.", "Kelly", role = "aut", email="rpkelly@uw.edu"))
+Description: Models integrate environmental DNA (eDNA) detection data and traditional survey data to jointly estimate species catch rate. Models can be used with count data via traditional survey methods (i.e., trapping, electrofishing, visual) and replicated eDNA detection/nondetection data via polymerase chain reaction (i.e., PCR or qPCR) from multiple survey locations. Estimated parameters include probability of a false positive eDNA detection, a site-level covariates that scale the sensitivity of eDNA surveys relative to traditional surveys, and catchability coefficients for traditional gear types. Models are implemented with a Bayesian framework (Markov chain Monte Carlo) using the 'Stan' probabilistic programming language.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Biarch: true
+Depends: 
+    R (>= 3.4.0)
+Imports: 
+    bayestestR,
+    dplyr,
+    ggplot2,
+    loo,
+    magrittr,
+    methods,
+    Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    rstantools (>= 2.3.1.1),
+    tidyr
+LinkingTo: 
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.18.1),
+    StanHeaders (>= 2.18.0)
+SystemRequirements: GNU make
+LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
