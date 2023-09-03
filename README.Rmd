@@ -53,10 +53,13 @@ summarize(goby.fit, par = 'p10')
 Or to find the number of eDNA samples and traditional survey samples necessary to detect presence of the species at a given expected catch rate:
 
 ```{r example_3}
-# find the number of samples necessary to detect presence at the mean covariate values, 
-# if the expected catch rate (mu) is 0.1, 0.5, or 1.
-detection.calculate(goby.fit, mu = c(0.1,0.5,1), cov.val=c(0,0))
+# find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
+# if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
+detection.calculate(goby.fit, mu = c(0.1,0.5,1), 
+                    cov.val=c(0,0), probability = 0.9)
 ```
+
+## Vignette
 
 You can find much more detailed examples of the functions in *eDNAjoint* and the model underlying the package in the [package vignette](https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
 
