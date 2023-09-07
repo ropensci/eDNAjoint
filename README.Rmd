@@ -63,8 +63,6 @@ detection.calculate(goby.fit, mu = c(0.1,0.5,1),
 
 You can find much more detailed examples of the functions in *eDNAjoint* and the model underlying the package in the [package vignette](https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
 
-
-
 ## References
 
 Keller, A.G., Grason, E.W., McDonald, P.S., Ramon-Laca, A., Kelly, R.P. (2022). Tracking an invasion front with environmental DNA. *Ecological Applications*. 32(4): e2561. [https://doi.org/10.1002/eap.2561](https://doi.org/10.1002/eap.2561)
