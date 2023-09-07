@@ -3,7 +3,7 @@
 
 # eDNAjoint
 
-<img src="man/figures/logo.png" align="right" height="250" />
+<img src="man/figures/logo.png" align="right" height="250" dpi="700" />
 <!-- badges: start --> <!-- badges: end -->
 
 The package *eDNAjoint* is useful for interpreting observations from
@@ -55,7 +55,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 summarize(goby.fit, par = 'p10')
 #>      mean se_mean    sd 2.5% 97.5%    n_eff Rhat
-#> p10 0.001       0 0.001    0 0.003 17498.65    1
+#> p10 0.001       0 0.001    0 0.003 16509.58    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
