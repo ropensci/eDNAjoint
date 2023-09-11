@@ -165,13 +165,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   }
 
   ## #11. the smallest count.type is 1
-  if(min(data$count.type,na.rm=TRUE) != 1){
+  if(q==TRUE && min(data$count.type,na.rm=TRUE) != 1){
     errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
     stop(errMsg)
   }
 
   ## #12. count.type are integers
-  if(!all(data$count.type %% 1 %in% c(0,NA))){
+  if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
     errMsg = paste("All values in count.type should be integers.")
     stop(errMsg)
   }
