@@ -3,12 +3,11 @@
 #' This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamilton Monte Carlo to simulate the posterior distributions.
 #'
 #' @export
-#' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.
+#' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.
 #' @param cov A character vector indicating the site-level covariates to include in the model. Default value is 'None'.
 #' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.
 #' @param p10priors A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
-#' @param q_ref An integer indicating the traditional survey gear type (referenced in count.type) used as the reference type. Include if q = TRUE. Default value is 1.
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
@@ -67,16 +66,14 @@
 #'
 #' # Fit a model estimating a catchability coefficient for traditional survey gear types.
 #' # This model does not assume all traditional survey methods have the same catchability.
-#' # Gear type 1 is used as the reference gear type.
-#' # The catchability of all other gear types are scaled relative to the catchability of type 1.
 #' # Count data is modeled using a negative binomial distribution.
 #' fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-#'                    p10priors=c(1,20), q=TRUE, q_ref=1)
+#'                    p10priors=c(1,20), q=TRUE)
 #' }
 #'
 
 jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=FALSE,
-                       q_ref=1, n.chain=4, n.iter.burn=500,
+                       n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, adapt_delta=0.9) {
 
   ## #1. All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, count.type, and site.cov)
@@ -167,25 +164,31 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     stop(errMsg)
   }
 
-  ## #11. q_ref is a positive integer
-  if(!is.numeric(q_ref) | q_ref <= 0){
-    errMsg = paste("q_ref should be a positive integer.")
+  ## #11. the smallest count.type is 1
+  if(min(data$count.type,na.rm=TRUE) != 1){
+    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
     stop(errMsg)
   }
 
-  ## #12. site.cov is numeric, if present
+  ## #12. count.type are integers
+  if(!all(data$count.type %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count.type should be integers.")
+    stop(errMsg)
+  }
+
+  ## #13. site.cov is numeric, if present
   if(!all(cov=='None') && !is.numeric(data$site.cov)){
     errMsg = paste("site.cov should be numeric")
     stop(errMsg)
   }
 
-  ## #13. cov values match column names in site.cov
+  ## #14. cov values match column names in site.cov
   if(!all(cov=='None') && !all(cov %in% colnames(data$site.cov))){
     errMsg = paste("cov values should be listed in the column names of site.cov in the data")
     stop(errMsg)
   }
 
-  ## #14. site.cov has same number of rows as qPCR.N and count, if present
+  ## #15. site.cov has same number of rows as qPCR.N and count, if present
   if(!all(cov=='None') && dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
     errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
     stop(errMsg)
@@ -219,6 +222,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 
   #if q==TRUE, add count type data to count df
   if(q==TRUE){
+    q_ref <- 1
     count.type_df <- as.data.frame(data$count.type) %>%
       dplyr::mutate(L=1:dim(data$count.type)[1]) %>%
       tidyr::pivot_longer(cols=!L,values_to='count.type') %>%

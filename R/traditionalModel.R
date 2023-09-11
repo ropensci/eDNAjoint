@@ -3,10 +3,9 @@
 #' This function implements a Bayesian model that estimates expected species catch rate using count data from traditional (non-eDNA surveys). When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamilton Monte Carlo to simulate the posterior distributions.
 #'
 #' @export
-#' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Empty cells should be NA. Sites, i, should be consistent in all count data.
+#' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA. Sites, i, should be consistent in all count data.
 #' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
-#' @param q_ref An integer indicating the traditional survey gear type (referenced in count.type) used as the reference type. Include if q = TRUE. Default value is 1.
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
@@ -45,15 +44,13 @@
 #'
 #' # Fit a model estimating a catchability coefficient for traditional survey gear types.
 #' # This model does not assume all traditional survey methods have the same catchability.
-#' # Gear type 1 is used as the reference gear type.
-#' # The catchability of all other gear types are scaled relative to the catchability of type 1.
 #' # Count data is modeled using a negative binomial distribution.
-#' fit.q = traditionalModel(data=greencrabData, family='negbin', q=TRUE, q_ref=1)
+#' fit.q = traditionalModel(data=greencrabData, family='negbin', q=TRUE)
 #' }
 #'
 
 traditionalModel <- function(data, family='poisson',
-                             q=FALSE, q_ref=1,
+                             q=FALSE,
                              n.chain=4, n.iter.burn=500,
                              n.iter.sample=2500,
                              adapt_delta=0.9) {
@@ -109,9 +106,15 @@ traditionalModel <- function(data, family='poisson',
     stop(errMsg)
   }
 
-  ## #8. q_ref is an integer <= 0
-  if(!is.numeric(q_ref) | q_ref <= 0){
-    errMsg = paste("q_ref should be an integer and <= 0.")
+  ## #8. the smallest count.type is 1
+  if(min(data$count.type,na.rm=TRUE) != 1){
+    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
+    stop(errMsg)
+  }
+
+  ## #9. count.type are integers
+  if(!all(data$count.type %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count.type should be integers.")
     stop(errMsg)
   }
 
@@ -131,6 +134,7 @@ traditionalModel <- function(data, family='poisson',
 
   #if q==TRUE, add count type data to count df
   if(q==TRUE){
+    q_ref <- 1
     count.type_df <- as.data.frame(data$count.type) %>%
       dplyr::mutate(L=1:dim(data$count.type)[1]) %>%
       tidyr::pivot_longer(cols=!L,values_to='count.type') %>%
