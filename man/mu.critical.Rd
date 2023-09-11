@@ -14,7 +14,7 @@ mu.critical(modelfit, cov.val = "None", ci = 0.9)
 \item{ci}{Credible interval calculated using highest density interval (HDI). Default is 0.9 (i.e., 90\% credible interval).}
 }
 \value{
-A list with median mu_critical and lower and upper bounds on the credible interval.
+A list with median mu_critical and lower and upper bounds on the credible interval. If multiple gear types are used, a table of mu_critical and lower and upper credible interval bounds is returned with one column for each gear type.
 }
 \description{
 This function uses the full posterior distributions of parameters estimated by \code{jointModel()} to calculate mu_critical, or the expected catch rate at which the probabilities of a false positive eDNA detection and true positive eDNA detection are equal.
@@ -57,7 +57,7 @@ data(greencrabData)
 
 # Fit a model with no site-level covariates
 fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-                   p10priors=c(1,20), q=TRUE, q_ref=1)
+                   p10priors=c(1,20), q=TRUE)
 
 # Calculate mu_critical
 mu.critical(fit.q, cov.val='None')

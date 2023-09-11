@@ -15,7 +15,7 @@ detection.calculate(
 \arguments{
 \item{modelfit}{An object of class \code{stanfit}.}
 
-\item{mu}{A numeric vector of species densities/capture rates. If multiple traditional gear types are represented in the model, mu is scaled relative to the reference gear type.}
+\item{mu}{A numeric vector of species densities/capture rates. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.}
 
 \item{cov.val}{A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.}
 
@@ -67,7 +67,7 @@ data(greencrabData)
 
 # Fit a model with no site-level covariates
 fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-                   p10priors=c(1,20), q=TRUE, q_ref=1)
+                   p10priors=c(1,20), q=TRUE)
 
 # Calculate
 detection.calculate(fit.q, mu = seq(from=0.1,to=1,by=0.1), cov.val = 'None', qPCR.N = 3)

@@ -33,9 +33,9 @@ The primary purpose of the joint model is to use observations from both environm
 
 
 ```{r, echo=FALSE}
-symbol <- c("$\\mu_i$","$p_{10}$","$q_k$","$\\beta$","$\\alpha_n$", "$\\phi$")
+symbol <- c("$\\mu_{i,k}$","$p_{10}$","$q_k$","$\\beta$","$\\alpha_n$", "$\\phi$")
 name <- c("mu", "p10", "q", "beta","alpha", "phi")
-description <- c(paste0("Vector of expected catch rate at site, i. If multiple traditional gear types are used, mu refers to the expected catch rate of the reference gear type."),
+description <- c(paste0("Vector of expected catch rate at site, i. If multiple traditional gear types are used, mu is an array of expected catch rate at site, i, with gear type, k."),
           "Probability of false positive eDNA detection",
           paste0("Vector of catchability coefficients for traditional gear type, k."),
           paste0("Parameter that scales the sensitivity of eDNA relative to traditional sampling. If site-level covariates are used, ", 
@@ -45,7 +45,7 @@ description <- c(paste0("Vector of expected catch rate at site, i. If multiple t
           "Overdispersion parameter in negative binomial distribution, if used.")
 param_table <- cbind(symbol,name,description)
 knitr::kable(param_table,
-             caption = "Table 1. Parameters included in joint model, including symbols, names, and descriptions.")
+             caption = "Parameters included in joint model, including symbols, names, and descriptions.")
 
 ```
 
@@ -272,7 +272,7 @@ Blank spaces are filled with NA at sites where fewer trap samples were collected
 greencrabData$count[1:6,1:20]
 ```
 
-Next, let's look at `count.type`, which consists of integer indicators of gear type for each trap sample. Here, 1 refers to the Fukui gear type, and 2 refers to the Minnow gear type.
+Next, let's look at `count.type`, which consists of integer indicators of gear type for each trap sample. The first gear type *must* be referenced with the integer 1, and subsequent gear types should be referenced with integers 2, 3, 4, etc. Here, 1 refers to the Fukui gear type, and 2 refers to the Minnow gear type.
 
 ```{r}
 greencrabData$count.type[1:6,1:20]
@@ -289,15 +289,14 @@ Now that we understand our data, let's fit the joint model. The key arguments of
 2. cov: no site-level covariates are included in this model
 3. family: probability distribution used to model the trap count data. A negative binomial distribution is chosen here.
 4. p10priors: Beta distribution parameters for the prior on the probability of false positive eDNA detection, $p_{10}$. c(1,20) is the default specification. 
-5. q: logical value indicating the presence of multiple traditional gear types. 
-6. q_ref: integer indicating the reference gear type. Since we've chosen 1, $\mu$ now describes the expected catch rate of gear type 1, and the catchability of all other gear types are scaled relative to gear type 1.
+5. q: logical value indicating the presence of multiple traditional gear types.
 
 More parameters exist to further customize the MCMC sampling, but we'll stick with the defaults.
 
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with catchability coefficients
 greencrab.fit.q.negbin <- jointModel(data = greencrabData, cov='None', family = 'negbin', 
-                                     p10priors = c(1,20), q=TRUE, q_ref=1)
+                                     p10priors = c(1,20), q=TRUE)
 ```
 
 ### Model selection
@@ -307,7 +306,7 @@ We previously made a choice to model the green crab count data with a negative b
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with poisson distribution
 greencrab.fit.q.pois <- jointModel(data = greencrabData, cov='None', family = 'poisson', 
-                                   p10priors = c(1,20), q=TRUE, q_ref=1)
+                                   p10priors = c(1,20), q=TRUE)
 ```
 
 Let's also fit some models where we assume that both gear types have the same catchability. We set q=FALSE to not estimate catchability coefficients.
@@ -346,17 +345,25 @@ This summarizes the mean, sd, and quantiles of the posterior estimates of $p_{10
 
 The mean estimated probability of a false positive eDNA detection is ~0.01. `beta` is the parameter that scales the sensitivity of eDNA sampling relative to trap sampling. `q[1]` represents the catchability coefficient of gear type 2, which scales the catch rate of gear type 2 relative to gear type 1. 
 
+Now let's look at the summary of `mu`.
+
+```{r}
+summarize(greencrab.fit.q.negbin, par = 'mu')
+```
+
+`mu[1,1]` corresponds to the expected catch rate at site 1 with gear type 1. `mu[1,2]` corresponds to the expected catch rate at site 1 with gear type 2. `mu[2,1]` corresponds to the expected catch rate at site 2 with gear type 1.
+
 #### Effort necessary to detect presence
 
-To further highlight these results, we can use `detection.calculate()` to find the units of survey effort necessary to detect presence of the species. This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1. Again, $\mu$ now represents the catch rate specific to gear type 1.
+To further highlight these results, we can use `detection.calculate()` to find the units of survey effort necessary to detect presence of the species. This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1.  $\mu$ now represents the expected catch rate of gear type 1.
 
 ```{r}
 detection.calculate(greencrab.fit.q.negbin, mu = c(0.1,0.5,1), probability = 0.9)
 ```
 
-We can see that it takes 27 eDNA samples, 25 reference trap samples (gear type 1), and 31 non-reference trap samples (gear type 2) to detect green crab presence with 0.9 probability if the expected catch rate is 0.1.
+We can see that it takes 27 eDNA samples, 25 trap samples (gear type 1), and 31 trap samples (gear type 2) to detect green crab presence with 0.9 probability if the expected catch rate with gear type 1 is 0.1.
 
-We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in the plot.
+We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in the plot and represent the expected catch rate of gear type 1.
 
 ```{r, fig.width = 7}
 detection.plot(greencrab.fit.q.negbin, mu.min = 0.1, mu.max = 1, probability = 0.9)
@@ -370,7 +377,7 @@ Now let's calculate $\mu_{critical}$, which is the value of $\mu$ where the prob
 mu.critical(greencrab.fit.q.negbin, cov.val = 'None', ci = 0.9)
 ```
 
-This function calculates $\mu_{critical}$ using the entire posterior distributions of parameters from the model, and 'HDI' corresponds to the 90% credibility interval calculated using the highest density interval.
+This function calculates $\mu_{critical}$ using the entire posterior distributions of parameters from the model, and 'HDI' corresponds to the 90% credibility interval calculated using the highest density interval. The first column corresponds to $\mu_{critical}$ if gear type 1 is used, and the second columns corresponds to $\mu_{critical}$ if gear type 2 is used.
 
 ### traditionalModel()
 
@@ -378,20 +385,19 @@ In some circumstances, it may be helpful to model just the traditional survey da
 
 1. data: list of `count` and (optionally) `count.type` matrices
 2. family: probability distribution used to model the trap count data. A negative binomial distribution is chosen here.
-3. q: logical value indicating the presence of multiple traditional gear types. 
-4. q_ref: integer indicating the reference gear type. Since we've chosen 1, $\mu$ now describes the expected catch rate of gear type 1, and the catchability of all other gear types are scaled relative to gear type 1.
+3. q: logical value indicating the presence of multiple traditional gear types.
 
 More parameters exist to further customize the MCMC sampling, but we'll stick with the defaults.
 
 ```{r, eval = FALSE}
 #run the traditional model model with catchability coefficients
-greencrab.traditional <- traditionalModel(data = greencrabData, family = 'negbin', q = TRUE, q_ref = 1) 
+greencrab.traditional <- traditionalModel(data = greencrabData, family = 'negbin', q = TRUE) 
 ```
    
 
 ## The model
 
-Below is a representation of the full model used in *eDNAjoint*, including all model variations. Note that inclusion of catchability coefficients, *q*, and the regression with site-level covariates, $\alpha$ (Eq. 3), are optional in implementation with *eDNAjoint*.
+Below is a representation of the full model used in *eDNAjoint*, including all model variations. Note that inclusion of catchability coefficients, $q_k$ (Eq. 2), and the regression with site-level covariates, $\alpha$ (Eq. 4), are optional in implementation with *eDNAjoint*.
 
 A reduced version without of the joint model without these variations is also described in [Keller et al. 2022](https://doi.org/10.1002/eap.2561). 
 
@@ -399,44 +405,52 @@ A reduced version without of the joint model without these variations is also de
 
 The observed count, Y, of a species at site, *i*, in traditional survey sample, *j*, of gear type, *k*, is drawn from either
 
-1. a negative binomial distribution with expected species catch rate, $\mu_i$, and an overdispersion parameter, $\phi$ (Equation 1.1)
-2. a poisson distribution with expected species catch rate, $\mu_i$ (Equation 1.2).
+1. a negative binomial distribution with expected species catch rate, $\mu_{i,k}$, and an overdispersion parameter, $\phi$ (Equation 1.1)
+2. a poisson distribution with expected species catch rate, $\mu_{i,k}$ (Equation 1.2).
 
 \begin{equation}
 \tag{Eq. 1.1}
-Y_{i,j,k} \sim NegativeBinomial(q_k * \mu_i, \phi) 
+Y_{i,j,k} \sim NegativeBinomial(\mu_{i,k}, \phi) 
 \end{equation} 
 
 \begin{equation}
 \tag{Eq. 1.2}
-Y_{i,j,k} \sim Poisson(q_k * \mu_i) 
+Y_{i,j,k} \sim Poisson(\mu_{i,k}) 
 \end{equation} 
 
-The probability of a true positive eDNA detection, $p_{11}$, at site *i*, is a function of expected species catch rate, $\mu_i$ and scaling coefficient $\beta_i$ (Equation 2).
+Catchability coefficients, $q_k$, scale the catch rates of multiple gear types relative to gear type 1 (Equation 2).
 
 \begin{equation}
 \tag{Eq. 2}
-p_{11,i} = \frac{\mu_i}{\mu_i + e^{\beta_i}}
-\end{equation} 
+\mu_{i,k} = q_k * \mu_{i,1}
+\end{equation}
 
-The scaling coefficient $\beta_i$ relates the sensitivity of eDNA sampling to the expected species catch rate and is a function of site-level covariate coefficients, $\alpha_n$ and site-level covariate data, $A_{i,n}$ (Equation 3).
+
+The probability of a true positive eDNA detection, $p_{11}$, at site *i*, is a function of expected species catch rate, $\mu_{i,1}$ and scaling coefficient $\beta_i$ (Equation 3).
 
 \begin{equation}
 \tag{Eq. 3}
-\beta_i = A_{i,n}^{T} \cdot \alpha_n
-\end{equation}
+p_{11,i} = \frac{\mu_{i,1}}{\mu_{i,1} + e^{\beta_i}}
+\end{equation} 
 
-The total probability of eDNA detection at site, $p_i$, is the sum of the probability of a true positive eDNA detection, $p_{11}$, and the probability of a false positive eDNA detection, $p_{10}$ (Equation 4).
+The scaling coefficient $\beta_i$ relates the sensitivity of eDNA sampling to the expected species catch rate and is a function of site-level covariate coefficients, $\alpha_n$ and site-level covariate data, $A_{i,n}$ (Equation 4).
 
 \begin{equation}
 \tag{Eq. 4}
-p_i = p_{11} + p_{10}
-\end{equation} 
+\beta_i = A_{i,n}^{T} \cdot \alpha_n
+\end{equation}
 
-The number of positive quantitative PCR (qPCR) eDNA detections, K, out of the number of trials, N, in eDNA water sample *m* at site *i* is drawn from a binomial distribution, with a probability of success on a single trial, $p_i$. (Equation 5).
+The total probability of eDNA detection at site i, $p_i$, is the sum of the probability of a true positive eDNA detection at site i, $p_{11,i}$, and the probability of a false positive eDNA detection, $p_{10}$ (Equation 5).
 
 \begin{equation}
 \tag{Eq. 5}
+p_i = p_{11,i} + p_{10}
+\end{equation} 
+
+The number of positive quantitative PCR (qPCR) eDNA detections, K, out of the number of trials, N, in eDNA water sample *m* at site *i* is drawn from a binomial distribution, with a probability of success on a single trial, $p_i$. (Equation 6).
+
+\begin{equation}
+\tag{Eq. 6}
 K_{i,m} \sim Binomial(N_{i,m}, p_i)
 \end{equation} 
 
@@ -450,9 +464,12 @@ p_{10} \sim Beta(\alpha, \beta)
 \end{equation}
 
 
+
 ### Bayesian modeling: Stan
 
 The models that can be run with *eDNAjoint* use Bayesian inference for parameter estimation. The models are specified in the probabilistic programming language, [Stan](https://mc-stan.org/rstan/), which uses Hamilton Monte Carlo to obtain posterior simulations. For this reason, all the models fit using *eDNAjoint* are of the 'stanfit' class and can be analyzed and manipulated with functions in the *rstan* package, in addition to the functions outlined above.
+
+The code for the models written in Stan can be found in [this folder](https://github.com/abigailkeller/eDNAjoint/tree/master/inst/stan) of the package Github repo. 
 
 
 ### Priors

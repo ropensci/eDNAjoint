@@ -22,7 +22,7 @@ parameters{/////////////////////////////////////////////////////////////////////
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
   array[Nloc] real<lower=0, upper = 1> p11; // true-positive detection probability
-  array[Nloc] real<lower=0, upper = 1> p;   // total detection probability
+  array[Nloc]real<lower=0, upper = 1> p;   // total detection probability
   vector<lower=0>[C] coef;
 
   for (i in 1:Nloc){
@@ -60,10 +60,10 @@ generated quantities{
 
   q = q_trans + 1;
 
-  mu[,1] = mu_1
+  mu[,1] = to_vector(mu_1);
 
-  for(i in 1:length(nparams)){
-    mu[,i+1] = mu_1*q[i]
+  for(i in 1:nparams){
+    mu[,i+1] = to_vector(mu_1)*q[i];
   }
 
     for(j in 1:C){

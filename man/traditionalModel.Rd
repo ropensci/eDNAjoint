@@ -8,7 +8,6 @@ traditionalModel(
   data,
   family = "poisson",
   q = FALSE,
-  q_ref = 1,
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
@@ -16,13 +15,11 @@ traditionalModel(
 )
 }
 \arguments{
-\item{data}{A list containing data necessary for model fitting. Valid tags are \code{count} and \code{count.type}. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Empty cells should be NA. Sites, i, should be consistent in all count data.}
+\item{data}{A list containing data necessary for model fitting. Valid tags are \code{count} and \code{count.type}. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA. Sites, i, should be consistent in all count data.}
 
 \item{family}{The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.}
 
 \item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
-
-\item{q_ref}{An integer indicating the traditional survey gear type (referenced in count.type) used as the reference type. Include if q = TRUE. Default value is 1.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
@@ -71,10 +68,8 @@ fit.no.q = traditionalModel(data=greencrabData, family='poisson', q=FALSE)
 
 # Fit a model estimating a catchability coefficient for traditional survey gear types.
 # This model does not assume all traditional survey methods have the same catchability.
-# Gear type 1 is used as the reference gear type.
-# The catchability of all other gear types are scaled relative to the catchability of type 1.
 # Count data is modeled using a negative binomial distribution.
-fit.q = traditionalModel(data=greencrabData, family='negbin', q=TRUE, q_ref=1)
+fit.q = traditionalModel(data=greencrabData, family='negbin', q=TRUE)
 }
 
 }

@@ -4,8 +4,8 @@
 #'
 #' @export
 #' @param modelfit An object of class `stanfit`.
-#' @param mu.min A value indicating the minimum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is scaled relative to the reference gear type.
-#' @param mu.max A value indicating the maximum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is scaled relative to the reference gear type.
+#' @param mu.min A value indicating the minimum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.
+#' @param mu.max A value indicating the maximum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.
 #' @param cov.val A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.
 #' @param qPCR.N An integer indicating the number of qPCR replicates per eDNA sample. The default is 3.
 #' @param probability A numeric value indicating the probability of detecting presence. The default is 0.9.
@@ -49,7 +49,7 @@
 #'
 #' # Fit a model with no site-level covariates
 #' fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-#'                    p10priors=c(1,20), q=TRUE, q_ref=1)
+#'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate
 #' detection.plot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)
@@ -279,9 +279,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     out <- cbind(mu,ntrad_out,ndna_out)
     #rename columns
     for(i in 1:modelfit@par_dims$q){
-      trad_names <- paste('traditional_',i,sep='')
+      trad_names <- paste('traditional_',i+1,sep='')
     }
-    colnames(out) <- c('mu','traditional_ref',trad_names,'eDNA')
+    colnames(out) <- c('mu','traditional_1',trad_names,'eDNA')
 
     #######################################
     #joint, catchability, pois, no sitecov#
@@ -342,9 +342,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     out <- cbind(mu,ntrad_out,ndna_out)
     #rename columns
     for(i in 1:modelfit@par_dims$q){
-      trad_names <- paste('traditional_',i,sep='')
+      trad_names <- paste('traditional_',i+1,sep='')
     }
-    colnames(out) <- c('mu','traditional_ref',trad_names,'eDNA')
+    colnames(out) <- c('mu','traditional_1',trad_names,'eDNA')
 
     #########################################
     #joint, no catchability, negbin, sitecov#
@@ -506,9 +506,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     out <- cbind(mu,ntrad_out,ndna_out)
     #rename columns
     for(i in 1:modelfit@par_dims$q){
-      trad_names <- paste('traditional_',i,sep='')
+      trad_names <- paste('traditional_',i+1,sep='')
     }
-    colnames(out) <- c('mu','traditional_ref',trad_names,'eDNA')
+    colnames(out) <- c('mu','traditional_1',trad_names,'eDNA')
 
     #######################################
     #joint, catchability, pois, no sitecov#
@@ -570,9 +570,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     out <- cbind(mu,ntrad_out,ndna_out)
     #rename columns
     for(i in 1:modelfit@par_dims$q){
-      trad_names <- paste('traditional_',i,sep='')
+      trad_names <- paste('traditional_',i+1,sep='')
     }
-    colnames(out) <- c('mu','traditional_ref',trad_names,'eDNA')
+    colnames(out) <- c('mu','traditional_1',trad_names,'eDNA')
 
     ###############################
     #trad, no catchability, negbin#
@@ -675,9 +675,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     out <- cbind(mu,ntrad_out)
     #rename columns
     for(i in 1:modelfit@par_dims$q){
-      trad_names <- paste('traditional_',i,sep='')
+      trad_names <- paste('traditional_',i+1,sep='')
     }
-    colnames(out) <- c('mu','traditional_ref',trad_names)
+    colnames(out) <- c('mu','traditional_1',trad_names)
 
     ##########################
     #trad, catchability, pois#
@@ -719,9 +719,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     out <- cbind(mu,ntrad_out)
     #rename columns
     for(i in 1:modelfit@par_dims$q){
-      trad_names <- paste('traditional_',i,sep='')
+      trad_names <- paste('traditional_',i+1,sep='')
     }
-    colnames(out) <- c('mu','traditional_ref',trad_names)
+    colnames(out) <- c('mu','traditional_1',trad_names)
   }
 
 

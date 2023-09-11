@@ -6,7 +6,7 @@
 #' @param modelfit An object of class `stanfit`
 #' @param cov.val A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.
 #' @param ci Credible interval calculated using highest density interval (HDI). Default is 0.9 (i.e., 90% credible interval).
-#' @return A list with median mu_critical and lower and upper bounds on the credible interval.
+#' @return A list with median mu_critical and lower and upper bounds on the credible interval. If multiple gear types are used, a table of mu_critical and lower and upper credible interval bounds is returned with one column for each gear type.
 #'
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
@@ -45,7 +45,7 @@
 #'
 #' # Fit a model with no site-level covariates
 #' fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-#'                    p10priors=c(1,20), q=TRUE, q_ref=1)
+#'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate mu_critical
 #' mu.critical(fit.q, cov.val='None')
@@ -132,15 +132,46 @@ mu.critical <- function(modelfit, cov.val = 'None', ci = 0.9) {
     posterior_p10 <- unlist(rstan::extract(modelfit, pars = "p10"))
   }
 
-  #calculate mu_critical
-  critical_mu <- rep(NA, length(posterior_beta))
-  for(i in 1:length(critical_mu)){
-    critical_mu[i] <- posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
-  }
+  if('q' %in% modelfit@model_pars){
+    #extract q values
+    posterior_q <- rstan::extract(modelfit, pars = "q")$q
 
-  out <- list(median=stats::median(critical_mu),
-              lower_ci=bayestestR::ci(critical_mu, method = 'HDI', ci = ci)[2],
-              upper_ci=bayestestR::ci(critical_mu, method = 'HDI', ci = ci)[3])
+    #create empty dataframe
+    out <- as.data.frame(matrix(NA,nrow=3,ncol=modelfit@par_dims$q+1))
+    rownames(out) <- c('median','lower_ci','upper_ci')
+    for(i in 1:modelfit@par_dims$q){
+      gear_names <- paste('gear_',i+1,sep='')
+    }
+    colnames(out) <- c('gear_1',gear_names)
+
+    #calculate mu_critical -- gear type 1
+    critical_mu_1 <- rep(NA, length(posterior_beta))
+    for(i in 1:length(critical_mu_1)){
+      critical_mu_1[i] <- posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
+    }
+    out[,1] <- c(stats::median(critical_mu_1),
+                 bayestestR::ci(critical_mu_1, method = 'HDI', ci = ci)[2]$CI_low,
+                 bayestestR::ci(critical_mu_1, method = 'HDI', ci = ci)[3]$CI_high)
+
+    #calculate mu_critical -- gear type 2+
+    for(i in 1:modelfit@par_dims$q){
+      out[,i+1] <- c(stats::median(critical_mu_1*posterior_q[,i]),
+                     bayestestR::ci(critical_mu_1*posterior_q[,i], method = 'HDI', ci = ci)[2]$CI_low,
+                     bayestestR::ci(critical_mu_1*posterior_q[,i], method = 'HDI', ci = ci)[3]$CI_high)
+    }
+
+  } else {
+    #calculate mu_critical
+    critical_mu <- rep(NA, length(posterior_beta))
+    for(i in 1:length(critical_mu)){
+      critical_mu[i] <- posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
+    }
+
+    out <- list(median=stats::median(critical_mu),
+                lower_ci=bayestestR::ci(critical_mu, method = 'HDI', ci = ci)[2],
+                upper_ci=bayestestR::ci(critical_mu, method = 'HDI', ci = ci)[3])
+
+  }
 
   return(out)
 

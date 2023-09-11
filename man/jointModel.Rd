@@ -10,7 +10,6 @@ jointModel(
   family = "poisson",
   p10priors = c(1, 20),
   q = FALSE,
-  q_ref = 1,
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
@@ -18,7 +17,7 @@ jointModel(
 )
 }
 \arguments{
-\item{data}{A list containing data necessary for model fitting. Valid tags are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and \code{qPCR.K} are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates per site and eDNA sample, and \code{qPCR.K} contains the total number of positive qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. \code{site.cov} is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). \code{site.cov} should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.}
+\item{data}{A list containing data necessary for model fitting. Valid tags are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and \code{qPCR.K} are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates per site and eDNA sample, and \code{qPCR.K} contains the total number of positive qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). \code{site.cov} is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). \code{site.cov} should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.}
 
 \item{cov}{A character vector indicating the site-level covariates to include in the model. Default value is 'None'.}
 
@@ -27,8 +26,6 @@ jointModel(
 \item{p10priors}{A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).}
 
 \item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
-
-\item{q_ref}{An integer indicating the traditional survey gear type (referenced in count.type) used as the reference type. Include if q = TRUE. Default value is 1.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
@@ -97,11 +94,9 @@ dim(greencrabData$count)[1]
 
 # Fit a model estimating a catchability coefficient for traditional survey gear types.
 # This model does not assume all traditional survey methods have the same catchability.
-# Gear type 1 is used as the reference gear type.
-# The catchability of all other gear types are scaled relative to the catchability of type 1.
 # Count data is modeled using a negative binomial distribution.
 fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-                   p10priors=c(1,20), q=TRUE, q_ref=1)
+                   p10priors=c(1,20), q=TRUE)
 }
 
 }

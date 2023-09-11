@@ -38,7 +38,7 @@ If any of these checks fail, the function returns an error message.
 data(greencrabData)
 
 # Fit a model
-modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE, q_ref=1)
+modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE)
 
 # Create summary table of all parameters
 summarize(modelfit)

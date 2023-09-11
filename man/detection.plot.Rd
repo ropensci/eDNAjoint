@@ -16,9 +16,9 @@ detection.plot(
 \arguments{
 \item{modelfit}{An object of class \code{stanfit}.}
 
-\item{mu.min}{A value indicating the minimum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is scaled relative to the reference gear type.}
+\item{mu.min}{A value indicating the minimum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.}
 
-\item{mu.max}{A value indicating the maximum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is scaled relative to the reference gear type.}
+\item{mu.max}{A value indicating the maximum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.}
 
 \item{cov.val}{A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.}
 
@@ -71,7 +71,7 @@ data(greencrabData)
 
 # Fit a model with no site-level covariates
 fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-                   p10priors=c(1,20), q=TRUE, q_ref=1)
+                   p10priors=c(1,20), q=TRUE)
 
 # Calculate
 detection.plot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)

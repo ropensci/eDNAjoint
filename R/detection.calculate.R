@@ -4,7 +4,7 @@
 #'
 #' @export
 #' @param modelfit An object of class `stanfit`.
-#' @param mu A numeric vector of species densities/capture rates. If multiple traditional gear types are represented in the model, mu is scaled relative to the reference gear type.
+#' @param mu A numeric vector of species densities/capture rates. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.
 #' @param cov.val A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.
 #' @param probability A numeric value indicating the probability of detecting presence. The default is 0.9.
 #' @param qPCR.N An integer indicating the number of qPCR replicates per eDNA sample. The default is 3.
@@ -47,7 +47,7 @@
 #'
 #' # Fit a model with no site-level covariates
 #' fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-#'                    p10priors=c(1,20), q=TRUE, q_ref=1)
+#'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate
 #' detection.calculate(fit.q, mu = seq(from=0.1,to=1,by=0.1), cov.val = 'None', qPCR.N = 3)
@@ -263,9 +263,9 @@ detection.calculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
       out <- cbind(mu,ntrad_out,ndna_out)
       #rename columns
       for(i in 1:modelfit@par_dims$q){
-        trad_names <- paste('n_traditional_',i,sep='')
+        trad_names <- paste('n_traditional_',i+1,sep='')
       }
-      colnames(out) <- c('mu','n_traditional_ref',trad_names,'n_eDNA')
+      colnames(out) <- c('mu','n_traditional_1',trad_names,'n_eDNA')
 
       #######################################
       #joint, catchability, pois, no sitecov#
@@ -323,9 +323,9 @@ detection.calculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
       out <- cbind(mu,ntrad_out,ndna_out)
       #rename columns
       for(i in 1:modelfit@par_dims$q){
-        trad_names <- paste('n_traditional_',i,sep='')
+        trad_names <- paste('n_traditional_',i+1,sep='')
       }
-      colnames(out) <- c('mu','n_traditional_ref',trad_names,'n_eDNA')
+      colnames(out) <- c('mu','n_traditional_1',trad_names,'n_eDNA')
 
       #########################################
       #joint, no catchability, negbin, sitecov#
@@ -478,9 +478,9 @@ detection.calculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
         out <- cbind(mu,ntrad_out,ndna_out)
         #rename columns
         for(i in 1:modelfit@par_dims$q){
-          trad_names <- paste('n_traditional_',i,sep='')
+          trad_names <- paste('n_traditional_',i+1,sep='')
         }
-        colnames(out) <- c('mu','n_traditional_ref',trad_names,'n_eDNA')
+        colnames(out) <- c('mu','n_traditional_1',trad_names,'n_eDNA')
 
         #######################################
         #joint, catchability, pois, no sitecov#
@@ -539,9 +539,9 @@ detection.calculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
         out <- cbind(mu,ntrad_out,ndna_out)
         #rename columns
         for(i in 1:modelfit@par_dims$q){
-          trad_names <- paste('n_traditional_',i,sep='')
+          trad_names <- paste('n_traditional_',i+1,sep='')
         }
-        colnames(out) <- c('mu','n_traditional_ref',trad_names,'n_eDNA')
+        colnames(out) <- c('mu','n_traditional_1',trad_names,'n_eDNA')
 
         ###############################
         #trad, no catchability, negbin#
@@ -635,9 +635,9 @@ detection.calculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
         out <- cbind(mu,ntrad_out)
         #rename columns
         for(i in 1:modelfit@par_dims$q){
-          trad_names <- paste('n_traditional_',i,sep='')
+          trad_names <- paste('n_traditional_',i+1,sep='')
         }
-        colnames(out) <- c('mu','n_traditional_ref',trad_names)
+        colnames(out) <- c('mu','n_traditional_1',trad_names)
 
         ##########################
         #trad, catchability, pois#
@@ -676,9 +676,9 @@ detection.calculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
         out <- cbind(mu,ntrad_out)
         #rename columns
         for(i in 1:modelfit@par_dims$q){
-          trad_names <- paste('n_traditional_',i,sep='')
+          trad_names <- paste('n_traditional_',i+1,sep='')
         }
-        colnames(out) <- c('mu','n_traditional_ref',trad_names)
+        colnames(out) <- c('mu','n_traditional_1',trad_names)
       }
 
     return(out)
