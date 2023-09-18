@@ -55,7 +55,7 @@ model{/////////////////////////////////////////////////////////////////////
 
 generated quantities{
   vector[nparams] q;
-  vector[C] log_lik;
+  vector[C+S] log_lik;
   matrix[Nloc,nparams+1] mu;  // matrix of catch rates
 
   q = q_trans + 1;
@@ -68,6 +68,10 @@ generated quantities{
 
     for(j in 1:C){
           log_lik[j] = poisson_lpmf(E[j] | coef[j]*mu_1[R[j]]); //store log likelihood of traditional data given model
+      }
+
+      for(i in 1:S){
+          log_lik[C+i] = binomial_lpmf(K[i] | N[i], p[L[i]]); //store log likelihood of eDNA data given model
       }
 
 }

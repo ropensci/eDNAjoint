@@ -33,7 +33,7 @@ install_github('abigailkeller/eDNAjoint')
 
 The main functionality in *eDNAjoint* is the use of `jointModel()` that will fit the model to data. Further functions like `summarize()` and `detection.calculate()` can be used to help with model fit interpretation.
 
-This example fits the joint model to data from paired, replicated eDNA and seine sampling observations of endangered tidewater gobies (*Eucyclogobius newberryi*) from a study by Schmelzle and Kinziger (2016). The following variation of the joint model includes site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling. 
+This example fits the joint model to data from paired, replicated eDNA qPCR and seine sampling observations of endangered tidewater gobies (*Eucyclogobius newberryi*) from a study by Schmelzle and Kinziger (2016). The following variation of the joint model includes site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling. 
 
 ```{r example_1, message = FALSE, warning = FALSE, results = 'hide'}
 library(eDNAjoint)

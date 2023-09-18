@@ -49,7 +49,7 @@ model{/////////////////////////////////////////////////////////////////////
 }
 
 generated quantities{
-  vector[C] log_lik;
+  vector[C+S] log_lik;
   vector[Nloc] beta;
 
   for (i in 1:Nloc){
@@ -58,6 +58,10 @@ generated quantities{
 
     for(j in 1:C){
           log_lik[j] = neg_binomial_2_lpmf(E[j] | mu[R[j]], phi); //store log likelihood of traditional data given model
+      }
+
+      for(i in 1:S){
+          log_lik[C+i] = binomial_lpmf(K[i] | N[i], p[L[i]]); //store log likelihood of eDNA data given model
       }
 
 }
