@@ -15,7 +15,7 @@ parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> mu;  // expected catch at each site
     real<lower=0> phi;  // dispersion parameter
     real<lower=0> beta; // scaling coefficient in saturation function
-    real<lower=0,upper=1> p10;  // p10, false-positive rate.
+    real<upper=0> log_p10;  // p10, false-positive rate.
 }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ transformed parameters{/////////////////////////////////////////////////////////
 
   for (i in 1:Nloc){
     p11[i] = mu[i] / (mu[i] + exp(beta)); // Eq. 1.2
-    p[i] = p11[i] + p10; // Eq. 1.3
+    p[i] = p11[i] + exp(log_p10); // Eq. 1.3
   }
 }
 
@@ -41,13 +41,16 @@ model{/////////////////////////////////////////////////////////////////////
 
 
   //priors
-  p10 ~ beta(p10priors[1], p10priors[2]); // p10 prior
+  log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
   beta ~ normal(0,10); // beta shrinkage priors
 
 }
 
 generated quantities{
   vector[C+S] log_lik;
+  real p10;
+
+  p10 = exp(log_p10);
 
     for(j in 1:C){
           log_lik[j] = neg_binomial_2_lpmf(E[j] | mu[R[j]], phi); //store log likelihood of traditional data given model

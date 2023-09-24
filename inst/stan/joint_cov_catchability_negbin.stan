@@ -18,7 +18,7 @@ data{/////////////////////////////////////////////////////////////////////
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> mu_1;  // expected catch at each site of gear type 1
     real<lower=0> phi;  // dispersion parameter
-    real<lower=0,upper=1> p10;  // p10, false-positive rate.
+    real<upper=0> log_p10;  // p10, false-positive rate.
     vector[nsitecov] alpha; // site-level beta covariates
     vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
 }
@@ -30,7 +30,7 @@ transformed parameters{/////////////////////////////////////////////////////////
 
   for (i in 1:Nloc){
     p11[i] = mu_1[i] / (mu_1[i] + exp(dot_product(mat_site[i],alpha))); // Eq. 1.2
-    p[i] = p11[i] + p10; // Eq. 1.3
+    p[i] = p11[i] + exp(log_p10); // Eq. 1.3
   }
 
   for(k in 1:C){
@@ -51,7 +51,7 @@ model{/////////////////////////////////////////////////////////////////////
 
 
   //priors
-  p10 ~ beta(p10priors[1], p10priors[2]); // p10 prior
+  log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
   alpha ~ normal(0,10); // sitecov shrinkage priors
 
 }
@@ -61,6 +61,9 @@ generated quantities{
   vector[C+S] log_lik;
   vector[Nloc] beta;
   matrix[Nloc,nparams+1] mu;  // matrix of catch rates
+  real p10;
+
+  p10 = exp(log_p10);
 
   for (i in 1:Nloc){
     beta[i] = dot_product(mat_site[i],alpha);

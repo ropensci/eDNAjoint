@@ -170,25 +170,43 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     stop(errMsg)
   }
 
-  ## #12. count.type are integers
+  ## #12. count are integers
+  if(!all(data$count.type %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count should be integers.")
+    stop(errMsg)
+  }
+
+  ## #13. qPCR.N are integers
+  if(!all(data$qPCR.N %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in qPCR.N should be integers.")
+    stop(errMsg)
+  }
+
+  ## #14. qPCR.K are integers
+  if(!all(data$qPCR.K %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in qPCR.K should be integers.")
+    stop(errMsg)
+  }
+
+  ## #15. count.type are integers
   if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
     errMsg = paste("All values in count.type should be integers.")
     stop(errMsg)
   }
 
-  ## #13. site.cov is numeric, if present
+  ## #16. site.cov is numeric, if present
   if(!all(cov=='None') && !is.numeric(data$site.cov)){
     errMsg = paste("site.cov should be numeric")
     stop(errMsg)
   }
 
-  ## #14. cov values match column names in site.cov
+  ## #17. cov values match column names in site.cov
   if(!all(cov=='None') && !all(cov %in% colnames(data$site.cov))){
     errMsg = paste("cov values should be listed in the column names of site.cov in the data")
     stop(errMsg)
   }
 
-  ## #15. site.cov has same number of rows as qPCR.N and count, if present
+  ## #18. site.cov has same number of rows as qPCR.N and count, if present
   if(!all(cov=='None') && dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
     errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
     stop(errMsg)
@@ -247,6 +265,18 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     colnames(site_mat) <- c('int',cov)
   }
 
+  #convert p10 prior
+  #p10 prior: convert beta(1,28) to lognormal distribution
+  #moment match from beta(alpha,beta) to normal(mu, sigma^2)
+  alpha <- p10priors[1]
+  beta <- p10priors[2]
+  mu <- alpha/(alpha+beta)
+  sigma_2 <- (alpha*beta)/((alpha+beta)^2*(alpha+beta+1))
+  #convert normal(mu, sigma^2) to lognormal(mu, sigma^2)
+  mu_ln <- log(mu^2/sqrt(mu^2+sigma_2))
+  sigma_2_ln <- log(1+sigma_2/mu^2)
+  sigma_ln <- sqrt(sigma_2_ln)
+
 
   ##run model, catchability, pois, no covariates
   if(q==TRUE&&family=='poisson'&&all(cov=='None')){
@@ -260,7 +290,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              C = nrow(count_all),
                              R = count_all$L,
                              E = count_all$count,
-                             p10priors = c(p10priors[1],p10priors[2]),
+                             p10priors = c(mu_ln,sigma_ln),
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
                              control = list(adapt_delta = adapt_delta)
@@ -283,7 +313,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                                C = nrow(count_all),
                                R = count_all$L,
                                E = count_all$count,
-                               p10priors = c(p10priors[1],p10priors[2]),
+                               p10priors = c(mu_ln,sigma_ln),
                                nparams = length(q_names),
                                mat = as.matrix(count_all[,q_names]),
                                control = list(adapt_delta = adapt_delta)
@@ -306,7 +336,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              p10priors = c(p10priors[1],p10priors[2]),
+                              p10priors = c(mu_ln,sigma_ln),
                               control = list(adapt_delta = adapt_delta)
                             ),
                             chains = n.chain,
@@ -327,7 +357,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              p10priors = c(p10priors[1],p10priors[2]),
+                              p10priors = c(mu_ln,sigma_ln),
                               control = list(adapt_delta = adapt_delta)
                             ),
                             chains = n.chain,
@@ -348,7 +378,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              p10priors = c(p10priors[1],p10priors[2]),
+                              p10priors = c(mu_ln,sigma_ln),
                               nparams = length(q_names),
                               mat = as.matrix(count_all[,q_names]),
                               nsitecov = length(cov)+1,
@@ -373,7 +403,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              p10priors = c(p10priors[1],p10priors[2]),
+                              p10priors = c(mu_ln,sigma_ln),
                               nparams = length(q_names),
                               mat = as.matrix(count_all[,q_names]),
                               nsitecov = length(cov)+1,
@@ -398,7 +428,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              p10priors = c(p10priors[1],p10priors[2]),
+                              p10priors = c(mu_ln,sigma_ln),
                               nsitecov = length(cov)+1,
                               mat_site = as.matrix(site_mat),
                               control = list(adapt_delta = adapt_delta)
@@ -421,7 +451,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              p10priors = c(p10priors[1],p10priors[2]),
+                              p10priors = c(mu_ln,sigma_ln),
                               nsitecov = length(cov)+1,
                               mat_site = as.matrix(site_mat),
                               control = list(adapt_delta = adapt_delta)
@@ -444,7 +474,7 @@ init_joint_cov <- function(n.chain,count_all,cov){
   for(i in 1:n.chain){
     A[[i]] <- list(
       mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
-      p10 = 0.05,
+      p10 = log(0.05),
       alpha = rep(0.1,length(cov)+1)
     )
   }
@@ -459,7 +489,7 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov){
     A[[i]] <- list(
       mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
       q = as.data.frame(stats::runif(length(q_names),0.01,1)),
-      p10 = 0.05,
+      p10 = log(0.05),
       alpha = rep(0.1,length(cov)+1)
     )
   }
@@ -474,7 +504,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names){
     A[[i]] <- list(
       mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
       q = as.data.frame(stats::runif(length(q_names),0.01,1)),
-      p10 = 0.05,
+      p10 = log(0.05),
       beta = .5
     )
   }
@@ -488,7 +518,7 @@ init_joint <- function(n.chain,count_all){
   for(i in 1:n.chain){
     A[[i]] <- list(
       mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
-      p10 = 0.05,
+      p10 = log(0.05),
       beta = .5
     )
   }

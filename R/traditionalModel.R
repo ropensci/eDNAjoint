@@ -112,7 +112,13 @@ traditionalModel <- function(data, family='poisson',
     stop(errMsg)
   }
 
-  ## #9. count.type are integers
+  ## #9. count are integers
+  if(!all(data$count %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count should be integers.")
+    stop(errMsg)
+  }
+
+  ## #10. count.type are integers
   if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
     errMsg = paste("All values in count.type should be integers.")
     stop(errMsg)
