@@ -45,10 +45,10 @@
 #' dim(gobyData$qPCR.N)[1]
 #' dim(gobyData$count)[1]
 #'
-#' # Fit a model including 'Filter_time' and 'Hab_size' site-level covariates
+#' # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 #' # These covariates will scale the sensitivity of eDNA sampling relative to traditional surveys
 #' # Count data is modeled using a poisson distribution.
-#' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Hab_size'),
+#' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
 #'                      family='poisson', p10priors=c(1,20), q=FALSE)
 #'
 #'
@@ -141,7 +141,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 
   ## #7. make sure locations of NAs in count data match locations of NAs in count.type data
   if(q==TRUE){
-    if(any((which(is.na(data$count.type))==which(is.na(data$count)))==FALSE)){
+    if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
+      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
+      stop(errMsg)
+    }
+  }
+  if(q==TRUE){
+    if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
       errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
       stop(errMsg)
     }
@@ -171,7 +177,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   }
 
   ## #12. count are integers
-  if(!all(data$count.type %% 1 %in% c(0,NA))){
+  if(!all(data$count %% 1 %in% c(0,NA))){
     errMsg = paste("All values in count should be integers.")
     stop(errMsg)
   }
@@ -196,13 +202,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 
   ## #16. site.cov is numeric, if present
   if(!all(cov=='None') && !is.numeric(data$site.cov)){
-    errMsg = paste("site.cov should be numeric")
+    errMsg = paste("site.cov should be numeric.")
     stop(errMsg)
   }
 
   ## #17. cov values match column names in site.cov
   if(!all(cov=='None') && !all(cov %in% colnames(data$site.cov))){
-    errMsg = paste("cov values should be listed in the column names of site.cov in the data")
+    errMsg = paste("cov values should be listed in the column names of site.cov in the data.")
     stop(errMsg)
   }
 
