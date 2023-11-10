@@ -467,7 +467,7 @@ p_{10} \sim Beta(\alpha, \beta)
 
 ### Bayesian modeling: Stan
 
-The models that can be run with *eDNAjoint* use Bayesian inference for parameter estimation. The models are specified in the probabilistic programming language, [Stan](https://mc-stan.org/rstan/), which uses Hamilton Monte Carlo to obtain posterior simulations. For this reason, all the models fit using *eDNAjoint* are of the 'stanfit' class and can be analyzed and manipulated with functions in the *rstan* package, in addition to the functions outlined above.
+The models that can be run with *eDNAjoint* use Bayesian inference for parameter estimation. The models are specified in the probabilistic programming language, [Stan](https://mc-stan.org/rstan/), which uses Hamiltonian Monte Carlo to obtain posterior simulations. For this reason, all the models fit using *eDNAjoint* are of the 'stanfit' class and can be analyzed and manipulated with functions in the *rstan* package, in addition to the functions outlined above.
 
 The code for the models written in Stan can be found in [this folder](https://github.com/abigailkeller/eDNAjoint/tree/master/inst/stan) of the package Github repo. 
 
