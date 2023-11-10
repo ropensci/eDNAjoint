@@ -10,31 +10,46 @@ data{/////////////////////////////////////////////////////////////////////
     array[2] real p10priors; // priors for normal distrib on p10
     int<lower=0> nsitecov;  // number of site-level covariates
     matrix[Nloc,nsitecov] mat_site;  // matrix of site-level covariates
+    int<lower=0> nparams;  // number of gear types
+    matrix[C,nparams] mat;  // matrix of gear type integers
+    int<lower = 0, upper = 1> include_phi; // binary indicator of negbinomial
 
 }
 
 parameters{/////////////////////////////////////////////////////////////////////
-    array[Nloc] real<lower=0> mu;  // expected catch at each site
+    array[Nloc] real<lower=0> mu_1;  // expected catch at each site of gear type 1
     real<upper=0> log_p10;  // p10, false-positive rate.
     vector[nsitecov] alpha; // site-level beta covariates
+    vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
+    vector<lower=0>[include_phi ? 1 : 0] phi;  // dispersion parameter, if include_phi = 1
 }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
   array[Nloc] real<lower=0, upper = 1> p11; // true-positive detection probability
-  array[Nloc]real<lower=0, upper = 1> p;   // total detection probability
+  array[Nloc] real<lower=0, upper = 1> p;   // total detection probability
+  vector<lower=0>[C] coef;
 
   for (i in 1:Nloc){
-    p11[i] = mu[i] / (mu[i] + exp(dot_product(mat_site[i],alpha))); // Eq. 1.2
+    p11[i] = mu_1[i] / (mu_1[i] + exp(dot_product(mat_site[i],alpha))); // Eq. 1.2
     p[i] = p11[i] + exp(log_p10); // Eq. 1.3
   }
+
+  for(k in 1:C){
+      coef[k] = 1 + dot_product(mat[k],q_trans);
+    }
 }
 
 model{/////////////////////////////////////////////////////////////////////
 
+    if (include_phi == 1)
+       for (j in 1:C){
+        E[j] ~ poisson(coef[j]*mu_1[R[j]]); // Eq. 1.1
+       }
+    else
+       for (j in 1:C){
+        E[j] ~ neg_binomial_2(coef[j]*mu_1[R[j]], phi); // Eq. 1.1
+       }
 
-    for (j in 1:C){
-        E[j] ~ poisson(mu[R[j]]); // Eq. 1.1
-    }
 
     for (i in 1:S){
         K[i] ~ binomial(N[i], p[L[i]]); // Eq. 1.4
@@ -48,8 +63,10 @@ model{/////////////////////////////////////////////////////////////////////
 }
 
 generated quantities{
+  vector[nparams] q;
   vector[C+S] log_lik;
   vector[Nloc] beta;
+  matrix[Nloc,nparams+1] mu;  // matrix of catch rates
   real p10;
 
   p10 = exp(log_p10);
@@ -58,9 +75,22 @@ generated quantities{
     beta[i] = dot_product(mat_site[i],alpha);
   }
 
-    for(j in 1:C){
-          log_lik[j] = poisson_lpmf(E[j] | mu[R[j]]); //store log likelihood of traditional data given model
-      }
+  q = q_trans + 1;
+
+  mu[,1] = to_vector(mu_1);
+
+  for(i in 1:nparams){
+    mu[,i+1] = to_vector(mu_1)*q[i];
+  }
+
+  if (include_phi == 1)
+       for (j in 1:C){
+        log_lik[j] = poisson_lpmf(E[j] | coef[j]*mu_1[R[j]]); //store log likelihood of traditional data given model
+       }
+    else
+       for (j in 1:C){
+        log_lik[j] = neg_binomial_2_lpmf(E[j] | coef[j]*mu_1[R[j]], phi); //store log likelihood of traditional data given model
+       }
 
       for(i in 1:S){
           log_lik[C+i] = binomial_lpmf(K[i] | N[i], p[L[i]]); //store log likelihood of eDNA data given model

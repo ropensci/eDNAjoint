@@ -45,19 +45,25 @@ summarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3)
 
   ## #2. make sure probs is a numeric vector
   if(!is.numeric(probs)) {
-    errMsg = paste("probs must be a numeric vector")
+    errMsg = paste("probs must be a numeric vector.")
     stop(errMsg)
   }
 
-  ## #3. make sure par is a character vector
+  ## #3. make sure all values of probs are between 0 and 1
+  if(any(probs > 1 | probs < 0)) {
+    errMsg = paste("probs must be between 0 and 1.")
+    stop(errMsg)
+  }
+
+  ## #4. make sure par is a character vector
   if(!is.character(par)) {
-    errMsg = paste("par must be a character vector")
+    errMsg = paste("par must be a character vector.")
     stop(errMsg)
   }
 
-  ## #4. make sure model fit contains all par input
+  ## #5. make sure model fit contains all par input
   if(all(!(par %in% modelfit@model_pars)) && par != 'all') {
-    errMsg = paste("modelfit must contain all selected parameters: ",par)
+    errMsg = paste("modelfit must contain all selected parameters:",par)
     stop(errMsg)
   }
 
@@ -66,15 +72,9 @@ summarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3)
   }
 
   ## #5. check to see if there are any divergent transitions
-  if(sum(rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[1]][,'divergent__'],
-         rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[2]][,'divergent__'],
-         rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[3]][,'divergent__'],
-         rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[4]][,'divergent__']) > 0 ){
+  if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]]) > 0){
 
-    sum <- sum(rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[1]][,'divergent__'],
-               rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[2]][,'divergent__'],
-               rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[3]][,'divergent__'],
-               rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[4]][,'divergent__'])
+    sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]])
 
     warning <- paste0('Warning: There are ',sum,' divergent transitions in your model fit. ')
     print(warning)
@@ -158,4 +158,10 @@ summarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3)
 
   return(out)
 
+}
+
+#function to check for divergent transitions
+div_check <- function(x){
+  divergent <- sum(x[,'divergent__'])
+  return(divergent)
 }

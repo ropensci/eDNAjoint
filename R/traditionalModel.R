@@ -62,7 +62,7 @@ traditionalModel <- function(data, family='poisson',
   }
 
   ## #2. make sure all data tags are valid -- if q == FALSE
-  if (q==TRUE && !all(c('count') %in% names(data))){
+  if (q==FALSE && !all(c('count') %in% names(data))){
     errMsg = paste("Data should include 'count'.")
     stop(errMsg)
   }
@@ -159,9 +159,9 @@ traditionalModel <- function(data, family='poisson',
 
 }
 
-  ##run model, catchability, pois
-  if(q==TRUE&&family=='poisson'){
-    out <- rstan::sampling(stanmodels$traditional_catchability_pois,
+  ##run model, catchability
+  if(q==TRUE){
+    out <- rstan::sampling(stanmodels$traditional_binary_catchability,
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),
@@ -169,6 +169,8 @@ traditionalModel <- function(data, family='poisson',
                              E = count_all$count,
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
+                             include_phi = dplyr::case_when(family=='poisson' ~ 0
+                                                            family=='negbin' ~ 1),
                              control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
@@ -177,50 +179,18 @@ traditionalModel <- function(data, family='poisson',
                            iter = n.iter.burn + n.iter.sample,
                            init = init_trad_catchability(n.chain, count_all, q_names)
                            )
-   } else if(q==TRUE&&family=='negbin'){
-     ##run model, catchability, negbin
-     out <- rstan::sampling(stanmodels$traditional_catchability_negbin,
+   } else if(q==FALSE){
+     ##run model
+     out <- rstan::sampling(stanmodels$traditional_binary,
                             data = list(
                               Nloc = length(unique(count_all$L)),
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              nparams = length(q_names),
-                              mat = as.matrix(count_all[,q_names]),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_trad_catchability(n.chain, count_all, q_names)
-     )
-   } else if(q==FALSE&&family=='poisson'){
-     ##run model, no catchability, pois
-     out <- rstan::sampling(stanmodels$traditional_pois,
-                            data = list(
-                              Nloc = length(unique(count_all$L)),
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
+                              include_phi = dplyr::case_when(family=='poisson' ~ 0
+                                                             family=='negbin' ~ 1),
                               control = list(adapt_delta = adapt_delta,
                                              stepsize = 0.5)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_trad(n.chain, count_all)
-     )
-   } else if(q==FALSE&&family=='negbin'){
-     ##run model, no catchability, negbin
-     out <- rstan::sampling(stanmodels$traditional_negbin,
-                            data = list(
-                              Nloc = length(unique(count_all$L)),
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              control = list(adapt_delta = adapt_delta)
                             ),
                             chains = n.chain,
                             thin = 1,

@@ -108,15 +108,9 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
   }
 
   ## #8. check to see if there are any divergent transitions
-  if(sum(rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[1]][,'divergent__'],
-         rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[2]][,'divergent__'],
-         rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[3]][,'divergent__'],
-         rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[4]][,'divergent__']) > 0 ){
+  if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]]) > 0){
 
-    sum <- sum(rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[1]][,'divergent__'],
-               rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[2]][,'divergent__'],
-               rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[3]][,'divergent__'],
-               rstan::get_sampler_params(modelfit,inc_warmup=FALSE)[[4]][,'divergent__'])
+    sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]])
 
     warning <- paste0('Warning: There are ',sum,' divergent transitions in your model fit. ')
     print(warning)
@@ -737,4 +731,10 @@ detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabili
     ggplot2::theme_minimal()
 
   return(plot)
+}
+
+#function to check for divergent transitions
+div_check <- function(x){
+  divergent <- sum(x[,'divergent__'])
+  return(divergent)
 }

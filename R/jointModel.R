@@ -284,9 +284,10 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   sigma_ln <- sqrt(sigma_2_ln)
 
 
-  ##run model, catchability, pois, no covariates
-  if(q==TRUE&&family=='poisson'&&all(cov=='None')){
-    out <- rstan::sampling(stanmodels$joint_catchability_pois,
+  ##run model, catchability
+  if(q==TRUE){
+    out <- rstan::sampling(object = dplyr::case_when(all(cov=='None') ~ stanmodels$joint_binary_catchability,
+                                                     all(cov!='None') ~ stanmodels$joint_binary_cov_catchability),
                            data = list(
                              S = nrow(qPCR_all),
                              L = qPCR_all$L,
@@ -299,176 +300,46 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              p10priors = c(mu_ln,sigma_ln),
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
+                             include_phi = dplyr::case_when(family=='poisson' ~ 0
+                                                            family=='negbin' ~ 1),
                              control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
                            thin = 1,
                            warmup = n.iter.burn,
                            iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_catchability(n.chain,count_all,q_names)
+                           init = dplyr::case_when(all(cov=='None') ~ init_joint_catchability(n.chain,count_all,q_names),
+                                                   all(cov!='None') ~ init_joint_cov_catchability(n.chain,
+                                                                                                  count_all,q_names,cov))
                            )
-   } else if(q==TRUE&&family=='negbin'&&all(cov=='None')){
-     ##run model, catchability, negbin, no covariates
-      out <- rstan::sampling(stanmodels$joint_catchability_negbin,
-                             data = list(
-                               S = nrow(qPCR_all),
-                               L = qPCR_all$L,
-                               Nloc = length(unique(qPCR_all$L)),
-                               N = qPCR_all$N,
-                               K = qPCR_all$K,
-                               C = nrow(count_all),
-                               R = count_all$L,
-                               E = count_all$count,
-                               p10priors = c(mu_ln,sigma_ln),
-                               nparams = length(q_names),
-                               mat = as.matrix(count_all[,q_names]),
-                               control = list(adapt_delta = adapt_delta)
-                             ),
-                             chains = n.chain,
-                             thin = 1,
-                             warmup = n.iter.burn,
-                             iter = n.iter.burn + n.iter.sample,
-                             init = init_joint_catchability(n.chain,count_all,q_names)
-      )
-   } else if(q==FALSE&&family=='poisson'&&all(cov=='None')){
-     ##run model, no catchability, pois, no covariates
-     out <- rstan::sampling(stanmodels$joint_pois,
-                            data = list(
-                              S = nrow(qPCR_all),
-                              L = qPCR_all$L,
-                              Nloc = length(unique(qPCR_all$L)),
-                              N = qPCR_all$N,
-                              K = qPCR_all$K,
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              p10priors = c(mu_ln,sigma_ln),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_joint(n.chain,count_all)
-     )
-   } else if(q==FALSE&&family=='negbin'&&all(cov=='None')){
-     ##run model, no catchability, negbin, no covariates
-     out <- rstan::sampling(stanmodels$joint_negbin,
-                            data = list(
-                              S = nrow(qPCR_all),
-                              L = qPCR_all$L,
-                              Nloc = length(unique(qPCR_all$L)),
-                              N = qPCR_all$N,
-                              K = qPCR_all$K,
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              p10priors = c(mu_ln,sigma_ln),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_joint(n.chain,count_all)
-     )
-   } else if(q==TRUE&&family=='negbin'&&all(cov!='None')){
-     ##run model, catchability, negbin, covariates
-     out <- rstan::sampling(stanmodels$joint_cov_catchability_negbin,
-                            data = list(
-                              S = nrow(qPCR_all),
-                              L = qPCR_all$L,
-                              Nloc = length(unique(qPCR_all$L)),
-                              N = qPCR_all$N,
-                              K = qPCR_all$K,
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              p10priors = c(mu_ln,sigma_ln),
-                              nparams = length(q_names),
-                              mat = as.matrix(count_all[,q_names]),
-                              nsitecov = length(cov)+1,
-                              mat_site = as.matrix(site_mat),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_joint_cov_catchability(n.chain,count_all,q_names,cov)
-     )
-   } else if(q==TRUE&&family=='poisson'&&all(cov!='None')){
-     ##run model, catchability, pois, covariates
-     out <- rstan::sampling(stanmodels$joint_cov_catchability_pois,
-                            data = list(
-                              S = nrow(qPCR_all),
-                              L = qPCR_all$L,
-                              Nloc = length(unique(qPCR_all$L)),
-                              N = qPCR_all$N,
-                              K = qPCR_all$K,
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              p10priors = c(mu_ln,sigma_ln),
-                              nparams = length(q_names),
-                              mat = as.matrix(count_all[,q_names]),
-                              nsitecov = length(cov)+1,
-                              mat_site = as.matrix(site_mat),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_joint_cov_catchability(n.chain,count_all,q_names,cov)
-     )
-   } else if(q==FALSE&&family=='negbin'&&all(cov!='None')){
-     ##run model, no catchability, negbin, covariates
-     out <- rstan::sampling(stanmodels$joint_cov_negbin,
-                            data = list(
-                              S = nrow(qPCR_all),
-                              L = qPCR_all$L,
-                              Nloc = length(unique(qPCR_all$L)),
-                              N = qPCR_all$N,
-                              K = qPCR_all$K,
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              p10priors = c(mu_ln,sigma_ln),
-                              nsitecov = length(cov)+1,
-                              mat_site = as.matrix(site_mat),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_joint_cov(n.chain,count_all,cov)
-     )
-   } else if(q==FALSE&&family=='poisson'&&all(cov!='None')){
-     ##run model, no catchability, pois, covariates
-     out <- rstan::sampling(stanmodels$joint_cov_pois,
-                            data = list(
-                              S = nrow(qPCR_all),
-                              L = qPCR_all$L,
-                              Nloc = length(unique(qPCR_all$L)),
-                              N = qPCR_all$N,
-                              K = qPCR_all$K,
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              p10priors = c(mu_ln,sigma_ln),
-                              nsitecov = length(cov)+1,
-                              mat_site = as.matrix(site_mat),
-                              control = list(adapt_delta = adapt_delta)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_joint_cov(n.chain,count_all,cov)
-     )
-   }
+  } else if(q==FALSE){
+    ##run model, no catchability
+    out <- rstan::sampling(object = dplyr::case_when(all(cov=='None') ~ stanmodels$joint_binary,
+                                                     all(cov!='None') ~ stanmodels$joint_binary_cov),
+                           data = list(
+                             S = nrow(qPCR_all),
+                             L = qPCR_all$L,
+                             Nloc = length(unique(qPCR_all$L)),
+                             N = qPCR_all$N,
+                             K = qPCR_all$K,
+                             C = nrow(count_all),
+                             R = count_all$L,
+                             E = count_all$count,
+                             p10priors = c(mu_ln,sigma_ln),
+                             nsitecov = length(cov)+1,
+                             mat_site = as.matrix(site_mat),
+                             include_phi = dplyr::case_when(family=='poisson' ~ 0
+                                                            family=='negbin' ~ 1),
+                             control = list(adapt_delta = adapt_delta)
+                           ),
+                           chains = n.chain,
+                           thin = 1,
+                           warmup = n.iter.burn,
+                           iter = n.iter.burn + n.iter.sample,
+                           init = dplyr::case_when(all(cov=='None') ~ init_joint(n.chain,count_all),
+                                                   all(cov!='None') ~ init_joint_cov(n.chain,count_all,cov))
+    )
+  }
 
   return(out)
 }

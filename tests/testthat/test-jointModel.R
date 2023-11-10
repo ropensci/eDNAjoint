@@ -183,7 +183,7 @@ test_that("joint_catchability_pois works", {
 
   out <- jointModel(data=test,q=TRUE,n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -196,7 +196,7 @@ test_that("joint_catchability_negbin works", {
 
   out <- jointModel(data=test,q=TRUE,family='negbin',n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -209,7 +209,7 @@ test_that("joint_pois works", {
 
   out <- jointModel(data=test,q=FALSE,n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -222,7 +222,7 @@ test_that("joint_negbin works", {
 
   out <- jointModel(data=test,q=FALSE,family='negbin',n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -237,7 +237,7 @@ test_that("joint_cov_negbin works", {
                     cov=c('Filter_time','Salinity'),
                     n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -252,7 +252,7 @@ test_that("joint_cov_pois works", {
                     cov=c('Filter_time','Salinity'),
                     n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -277,7 +277,7 @@ test_that("joint_cov_catchability_negbin works", {
                     cov=c('Filter_time','Salinity'),
                     n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
 
@@ -302,6 +302,6 @@ test_that("joint_cov_catchability_pois works", {
                     cov=c('Filter_time','Salinity'),
                     n.chain=1,n.iter.burn=500,
                     n.iter.sample=500)
-  expect_lt(sum(colMeans(extract(out,par='log_lik')$log_lik)), 0)
+  expect_lt(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 0)
 
 })
