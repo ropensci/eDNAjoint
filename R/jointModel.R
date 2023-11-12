@@ -76,146 +76,25 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                        n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, adapt_delta=0.9) {
 
-  ## #1. All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, count.type, and site.cov)
-  #q=FALSE and cov='None'
-  if (q==FALSE && all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', and 'count'.")
-    stop(errMsg)
-  }
-  #q=FALSE and cov!='None'
-  if (q==FALSE && all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count','site.cov') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'.")
-    stop(errMsg)
-  }
-  #q=TRUE and cov='None'
-  if (q==TRUE && all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', and 'count.type'.")
-    stop(errMsg)
-  }
-  #q=TRUE and cov!='None'
-  if (q==TRUE && all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type','site.cov') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', 'count.type', and 'site.cov'.")
-    stop(errMsg)
-  }
+  ####
+  # input checks
 
-  ## #2. make sure dimensions of qPCR.N and qPCR.K are equal
-  if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
-    errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")
-    stop(errMsg)
-  }
+  # all models
+  all_checks(data,cov,family,p10priors)
 
-  ## #3. make sure dimensions of count and count.type are equal, if count.type is present
-  if (q==TRUE){
-    if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
-      errMsg = paste("Dimensions of count and count.type do not match.")
-      stop(errMsg)
-    }
-  }
-
-  ## #4. make sure number of rows in count = number of rows in qPCR.N and qPCR.K
-  if (dim(data$qPCR.N)[1]!=dim(data$count)[1]) {
-    errMsg = paste("Number of sites (rows) in qPCR data and traditional survey count data do not match.")
-    stop(errMsg)
-  }
-
-  ## #5. make sure all data is numeric -- if q == TRUE
+  # model with catchability coefficients
   if (q==TRUE) {
-    if(is.numeric(data$qPCR.K)==FALSE |
-       is.numeric(data$qPCR.N)==FALSE |
-       is.numeric(data$count)==FALSE |
-       is.numeric(data$count.type)==FALSE) {
-      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
-      stop(errMsg)
-    }
+    catchability_checks(data,cov)
   }
 
-  ## #6. make sure all data is numeric -- if q == FALSE
+  # model without catchability coefficients
   if (q==FALSE) {
-    if(is.numeric(data$qPCR.K)==FALSE |
-       is.numeric(data$qPCR.N)==FALSE |
-       is.numeric(data$count)==FALSE ) {
-      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
-      stop(errMsg)
-    }
+    no_catchability_checks(data,cov)
   }
 
-  ## #7. make sure locations of NAs in count data match locations of NAs in count.type data
-  if(q==TRUE){
-    if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
-      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
-      stop(errMsg)
-    }
-  }
-  if(q==TRUE){
-    if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
-      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
-      stop(errMsg)
-    }
-  }
-  ## #8. make sure locations of NAs in qPCR.N data match locations of NAs in qPCR.K data
-  if(any((which(is.na(data$qPCR.N))==which(is.na(data$qPCR.K)))==FALSE)){
-    errMsg = paste("Empty data cells (NA) in qPCR.N data should match empty data cells (NA) in qPCR.K data.")
-    stop(errMsg)
-  }
-
-  ## #9. make sure family is either 'poisson' or 'negbin'
-  if(!c(family %in% c('poisson','negbin'))){
-    errMsg = paste("Invalid family. Options include 'poisson' and 'negbin'.")
-    stop(errMsg)
-  }
-
-  ## #10. p10 priors is a vector of two integers
-  if(!is.numeric(p10priors) | length(p10priors)!=2){
-    errMsg = paste("p10priors should be a vector of two integers. ex. c(1,20)")
-    stop(errMsg)
-  }
-
-  ## #11. the smallest count.type is 1
-  if(q==TRUE && min(data$count.type,na.rm=TRUE) != 1){
-    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
-    stop(errMsg)
-  }
-
-  ## #12. count are integers
-  if(!all(data$count %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in count should be integers.")
-    stop(errMsg)
-  }
-
-  ## #13. qPCR.N are integers
-  if(!all(data$qPCR.N %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in qPCR.N should be integers.")
-    stop(errMsg)
-  }
-
-  ## #14. qPCR.K are integers
-  if(!all(data$qPCR.K %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in qPCR.K should be integers.")
-    stop(errMsg)
-  }
-
-  ## #15. count.type are integers
-  if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in count.type should be integers.")
-    stop(errMsg)
-  }
-
-  ## #16. site.cov is numeric, if present
-  if(!all(cov=='None') && !is.numeric(data$site.cov)){
-    errMsg = paste("site.cov should be numeric.")
-    stop(errMsg)
-  }
-
-  ## #17. cov values match column names in site.cov
-  if(!all(cov=='None') && !all(cov %in% colnames(data$site.cov))){
-    errMsg = paste("cov values should be listed in the column names of site.cov in the data.")
-    stop(errMsg)
-  }
-
-  ## #18. site.cov has same number of rows as qPCR.N and count, if present
-  if(!all(cov=='None') && dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
-    errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
-    stop(errMsg)
+  # model with covariates
+  if (all(cov!='None')) {
+    covariate_checks(data,cov)
   }
 
   if (!requireNamespace("rstan", quietly = TRUE)){
@@ -344,6 +223,10 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   return(out)
 }
 
+###########
+#helper functions: initial values
+###########
+
 init_joint_cov <- function(n.chain,count_all,cov){
   #helper function
   #joint model, catchability coefficient, site covariates
@@ -401,3 +284,151 @@ init_joint <- function(n.chain,count_all){
   }
   return(A)
 }
+
+################
+#helper functions: input checks
+################
+
+# if q = TRUE
+catchability_checks <- function(data,cov){
+  ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, count.type, and site.cov)
+  #cov='None'
+  if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type') %in% names(data))){
+    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', and 'count.type'.")
+    stop(errMsg)
+  }
+  #q=TRUE and cov!='None'
+  if (all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type','site.cov') %in% names(data))){
+    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', 'count.type', and 'site.cov'.")
+    stop(errMsg)
+  }
+  ## make sure dimensions of count and count.type are equal, if count.type is present
+  if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
+      errMsg = paste("Dimensions of count and count.type do not match.")
+      stop(errMsg)
+  }
+
+  ## make sure all data is numeric -- if q == TRUE
+  if(is.numeric(data$qPCR.K)==FALSE |
+       is.numeric(data$qPCR.N)==FALSE |
+       is.numeric(data$count)==FALSE |
+       is.numeric(data$count.type)==FALSE) {
+      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
+      stop(errMsg)
+  }
+  ## make sure locations of NAs in count data match locations of NAs in count.type data
+  if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
+      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
+      stop(errMsg)
+  }
+  if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
+      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
+      stop(errMsg)
+  }
+  ## the smallest count.type is 1
+  if(min(data$count.type,na.rm=TRUE) != 1){
+    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
+    stop(errMsg)
+  }
+
+  ## count.type are integers
+  if(!all(data$count.type %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count.type should be integers.")
+    stop(errMsg)
+  }
+}
+
+no_catchability_checks <- function(data,cov){
+  ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, and site.cov)
+  #cov='None'
+  if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
+    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', and 'count'.")
+    stop(errMsg)
+  }
+  #cov!='None'
+  if (all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count','site.cov') %in% names(data))){
+    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'.")
+    stop(errMsg)
+  }
+
+  ## make sure all data is numeric -- if q == FALSE
+  if(is.numeric(data$qPCR.K)==FALSE |
+       is.numeric(data$qPCR.N)==FALSE |
+       is.numeric(data$count)==FALSE ) {
+      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
+      stop(errMsg)
+  }
+}
+
+all_checks <- function(data,cov){
+  ## make sure dimensions of qPCR.N and qPCR.K are equal
+  if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
+    errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")
+    stop(errMsg)
+  }
+  ## make sure number of rows in count = number of rows in qPCR.N and qPCR.K
+  if (dim(data$qPCR.N)[1]!=dim(data$count)[1]) {
+    errMsg = paste("Number of sites (rows) in qPCR data and traditional survey count data do not match.")
+    stop(errMsg)
+  }
+
+  ## make sure locations of NAs in qPCR.N data match locations of NAs in qPCR.K data
+  if(any((which(is.na(data$qPCR.N))==which(is.na(data$qPCR.K)))==FALSE)){
+    errMsg = paste("Empty data cells (NA) in qPCR.N data should match empty data cells (NA) in qPCR.K data.")
+    stop(errMsg)
+  }
+
+  ## make sure family is either 'poisson' or 'negbin'
+  if(!c(family %in% c('poisson','negbin'))){
+    errMsg = paste("Invalid family. Options include 'poisson' and 'negbin'.")
+    stop(errMsg)
+  }
+
+  ## p10 priors is a vector of two integers
+  if(!is.numeric(p10priors) | length(p10priors)!=2){
+    errMsg = paste("p10priors should be a vector of two integers. ex. c(1,20)")
+    stop(errMsg)
+  }
+
+
+  ## count are integers
+  if(!all(data$count %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count should be integers.")
+    stop(errMsg)
+  }
+
+  ## qPCR.N are integers
+  if(!all(data$qPCR.N %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in qPCR.N should be integers.")
+    stop(errMsg)
+  }
+
+  ## qPCR.K are integers
+  if(!all(data$qPCR.K %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in qPCR.K should be integers.")
+    stop(errMsg)
+  }
+
+}
+
+covariate_checks <- function(data,cov){
+  ## site.cov is numeric, if present
+  if(!all(cov=='None') && !is.numeric(data$site.cov)){
+    errMsg = paste("site.cov should be numeric.")
+    stop(errMsg)
+  }
+
+  ## cov values match column names in site.cov
+  if(!all(cov=='None') && !all(cov %in% colnames(data$site.cov))){
+    errMsg = paste("cov values should be listed in the column names of site.cov in the data.")
+    stop(errMsg)
+  }
+
+  ## site.cov has same number of rows as qPCR.N and count, if present
+  if(!all(cov=='None') && dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
+    errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
+    stop(errMsg)
+  }
+}
+
+
