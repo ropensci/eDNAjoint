@@ -40,8 +40,8 @@ If any of these checks fail, the function returns an error message.
 # Load data
 data(gobyData)
 
-# Fit a model including 'Filter_time' and 'Hab_size' site-level covariates
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Hab_size'),
+# Fit a model including 'Filter_time' and 'Salinity' site-level covariates
+fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family='poisson', p10priors=c(1,20), q=FALSE)
 
 # Calculate mu_critical at the mean covariate values (covariates are standardized, so mean=0)

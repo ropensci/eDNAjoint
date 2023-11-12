@@ -12,32 +12,20 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_catchability_negbin_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_catchability_pois_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_cov_catchability_negbin_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_cov_catchability_pois_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_cov_negbin_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_cov_pois_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_negbin_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4joint_pois_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4traditional_catchability_negbin_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4traditional_catchability_pois_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4traditional_negbin_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4traditional_pois_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4joint_binary_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4joint_binary_catchability_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4joint_binary_cov_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4joint_binary_cov_catchability_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4traditional_binary_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4traditional_binary_catchability_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4joint_catchability_negbin_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_catchability_negbin_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_catchability_pois_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_catchability_pois_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_cov_catchability_negbin_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_cov_catchability_negbin_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_cov_catchability_pois_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_cov_catchability_pois_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_cov_negbin_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_cov_negbin_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_cov_pois_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_cov_pois_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_negbin_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_negbin_mod, 0},
-    {"_rcpp_module_boot_stan_fit4joint_pois_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_pois_mod, 0},
-    {"_rcpp_module_boot_stan_fit4traditional_catchability_negbin_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4traditional_catchability_negbin_mod, 0},
-    {"_rcpp_module_boot_stan_fit4traditional_catchability_pois_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4traditional_catchability_pois_mod, 0},
-    {"_rcpp_module_boot_stan_fit4traditional_negbin_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4traditional_negbin_mod, 0},
-    {"_rcpp_module_boot_stan_fit4traditional_pois_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4traditional_pois_mod, 0},
+    {"_rcpp_module_boot_stan_fit4joint_binary_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_binary_mod, 0},
+    {"_rcpp_module_boot_stan_fit4joint_binary_catchability_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_binary_catchability_mod, 0},
+    {"_rcpp_module_boot_stan_fit4joint_binary_cov_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_binary_cov_mod, 0},
+    {"_rcpp_module_boot_stan_fit4joint_binary_cov_catchability_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4joint_binary_cov_catchability_mod, 0},
+    {"_rcpp_module_boot_stan_fit4traditional_binary_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4traditional_binary_mod, 0},
+    {"_rcpp_module_boot_stan_fit4traditional_binary_catchability_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4traditional_binary_catchability_mod, 0},
     {NULL, NULL, 0}
 };
 

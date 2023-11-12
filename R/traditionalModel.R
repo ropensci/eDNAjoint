@@ -169,7 +169,7 @@ traditionalModel <- function(data, family='poisson',
                              E = count_all$count,
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
-                             include_phi = dplyr::case_when(family=='poisson' ~ 0
+                             include_phi = dplyr::case_when(family=='poisson' ~ 0,
                                                             family=='negbin' ~ 1),
                              control = list(adapt_delta = adapt_delta)
                            ),
@@ -187,7 +187,7 @@ traditionalModel <- function(data, family='poisson',
                               C = nrow(count_all),
                               R = count_all$L,
                               E = count_all$count,
-                              include_phi = dplyr::case_when(family=='poisson' ~ 0
+                              include_phi = dplyr::case_when(family=='poisson' ~ 0,
                                                              family=='negbin' ~ 1),
                               control = list(adapt_delta = adapt_delta,
                                              stepsize = 0.5)

@@ -179,7 +179,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              p10priors = c(mu_ln,sigma_ln),
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
-                             include_phi = dplyr::case_when(family=='poisson' ~ 0
+                             include_phi = dplyr::case_when(family=='poisson' ~ 0,
                                                             family=='negbin' ~ 1),
                              control = list(adapt_delta = adapt_delta)
                            ),
@@ -207,7 +207,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              p10priors = c(mu_ln,sigma_ln),
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat),
-                             include_phi = dplyr::case_when(family=='poisson' ~ 0
+                             include_phi = dplyr::case_when(family=='poisson' ~ 0,
                                                             family=='negbin' ~ 1),
                              control = list(adapt_delta = adapt_delta)
                            ),
@@ -360,7 +360,7 @@ no_catchability_checks <- function(data,cov){
   }
 }
 
-all_checks <- function(data,cov){
+all_checks <- function(data,cov,family,p10priors){
   ## make sure dimensions of qPCR.N and qPCR.K are equal
   if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
     errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")

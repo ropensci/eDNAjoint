@@ -39,7 +39,7 @@ jointModel(
 An object of class \code{stanfit} returned by \code{rstan::sampling}
 }
 \description{
-This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamilton Monte Carlo to simulate the posterior distributions.
+This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 }
 \note{
 Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:
@@ -73,10 +73,10 @@ names(gobyData)
 dim(gobyData$qPCR.N)[1]
 dim(gobyData$count)[1]
 
-# Fit a model including 'Filter_time' and 'Hab_size' site-level covariates
+# Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 # These covariates will scale the sensitivity of eDNA sampling relative to traditional surveys
 # Count data is modeled using a poisson distribution.
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Hab_size'),
+fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family='poisson', p10priors=c(1,20), q=FALSE)
 
 
