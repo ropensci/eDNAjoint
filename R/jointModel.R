@@ -165,8 +165,10 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 
   ##run model, catchability
   if(q==TRUE){
-    out <- rstan::sampling(object = dplyr::case_when(all(cov=='None') ~ stanmodels$joint_binary_catchability,
-                                                     all(cov!='None') ~ stanmodels$joint_binary_cov_catchability),
+    model_index <- dplyr::case_when(all(cov=='None') ~ 1,
+                              all(cov!='None') ~ 2)
+    out <- rstan::sampling(c(stanmodels$joint_binary_catchability,
+                             stanmodels$joint_binary_cov_catchability)[model_index][[1]],
                            data = list(
                              S = nrow(qPCR_all),
                              L = qPCR_all$L,
@@ -193,8 +195,10 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            )
   } else if(q==FALSE){
     ##run model, no catchability
-    out <- rstan::sampling(object = dplyr::case_when(all(cov=='None') ~ stanmodels$joint_binary,
-                                                     all(cov!='None') ~ stanmodels$joint_binary_cov),
+    model_index <- dplyr::case_when(all(cov=='None') ~ 1,
+                                    all(cov!='None') ~ 2)
+    out <- rstan::sampling(c(stanmodels$joint_binary,
+                             stanmodels$joint_binary_cov)[model_index][[1]],
                            data = list(
                              S = nrow(qPCR_all),
                              L = qPCR_all$L,
