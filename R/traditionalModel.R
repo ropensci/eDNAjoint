@@ -6,9 +6,11 @@
 #' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA. Sites, i, should be consistent in all count data.
 #' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
+#' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
+#' @param thin A positive integer specifying the period for saving samples. Default value is 1.
 #' @param adapt_delta Target average acceptance probability used in `rstan::sampling`. Default value is 0.9.
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
@@ -50,9 +52,9 @@
 #'
 
 traditionalModel <- function(data, family='poisson',
-                             q=FALSE,
+                             q=FALSE,phipriors=c(0.25,0.25),
                              n.chain=4, n.iter.burn=500,
-                             n.iter.sample=2500,
+                             n.iter.sample=2500,thin=1,
                              adapt_delta=0.9) {
 
   ## #1. make sure all data tags are valid -- if q == TRUE
@@ -159,9 +161,9 @@ traditionalModel <- function(data, family='poisson',
 
 }
 
-  ##run model, catchability
-  if(q==TRUE){
-    out <- rstan::sampling(stanmodels$traditional_binary_catchability,
+  ##run model, catchability, pois
+  if(q==TRUE&&family=='poisson'){
+    out <- rstan::sampling(stanmodels$traditional_catchability_pois,
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),
@@ -169,36 +171,68 @@ traditionalModel <- function(data, family='poisson',
                              E = count_all$count,
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
-                             include_phi = dplyr::case_when(family=='poisson' ~ 0,
-                                                            family=='negbin' ~ 1),
                              control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
-                           thin = 1,
+                           thin = thin,
                            warmup = n.iter.burn,
                            iter = n.iter.burn + n.iter.sample,
                            init = init_trad_catchability(n.chain, count_all, q_names)
-                           )
-   } else if(q==FALSE){
-     ##run model
-     out <- rstan::sampling(stanmodels$traditional_binary,
-                            data = list(
-                              Nloc = length(unique(count_all$L)),
-                              C = nrow(count_all),
-                              R = count_all$L,
-                              E = count_all$count,
-                              include_phi = dplyr::case_when(family=='poisson' ~ 0,
-                                                             family=='negbin' ~ 1),
-                              control = list(adapt_delta = adapt_delta,
-                                             stepsize = 0.5)
-                            ),
-                            chains = n.chain,
-                            thin = 1,
-                            warmup = n.iter.burn,
-                            iter = n.iter.burn + n.iter.sample,
-                            init = init_trad(n.chain, count_all)
-     )
-   }
+    )
+  } else if(q==TRUE&&family=='negbin'){
+    ##run model, catchability, negbin
+    out <- rstan::sampling(stanmodels$traditional_catchability_negbin,
+                           data = list(
+                             Nloc = length(unique(count_all$L)),
+                             C = nrow(count_all),
+                             R = count_all$L,
+                             E = count_all$count,
+                             nparams = length(q_names),
+                             mat = as.matrix(count_all[,q_names]),
+                             phipriors = phipriors,
+                             control = list(adapt_delta = adapt_delta)
+                           ),
+                           chains = n.chain,
+                           thin = thin,
+                           warmup = n.iter.burn,
+                           iter = n.iter.burn + n.iter.sample,
+                           init = init_trad_catchability(n.chain, count_all, q_names)
+    )
+  } else if(q==FALSE&&family=='poisson'){
+    ##run model, no catchability, pois
+    out <- rstan::sampling(stanmodels$traditional_pois,
+                           data = list(
+                             Nloc = length(unique(count_all$L)),
+                             C = nrow(count_all),
+                             R = count_all$L,
+                             E = count_all$count,
+                             control = list(adapt_delta = adapt_delta,
+                                            stepsize = 0.5)
+                           ),
+                           chains = n.chain,
+                           thin = thin,
+                           warmup = n.iter.burn,
+                           iter = n.iter.burn + n.iter.sample,
+                           init = init_trad(n.chain, count_all)
+    )
+  } else if(q==FALSE&&family=='negbin'){
+    ##run model, no catchability, negbin
+    out <- rstan::sampling(stanmodels$traditional_negbin,
+                           data = list(
+                             Nloc = length(unique(count_all$L)),
+                             C = nrow(count_all),
+                             R = count_all$L,
+                             E = count_all$count,
+                             phipriors = phipriors,
+                             control = list(adapt_delta = adapt_delta)
+                           ),
+                           chains = n.chain,
+                           thin = thin,
+                           warmup = n.iter.burn,
+                           iter = n.iter.burn + n.iter.sample,
+                           init = init_trad(n.chain, count_all)
+    )
+  }
 
   return(out)
 }

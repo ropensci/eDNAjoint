@@ -8,9 +8,11 @@ traditionalModel(
   data,
   family = "poisson",
   q = FALSE,
+  phipriors = c(0.25, 0.25),
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
+  thin = 1,
   adapt_delta = 0.9
 )
 }
@@ -21,11 +23,15 @@ traditionalModel(
 
 \item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
 
+\item{phipriors}{A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
 \item{n.iter.burn}{Number of warm-up MCMC iterations. Default value is 500.}
 
 \item{n.iter.sample}{Number of sampling MCMC iterations. Default value is 2500.}
+
+\item{thin}{A positive integer specifying the period for saving samples. Default value is 1.}
 
 \item{adapt_delta}{Target average acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
 }
