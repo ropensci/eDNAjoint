@@ -5,7 +5,7 @@
 #' @export
 #' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.
 #' @param cov A character vector indicating the site-level covariates to include in the model. Default value is 'None'.
-#' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.
+#' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.
 #' @param p10priors A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
 #' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
@@ -165,23 +165,31 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   sigma_2_ln <- log(1+sigma_2/mu^2)
   sigma_ln <- sqrt(sigma_2_ln)
 
+  # create data that will be present in all model variations
+  data <- list(
+    S = nrow(qPCR_all),
+    L = qPCR_all$L,
+    Nloc = length(unique(qPCR_all$L)),
+    N = qPCR_all$N,
+    K = qPCR_all$K,
+    C = nrow(count_all),
+    R = count_all$L,
+    E = count_all$count,
+    p10priors = c(mu_ln,sigma_ln),
+    control = list(adapt_delta = adapt_delta)
+    )
 
-  ##run model, catchability, pois, no covariates
-  if(q==TRUE&&family=='poisson'&&all(cov=='None')){
-    out <- rstan::sampling(stanmodels$joint_binary_catchability_pois,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
+
+  ##run model, catchability, pois/gamma, no covariates
+  if(q==TRUE&&family!='negbin'&&all(cov=='None')){
+    model_index <- dplyr::case_when(family=='poisson'~ 1,
+                                    family=='gamma' ~ 2)
+    out <- rstan::sampling(c(stanmodels$joint_binary_catchability_pois,
+                             stanmodels$joint_binary_catchability_gamma)[model_index][[1]],
+                           data = rlist::list.append(
+                             data,
                              nparams = length(q_names),
-                             mat = as.matrix(count_all[,q_names]),
-                             control = list(adapt_delta = adapt_delta)
+                             mat = as.matrix(count_all[,q_names])
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -192,20 +200,11 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   } else if(q==TRUE&&family=='negbin'&&all(cov=='None')){
     ##run model, catchability, negbin, no covariates
     out <- rstan::sampling(stanmodels$joint_binary_catchability_negbin,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
+                           data = rlist::list.append(
+                             data,
                              phipriors = phipriors,
                              nparams = length(q_names),
-                             mat = as.matrix(count_all[,q_names]),
-                             control = list(adapt_delta = adapt_delta)
+                             mat = as.matrix(count_all[,q_names])
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -213,21 +212,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            iter = n.iter.burn + n.iter.sample,
                            init = init_joint_catchability(n.chain,count_all,q_names)
     )
-  } else if(q==FALSE&&family=='poisson'&&all(cov=='None')){
-    ##run model, no catchability, pois, no covariates
-    out <- rstan::sampling(stanmodels$joint_binary_pois,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
-                             control = list(adapt_delta = adapt_delta)
-                           ),
+  } else if(q==FALSE&&family!='negbin'&&all(cov=='None')){
+    ##run model, no catchability, pois/gamma, no covariates
+      model_index <- dplyr::case_when(family=='poisson'~ 1,
+                                      family=='gamma' ~ 2)
+      out <- rstan::sampling(c(stanmodels$joint_binary_pois,
+                               stanmodels$joint_binary_gamma)[model_index][[1]],
+                           data = data,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -237,18 +228,9 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   } else if(q==FALSE&&family=='negbin'&&all(cov=='None')){
     ##run model, no catchability, negbin, no covariates
     out <- rstan::sampling(stanmodels$joint_binary_negbin,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
-                             phipriors = phipriors,
-                             control = list(adapt_delta = adapt_delta)
+                           data = rlist::list.append(
+                             data,
+                             phipriors = phipriors
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -259,22 +241,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   } else if(q==TRUE&&family=='negbin'&&all(cov!='None')){
     ##run model, catchability, negbin, covariates
     out <- rstan::sampling(stanmodels$joint_binary_cov_catchability_negbin,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
+                           data = rlist::list.append(
+                             data,
                              phipriors = phipriors,
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat),
-                             control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -282,24 +255,18 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            iter = n.iter.burn + n.iter.sample,
                            init = init_joint_cov_catchability(n.chain,count_all,q_names,cov)
     )
-  } else if(q==TRUE&&family=='poisson'&&all(cov!='None')){
-    ##run model, catchability, pois, covariates
-    out <- rstan::sampling(stanmodels$joint_binary_cov_catchability_pois,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
+  } else if(q==TRUE&&family!='negbin'&&all(cov!='None')){
+    ##run model, catchability, pois/gamma, covariates
+    model_index <- dplyr::case_when(family=='poisson'~ 1,
+                                    family=='gamma' ~ 2)
+    out <- rstan::sampling(c(stanmodels$joint_binary_cov_catchability_pois,
+                             stanmodels$joint_binary_cov_catchability_gamma)[model_index][[1]],
+                           data = rlist::list.append(
+                             data,
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat),
-                             control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -310,20 +277,11 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   } else if(q==FALSE&&family=='negbin'&&all(cov!='None')){
     ##run model, no catchability, negbin, covariates
     out <- rstan::sampling(stanmodels$joint_binary_cov_negbin,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
+                           data = rlist::list.append(
+                             data,
                              phipriors = phipriors,
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat),
-                             control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -331,22 +289,16 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            iter = n.iter.burn + n.iter.sample,
                            init = init_joint_cov(n.chain,count_all,cov)
     )
-  } else if(q==FALSE&&family=='poisson'&&all(cov!='None')){
-    ##run model, no catchability, pois, covariates
-    out <- rstan::sampling(stanmodels$joint_binary_cov_pois,
-                           data = list(
-                             S = nrow(qPCR_all),
-                             L = qPCR_all$L,
-                             Nloc = length(unique(qPCR_all$L)),
-                             N = qPCR_all$N,
-                             K = qPCR_all$K,
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             p10priors = c(mu_ln,sigma_ln),
+  } else if(q==FALSE&&family!='negbin'&&all(cov!='None')){
+    ##run model, no catchability, pois/gamma, covariates
+    model_index <- dplyr::case_when(family=='poisson'~ 1,
+                                    family=='gamma' ~ 2)
+    out <- rstan::sampling(c(stanmodels$joint_binary_cov_pois,
+                             stanmodels$joint_binary_cov_gamma)[model_index][[1]],
+                           data = rlist::list.append(
+                             data,
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat),
-                             control = list(adapt_delta = adapt_delta)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -449,7 +401,7 @@ catchability_checks <- function(data,cov){
        is.numeric(data$qPCR.N)==FALSE |
        is.numeric(data$count)==FALSE |
        is.numeric(data$count.type)==FALSE) {
-      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
+      errMsg = paste("Data should be numeric.")
       stop(errMsg)
   }
   ## make sure locations of NAs in count data match locations of NAs in count.type data
@@ -514,9 +466,9 @@ all_checks <- function(data,cov,family,p10priors){
     stop(errMsg)
   }
 
-  ## make sure family is either 'poisson' or 'negbin'
-  if(!c(family %in% c('poisson','negbin'))){
-    errMsg = paste("Invalid family. Options include 'poisson' and 'negbin'.")
+  ## make sure family is either 'poisson', 'negbin', or 'gamma'
+  if(!c(family %in% c('poisson','negbin','gamma'))){
+    errMsg = paste("Invalid family. Options include 'poisson', 'negbin', and 'gamma'.")
     stop(errMsg)
   }
 
@@ -527,9 +479,9 @@ all_checks <- function(data,cov,family,p10priors){
   }
 
 
-  ## count are integers
-  if(!all(data$count %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in count should be integers.")
+  ## count are integers, if family is poisson or negbin
+  if(!all(data$count %% 1 %in% c(0,NA)) && family %in% c('poisson','negbin')){
+    errMsg = paste("All values in count should be integers. Use family = 'gamma' if count is continuous.")
     stop(errMsg)
   }
 
