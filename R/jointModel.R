@@ -23,7 +23,7 @@
 #' \item  Number of sites in qPCR and count data are equal.
 #' \item  All data are numeric (i.e., integer or NA).
 #' \item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
-#' \item  family is either 'poisson' or 'negbin'.
+#' \item  family is either 'poisson', 'negbin', or 'gamma'.
 #' \item  p10priors is a vector of two numeric values.
 #' \item  q_ref is an integer >= 0.
 #' \item  site.cov has same number of rows as qPCR.N and count, if present

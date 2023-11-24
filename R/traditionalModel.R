@@ -4,7 +4,7 @@
 #'
 #' @export
 #' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA. Sites, i, should be consistent in all count data.
-#' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.
+#' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
 #' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
 #' @param n.chain Number of MCMC chains. Default value is 4.
@@ -20,7 +20,7 @@
 #' \item  Number of sites in count and count type data are equal.
 #' \item  All data are numeric (i.e., integer or NA).
 #' \item  Empty data cells (NA) match in count and count.type.
-#' \item  family is either 'poisson' or 'negbin'.
+#' \item  family is 'poisson', 'negbin', or 'gamma'.
 #' \item  q_ref is an integer >= 0.
 #' }
 #'
@@ -114,9 +114,9 @@ traditionalModel <- function(data, family='poisson',
     stop(errMsg)
   }
 
-  ## #9. count are integers
-  if(!all(data$count %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in count should be integers.")
+  ## #9. count are integers, if family is poisson or negbin
+  if(!all(data$count %% 1 %in% c(0,NA)) && family %in% c('poisson','negbin')){
+    errMsg = paste("All values in count should be integers. Use family = 'gamma' if count is continuous.")
     stop(errMsg)
   }
 
@@ -161,9 +161,12 @@ traditionalModel <- function(data, family='poisson',
 
 }
 
-  ##run model, catchability, pois
-  if(q==TRUE&&family=='poisson'){
-    out <- rstan::sampling(stanmodels$traditional_catchability_pois,
+  ##run model, catchability, pois/gamma
+  if(q==TRUE&&family!='negbin'){
+    model_index <- dplyr::case_when(family=='poisson'~ 1,
+                                    family=='gamma' ~ 2)
+    out <- rstan::sampling(c(stanmodels$traditional_catchability_pois,
+                             stanmodels$traditional_catchability_gamma)[model_index][[1]],
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),
@@ -198,9 +201,12 @@ traditionalModel <- function(data, family='poisson',
                            iter = n.iter.burn + n.iter.sample,
                            init = init_trad_catchability(n.chain, count_all, q_names)
     )
-  } else if(q==FALSE&&family=='poisson'){
-    ##run model, no catchability, pois
-    out <- rstan::sampling(stanmodels$traditional_pois,
+  } else if(q==FALSE&&family!='negbin'){
+    ##run model, no catchability, pois/gamma
+    model_index <- dplyr::case_when(family=='poisson'~ 1,
+                                    family=='gamma' ~ 2)
+    out <- rstan::sampling(c(stanmodels$traditional_pois,
+                             stanmodels$traditional_gamma)[model_index][[1]],
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),

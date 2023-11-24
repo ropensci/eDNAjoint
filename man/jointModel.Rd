@@ -23,7 +23,7 @@ jointModel(
 
 \item{cov}{A character vector indicating the site-level covariates to include in the model. Default value is 'None'.}
 
-\item{family}{The distribution class used to model traditional survey count data. Options include poisson ('poisson') and negative binomial ('negbin'). Default value is 'poisson'.}
+\item{family}{The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.}
 
 \item{p10priors}{A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).}
 
@@ -55,7 +55,7 @@ Before fitting the model, this function checks to ensure that the model specific
 \item  Number of sites in qPCR and count data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
-\item  family is either 'poisson' or 'negbin'.
+\item  family is either 'poisson', 'negbin', or 'gamma'.
 \item  p10priors is a vector of two numeric values.
 \item  q_ref is an integer >= 0.
 \item  site.cov has same number of rows as qPCR.N and count, if present
