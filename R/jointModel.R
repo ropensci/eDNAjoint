@@ -82,9 +82,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   ####
   # input checks
 
-  # all models
-  all_checks(data,cov,family,p10priors)
-
   # model with catchability coefficients
   if (q==TRUE) {
     catchability_checks(data,cov)
@@ -99,6 +96,9 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   if (all(cov!='None')) {
     covariate_checks(data,cov)
   }
+
+  # all models
+  all_checks(data,cov,family,p10priors)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
@@ -247,7 +247,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
                              nsitecov = length(cov)+1,
-                             mat_site = as.matrix(site_mat),
+                             mat_site = as.matrix(site_mat)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -266,7 +266,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names]),
                              nsitecov = length(cov)+1,
-                             mat_site = as.matrix(site_mat),
+                             mat_site = as.matrix(site_mat)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -281,7 +281,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              data,
                              phipriors = phipriors,
                              nsitecov = length(cov)+1,
-                             mat_site = as.matrix(site_mat),
+                             mat_site = as.matrix(site_mat)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -298,7 +298,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            data = rlist::list.append(
                              data,
                              nsitecov = length(cov)+1,
-                             mat_site = as.matrix(site_mat),
+                             mat_site = as.matrix(site_mat)
                            ),
                            chains = n.chain,
                            thin = thin,
@@ -443,7 +443,7 @@ no_catchability_checks <- function(data,cov){
   if(is.numeric(data$qPCR.K)==FALSE |
        is.numeric(data$qPCR.N)==FALSE |
        is.numeric(data$count)==FALSE ) {
-      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
+      errMsg = paste("Data should be numeric.")
       stop(errMsg)
   }
 }

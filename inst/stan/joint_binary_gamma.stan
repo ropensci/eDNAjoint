@@ -13,7 +13,7 @@ data{/////////////////////////////////////////////////////////////////////
 
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> alpha_gamma;  // alpha param for gamma distribution
-    array[Nloc] real <lower=0> beta_gamma;  // beta param for gamma distribution
+    array[Nloc] real <lower=0.01> beta_gamma;  // beta param for gamma distribution
     real<lower=0> beta; // scaling coefficient in saturation function
     real<upper=0> log_p10;  // p10, false-positive rate.
 }
@@ -53,7 +53,7 @@ model{/////////////////////////////////////////////////////////////////////
   log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
   beta ~ normal(0,10); // beta shrinkage priors
   beta_gamma ~ gamma(0.25,0.25);
-  alpha_gamma ~ gamma(0.25,0.25);
+  alpha_gamma ~ gamma(0.01,0.01);
 
 }
 

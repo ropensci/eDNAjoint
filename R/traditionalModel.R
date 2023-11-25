@@ -81,7 +81,7 @@ traditionalModel <- function(data, family='poisson',
   if (q==TRUE) {
     if(is.numeric(data$count)==FALSE |
        is.numeric(data$count.type)==FALSE) {
-      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
+      errMsg = paste("Data should be numeric.")
       stop(errMsg)
     }
   }
@@ -89,7 +89,7 @@ traditionalModel <- function(data, family='poisson',
   ## #5. make sure all data is numeric -- if q == FALSE
   if (q==FALSE) {
     if(is.numeric(data$count)==FALSE ) {
-      errMsg = paste("Data should be numeric (i.e. contain integers or NA).")
+      errMsg = paste("Data should be numeric.")
       stop(errMsg)
     }
   }
@@ -102,9 +102,9 @@ traditionalModel <- function(data, family='poisson',
     }
   }
 
-  ## #7. make sure family is either 'poisson' or 'negbin'
-  if(!c(family %in% c('poisson','negbin'))){
-    errMsg = paste("Invalid family. Options include 'poisson' and 'negbin'.")
+  ## #7. make sure family is either 'poisson', 'negbin', or 'gamma'
+  if(!c(family %in% c('poisson','negbin','gamma'))){
+    errMsg = paste("Invalid family. Options include 'poisson', 'negbin', or 'gamma'.")
     stop(errMsg)
   }
 

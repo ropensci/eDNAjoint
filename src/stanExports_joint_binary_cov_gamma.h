@@ -76,7 +76,7 @@ stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
                                                       " (in 'joint_binary_cov_gamma', line 15, column 4 to column 42)",
-                                                      " (in 'joint_binary_cov_gamma', line 16, column 4 to column 42)",
+                                                      " (in 'joint_binary_cov_gamma', line 16, column 4 to column 45)",
                                                       " (in 'joint_binary_cov_gamma', line 17, column 4 to column 26)",
                                                       " (in 'joint_binary_cov_gamma', line 18, column 4 to column 27)",
                                                       " (in 'joint_binary_cov_gamma', line 21, column 2 to column 43)",
@@ -427,12 +427,12 @@ public:
         if (jacobian__) {
           current_statement__ = 2;
           assign(beta_gamma, cons_list(index_uni(sym1__), nil_index_list()),
-            stan::math::lb_constrain(beta_gamma[(sym1__ - 1)], 0, lp__),
+            stan::math::lb_constrain(beta_gamma[(sym1__ - 1)], 0.01, lp__),
             "assigning variable beta_gamma");
         } else {
           current_statement__ = 2;
           assign(beta_gamma, cons_list(index_uni(sym1__), nil_index_list()),
-            stan::math::lb_constrain(beta_gamma[(sym1__ - 1)], 0),
+            stan::math::lb_constrain(beta_gamma[(sym1__ - 1)], 0.01),
             "assigning variable beta_gamma");
         }}
       local_scalar_t__ log_p10;
@@ -545,7 +545,7 @@ public:
         current_statement__ = 38;
         lp_accum__.add(gamma_lpdf<propto__>(beta_gamma, 0.25, 0.25));
         current_statement__ = 39;
-        lp_accum__.add(gamma_lpdf<propto__>(alpha_gamma, 0.25, 0.25));
+        lp_accum__.add(gamma_lpdf<propto__>(alpha_gamma, 0.01, 0.01));
       }
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -601,7 +601,7 @@ public:
       for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
         current_statement__ = 2;
         assign(beta_gamma, cons_list(index_uni(sym1__), nil_index_list()),
-          stan::math::lb_constrain(beta_gamma[(sym1__ - 1)], 0),
+          stan::math::lb_constrain(beta_gamma[(sym1__ - 1)], 0.01),
           "assigning variable beta_gamma");}
       double log_p10;
       log_p10 = std::numeric_limits<double>::quiet_NaN();
@@ -796,7 +796,7 @@ public:
         current_statement__ = 2;
         assign(beta_gamma_free__,
           cons_list(index_uni(sym1__), nil_index_list()),
-          stan::math::lb_free(beta_gamma[(sym1__ - 1)], 0),
+          stan::math::lb_free(beta_gamma[(sym1__ - 1)], 0.01),
           "assigning variable beta_gamma_free__");}
       double log_p10;
       log_p10 = std::numeric_limits<double>::quiet_NaN();

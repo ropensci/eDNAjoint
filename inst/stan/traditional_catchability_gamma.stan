@@ -10,7 +10,7 @@ data{/////////////////////////////////////////////////////////////////////
 
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> alpha;  // alpha param for gamma distribution
-    array[Nloc] real <lower=0> beta;  // beta param for gamma distribution
+    array[Nloc] real <lower=0.01> beta;  // beta param for gamma distribution
     vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
     }
 
@@ -36,7 +36,7 @@ model{/////////////////////////////////////////////////////////////////////
     }
 
     beta ~ gamma(0.25,0.25);
-    alpha ~ gamma(0.25,0.25);
+    alpha ~ gamma(0.01,0.01);
 
 }
 

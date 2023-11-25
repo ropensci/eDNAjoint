@@ -76,7 +76,7 @@ stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
                                                       " (in 'traditional_gamma', line 8, column 4 to column 36)",
-                                                      " (in 'traditional_gamma', line 9, column 4 to column 36)",
+                                                      " (in 'traditional_gamma', line 9, column 4 to column 38)",
                                                       " (in 'traditional_gamma', line 12, column 4 to column 35)",
                                                       " (in 'traditional_gamma', line 14, column 6 to column 42)",
                                                       " (in 'traditional_gamma', line 13, column 17 to line 15, column 5)",
@@ -92,8 +92,8 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'traditional_gamma', line 19, column 6 to column 49)",
                                                       " (in 'traditional_gamma', line 18, column 17 to line 20, column 5)",
                                                       " (in 'traditional_gamma', line 18, column 4 to line 20, column 5)",
-                                                      " (in 'traditional_gamma', line 21, column 4 to column 28)",
-                                                      " (in 'traditional_gamma', line 22, column 4 to column 29)",
+                                                      " (in 'traditional_gamma', line 21, column 3 to column 27)",
+                                                      " (in 'traditional_gamma', line 22, column 3 to column 28)",
                                                       " (in 'traditional_gamma', line 2, column 4 to column 19)",
                                                       " (in 'traditional_gamma', line 3, column 10 to column 11)",
                                                       " (in 'traditional_gamma', line 3, column 4 to column 28)",
@@ -266,12 +266,12 @@ public:
         if (jacobian__) {
           current_statement__ = 2;
           assign(beta, cons_list(index_uni(sym1__), nil_index_list()),
-            stan::math::lb_constrain(beta[(sym1__ - 1)], 0, lp__),
+            stan::math::lb_constrain(beta[(sym1__ - 1)], 0.01, lp__),
             "assigning variable beta");
         } else {
           current_statement__ = 2;
           assign(beta, cons_list(index_uni(sym1__), nil_index_list()),
-            stan::math::lb_constrain(beta[(sym1__ - 1)], 0),
+            stan::math::lb_constrain(beta[(sym1__ - 1)], 0.01),
             "assigning variable beta");
         }}
       std::vector<local_scalar_t__> E_trans;
@@ -298,7 +298,7 @@ public:
         current_statement__ = 18;
         lp_accum__.add(gamma_lpdf<propto__>(beta, 0.25, 0.25));
         current_statement__ = 19;
-        lp_accum__.add(gamma_lpdf<propto__>(alpha, 0.25, 0.25));
+        lp_accum__.add(gamma_lpdf<propto__>(alpha, 0.01, 0.01));
       }
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -354,7 +354,7 @@ public:
       for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
         current_statement__ = 2;
         assign(beta, cons_list(index_uni(sym1__), nil_index_list()),
-          stan::math::lb_constrain(beta[(sym1__ - 1)], 0),
+          stan::math::lb_constrain(beta[(sym1__ - 1)], 0.01),
           "assigning variable beta");}
       std::vector<double> E_trans;
       E_trans = std::vector<double>(C, std::numeric_limits<double>::quiet_NaN());
@@ -456,7 +456,7 @@ public:
       for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
         current_statement__ = 2;
         assign(beta_free__, cons_list(index_uni(sym1__), nil_index_list()),
-          stan::math::lb_free(beta[(sym1__ - 1)], 0),
+          stan::math::lb_free(beta[(sym1__ - 1)], 0.01),
           "assigning variable beta_free__");}
       for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
         vars__.emplace_back(alpha_free__[(sym1__ - 1)]);}

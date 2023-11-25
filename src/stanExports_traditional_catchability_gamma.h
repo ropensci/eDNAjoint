@@ -76,7 +76,7 @@ stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
                                                       " (in 'traditional_catchability_gamma', line 10, column 4 to column 36)",
-                                                      " (in 'traditional_catchability_gamma', line 11, column 4 to column 36)",
+                                                      " (in 'traditional_catchability_gamma', line 11, column 4 to column 39)",
                                                       " (in 'traditional_catchability_gamma', line 12, column 4 to column 44)",
                                                       " (in 'traditional_catchability_gamma', line 15, column 4 to column 28)",
                                                       " (in 'traditional_catchability_gamma', line 16, column 4 to column 35)",
@@ -340,12 +340,12 @@ public:
         if (jacobian__) {
           current_statement__ = 2;
           assign(beta, cons_list(index_uni(sym1__), nil_index_list()),
-            stan::math::lb_constrain(beta[(sym1__ - 1)], 0, lp__),
+            stan::math::lb_constrain(beta[(sym1__ - 1)], 0.01, lp__),
             "assigning variable beta");
         } else {
           current_statement__ = 2;
           assign(beta, cons_list(index_uni(sym1__), nil_index_list()),
-            stan::math::lb_constrain(beta[(sym1__ - 1)], 0),
+            stan::math::lb_constrain(beta[(sym1__ - 1)], 0.01),
             "assigning variable beta");
         }}
       Eigen::Matrix<local_scalar_t__, -1, 1> q_trans;
@@ -411,7 +411,7 @@ public:
         current_statement__ = 28;
         lp_accum__.add(gamma_lpdf<propto__>(beta, 0.25, 0.25));
         current_statement__ = 29;
-        lp_accum__.add(gamma_lpdf<propto__>(alpha, 0.25, 0.25));
+        lp_accum__.add(gamma_lpdf<propto__>(alpha, 0.01, 0.01));
       }
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -467,7 +467,7 @@ public:
       for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
         current_statement__ = 2;
         assign(beta, cons_list(index_uni(sym1__), nil_index_list()),
-          stan::math::lb_constrain(beta[(sym1__ - 1)], 0),
+          stan::math::lb_constrain(beta[(sym1__ - 1)], 0.01),
           "assigning variable beta");}
       Eigen::Matrix<double, -1, 1> q_trans;
       q_trans = Eigen::Matrix<double, -1, 1>(nparams);
@@ -630,7 +630,7 @@ public:
       for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
         current_statement__ = 2;
         assign(beta_free__, cons_list(index_uni(sym1__), nil_index_list()),
-          stan::math::lb_free(beta[(sym1__ - 1)], 0),
+          stan::math::lb_free(beta[(sym1__ - 1)], 0.01),
           "assigning variable beta_free__");}
       Eigen::Matrix<double, -1, 1> q_trans;
       q_trans = Eigen::Matrix<double, -1, 1>(nparams);

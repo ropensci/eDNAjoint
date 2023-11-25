@@ -17,7 +17,7 @@ data{/////////////////////////////////////////////////////////////////////
 
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> alpha_gamma;  // alpha param for gamma distribution
-    array[Nloc] real <lower=0> beta_gamma;  // beta param for gamma distribution
+    array[Nloc] real <lower=0.01> beta_gamma;  // beta param for gamma distribution
     real<upper=0> log_p10;  // p10, false-positive rate.
     vector[nsitecov] alpha; // site-level beta covariates
     vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
@@ -61,7 +61,7 @@ model{/////////////////////////////////////////////////////////////////////
   log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
   alpha ~ normal(0,10); // sitecov shrinkage priors
   beta_gamma ~ gamma(0.25,0.25);
-  alpha_gamma ~ gamma(0.25,0.25);
+  alpha_gamma ~ gamma(0.01,0.01);
 
 }
 

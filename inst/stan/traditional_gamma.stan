@@ -8,7 +8,7 @@ data{/////////////////////////////////////////////////////////////////////
 
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> alpha;  // alpha param for gamma distribution
-    array[Nloc] real <lower=0> beta;  // beta param for gamma distribution
+    array[Nloc] real<lower=0.01> beta;  // beta param for gamma distribution
     }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
@@ -28,8 +28,8 @@ model{/////////////////////////////////////////////////////////////////////
       E_trans[j] ~ gamma(alpha[R[j]],beta[R[j]]); // Eq. 1.1
     }
 
-    beta ~ gamma(0.25,0.25);
-    alpha ~ gamma(0.25,0.25);
+   beta ~ gamma(0.25,0.25);
+   alpha ~ gamma(0.01,0.01);
 
 }
 
