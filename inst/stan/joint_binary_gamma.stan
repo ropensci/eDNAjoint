@@ -4,7 +4,7 @@ data{/////////////////////////////////////////////////////////////////////
     array[S] int<lower=1> L;   // index of locations for qPCR samples
     array[C] int<lower=1> R;   // index of locations for traditional samples
     int<lower=1> Nloc;   // number of locations
-    array[C] int<lower=0> E;   // number of animals in sample C
+    array[C] real<lower=0> E;   // number of animals in sample C
     array[S] int<lower=1> N;   // number of qPCR replicates per site
     array[S] int<lower=0> K; // number of qPCR detections among these replicates
     array[2] real p10priors; // priors for normal distrib on p10

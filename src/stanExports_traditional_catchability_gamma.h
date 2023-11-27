@@ -109,7 +109,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'traditional_catchability_gamma', line 3, column 4 to column 28)",
                                                       " (in 'traditional_catchability_gamma', line 4, column 4 to column 22)",
                                                       " (in 'traditional_catchability_gamma', line 5, column 10 to column 11)",
-                                                      " (in 'traditional_catchability_gamma', line 5, column 4 to column 28)",
+                                                      " (in 'traditional_catchability_gamma', line 5, column 4 to column 29)",
                                                       " (in 'traditional_catchability_gamma', line 6, column 4 to column 25)",
                                                       " (in 'traditional_catchability_gamma', line 7, column 11 to column 12)",
                                                       " (in 'traditional_catchability_gamma', line 7, column 13 to column 20)",
@@ -129,7 +129,7 @@ private:
   int C;
   std::vector<int> R;
   int Nloc;
-  std::vector<int> E;
+  std::vector<double> E;
   int nparams;
   Eigen::Matrix<double, -1, -1> mat;
   int mu_2dim__;
@@ -198,12 +198,12 @@ public:
       current_statement__ = 34;
       validate_non_negative_index("E", "C", C);
       current_statement__ = 35;
-      context__.validate_dims("data initialization","E","int",
+      context__.validate_dims("data initialization","E","double",
           context__.to_vec(C));
-      E = std::vector<int>(C, std::numeric_limits<int>::min());
+      E = std::vector<double>(C, std::numeric_limits<double>::quiet_NaN());
       
       current_statement__ = 35;
-      assign(E, nil_index_list(), context__.vals_i("E"),
+      assign(E, nil_index_list(), context__.vals_r("E"),
         "assigning variable E");
       current_statement__ = 35;
       for (int sym1__ = 1; sym1__ <= C; ++sym1__) {

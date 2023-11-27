@@ -2,7 +2,7 @@ data{/////////////////////////////////////////////////////////////////////
     int<lower=1> C;    // number of trap samples
     array[C] int<lower=1> R;   // index of locations for traditional samples
     int<lower=1> Nloc;   // total number of locations
-    array[C] int<lower=0> E;   // number of animals in sample C
+    array[C] real<lower=0> E;   // number of animals in sample C
     int<lower=0> nparams;  // number of gear types
     matrix[C,nparams] mat;  // matrix of gear type integers
 

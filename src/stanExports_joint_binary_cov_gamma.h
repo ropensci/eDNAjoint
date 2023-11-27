@@ -122,7 +122,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'joint_binary_cov_gamma', line 5, column 4 to column 28)",
                                                       " (in 'joint_binary_cov_gamma', line 6, column 4 to column 22)",
                                                       " (in 'joint_binary_cov_gamma', line 7, column 10 to column 11)",
-                                                      " (in 'joint_binary_cov_gamma', line 7, column 4 to column 28)",
+                                                      " (in 'joint_binary_cov_gamma', line 7, column 4 to column 29)",
                                                       " (in 'joint_binary_cov_gamma', line 8, column 10 to column 11)",
                                                       " (in 'joint_binary_cov_gamma', line 8, column 4 to column 28)",
                                                       " (in 'joint_binary_cov_gamma', line 9, column 10 to column 11)",
@@ -149,7 +149,7 @@ private:
   std::vector<int> L;
   std::vector<int> R;
   int Nloc;
-  std::vector<int> E;
+  std::vector<double> E;
   std::vector<int> N;
   std::vector<int> K;
   std::vector<double> p10priors;
@@ -246,12 +246,12 @@ public:
       current_statement__ = 47;
       validate_non_negative_index("E", "C", C);
       current_statement__ = 48;
-      context__.validate_dims("data initialization","E","int",
+      context__.validate_dims("data initialization","E","double",
           context__.to_vec(C));
-      E = std::vector<int>(C, std::numeric_limits<int>::min());
+      E = std::vector<double>(C, std::numeric_limits<double>::quiet_NaN());
       
       current_statement__ = 48;
-      assign(E, nil_index_list(), context__.vals_i("E"),
+      assign(E, nil_index_list(), context__.vals_r("E"),
         "assigning variable E");
       current_statement__ = 48;
       for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
