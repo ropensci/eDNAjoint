@@ -37,25 +37,9 @@
 
 jointSelect <- function(modelfits) {
 
-  ## #1. make sure input is a list
-  if (!is(modelfits,'list')){
-      errMsg = paste("modelfits must be a list.")
-      stop(errMsg)
-    }
+  # input checks
+  jointSelect_input_checks(modelfits)
 
-  ## #2. make sure all data objects are of class stanfit
-  test <- function(modelfit){is(modelfit,'stanfit')}
-  if (!all(lapply(modelfits,test)==TRUE)) {
-      errMsg = paste("Model fits in modelfits input must be of class 'stanfit'.")
-      stop(errMsg)
-  }
-
-  ## #3. make sure all models are of the same type
-  type <- function(modelfit){'p10'%in%modelfit@model_pars}
-  if (length(unique(lapply(modelfits,type)))!=1){
-    errMsg = paste("All modelfits must be fit with either jointModel() or all with traditionalModel().")
-    stop(errMsg)
-  }
 
   #create empty loo list
   loo_list <- list()
@@ -70,5 +54,28 @@ jointSelect <- function(modelfits) {
   loo_out <- loo::loo_compare(loo_list)
 
   return(loo_out)
+}
+
+# function for input checks
+jointSelect_input_checks <- function(modelfits){
+  ## #1. make sure input is a list
+  if (!is(modelfits,'list')){
+    errMsg = paste("modelfits must be a list.")
+    stop(errMsg)
+  }
+
+  ## #2. make sure all data objects are of class stanfit
+  test <- function(modelfit){is(modelfit,'stanfit')}
+  if (!all(lapply(modelfits,test)==TRUE)) {
+    errMsg = paste("Model fits in modelfits input must be of class 'stanfit'.")
+    stop(errMsg)
+  }
+
+  ## #3. make sure all models are of the same type
+  type <- function(modelfit){'p10'%in%modelfit@model_pars}
+  if (length(unique(lapply(modelfits,type)))!=1){
+    errMsg = paste("All modelfits must be fit with either jointModel() or all with traditionalModel().")
+    stop(errMsg)
+  }
 }
 

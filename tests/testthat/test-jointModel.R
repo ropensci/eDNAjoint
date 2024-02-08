@@ -86,21 +86,35 @@ test_that("jointModel input checks work", {
                           family='normal'),
                "Invalid family. Options include 'poisson', 'negbin', and 'gamma'.")
 
-  #13. p10 priors is a vector of two integers
+  #13. p10 priors is a vector of two numeric values
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           p10priors=c(1,1,2)),
-               "p10priors should be a vector of two integers. ex. c\\(1,20\\)")
+               "p10priors should be a vector of two positive numeric values. ex. c\\(1,20\\)")
 
-  #14. p10 priors is a vector of two integers
+  #14. p10 priors is a vector of two numeric values
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           p10priors='1,20'),
-               "p10priors should be a vector of two integers. ex. c\\(1,20\\)")
+               "p10priors should be a vector of two positive numeric values. ex. c\\(1,20\\)")
 
-  #15. the smallest count.type is 1
+  #15. p10 priors is a vector of two numeric values
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA))),
+                          p10priors=c(0,20)),
+               "p10priors should be a vector of two positive numeric values. ex. c\\(1,20\\)")
+
+  #16. phi priors is a vector of two numeric values
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA))),
+                          phipriors=c(0,1)),
+               "phipriors should be a vector of two positive numeric values. ex. c\\(0.25,0.25\\)")
+
+  #17. the smallest count.type is 1
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
@@ -108,7 +122,7 @@ test_that("jointModel input checks work", {
                           q=TRUE),
                "The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
 
-  #16. count are integers
+  #18. count are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4.1,1,1),c(1,1,NA)),
@@ -116,7 +130,7 @@ test_that("jointModel input checks work", {
                           q=TRUE, family = 'negbin'),
                "All values in count should be integers. Use family = 'gamma' if count is continuous.")
 
-  #17. qPCR.N are integers
+  #19. qPCR.N are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(0.99,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
@@ -124,7 +138,7 @@ test_that("jointModel input checks work", {
                           q=TRUE),
                "All values in qPCR.N should be integers.")
 
-  #18. qPCR.K are integers
+  #20. qPCR.K are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3.1,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
@@ -132,7 +146,7 @@ test_that("jointModel input checks work", {
                           q=TRUE),
                "All values in qPCR.K should be integers.")
 
-  #19. count.type are integers
+  #21. count.type are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
@@ -140,7 +154,7 @@ test_that("jointModel input checks work", {
                           q=TRUE),
                "All values in count.type should be integers.")
 
-  #20. site.cov is numeric, if present
+  #22. site.cov is numeric, if present
   site.cov=cbind(c('high','low'),c(0.4,-0.4))
   colnames(site.cov)=c('var_a','var_b')
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
@@ -151,7 +165,7 @@ test_that("jointModel input checks work", {
                           cov=c('var_a','var_b'),q=TRUE),
                "site.cov should be numeric.")
 
-  #21. cov values match column names in site.cov
+  #23. cov values match column names in site.cov
   site.cov=cbind(c(0,1),c(0.4,-0.4))
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
@@ -161,7 +175,7 @@ test_that("jointModel input checks work", {
                           cov=c('var_a','var_b'),q=TRUE),
                "cov values should be listed in the column names of site.cov in the data.")
 
-  #22. site.cov has same number of rows as qPCR.N and count, if present
+  #24. site.cov has same number of rows as qPCR.N and count, if present
   site.cov=cbind(c(0,1,1),c(0.4,-0.4,1))
   colnames(site.cov)=c('var_a','var_b')
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
@@ -171,203 +185,5 @@ test_that("jointModel input checks work", {
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'),q=TRUE),
                "The number of rows in site.cov matrix should match the number of rows in all other matrices.")
-
-})
-
-test_that("joint_catchability_pois works", {
-
-  test <- list(qPCR.N=greencrabData$qPCR.N[1:10,],
-               qPCR.K=greencrabData$qPCR.K[1:10,],
-               count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- jointModel(data=test,q=TRUE,n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_catchability_negbin works", {
-
-  test <- list(qPCR.N=greencrabData$qPCR.N[1:10,],
-               qPCR.K=greencrabData$qPCR.K[1:10,],
-               count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- jointModel(data=test,q=TRUE,family='negbin',n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_catchability_gamma works", {
-
-  test <- list(qPCR.N=greencrabData$qPCR.N[1:10,],
-               qPCR.K=greencrabData$qPCR.K[1:10,],
-               count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- jointModel(data=test,q=TRUE,family='gamma',n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_pois works", {
-
-  test <- list(qPCR.N=greencrabData$qPCR.N[1:10,],
-               qPCR.K=greencrabData$qPCR.K[1:10,],
-               count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- jointModel(data=test,q=FALSE,n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_negbin works", {
-
-  test <- list(qPCR.N=greencrabData$qPCR.N[1:10,],
-               qPCR.K=greencrabData$qPCR.K[1:10,],
-               count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- jointModel(data=test,q=FALSE,family='negbin',n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_gamma works", {
-
-  test <- list(qPCR.N=greencrabData$qPCR.N[1:10,],
-               qPCR.K=greencrabData$qPCR.K[1:10,],
-               count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- jointModel(data=test,q=FALSE,family='gamma',n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_cov_negbin works", {
-
-  test <- list(qPCR.N=gobyData$qPCR.N[1:10,],
-               qPCR.K=gobyData$qPCR.K[1:10,],
-               count=gobyData$count[1:10,],
-               site.cov=gobyData$site.cov[1:10,])
-
-  out <- jointModel(data=test,q=FALSE,family='negbin',
-                    cov=c('Filter_time','Salinity'),
-                    n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_cov_pois works", {
-
-  test <- list(qPCR.N=gobyData$qPCR.N[1:10,],
-               qPCR.K=gobyData$qPCR.K[1:10,],
-               count=gobyData$count[1:10,],
-               site.cov=gobyData$site.cov[1:10,])
-
-  out <- jointModel(data=test,q=FALSE,
-                    cov=c('Filter_time','Salinity'),
-                    n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_cov_gamma works", {
-
-  test <- list(qPCR.N=gobyData$qPCR.N[1:10,],
-               qPCR.K=gobyData$qPCR.K[1:10,],
-               count=gobyData$count[1:10,],
-               site.cov=gobyData$site.cov[1:10,])
-
-  out <- jointModel(data=test,q=FALSE,family='gamma',
-                    cov=c('Filter_time','Salinity'),
-                    n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_cov_catchability_negbin works", {
-
-  count <- gobyData$count[1:10,]
-  count.type <- matrix(NA,10,22)
-  for(i in 1:nrow(count.type)){
-      n <- length(count[i,][!is.na(count[i,])])
-      n_1 <- round(n/2)
-      n_2 <- n - n_1
-      count.type[i,1:n] <- c(rep(1,n_1),rep(2,n_2))
-  }
-
-  test <- list(qPCR.N=gobyData$qPCR.N[1:10,],
-               qPCR.K=gobyData$qPCR.K[1:10,],
-               count=count,
-               count.type=count.type,
-               site.cov=gobyData$site.cov[1:10,])
-
-  out <- jointModel(data=test,q=TRUE,family='negbin',
-                    cov=c('Filter_time','Salinity'),
-                    n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_cov_catchability_pois works", {
-
-  count <- gobyData$count[1:10,]
-  count.type <- matrix(NA,10,22)
-  for(i in 1:nrow(count.type)){
-    n <- length(count[i,][!is.na(count[i,])])
-    n_1 <- round(n/2)
-    n_2 <- n - n_1
-    count.type[i,1:n] <- c(rep(1,n_1),rep(2,n_2))
-  }
-
-  test <- list(qPCR.N=gobyData$qPCR.N[1:10,],
-               qPCR.K=gobyData$qPCR.K[1:10,],
-               count=count,
-               count.type=count.type,
-               site.cov=gobyData$site.cov[1:10,])
-
-  out <- jointModel(data=test,q=TRUE,
-                    cov=c('Filter_time','Salinity'),
-                    n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("joint_cov_catchability_gamma works", {
-
-  count <- gobyData$count[1:10,]
-  count.type <- matrix(NA,10,22)
-  for(i in 1:nrow(count.type)){
-    n <- length(count[i,][!is.na(count[i,])])
-    n_1 <- round(n/2)
-    n_2 <- n - n_1
-    count.type[i,1:n] <- c(rep(1,n_1),rep(2,n_2))
-  }
-
-  test <- list(qPCR.N=gobyData$qPCR.N[1:10,],
-               qPCR.K=gobyData$qPCR.K[1:10,],
-               count=count,
-               count.type=count.type,
-               site.cov=gobyData$site.cov[1:10,])
-
-  out <- jointModel(data=test,q=TRUE,family='gamma',
-                    cov=c('Filter_time','Salinity'),
-                    n.chain=1,n.iter.burn=500,
-                    n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
 
 })

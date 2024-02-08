@@ -324,6 +324,9 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     )
   }
 
+  # assert that the log likelihood is a double
+  stopifnot(is.double(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik))))
+
   return(out)
 }
 
@@ -489,14 +492,14 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
   }
 
   ## p10priors is a vector of two integers
-  if(!is.numeric(p10priors) | length(p10priors)!=2 | any(phipriors<=0)){
-    errMsg = paste("p10priors should be a vector of two numeric values > 0. ex. c(1,20)")
+  if(!is.numeric(p10priors) | length(p10priors)!=2 | any(p10priors<=0)){
+    errMsg = paste("p10priors should be a vector of two positive numeric values. ex. c(1,20)")
     stop(errMsg)
   }
 
   ## phipriors is a vector of two numeric values
   if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
-    errMsg = paste("phipriors should be a vector of two numeric values > 0. ex. c(0.25,0.25)")
+    errMsg = paste("phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)")
     stop(errMsg)
   }
 

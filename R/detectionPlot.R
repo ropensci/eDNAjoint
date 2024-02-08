@@ -61,53 +61,14 @@
 
 detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probability=0.9, qPCR.N = 3){
 
-  ## #1. make sure model fit is of class stanfit
-  if(!is(modelfit,'stanfit')) {
-    errMsg = paste("modelfit must be of class 'stanfit'.")
-    stop(errMsg)
-  }
-
-  ## #2. make sure mu.min is a numeric value
-  if(!is.numeric(mu.min) | length(mu.min)>1 | mu.min <= 0) {
-    errMsg = paste("mu.min must be a numeric value greater than 0")
-    stop(errMsg)
-  }
-
-  ## #3. make sure mu.max is a numeric value
-  if(!is.numeric(mu.max) | length(mu.max)>1) {
-    errMsg = paste("mu.max must be a numeric value greater than 0")
-    stop(errMsg)
-  }
-
-  ## #4. make sure probability is a numeric value between 0 and 1
-  if(!is.numeric(probability) | length(probability)>1 | probability < 0 | probability > 1) {
-    errMsg = paste("probability must be a numeric value between 0 and 1")
-    stop(errMsg)
-  }
-
-  ## #5. cov.val is numeric, if provided
-  if(all(cov.val != 'None') && !is.numeric(cov.val)) {
-    errMsg = paste("cov.val must be a numeric vector")
-    stop(errMsg)
-  }
-
-  ## #6. Only include input cov.val if covariates are included in model
-  if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg = paste("cov.val must be 'None' if the model does not contain site-level covariates.")
-    stop(errMsg)
-  }
-
-  ## #7. Input cov.val is the same length as the number of estimated covariates.
-  if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
-    errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
-    stop(errMsg)
-  }
+  # input checks
+  detectionPlot_input_checks(modelfit, mu.min, mu.max, cov.val, probability)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
 
-  ## #8. check to see if there are any divergent transitions
+  ## check to see if there are any divergent transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]]) > 0){
 
     sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]])
@@ -738,3 +699,55 @@ div_check <- function(x){
   divergent <- sum(x[,'divergent__'])
   return(divergent)
 }
+
+# function for input checks
+detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probability){
+  ## #1. make sure model fit is of class stanfit
+  if(!is(modelfit,'stanfit')) {
+    errMsg = paste("modelfit must be of class 'stanfit'.")
+    stop(errMsg)
+  }
+
+  ## #2. make sure mu.min is a numeric value
+  if(!is.numeric(mu.min) | length(mu.min)>1 | mu.min <= 0) {
+    errMsg = paste("mu.min must be a numeric value greater than 0")
+    stop(errMsg)
+  }
+
+  ## #3. make sure mu.max is a numeric value
+  if(!is.numeric(mu.max) | length(mu.max)>1 | mu.max <= mu.min) {
+    errMsg = paste("mu.max must be a numeric value greater than mu.min")
+    stop(errMsg)
+  }
+
+  ## #4. make sure probability is a numeric value between 0 and 1
+  if(!is.numeric(probability) | length(probability)>1 | probability < 0 | probability > 1) {
+    errMsg = paste("probability must be a numeric value between 0 and 1")
+    stop(errMsg)
+  }
+
+  ## #5. cov.val is numeric, if provided
+  if(all(cov.val != 'None') && !is.numeric(cov.val)) {
+    errMsg = paste("cov.val must be a numeric vector")
+    stop(errMsg)
+  }
+
+  ## #6. Only include input cov.val if covariates are included in model
+  if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
+    errMsg = paste("cov.val must be 'None' if the model does not contain site-level covariates.")
+    stop(errMsg)
+  }
+
+  ## #7. Input cov.val is the same length as the number of estimated covariates.
+  if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
+    errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
+    stop(errMsg)
+  }
+
+  ## #8. If covariates are in model, cov.val must be provided
+  if('alpha' %in% modelfit@model_pars && all(cov.val == 'None')) {
+    errMsg = paste("cov.val must be provided if the model contains site-level covariates.")
+    stop(errMsg)
+  }
+}
+

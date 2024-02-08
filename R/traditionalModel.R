@@ -58,80 +58,8 @@ traditionalModel <- function(data, family='poisson',
                              n.iter.sample=2500,thin=1,
                              adapt_delta=0.9) {
 
-  ## #1. make sure all data tags are valid -- if q == TRUE
-  if (q==TRUE && !all(c('count.type','count') %in% names(data))){
-      errMsg = paste("Data should include 'count' and 'count.type'.")
-      stop(errMsg)
-  }
-
-  ## #2. make sure all data tags are valid -- if q == FALSE
-  if (q==FALSE && !all(c('count') %in% names(data))){
-    errMsg = paste("Data should include 'count'.")
-    stop(errMsg)
-  }
-
-  ## #3. make sure dimensions of count and count.type are equal, if count.type is present
-  if (q==TRUE){
-    if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
-      errMsg = paste("Dimensions of count and count.type do not match.")
-      stop(errMsg)
-    }
-  }
-
-  ## #4. make sure all data is numeric -- if q == TRUE
-  if (q==TRUE) {
-    if(is.numeric(data$count)==FALSE |
-       is.numeric(data$count.type)==FALSE) {
-      errMsg = paste("Data should be numeric.")
-      stop(errMsg)
-    }
-  }
-
-  ## #5. make sure all data is numeric -- if q == FALSE
-  if (q==FALSE) {
-    if(is.numeric(data$count)==FALSE ) {
-      errMsg = paste("Data should be numeric.")
-      stop(errMsg)
-    }
-  }
-
-  ## #6. make sure locations of NAs in count data match locations of NAs in count.type data
-  if(q==TRUE){
-    if(any((which(is.na(data$count.type))==which(is.na(data$count)))==FALSE)){
-      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
-      stop(errMsg)
-    }
-  }
-
-  ## #7. make sure family is either 'poisson', 'negbin', or 'gamma'
-  if(!c(family %in% c('poisson','negbin','gamma'))){
-    errMsg = paste("Invalid family. Options include 'poisson', 'negbin', or 'gamma'.")
-    stop(errMsg)
-  }
-
-  ## #8. the smallest count.type is 1
-  if(q==TRUE && min(data$count.type,na.rm=TRUE) != 1){
-    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
-    stop(errMsg)
-  }
-
-  ## #9. count are integers, if family is poisson or negbin
-  if(!all(data$count %% 1 %in% c(0,NA)) && family %in% c('poisson','negbin')){
-    errMsg = paste("All values in count should be integers. Use family = 'gamma' if count is continuous.")
-    stop(errMsg)
-  }
-
-  ## #10. count.type are integers
-  if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in count.type should be integers.")
-    stop(errMsg)
-  }
-
-  ## #11. phipriors is a vector of two numeric values
-  if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
-    errMsg = paste("phipriors should be a vector of two numeric values > 0. ex. c(0.25,0.25)")
-    stop(errMsg)
-  }
+  # input checks
+  traditionalModel_input_checks(data, family, q, phipriors)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
@@ -258,6 +186,9 @@ traditionalModel <- function(data, family='poisson',
     )
   }
 
+  # assert that the log likelihood is a double
+  stopifnot(is.double(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik))))
+
   return(out)
 }
 
@@ -284,4 +215,82 @@ init_trad <- function(n.chain, count_all){
     )
   }
   return(A)
+}
+
+# function for input checks
+traditionalModel_input_checks <- function(data, family, q, phipriors){
+  ## #1. make sure all data tags are valid -- if q == TRUE
+  if (q==TRUE && !all(c('count.type','count') %in% names(data))){
+    errMsg = paste("Data should include 'count' and 'count.type'.")
+    stop(errMsg)
+  }
+
+  ## #2. make sure all data tags are valid -- if q == FALSE
+  if (q==FALSE && !all(c('count') %in% names(data))){
+    errMsg = paste("Data should include 'count'.")
+    stop(errMsg)
+  }
+
+  ## #3. make sure dimensions of count and count.type are equal, if count.type is present
+  if (q==TRUE){
+    if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
+      errMsg = paste("Dimensions of count and count.type do not match.")
+      stop(errMsg)
+    }
+  }
+
+  ## #4. make sure all data is numeric -- if q == TRUE
+  if (q==TRUE) {
+    if(is.numeric(data$count)==FALSE |
+       is.numeric(data$count.type)==FALSE) {
+      errMsg = paste("Data should be numeric.")
+      stop(errMsg)
+    }
+  }
+
+  ## #5. make sure all data is numeric -- if q == FALSE
+  if (q==FALSE) {
+    if(is.numeric(data$count)==FALSE ) {
+      errMsg = paste("Data should be numeric.")
+      stop(errMsg)
+    }
+  }
+
+  ## #6. make sure locations of NAs in count data match locations of NAs in count.type data
+  if(q==TRUE){
+    if(any((which(is.na(data$count.type))==which(is.na(data$count)))==FALSE)){
+      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
+      stop(errMsg)
+    }
+  }
+
+  ## #7. make sure family is either 'poisson', 'negbin', or 'gamma'
+  if(!c(family %in% c('poisson','negbin','gamma'))){
+    errMsg = paste("Invalid family. Options include 'poisson', 'negbin', or 'gamma'.")
+    stop(errMsg)
+  }
+
+  ## #8. the smallest count.type is 1
+  if(q==TRUE && min(data$count.type,na.rm=TRUE) != 1){
+    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
+    stop(errMsg)
+  }
+
+  ## #9. count are integers, if family is poisson or negbin
+  if(!all(data$count %% 1 %in% c(0,NA)) && family %in% c('poisson','negbin')){
+    errMsg = paste("All values in count should be integers. Use family = 'gamma' if count is continuous.")
+    stop(errMsg)
+  }
+
+  ## #10. count.type are integers
+  if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
+    errMsg = paste("All values in count.type should be integers.")
+    stop(errMsg)
+  }
+
+  ## #11. phipriors is a vector of two numeric values
+  if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
+    errMsg = paste("phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)")
+    stop(errMsg)
+  }
 }

@@ -37,41 +37,14 @@
 
 jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3) {
 
-  ## #1. make sure model fit is of class stanfit
-  if(!is(modelfit,'stanfit')) {
-    errMsg = paste("modelfit must be of class 'stanfit'.")
-    stop(errMsg)
-  }
-
-  ## #2. make sure probs is a numeric vector
-  if(!is.numeric(probs)) {
-    errMsg = paste("probs must be a numeric vector.")
-    stop(errMsg)
-  }
-
-  ## #3. make sure all values of probs are between 0 and 1
-  if(any(probs > 1 | probs < 0)) {
-    errMsg = paste("probs must be between 0 and 1.")
-    stop(errMsg)
-  }
-
-  ## #4. make sure par is a character vector
-  if(!is.character(par)) {
-    errMsg = paste("par must be a character vector.")
-    stop(errMsg)
-  }
-
-  ## #5. make sure model fit contains all par input
-  if(all(!(par %in% modelfit@model_pars)) && par != 'all') {
-    errMsg = paste("modelfit must contain all selected parameters:",par)
-    stop(errMsg)
-  }
+  # input checks
+  jointSummarize_input_checks(modelfit, par, probs)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
 
-  ## #5. check to see if there are any divergent transitions
+  ## check to see if there are any divergent transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]]) > 0){
 
     sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]])
@@ -213,4 +186,37 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits
 div_check <- function(x){
   divergent <- sum(x[,'divergent__'])
   return(divergent)
+}
+
+# function for input checks
+jointSummarize_input_checks <- function(modelfit, par, probs){
+  ## #1. make sure model fit is of class stanfit
+  if(!is(modelfit,'stanfit')) {
+    errMsg = paste("modelfit must be of class 'stanfit'.")
+    stop(errMsg)
+  }
+
+  ## #2. make sure probs is a numeric vector
+  if(!is.numeric(probs)) {
+    errMsg = paste("probs must be a numeric vector.")
+    stop(errMsg)
+  }
+
+  ## #3. make sure all values of probs are between 0 and 1
+  if(any(probs > 1 | probs < 0)) {
+    errMsg = paste("probs must be between 0 and 1.")
+    stop(errMsg)
+  }
+
+  ## #4. make sure par is a character vector
+  if(!is.character(par)) {
+    errMsg = paste("par must be a character vector.")
+    stop(errMsg)
+  }
+
+  ## #5. make sure model fit contains all par input
+  if(all(!(par %in% modelfit@model_pars)) && par != 'all') {
+    errMsg = paste("modelfit must contain all selected parameters:",par)
+    stop(errMsg)
+  }
 }

@@ -59,47 +59,14 @@
 
 detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9, qPCR.N = 3){
 
-  ## #1. make sure model fit is of class stanfit
-  if(!is(modelfit,'stanfit')) {
-    errMsg = paste("modelfit must be of class 'stanfit'.")
-    stop(errMsg)
-  }
-
-  ## #2. make sure mu is a numeric vector
-  if(!is.numeric(mu)) {
-    errMsg = paste("mu must be a numeric vector")
-    stop(errMsg)
-  }
-
-  ## #3. make sure probability is a numeric value between 0 and 1
-  if(!is.numeric(probability) | length(probability)>1 | any(probability < 0) | any(probability > 1)) {
-    errMsg = paste("probability must be a numeric value between 0 and 1")
-    stop(errMsg)
-  }
-
-  ## #4. cov.val is numeric, if provided
-  if(all(cov.val != 'None') && !is.numeric(cov.val)) {
-    errMsg = paste("cov.val must be a numeric vector")
-    stop(errMsg)
-  }
-
-  ## #5. Only include input cov.val if covariates are included in model
-  if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg = paste("cov.val must be 'None' if the model does not contain site-level covariates.")
-    stop(errMsg)
-  }
-
-  ## #6. Input cov.val is the same length as the number of estimated covariates.
-  if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
-    errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
-    stop(errMsg)
-  }
+  # input checks
+  detectionCalculate_input_checks(modelfit, mu, cov.val, probability)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
 
-  ## #7. check to see if there are any divergent transitions
+  ## check to see if there are any divergent transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]]) > 0){
 
     sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]])
@@ -683,3 +650,51 @@ div_check <- function(x){
   divergent <- sum(x[,'divergent__'])
   return(divergent)
 }
+
+# function for input checks
+detectionCalculate_input_checks <- function(modelfit, mu, cov.val, probability){
+  ## #1. make sure model fit is of class stanfit
+  if(!is(modelfit,'stanfit')) {
+    errMsg = paste("modelfit must be of class 'stanfit'.")
+    stop(errMsg)
+  }
+
+  ## #2. make sure mu is a numeric vector
+  if(!any(is.numeric(mu)) | any(mu <= 0)) {
+    errMsg = paste("mu must be a numeric vector of positive values")
+    stop(errMsg)
+  }
+
+  ## #3. make sure probability is a numeric value between 0 and 1
+  if(!is.numeric(probability) | length(probability)>1 | any(probability < 0) | any(probability > 1)) {
+    errMsg = paste("probability must be a numeric value between 0 and 1")
+    stop(errMsg)
+  }
+
+  ## #4. cov.val is numeric, if provided
+  if(all(cov.val != 'None') && !is.numeric(cov.val)) {
+    errMsg = paste("cov.val must be a numeric vector")
+    stop(errMsg)
+  }
+
+  ## #5. Only include input cov.val if covariates are included in model
+  if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
+    errMsg = paste("cov.val must be 'None' if the model does not contain site-level covariates.")
+    stop(errMsg)
+  }
+
+  ## #6. Input cov.val is the same length as the number of estimated covariates.
+  if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
+    errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
+    stop(errMsg)
+  }
+
+  ## #7. If covariates are in model, cov.val must be provided
+  if('alpha' %in% modelfit@model_pars && all(cov.val == 'None')) {
+    errMsg = paste("cov.val must be provided if the model contains site-level covariates.")
+    stop(errMsg)
+  }
+}
+
+
+

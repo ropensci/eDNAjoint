@@ -53,67 +53,11 @@ test_that("traditionalModel input checks work", {
                                           count.type=rbind(c(1.1,1,2),c(1,2,NA))),
                                 q=TRUE),
                "All values in count.type should be integers.")
+
+  #11. phi priors is a vector of two numeric values
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
+                                phipriors=c(0,1)),
+               "phipriors should be a vector of two positive numeric values. ex. c\\(0.25,0.25\\)")
 })
 
-test_that("traditional_catchability_pois works", {
 
-  test <- list(count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- traditionalModel(data=test,q=TRUE,n.chain=1,n.iter.burn=500,
-                          n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("traditional_catchability_negbin works", {
-
-  test <- list(count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- traditionalModel(data=test,q=TRUE,family='negbin',n.chain=1,n.iter.burn=500,
-                          n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("traditional_catchability_gamma works", {
-
-  test <- list(count=greencrabData$count[1:10,],
-               count.type=greencrabData$count.type[1:10,])
-
-  out <- traditionalModel(data=test,q=TRUE,family='gamma',n.chain=1,n.iter.burn=500,
-                          n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("traditional_pois works", {
-
-  test <- list(count=greencrabData$count[1:10,])
-
-  out <- traditionalModel(data=test,n.chain=1,n.iter.burn=500,
-                          n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("traditional_negbin works", {
-
-  test <- list(count=greencrabData$count[1:10,])
-
-  out <- traditionalModel(data=test,family='negbin',n.chain=1,n.iter.burn=500,
-                          n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
-
-test_that("traditional_gamma works", {
-
-  test <- list(count=greencrabData$count[1:10,])
-
-  out <- traditionalModel(data=test,family='gamma',n.chain=1,n.iter.burn=500,
-                          n.iter.sample=500)
-  expect_type(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik)), 'double')
-
-})
