@@ -7,14 +7,15 @@
 <!-- badges: start --> <!-- badges: end -->
 
 The package *eDNAjoint* is useful for interpreting observations from
-paired eDNA and traditional surveys. The package runs a Bayesian model
-that integrates these two data streams to jointly estimate parameters
-like the false positive probability of eDNA detection and expected catch
-rate at a site. Optional model variations allow inclusion of site-level
-covariates that scale the sensitivity of eDNA sampling relative to
-traditional sampling, as well as estimation of catchability coefficients
-when multiple traditional gear types are used. Additional functions in
-the package facilitate interpretation of model fits.
+paired environmental DNA (eDNA) and traditional surveys. The package
+runs a Bayesian model that integrates these two data streams to jointly
+estimate parameters like the false positive probability of eDNA
+detection and expected catch rate at a site. Optional model variations
+allow inclusion of site-level covariates that scale the sensitivity of
+eDNA sampling relative to traditional sampling, as well as estimation of
+catchability coefficients when multiple traditional gear types are used.
+Additional functions in the package facilitate interpretation of model
+fits.
 
 ## Installation
 
@@ -55,7 +56,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 16863.41    1
+#> p10 0.003       0 0.001 0.001 0.007 18602.21    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
