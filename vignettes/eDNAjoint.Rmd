@@ -221,7 +221,7 @@ detectionPlot(goby.fit1, mu.min=0.1, mu.max =1, cov.val = c(0,0), probability = 
 
 The probability of a true positive eDNA detection, $p_{11}$, is a function of the expected catch rate, $\mu$. Low values of $\mu$ correspond to low probability of eDNA detection. Since the probability of a false-positive eDNA detection is non-zero, the probability of a false positive detection may be higher than the probability of a true positive detection at very low values of $\mu$.
 
-$\mu_{critical}$ describes the value of $\mu$ where the probability of a false positive eDNA detection equals the probability of a true positive eDNA detection. This value can be calculated using `mu_critical`. Here, we will calculate this value at the mean covariate values.
+$\mu_{critical}$ describes the value of $\mu$ where the probability of a false positive eDNA detection equals the probability of a true positive eDNA detection. This value can be calculated using `muCritical()`. Here, we will calculate this value at the mean covariate values.
 
 ```{r}
 muCritical(goby.fit1, cov.val = c(0,0), ci = 0.9)
