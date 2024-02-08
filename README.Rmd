@@ -31,7 +31,7 @@ install_github('abigailkeller/eDNAjoint')
 
 ## Example
 
-The main functionality in *eDNAjoint* is the use of `jointModel()` that will fit the model to data. Further functions like `summarize()` and `detection.calculate()` can be used to help with model fit interpretation.
+The main functionality in *eDNAjoint* is the use of `jointModel()` that will fit the model to data. Further functions like `jointSummarize()` and `detectionCalculate()` can be used to help with model fit interpretation.
 
 This example fits the joint model to data from paired, replicated eDNA qPCR and seine sampling observations of endangered tidewater gobies (*Eucyclogobius newberryi*) from a study by Schmelzle and Kinziger (2016). The following variation of the joint model includes site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling. 
 
@@ -47,7 +47,7 @@ And then this model fit can be accessed to do things like summarize the posterio
 
 ```{r example_2}
 # summarize p10 posterior
-summarize(goby.fit, par = 'p10')
+jointSummarize(goby.fit, par = 'p10')
 ```
 
 Or to find the number of eDNA samples and traditional survey samples necessary to detect presence of the species at a given expected catch rate:
@@ -55,8 +55,8 @@ Or to find the number of eDNA samples and traditional survey samples necessary t
 ```{r example_3}
 # find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
 # if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
-detection.calculate(goby.fit, mu = c(0.1,0.5,1), 
-                    cov.val=c(0,0), probability = 0.9)
+detectionCalculate(goby.fit, mu = c(0.1,0.5,1), 
+                   cov.val=c(0,0), probability = 0.9)
 ```
 
 ## Vignette

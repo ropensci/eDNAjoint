@@ -9,7 +9,7 @@ Description: Models integrate environmental DNA (eDNA) detection data and tradit
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Biarch: true
 Depends: 
     R (>= 3.4.0)

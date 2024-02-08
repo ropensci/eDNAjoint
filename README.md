@@ -28,12 +28,12 @@ install_github('abigailkeller/eDNAjoint')
 ## Example
 
 The main functionality in *eDNAjoint* is the use of `jointModel()` that
-will fit the model to data. Further functions like `summarize()` and
-`detection.calculate()` can be used to help with model fit
+will fit the model to data. Further functions like `jointSummarize()`
+and `detectionCalculate()` can be used to help with model fit
 interpretation.
 
 This example fits the joint model to data from paired, replicated eDNA
-and seine sampling observations of endangered tidewater gobies
+qPCR and seine sampling observations of endangered tidewater gobies
 (*Eucyclogobius newberryi*) from a study by Schmelzle and Kinziger
 (2016). The following variation of the joint model includes site-level
 covariates that scale the sensitivity of eDNA sampling relative to
@@ -53,9 +53,9 @@ detection, $p_{10}$:
 
 ``` r
 # summarize p10 posterior
-summarize(goby.fit, par = 'p10')
-#>      mean se_mean    sd 2.5% 97.5%    n_eff Rhat
-#> p10 0.001       0 0.001    0 0.003 16952.44    1
+jointSummarize(goby.fit, par = 'p10')
+#>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
+#> p10 0.003       0 0.001 0.001 0.007 16863.41    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -65,11 +65,11 @@ rate:
 ``` r
 # find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
 # if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
-detection.calculate(goby.fit, mu = c(0.1,0.5,1), 
-                    cov.val=c(0,0), probability = 0.9)
+detectionCalculate(goby.fit, mu = c(0.1,0.5,1), 
+                   cov.val=c(0,0), probability = 0.9)
 #>       mu n_traditional n_eDNA
 #> [1,] 0.1            24     14
-#> [2,] 0.5             5      3
+#> [2,] 0.5             5      4
 #> [3,] 1.0             3      2
 ```
 

@@ -48,11 +48,11 @@
 #'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate mu_critical
-#' mu.critical(fit.q, cov.val='None')
+#' muCritical(fit.q, cov.val='None')
 #' }
 #'
 
-mu.critical <- function(modelfit, cov.val = 'None', ci = 0.9) {
+muCritical <- function(modelfit, cov.val = 'None', ci = 0.9) {
 
   ## #1. make sure model fit is of class stanfit
   if(!is(modelfit,'stanfit')) {

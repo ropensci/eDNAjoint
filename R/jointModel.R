@@ -9,6 +9,7 @@
 #' @param p10priors A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
 #' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
+#' @param multicore A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
@@ -75,7 +76,7 @@
 #'
 
 jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=FALSE,
-                       phipriors=c(0.25,0.25),
+                       phipriors=c(0.25,0.25), multicore=TRUE,
                        n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, thin=1, adapt_delta=0.9) {
 
@@ -98,7 +99,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   }
 
   # all models
-  all_checks(data,cov,family,p10priors)
+  all_checks(data,cov,family,p10priors,phipriors)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
@@ -179,6 +180,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     control = list(adapt_delta = adapt_delta)
     )
 
+  # set up core number
+  if(multicore == TRUE){
+    cores <- parallel::detectCores()
+  } else {
+    cores <- 1
+  }
+
 
   ##run model, catchability, pois/gamma, no covariates
   if(q==TRUE&&family!='negbin'&&all(cov=='None')){
@@ -191,6 +199,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names])
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -206,6 +215,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nparams = length(q_names),
                              mat = as.matrix(count_all[,q_names])
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -219,6 +229,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
       out <- rstan::sampling(c(stanmodels$joint_binary_pois,
                                stanmodels$joint_binary_gamma)[model_index][[1]],
                            data = data,
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -232,6 +243,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              data,
                              phipriors = phipriors
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -249,6 +261,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -268,6 +281,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -283,6 +297,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -300,6 +315,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              nsitecov = length(cov)+1,
                              mat_site = as.matrix(site_mat)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -448,7 +464,7 @@ no_catchability_checks <- function(data,cov){
   }
 }
 
-all_checks <- function(data,cov,family,p10priors){
+all_checks <- function(data,cov,family,p10priors,phipriors){
   ## make sure dimensions of qPCR.N and qPCR.K are equal
   if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
     errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")
@@ -472,9 +488,15 @@ all_checks <- function(data,cov,family,p10priors){
     stop(errMsg)
   }
 
-  ## p10 priors is a vector of two integers
-  if(!is.numeric(p10priors) | length(p10priors)!=2){
-    errMsg = paste("p10priors should be a vector of two integers. ex. c(1,20)")
+  ## p10priors is a vector of two integers
+  if(!is.numeric(p10priors) | length(p10priors)!=2 | any(phipriors<=0)){
+    errMsg = paste("p10priors should be a vector of two numeric values > 0. ex. c(1,20)")
+    stop(errMsg)
+  }
+
+  ## phipriors is a vector of two numeric values
+  if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
+    errMsg = paste("phipriors should be a vector of two numeric values > 0. ex. c(0.25,0.25)")
     stop(errMsg)
   }
 

@@ -7,6 +7,7 @@
 #' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
 #' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
+#' @param multicore A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
@@ -52,7 +53,7 @@
 #'
 
 traditionalModel <- function(data, family='poisson',
-                             q=FALSE,phipriors=c(0.25,0.25),
+                             q=FALSE,phipriors=c(0.25,0.25),multicore=TRUE,
                              n.chain=4, n.iter.burn=500,
                              n.iter.sample=2500,thin=1,
                              adapt_delta=0.9) {
@@ -126,6 +127,12 @@ traditionalModel <- function(data, family='poisson',
     stop(errMsg)
   }
 
+  ## #11. phipriors is a vector of two numeric values
+  if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
+    errMsg = paste("phipriors should be a vector of two numeric values > 0. ex. c(0.25,0.25)")
+    stop(errMsg)
+  }
+
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
@@ -159,7 +166,14 @@ traditionalModel <- function(data, family='poisson',
     count_all[,q_names[i]] <- ifelse(count_all$count.type==names[i],1,0)
   }
 
-}
+  }
+
+  # set up core number
+  if(multicore == TRUE){
+    cores <- parallel::detectCores()
+  } else {
+    cores <- 1
+  }
 
   ##run model, catchability, pois/gamma
   if(q==TRUE&&family!='negbin'){
@@ -176,6 +190,7 @@ traditionalModel <- function(data, family='poisson',
                              mat = as.matrix(count_all[,q_names]),
                              control = list(adapt_delta = adapt_delta)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -195,6 +210,7 @@ traditionalModel <- function(data, family='poisson',
                              phipriors = phipriors,
                              control = list(adapt_delta = adapt_delta)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -215,6 +231,7 @@ traditionalModel <- function(data, family='poisson',
                              control = list(adapt_delta = adapt_delta,
                                             stepsize = 0.5)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,
@@ -232,6 +249,7 @@ traditionalModel <- function(data, family='poisson',
                              phipriors = phipriors,
                              control = list(adapt_delta = adapt_delta)
                            ),
+                           cores = cores,
                            chains = n.chain,
                            thin = thin,
                            warmup = n.iter.burn,

@@ -9,6 +9,7 @@ traditionalModel(
   family = "poisson",
   q = FALSE,
   phipriors = c(0.25, 0.25),
+  multicore = TRUE,
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
@@ -24,6 +25,8 @@ traditionalModel(
 \item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
 
 \item{phipriors}{A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+
+\item{multicore}{A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 

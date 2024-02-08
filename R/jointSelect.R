@@ -31,11 +31,11 @@
 #' fit.q = jointModel(data=greencrabData, family='negbin', p10priors=c(1,20), q=TRUE)
 #'
 #' # Perform model selection
-#' modelselect(modelfits=list(fit.no.q, fit.q))
+#' jointSelect(modelfits=list(fit.no.q, fit.q))
 #' }
 #'
 
-modelselect <- function(modelfits) {
+jointSelect <- function(modelfits) {
 
   ## #1. make sure input is a list
   if (!is(modelfits,'list')){

@@ -51,7 +51,7 @@ knitr::kable(param_table,
 
 <br>
 
-The main functionality in *eDNAjoint* is the use of `jointModel()` that will fit the model to data. Further functions like `summarize()` and `detection.calculate()` can be used to help with model fit interpretation. 
+The main functionality in *eDNAjoint* is the use of `jointModel()` that will fit the model to data. Further functions like `jointSummarize()` and `detectionCalculate()` can be used to help with model fit interpretation. 
 
 Below are detailed descriptions of two use cases of *eDNAjoint*. The first demonstrates the use of the joint model in a scenario where site-level covariates scale the sensitivity of eDNA sampling relative to traditional surveys. The second demonstrates the use of the joint model in a scenario where multiple traditional gear types are used. 
 
@@ -93,7 +93,7 @@ head(gobyData$qPCR.N)
 
 Next, let's look at `count`. This data is from seine sampling for tidewater gobies. Each integer refers to the catch of each seine sample (i.e., catch per unit effort, when effort = 1). Again, the rows correspond to sites, and the columns refer to replicated seine samples at each site, with a maximum of 22 samples. Blank spaces are filled with NA at sites where fewer seine samples were collected than the maximum.
 
-Note that this count data *must* be integers.
+In this example, the count data are integers, but continuous values can be used in the model (see Eq. 1.3 in the model description).
 
 ```{r}
 head(gobyData$count)
@@ -101,7 +101,7 @@ head(gobyData$count)
 
 Finally, this data includes site-level covariates, which is optional when implementing `jointModel()`. Here,  the data represent salinity, mean time to filter eDNA samples, density of other fish, habitat size, and vegetation presence at each site. Two important notes:
 
-1. Notice that the non-integer covariate data is standardized. This is useful since this data will be used in a linear regression.
+1. Notice that the continuous covariate data is standardized. This is useful since this data will be used in a linear regression. Similarly, one should use dummy variables for categorical variables (like the 'Veg' variable).
 
 2. The columns in the matrix should be named, since these identifiers will be used when fitting the model.
 
@@ -139,11 +139,11 @@ goby.fit2 <- jointModel(data = gobyData, cov='Other_fishes',
                         family = 'poisson', p10priors = c(1,20), q=FALSE)
 ```
 
-We can now compare the fit of these model to our data using the `modelselect()` function, which performs leave-one-out cross validation with functions from the `loo` package.
+We can now compare the fit of these model to our data using the `jointSelect()` function, which performs leave-one-out cross validation with functions from the `loo` package.
 
 ```{r, warning = FALSE}
 #perform model selection
-modelselect(modelfits = list(goby.fit1, goby.fit2))
+jointSelect(modelfits = list(goby.fit1, goby.fit2))
 ```
 
 These results tell us that model1 has a higher Bayesian LOO estimate of the expected log pointwise predictive density ([elpd_loo](https://mc-stan.org/loo/reference/loo-glossary.html)). This means that `goby.fit1` is likely a better fit to the data.
@@ -154,23 +154,44 @@ You could keep going with this further and include/exclude different covariates,
 
 #### Summarize posterior distributions
 
-Let's interpret `goby.fit1`. Use `summarize()` to see the posterior summaries of the model parameters.
+Let's interpret `goby.fit1`. Use `jointSummarize()` to see the posterior summaries of the model parameters.
 
 ```{r}
-summarize(goby.fit1, par = c('p10','alpha'))
+jointSummarize(goby.fit1, par = c('p10','alpha'))
 ```
 This summarizes the mean, sd, and quantiles of the posterior estimates of $p_{10}$ and $\alpha$, as well as the effective sample size (n_eff) and Rhat for the parameters.
 
 The mean estimated probability of a false positive eDNA detection is 0.001. `alpha[1]` corresponds to the intercept of the regression with site-level covariates. `alpha[2]` corresponds to the regression coefficient associated with `Filter_time`, and `alpha[3]` corresponds to the regression coefficient associated with `Salinity`. Positive regression coefficients indicate an inverse relationship between the covariate and eDNA sensitivity.
 
+We can also use functions from the `bayesplot` package to examine the posterior distributions and chain convergence.
+
+First let's look at the posterior distribution for $p_{10}$.
+
+```{r}
+library(bayesplot)
+
+# this will plot the posterior distribution and will highlight the median and 80% credibility interval
+mcmc_areas(as.matrix(goby.fit1), pars = 'p10', prob = 0.8)
+```
+
+Next let's look at chain convergence for $p_{10}$ and $\mu_{i=1}$.
+
+```{r}
+library(rstan)
+
+# this will plot the MCMC chains for p10 and mu at site 1
+mcmc_trace(extract(goby.fit1, permuted = FALSE), pars = c('p10', 'mu[1]'))
+
+```
+
 #### Effort necessary to detect presence
 
-To further highlight the relative sensitivity of eDNA and traditional sampling, we can use `detection.calculate()` to find the units of survey effort necessary to detect presence of the species. Here, detecting presence refers to producing at least one true positive eDNA detection or catching at least one individual in a traditional survey.
+To further highlight the relative sensitivity of eDNA and traditional sampling, we can use `detectionCalculate()` to find the units of survey effort necessary to detect presence of the species. Here, detecting presence refers to producing at least one true positive eDNA detection or catching at least one individual in a traditional survey.
 
 This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1. The `cov.val` argument indicates the value of the covariates used for the prediction. Since the covariate data was standardized, c(0,0) indicates that the prediction is made at the mean `Filter_time` and `Salinity` values.
 
 ```{r}
-detection.calculate(goby.fit1, mu=c(0.1,0.5,1), cov.val = c(0,0), probability = 0.9)
+detectionCalculate(goby.fit1, mu=c(0.1,0.5,1), cov.val = c(0,0), probability = 0.9)
 ```
 
 We can see that at the mean covariate values, it takes 14 eDNA samples or 24 seine samples to detect goby presence with 0.9 probability if the expected catch rate is 0.1. 
@@ -178,7 +199,7 @@ We can see that at the mean covariate values, it takes 14 eDNA samples or 24 sei
 Now let's perform the same calculation under a condition where the `Filter_time` covariate value is 0.5 z-scores above the mean.
 
 ```{r}
-detection.calculate(goby.fit1, mu=c(0.1,0.5,1), cov.val = c(0.5,0), probability = 0.9)
+detectionCalculate(goby.fit1, mu=c(0.1,0.5,1), cov.val = c(0.5,0), probability = 0.9)
 ```
 
 At sites with a longer eDNA sample filter time, it would now take 22 eDNA samples or 24 seine samples to detect goby presence if the expected catch rate is 0.1.
@@ -186,14 +207,14 @@ At sites with a longer eDNA sample filter time, it would now take 22 eDNA sample
 Let's do the same for salinity.
 
 ```{r}
-detection.calculate(goby.fit1, mu=c(0.1,0.5,1), cov.val = c(0,0.5), probability = 0.9)
+detectionCalculate(goby.fit1, mu=c(0.1,0.5,1), cov.val = c(0,0.5), probability = 0.9)
 ```
 At sites with higher salinity, it would now take 12 eDNA samples or 24 seine samples to detect goby presence if the expected catch rate is 0.1.
 
 We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in the plot.
 
 ```{r, fig.width = 7}
-detection.plot(goby.fit1, mu.min=0.1, mu.max =1, cov.val = c(0,0), probability = 0.9)
+detectionPlot(goby.fit1, mu.min=0.1, mu.max =1, cov.val = c(0,0), probability = 0.9)
 ```
 
 #### Calculate $\mu_{critical}$
@@ -203,7 +224,7 @@ The probability of a true positive eDNA detection, $p_{11}$, is a function of th
 $\mu_{critical}$ describes the value of $\mu$ where the probability of a false positive eDNA detection equals the probability of a true positive eDNA detection. This value can be calculated using `mu_critical`. Here, we will calculate this value at the mean covariate values.
 
 ```{r}
-mu.critical(goby.fit1, cov.val = c(0,0), ci = 0.9)
+muCritical(goby.fit1, cov.val = c(0,0), ci = 0.9)
 ```
 
 This function calculates $\mu_{critical}$ using the entire posterior distributions of parameters from the model, and 'HDI' corresponds to the 90% credibility interval calculated using the highest density interval.
@@ -218,7 +239,7 @@ Prior choice 1: default prior parameters c(1,20). The mean and sd of this prior 
 
 ```{r}
 fit.prior.1 <- goby.fit1
-summarize(fit.prior.1, par = c('p10','alpha'))
+jointSummarize(fit.prior.1, par = c('p10','alpha'))
 ```
 
 Prior choice 2: c(1,15). The mean and sd of this prior distribution are 0.063 and 0.058, respectively.
@@ -228,7 +249,7 @@ fit.prior.2 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'),
 ```
 
 ```{r}
-summarize(fit.prior.2, par = c('p10','alpha'))
+jointSummarize(fit.prior.2, par = c('p10','alpha'))
 ```
 
 Prior choice 3: c(1,10). The mean and sd of this prior distribution are 0.091 and 0.083, respectively.
@@ -238,7 +259,7 @@ fit.prior.3 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'),
 ```
 
 ```{r}
-summarize(fit.prior.3, par = c('p10','alpha'))
+jointSummarize(fit.prior.3, par = c('p10','alpha'))
 ```
 
 You can see that the choice of the $p_{10}$ prior within this range has little influence on the estimated parameters.
@@ -266,7 +287,7 @@ Let's look at the `count`. This data is from baited trap sampling for green crab
 dim(greencrabData$count)
 ```
 
-Blank spaces are filled with NA at sites where fewer trap samples were collected than the maximum. Again, note that this count data *must* be integers.
+Blank spaces are filled with NA at sites where fewer trap samples were collected than the maximum. In this example, the count data are integers, but continuous values can be used in the model (see Eq. 1.3 in the model description).
 
 ```{r}
 greencrabData$count[1:6,1:20]
@@ -322,7 +343,7 @@ Now let's perform model selection using leave-one-out cross validation.
 
 ```{r, warning = FALSE}
 #perform model selection
-modelselect(modelfits = list(greencrab.fit.q.negbin, #include catchability coefficient, model count data with negative binomial
+jointSelect(modelfits = list(greencrab.fit.q.negbin, #include catchability coefficient, model count data with negative binomial
                              greencrab.fit.q.pois, #include catchability coefficient, model count data with negative binomial
                              greencrab.fit.negbin, #include catchability coefficient, model count data with negative binomial
                              greencrab.fit.pois)) #include catchability coefficient, model count data with negative binomial
@@ -353,12 +374,33 @@ summarize(greencrab.fit.q.negbin, par = 'mu')
 
 `mu[1,1]` corresponds to the expected catch rate at site 1 with gear type 1. `mu[1,2]` corresponds to the expected catch rate at site 1 with gear type 2. `mu[2,1]` corresponds to the expected catch rate at site 2 with gear type 1.
 
-#### Effort necessary to detect presence
+We can also use functions from the `bayesplot` package to examine the posterior distributions and chain convergence.
 
-To further highlight these results, we can use `detection.calculate()` to find the units of survey effort necessary to detect presence of the species. This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1.  $\mu$ now represents the expected catch rate of gear type 1.
+First let's look at the posterior distribution for $p_{10}$.
 
 ```{r}
-detection.calculate(greencrab.fit.q.negbin, mu = c(0.1,0.5,1), probability = 0.9)
+library(bayesplot)
+
+# this will plot the posterior distribution and will highlight the median and 80% credibility interval
+mcmc_areas(as.matrix(greencrab.fit.q.negbin), pars = 'p10', prob = 0.8)
+```
+
+Next let's look at chain convergence for $p_{10}$ and $\beta$.
+
+```{r}
+library(rstan)
+
+# this will plot the MCMC chains for p10 and mu at site 1
+mcmc_trace(extract(greencrab.fit.q.negbin, permuted = FALSE), pars = c('p10', 'beta'))
+
+```
+
+#### Effort necessary to detect presence
+
+To further highlight these results, we can use `detectionCalculate()` to find the units of survey effort necessary to detect presence of the species. This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1.  $\mu$ now represents the expected catch rate of gear type 1.
+
+```{r}
+detectionCalculate(greencrab.fit.q.negbin, mu = c(0.1,0.5,1), probability = 0.9)
 ```
 
 We can see that it takes 27 eDNA samples, 25 trap samples (gear type 1), and 31 trap samples (gear type 2) to detect green crab presence with 0.9 probability if the expected catch rate with gear type 1 is 0.1.
@@ -366,7 +408,7 @@ We can see that it takes 27 eDNA samples, 25 trap samples (gear type 1), and 31 
 We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in the plot and represent the expected catch rate of gear type 1.
 
 ```{r, fig.width = 7}
-detection.plot(greencrab.fit.q.negbin, mu.min = 0.1, mu.max = 1, probability = 0.9)
+detectionPlot(greencrab.fit.q.negbin, mu.min = 0.1, mu.max = 1, probability = 0.9)
 ```
 
 #### Calculate $\mu_{critical}$
@@ -374,7 +416,7 @@ detection.plot(greencrab.fit.q.negbin, mu.min = 0.1, mu.max = 1, probability = 0
 Now let's calculate $\mu_{critical}$, which is the value of $\mu$ where the probability of a false positive eDNA detection equals the probability of a true positive eDNA detection.
 
 ```{r}
-mu.critical(greencrab.fit.q.negbin, cov.val = 'None', ci = 0.9)
+muCritical(greencrab.fit.q.negbin, cov.val = 'None', ci = 0.9)
 ```
 
 This function calculates $\mu_{critical}$ using the entire posterior distributions of parameters from the model, and 'HDI' corresponds to the 90% credibility interval calculated using the highest density interval. The first column corresponds to $\mu_{critical}$ if gear type 1 is used, and the second columns corresponds to $\mu_{critical}$ if gear type 2 is used.
@@ -408,6 +450,10 @@ The observed count, Y, of a species at site, *i*, in traditional survey sample, 
 1. a negative binomial distribution with expected species catch rate, $\mu_{i,k}$, and an overdispersion parameter, $\phi$ (Equation 1.1)
 2. a poisson distribution with expected species catch rate, $\mu_{i,k}$ (Equation 1.2).
 
+A third option allows for repeated continuous observations, Y, of a species at site, *i*, in traditional survey sample, *j*, of gear type, *k*.
+
+3. a gamma distribution with shape parameter, $\alpha_{mu}$ and rate parameter, $\beta_{mu}$. The expected species catch rate, $\mu_{i,k}$ is equal to $\frac{\alpha_{mu}}{\beta_{mu}}$.
+
 \begin{equation}
 \tag{Eq. 1.1}
 Y_{i,j,k} \sim NegativeBinomial(\mu_{i,k}, \phi) 
@@ -416,6 +462,11 @@ Y_{i,j,k} \sim NegativeBinomial(\mu_{i,k}, \phi)
 \begin{equation}
 \tag{Eq. 1.2}
 Y_{i,j,k} \sim Poisson(\mu_{i,k}) 
+\end{equation} 
+
+\begin{equation}
+\tag{Eq. 1.3}
+Y_{i,j,k} \sim Gamma(\alpha_{mu,i,k}, \beta_{mu,i,k}) 
 \end{equation} 
 
 Catchability coefficients, $q_k$, scale the catch rates of multiple gear types relative to gear type 1 (Equation 2).
@@ -440,7 +491,7 @@ The scaling coefficient $\beta_i$ relates the sensitivity of eDNA sampling to th
 \beta_i = A_{i,n}^{T} \cdot \alpha_n
 \end{equation}
 
-The total probability of eDNA detection at site i, $p_i$, is the sum of the probability of a true positive eDNA detection at site i, $p_{11,i}$, and the probability of a false positive eDNA detection, $p_{10}$ (Equation 5).
+The total probability of eDNA detection at site *i*, $p_i$, is the sum of the probability of a true positive eDNA detection at site *i*, $p_{11,i}$, and the probability of a false positive eDNA detection, $p_{10}$ (Equation 5).
 
 \begin{equation}
 \tag{Eq. 5}
@@ -454,10 +505,13 @@ The number of positive quantitative PCR (qPCR) eDNA detections, K, out of the nu
 K_{i,m} \sim Binomial(N_{i,m}, p_i)
 \end{equation} 
 
-Two informative prior distributions are included in the model for parameters, $p_{10}$ and $\alpha_n$. See below for more details.
+Three informative prior distributions are included in the model for parameters, $p_{10}$, $\alpha_n$, and $\phi$ (if a negative binomial distribution is used to describe the traditional survey observations, Eq. 1.2). See below for more details.
 
 \begin{equation}
 p_{10} \sim Beta(\alpha, \beta)
+\end{equation}
+\begin{equation}
+\phi \sim Gamma(\alpha, \beta)
 \end{equation}
 \begin{equation}
 \alpha_n ~ Normal(0,10)
@@ -474,7 +528,7 @@ The code for the models written in Stan can be found in [this folder](https://gi
 
 ### Priors
 
-Two non-uniform priors are used in the model. First, there is an informative prior distribution for the false positive probability of eDNA detection, $p_{10}$, which is used for parameter identifiability. A beta distribution is used for the $p_{10}$ prior with two parameters: alpha and beta. In *eDNAjoint*, these parameters can be user-specified. The default specification is beta(1,20) (mean: 0.048, var: 0.045). Additionally, a normally distributed [shrinkage prior](https://doi.org/10.1016/j.jmp.2018.12.004) is used for *$\alpha_n$*, which serves a similar role to regularization.
+Three non-uniform priors are used in the model. First, there is an informative prior distribution for the false positive probability of eDNA detection, $p_{10}$, which is used for parameter identifiability. A beta distribution is used for the $p_{10}$ prior with two parameters: alpha and beta. Second, an informative prior distribution for the overdispersion parameter, $\phi$, in the negative binomial distribution for overdispersed count observations (Eq. 1.2). In *eDNAjoint*, these parameters can be user-specified. The default specification for the $p_{10}$ prior is beta(1,20) (mean: 0.048, var: 0.045), and the default specification for the $\phi$ prior is gamma(0.25,0.25) (mean: 1, var: 4). Additionally, a normally distributed [shrinkage prior](https://doi.org/10.1016/j.jmp.2018.12.004) is used for *$\alpha_n$*, which serves a similar role to regularization.
 
 ## References
 

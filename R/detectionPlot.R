@@ -37,10 +37,10 @@
 #'                      family='poisson', p10priors=c(1,20), q=FALSE)
 #'
 #' # Plot at the mean covariate values (covariates are standardized, so mean=0)
-#' detection.plot(fit.cov, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), qPCR.N = 3)
+#' detectionPlot(fit.cov, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), qPCR.N = 3)
 #'
 #' # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-#' detection.plot(fit.cov, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5), qPCR.N = 3)
+#' detectionPlot(fit.cov, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5), qPCR.N = 3)
 #'
 #' # Ex. 2: Calculating necessary effort for detection with multiple traditional gear types
 #'
@@ -52,14 +52,14 @@
 #'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate
-#' detection.plot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)
+#' detectionPlot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)
 #'
 #' # Change probability of detecting presence to 0.95
-#' detection.plot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
+#' detectionPlot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
 #' }
 #'
 
-detection.plot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probability=0.9, qPCR.N = 3){
+detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probability=0.9, qPCR.N = 3){
 
   ## #1. make sure model fit is of class stanfit
   if(!is(modelfit,'stanfit')) {

@@ -28,14 +28,14 @@
 #' modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE)
 #'
 #' # Create summary table of all parameters
-#' summarize(modelfit)
+#' jointSummarize(modelfit)
 #'
 #' # Summarize just 'p10' parameter
-#' summarize(modelfit, par = 'p10')
+#' jointSummarize(modelfit, par = 'p10')
 #' }
 #'
 
-summarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3) {
+jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3) {
 
   ## #1. make sure model fit is of class stanfit
   if(!is(modelfit,'stanfit')) {
@@ -81,74 +81,123 @@ summarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3)
 
   }
 
+  #joint, catchability, negbin
   if(all(c('p10','q','phi','beta') %in% modelfit@model_pars)==TRUE &&
      !c('alpha') %in% modelfit@model_pars &&
      all(par == 'all')){
-    #joint, catchability, negbin
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','beta','q') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, catchability, pois
+  else if(all(c('p10','beta','q') %in% modelfit@model_pars)==TRUE &&
             all(!c('phi','alpha') %in% modelfit@model_pars) &&
             all(par == 'all')){
-    #joint, catchability, pois
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','phi','beta') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, catchability, gamma
+  else if(all(c('p10','beta','q','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
+            all(par == 'all')){
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+
+  }
+  #joint, no catchability, negbin
+  else if(all(c('p10','phi','beta') %in% modelfit@model_pars)==TRUE &&
             all(!c('q','alpha') %in% modelfit@model_pars) &&
             all(par == 'all')){
-    #joint, no catchability, negbin
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','beta') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, no catchability, pois
+  else if(all(c('p10','beta') %in% modelfit@model_pars)==TRUE &&
             all(!c('q','phi','alpha') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    #joint, no catchability, pois
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','q','phi','alpha') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, no catchability, gamma
+  else if(all(c('p10','beta','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
             all(par == 'all')){
-    #joint, catchability, negbin, site covariates
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+
+  }
+  #joint, catchability, negbin, site covariates
+  else if(all(c('p10','q','phi','alpha') %in% modelfit@model_pars)==TRUE &&
+            all(par == 'all')){
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','alpha','q') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, catchability, pois, site covariates
+  else if(all(c('p10','alpha','q') %in% modelfit@model_pars)==TRUE &&
             !c('phi') %in% modelfit@model_pars &&
             all(par == 'all')){
-    #joint, catchability, pois, site covariates
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','phi','alpha') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, catchability, gamma, site covariates
+  else if(all(c('p10','alpha','q','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
+          all(par == 'all')){
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+
+  }
+  #joint, no catchability, negbin, site covariates
+  else if(all(c('p10','phi','alpha') %in% modelfit@model_pars)==TRUE &&
             !c('q') %in% modelfit@model_pars &&
             all(par == 'all')){
-    #joint, no catchability, negbin, site covariates
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('p10','alpha') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, no catchability, pois, site covariates
+  else if(all(c('p10','alpha') %in% modelfit@model_pars)==TRUE &&
             all(!c('q','phi') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    #joint, no catchability, pois, site covariates
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('q','phi') %in% modelfit@model_pars)==TRUE &&
+  }
+  #joint, no catchability, gamma, site covariates
+  else if(all(c('p10','alpha','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
+          all(par == 'all')){
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+
+  }
+  #traditional, catchability, negbin
+  else if(all(c('q','phi') %in% modelfit@model_pars)==TRUE &&
             all(!c('p10','beta') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    #traditional, catchability, negbin
     out <- round(rstan::summary(modelfit,pars=c('q','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('q') %in% modelfit@model_pars)==TRUE &&
+  }
+  #traditional, catchability, pois
+  else if(all(c('q') %in% modelfit@model_pars)==TRUE &&
             all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    #traditional, catchability, pois
     out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(c('phi') %in% modelfit@model_pars)==TRUE &&
+  }
+  #traditional, catchability, gamma
+  else if(all(c('q','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
+          all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
+          all(par == 'all')){
+    out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+
+  }
+  #traditional, no catchability, negbin
+  else if(all(c('phi') %in% modelfit@model_pars)==TRUE &&
             all(!c('p10','beta','q') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    #traditional, no catchability, negbin
     out <- round(rstan::summary(modelfit,pars=c('phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
 
-  } else if(all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
+  }
+  #traditional, no catchability, pois
+  else if(all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
             all(par == 'all')){
-    #traditional, no catchability, pois
+    out <- round(rstan::summary(modelfit,pars='mu',probs=probs,use_cache=FALSE)$summary,digits)
+
+  }
+  #traditional, no catchability, gamma
+  else if(all(c('alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
+          all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
+          all(par == 'all')){
     out <- round(rstan::summary(modelfit,pars='mu',probs=probs,use_cache=FALSE)$summary,digits)
 
   } else {
