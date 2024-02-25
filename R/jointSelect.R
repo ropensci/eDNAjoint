@@ -1,6 +1,6 @@
-#' Perform model selection using leave-one-out cross validation of model objects
+#' Perform model selection using leave one out cross validation of model objects
 #'
-#' This function performs leave-one-out cross validation of a list of model fits using functions in the `loo` package. Compare models fit using `jointModel()` or models fits using `traditionalModel()`.
+#' This function performs leave one out cross validation of a list of model fits using functions in the `loo` package. Compare models fit using `jointModel()` or models fits using `traditionalModel()`.
 #'
 #' @export
 #' @param modelfits A list containing model fits of class `stanfit`.

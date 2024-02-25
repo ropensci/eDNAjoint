@@ -2,7 +2,7 @@
 % Please edit documentation in R/traditionalModel.R
 \name{traditionalModel}
 \alias{traditionalModel}
-\title{Specify and fit model using count data from traditional (non-eDNA) surveys}
+\title{Specify and fit model using count data from traditional, non eDNA surveys}
 \usage{
 traditionalModel(
   data,
@@ -42,7 +42,7 @@ traditionalModel(
 An object of class \code{stanfit} returned by \code{rstan::sampling}
 }
 \description{
-This function implements a Bayesian model that estimates expected species catch rate using count data from traditional (non-eDNA surveys). When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+This function implements a Bayesian model that estimates expected species catch rate using count data from traditional (non eDNA surveys). When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 }
 \note{
 Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:

@@ -2,7 +2,7 @@
 % Please edit documentation in R/jointSelect.R
 \name{jointSelect}
 \alias{jointSelect}
-\title{Perform model selection using leave-one-out cross validation of model objects}
+\title{Perform model selection using leave one out cross validation of model objects}
 \usage{
 jointSelect(modelfits)
 }
@@ -13,7 +13,7 @@ jointSelect(modelfits)
 A matrix of delta elpd (expected log pointwise predictive density) between model fits. Function is performed using the \code{loo} package.
 }
 \description{
-This function performs leave-one-out cross validation of a list of model fits using functions in the \code{loo} package. Compare models fit using \code{jointModel()} or models fits using \code{traditionalModel()}.
+This function performs leave one out cross validation of a list of model fits using functions in the \code{loo} package. Compare models fit using \code{jointModel()} or models fits using \code{traditionalModel()}.
 }
 \note{
 Before model selection, this function makes the following check:
