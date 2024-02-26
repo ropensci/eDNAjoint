@@ -1,6 +1,6 @@
 #' Specify and fit model using count data from traditional, non eDNA surveys
 #'
-#' This function implements a Bayesian model that estimates expected species catch rate using count data from traditional (non eDNA surveys). When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+#' This function implements a Bayesian model that estimates expected species catch rate using count data from traditional, non eDNA surveys. When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #'
 #' @export
 #' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA. Sites, i, should be consistent in all count data.
@@ -53,9 +53,9 @@
 #'
 
 traditionalModel <- function(data, family='poisson',
-                             q=FALSE,phipriors=c(0.25,0.25),multicore=TRUE,
+                             q=FALSE, phipriors=c(0.25,0.25), multicore=TRUE,
                              n.chain=4, n.iter.burn=500,
-                             n.iter.sample=2500,thin=1,
+                             n.iter.sample=2500, thin=1,
                              adapt_delta=0.9) {
 
   # input checks
