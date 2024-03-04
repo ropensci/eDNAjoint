@@ -22,9 +22,6 @@ gobyData
 \description{
 gobyData
 }
-\details{
-Tidewater goby (Eucyclogobius newberryi) data from eDNA and traditional (seine) surveys collected from 39 locations in California. Data can be used to demonstrate functions in the R package eDNAjoint. Data is retrieved from Schmelzle and Kinziger, 2016.
-}
 \references{
 Schmelzle, M.C. and Kinziger, A.P. (2016). Using occupancy modelling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species. Molecular Ecology Resources. 16(4): 895-908.
 }

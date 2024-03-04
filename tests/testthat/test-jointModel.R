@@ -32,12 +32,14 @@ test_that("jointModel input checks work", {
                "Data should include 'qPCR.N', 'qPCR.K', 'count', 'count.type', and 'site.cov'.")
 
   #5. make sure dimensions of qPCR.N and qPCR.K are equal
+  #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all input data is dimensionally commensurate
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1,1),c(1,1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)))),
                "Dimensions of qPCR.N and qPCR.K do not match.")
 
   #6. make sure dimensions of count and count.type are equal, if count.type is present
+  #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all input data is dimensionally commensurate
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
@@ -46,6 +48,7 @@ test_that("jointModel input checks work", {
                "Dimensions of count and count.type do not match.")
 
   #7. make sure number of rows in count = number of rows in qPCR.N and qPCR.K
+  #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all input data is dimensionally commensurate
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA),c(4,1,1)))),
@@ -128,7 +131,7 @@ test_that("jointModel input checks work", {
                                     count=rbind(c(4.1,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,1,2),c(1,2,NA))),
                           q=TRUE, family = 'negbin'),
-               "All values in count should be integers. Use family = 'gamma' if count is continuous.")
+               "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
 
   #19. qPCR.N are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(0.99,1,1),c(1,1,NA)),
@@ -136,7 +139,7 @@ test_that("jointModel input checks work", {
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,1,2),c(1,2,NA))),
                           q=TRUE),
-               "All values in qPCR.N should be integers.")
+               "All values in qPCR.N should be non-negative integers.")
 
   #20. qPCR.K are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
@@ -144,7 +147,7 @@ test_that("jointModel input checks work", {
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,1,2),c(1,2,NA))),
                           q=TRUE),
-               "All values in qPCR.K should be integers.")
+               "All values in qPCR.K should be non-negative integers.")
 
   #21. count.type are integers
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),

@@ -20,17 +20,17 @@ jointModel(
 )
 }
 \arguments{
-\item{data}{A list containing data necessary for model fitting. Valid tags are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and \code{qPCR.K} are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates per site and eDNA sample, and \code{qPCR.K} contains the total number of positive qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). \code{site.cov} is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). \code{site.cov} should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.}
+\item{data}{A list containing data necessary for model fitting. Valid tags are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and \code{qPCR.K} are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates per site and eDNA sample, and \code{qPCR.K} contains the total number of positive qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). \code{site.cov} is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). \code{site.cov} should include informative column names. Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all qPCR, count, and site covariate data.}
 
 \item{cov}{A character vector indicating the site-level covariates to include in the model. Default value is 'None'.}
 
 \item{family}{The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.}
 
-\item{p10priors}{A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).}
+\item{p10priors}{A numeric vector indicating beta distribution hyperparameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).}
 
 \item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
 
-\item{phipriors}{A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+\item{phipriors}{A numeric vector indicating gamma distribution hyperparameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
 
 \item{multicore}{A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.}
 
@@ -48,7 +48,7 @@ jointModel(
 An object of class \code{stanfit} returned by \code{rstan::sampling}
 }
 \description{
-This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+Specify and fit joint model using count data from traditional surveys and eDNA qPCR data
 }
 \note{
 Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:
@@ -58,54 +58,4 @@ Before fitting the model, this function checks to ensure that the model specific
 \item  Number of sites in qPCR and count data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
-\item  family is either 'poisson', 'negbin', or 'gamma'.
-\item  p10priors is a vector of two numeric values.
-\item  q_ref is an integer >= 0.
-\item  site.cov has same number of rows as qPCR.N and count, if present
-\item  site.cov is numeric, if present
-\item  cov values match column names in site.cov, if present
-}
-
-If any of these checks fail, the function returns an error message.
-}
-\examples{
-\donttest{
-# Ex. 1: Implementing the joint model with site-level covariates
-
-# Load data
-data(gobyData)
-
-# Examine data in list
-names(gobyData)
-
-# Note that the surveyed sites (rows) should match in all data
-dim(gobyData$qPCR.N)[1]
-dim(gobyData$count)[1]
-
-# Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-# These covariates will scale the sensitivity of eDNA sampling relative to traditional surveys
-# Count data is modeled using a poisson distribution.
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family='poisson', p10priors=c(1,20), q=FALSE)
-
-
-# Ex. 2: Implementing the joint model with multiple traditional gear types
-
-# Load data
-data(greencrabData)
-
-# Examine data in list
-names(greencrabData)
-
-# Note that the surveyed sites (rows) should match in all data
-dim(greencrabData$qPCR.N)[1]
-dim(greencrabData$count)[1]
-
-# Fit a model estimating a catchability coefficient for traditional survey gear types.
-# This model does not assume all traditional survey methods have the same catchability.
-# Count data is modeled using a negative binomial distribution.
-fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
-                   p10priors=c(1,20), q=TRUE)
-}
-
 }

@@ -1,15 +1,22 @@
 #' Specify and fit joint model using count data from traditional surveys and eDNA qPCR data
 #'
-#' This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+#' @srrstats {G1.0} The literature reference for the joint model is provided here.
+#' This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys, as described in Keller et al. (2022) <https://doi.org/10.1002/eap.2561>. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #'
+#' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
-#' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA. Sites, i, should be consistent in all qPCR, count, and site covariate data.
+#' @srrstats {BS1.1,BS3.0} Descriptions of how to enter data, description of how NAs are handled
+#' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all qPCR, count, and site covariate data.
+#' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param cov A character vector indicating the site-level covariates to include in the model. Default value is 'None'.
 #' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.
-#' @param p10priors A numeric vector indicating beta distribution parameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).
+#' @srrstats {BS1.0,G2.1a,BS1.2} Description of hyperparameters and how to specify prior distributions, explicit documentation of vector input types
+#' @param p10priors A numeric vector indicating beta distribution hyperparameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
-#' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
+#' @srrstats {BS1.0,G2.1a,BS1.2} Description of hyperparameters and how to specify prior distributions, explicit documentation of vector input types
+#' @param phipriors A numeric vector indicating gamma distribution hyperparameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
 #' @param multicore A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.
+#' @srrstats {BS1.3} Description of parameters used in the computational process begins here
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
@@ -24,9 +31,10 @@
 #' \item  Number of sites in qPCR and count data are equal.
 #' \item  All data are numeric (i.e., integer or NA).
 #' \item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
+#' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
 #' \item  family is either 'poisson', 'negbin', or 'gamma'.
-#' \item  p10priors is a vector of two numeric values.
-#' \item  q_ref is an integer >= 0.
+#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
+#' \item  p10priors and phipriors (if used) is a vector of two numeric values.
 #' \item  site.cov has same number of rows as qPCR.N and count, if present
 #' \item  site.cov is numeric, if present
 #' \item  cov values match column names in site.cov, if present
@@ -39,6 +47,7 @@
 #' # Ex. 1: Implementing the joint model with site-level covariates
 #'
 #' # Load data
+#' @srrstats {BS1.1} Descriptions of how to enter data
 #' data(gobyData)
 #'
 #' # Examine data in list
@@ -57,6 +66,7 @@
 #'
 #' # Ex. 2: Implementing the joint model with multiple traditional gear types
 #'
+#' @srrstats {G1.5} Example code that reproduces results in the publication (Keller et al., 2022) where the model/algorithm was first developed
 #' # Load data
 #' data(greencrabData)
 #'
@@ -82,6 +92,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 
   ####
   # input checks
+  #' @srrstats {G2.1} Types of inputs are checked/asserted using the following helper functions
 
   # model with catchability coefficients
   if (q==TRUE) {
@@ -104,6 +115,10 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
+
+  # make character inputs case-insensitive
+  #' @srrstats {G2.3b} Allow case-insensitive character parameter values
+  family <- tolower(family)
 
   ###
   #convert data to long format
@@ -410,6 +425,7 @@ catchability_checks <- function(data,cov){
     stop(errMsg)
   }
   ## make sure dimensions of count and count.type are equal, if count.type is present
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
       errMsg = paste("Dimensions of count and count.type do not match.")
       stop(errMsg)
@@ -424,10 +440,12 @@ catchability_checks <- function(data,cov){
       stop(errMsg)
   }
   ## make sure locations of NAs in count data match locations of NAs in count.type data
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
       errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
       stop(errMsg)
   }
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
       errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
       stop(errMsg)
@@ -468,36 +486,42 @@ no_catchability_checks <- function(data,cov){
 }
 
 all_checks <- function(data,cov,family,p10priors,phipriors){
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   ## make sure dimensions of qPCR.N and qPCR.K are equal
   if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
     errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")
     stop(errMsg)
   }
   ## make sure number of rows in count = number of rows in qPCR.N and qPCR.K
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (dim(data$qPCR.N)[1]!=dim(data$count)[1]) {
     errMsg = paste("Number of sites (rows) in qPCR data and traditional survey count data do not match.")
     stop(errMsg)
   }
 
   ## make sure locations of NAs in qPCR.N data match locations of NAs in qPCR.K data
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(any((which(is.na(data$qPCR.N))==which(is.na(data$qPCR.K)))==FALSE)){
     errMsg = paste("Empty data cells (NA) in qPCR.N data should match empty data cells (NA) in qPCR.K data.")
     stop(errMsg)
   }
 
   ## make sure family is either 'poisson', 'negbin', or 'gamma'
-  if(!c(family %in% c('poisson','negbin','gamma'))){
+  #' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
+  if(!c(tolower(family) %in% c('poisson','negbin','gamma'))){
     errMsg = paste("Invalid family. Options include 'poisson', 'negbin', and 'gamma'.")
     stop(errMsg)
   }
 
   ## p10priors is a vector of two integers
+  #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5,BS2.6} Checks of vector length and appropriateness of distributional parameters (i.e., vector of length 2, numeric values > 0), implemented prior to analytic routines
   if(!is.numeric(p10priors) | length(p10priors)!=2 | any(p10priors<=0)){
     errMsg = paste("p10priors should be a vector of two positive numeric values. ex. c(1,20)")
     stop(errMsg)
   }
 
   ## phipriors is a vector of two numeric values
+  #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5,BS2.6} Checks of vector length and appropriateness of distributional parameters (i.e., vector of length 2, numeric values > 0), implemented prior to analytic routines
   if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
     errMsg = paste("phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)")
     stop(errMsg)
@@ -505,20 +529,23 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
 
 
   ## count are integers, if family is poisson or negbin
-  if(!all(data$count %% 1 %in% c(0,NA)) && family %in% c('poisson','negbin')){
-    errMsg = paste("All values in count should be integers. Use family = 'gamma' if count is continuous.")
+  #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be an integer if a poisson or negative binomial distribution is used), implemented prior to analytic routines
+  if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
+    errMsg = paste("All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
     stop(errMsg)
   }
 
   ## qPCR.N are integers
-  if(!all(data$qPCR.N %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in qPCR.N should be integers.")
+  #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., qPCR data are non-negative integers), implemented prior to analytic routines
+  if(!all(data$qPCR.N %% 1 %in% c(0,NA)) | any(data$qPCR.N < 0)){
+    errMsg = paste("All values in qPCR.N should be non-negative integers.")
     stop(errMsg)
   }
 
   ## qPCR.K are integers
-  if(!all(data$qPCR.K %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in qPCR.K should be integers.")
+  #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., qPCR data are non-negative integers), implemented prior to analytic routines
+  if(!all(data$qPCR.K %% 1 %in% c(0,NA)) | any(data$qPCR.K < 0)){
+    errMsg = paste("All values in qPCR.K should be non-negative integers.")
     stop(errMsg)
   }
 
@@ -538,6 +565,7 @@ covariate_checks <- function(data,cov){
   }
 
   ## site.cov has same number of rows as qPCR.N and count, if present
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
     errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
     stop(errMsg)

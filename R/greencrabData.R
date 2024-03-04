@@ -1,4 +1,5 @@
 #' greencrabData
+#' @srrstats {G5.1} data that is exported and is available for the the user can confirm tests and run examples
 #'
 #' European green crab data from eDNA and traditional (baited trap) surveys collected from 20 locations in Washington state. Data can be used to demonstrate functions in the R package eDNAjoint. Data is retrieved from Keller et al. 2022.
 #'

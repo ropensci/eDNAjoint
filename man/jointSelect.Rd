@@ -13,16 +13,11 @@ jointSelect(modelfits)
 A matrix of delta elpd (expected log pointwise predictive density) between model fits. Function is performed using the \code{loo} package.
 }
 \description{
-This function performs leave one out cross validation of a list of model fits using functions in the \code{loo} package. Compare models fit using \code{jointModel()} or models fits using \code{traditionalModel()}.
+Perform model selection using leave one out cross validation of model objects
 }
 \note{
 Before model selection, this function makes the following check:
 \itemize{
-\item Input is a list of model fits of class 'stanfit'.
-\item All models compared were fit wither either \code{jointModel()} or all with \verb{traditionalModel().}
-}
-
-If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{

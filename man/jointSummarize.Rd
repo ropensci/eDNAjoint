@@ -19,19 +19,11 @@ jointSummarize(modelfit, par = "all", probs = c(0.025, 0.975), digits = 3)
 A summary table of parameter estimates.
 }
 \description{
-This function summarizes the posterior distributions of specified parameters from a model fit. Summary includes mean, sd, and specified quantiles, as well as effective sample size (n_eff) and Rhat for estimated parameters.
+Summarize posterior distributions of model parameters.
 }
 \note{
 Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 \itemize{
-\item  Input model fit is an object of class 'stanfit'.
-\item  Input probs is a numeric vector.
-\item  Input par is a character vector.
-\item  Input par are present in fitted model.
-\item  Input model fit has converged (i.e. no divergent transitions after warm-up).
-}
-
-If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{

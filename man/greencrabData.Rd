@@ -22,9 +22,6 @@ greencrabData
 \description{
 greencrabData
 }
-\details{
-European green crab data from eDNA and traditional (baited trap) surveys collected from 20 locations in Washington state. Data can be used to demonstrate functions in the R package eDNAjoint. Data is retrieved from Keller et al. 2022.
-}
 \references{
 Keller, A.G., Grason, E.W., McDonald, P.S., Ramon-Laca, A., Kelly, R.P. (2022). Tracking an invasion front with environmental DNA. Ecological Applications. 32(4): e2561. https://doi.org/10.1002/eap.2561
 }

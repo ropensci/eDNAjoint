@@ -2,12 +2,16 @@
 #'
 #' This function implements a Bayesian model that estimates expected species catch rate using count data from traditional, non eDNA surveys. When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #'
+#' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
-#' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA. Sites, i, should be consistent in all count data.
+#' @srrstats {BS1.1,BS3.0} Descriptions of how to enter data, description of how NAs are handled
+#' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all count data.
 #' @param family The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.
 #' @param q A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.
-#' @param phipriors A numeric vector indicating gamma distribution parameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
+#' @srrstats {BS1.0,G2.1a,BS1.2} Description of hyperparameters and how to specify prior distributions, explicit documentation of vector input types
+#' @param phipriors A numeric vector indicating gamma distribution hyperparameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
 #' @param multicore A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.
+#' @srrstats {BS1.3} Description of parameters used in the computational process begins here
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
@@ -21,14 +25,18 @@
 #' \item  Number of sites in count and count type data are equal.
 #' \item  All data are numeric (i.e., integer or NA).
 #' \item  Empty data cells (NA) match in count and count.type.
+#' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
 #' \item  family is 'poisson', 'negbin', or 'gamma'.
-#' \item  q_ref is an integer >= 0.
+#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
+#' \item  phipriors (if used) is a vector of two numeric values.
 #' }
 #'
 #' If any of these checks fail, the function returns an error message.
 #'
 #' @examples
 #' \donttest{
+#' # Load data
+#' @srrstats {BS1.1} Descriptions of how to enter data
 #' data(greencrabData)
 #'
 #' # Examine data in list
@@ -59,11 +67,16 @@ traditionalModel <- function(data, family='poisson',
                              adapt_delta=0.9) {
 
   # input checks
+  #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
   traditionalModel_input_checks(data, family, q, phipriors)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
+
+  # make character inputs case-insensitive
+  #' @srrstats {G2.3b} Allow case-insensitive character parameter values
+  family <- tolower(family)
 
   ###
   #convert data to long format
@@ -232,6 +245,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   }
 
   ## #3. make sure dimensions of count and count.type are equal, if count.type is present
+  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (q==TRUE){
     if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
       errMsg = paste("Dimensions of count and count.type do not match.")
@@ -240,6 +254,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   }
 
   ## #4. make sure all data is numeric -- if q == TRUE
+  #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must numeric), implemented prior to analytic routines
   if (q==TRUE) {
     if(is.numeric(data$count)==FALSE |
        is.numeric(data$count.type)==FALSE) {
@@ -249,8 +264,9 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   }
 
   ## #5. make sure all data is numeric -- if q == FALSE
+  #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must positive and numeric), implemented prior to analytic routines
   if (q==FALSE) {
-    if(is.numeric(data$count)==FALSE ) {
+    if(is.numeric(data$count)==FALSE | any(data$count < 0)) {
       errMsg = paste("Data should be numeric.")
       stop(errMsg)
     }
@@ -265,7 +281,8 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   }
 
   ## #7. make sure family is either 'poisson', 'negbin', or 'gamma'
-  if(!c(family %in% c('poisson','negbin','gamma'))){
+  #' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
+  if(!c(tolower(family) %in% c('poisson','negbin','gamma'))){
     errMsg = paste("Invalid family. Options include 'poisson', 'negbin', or 'gamma'.")
     stop(errMsg)
   }
@@ -277,8 +294,9 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   }
 
   ## #9. count are integers, if family is poisson or negbin
-  if(!all(data$count %% 1 %in% c(0,NA)) && family %in% c('poisson','negbin')){
-    errMsg = paste("All values in count should be integers. Use family = 'gamma' if count is continuous.")
+  #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be non-negative integers if a poisson or negative binomial distribution is used), implemented prior to analytic routines
+  if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
+    errMsg = paste("All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
     stop(errMsg)
   }
 
@@ -289,6 +307,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   }
 
   ## #11. phipriors is a vector of two numeric values
+  #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5} Checks of vector length and appropriateness of distributional parameters (i.e., vector of length 2, numeric values > 0), implemented prior to analytic routines
   if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
     errMsg = paste("phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)")
     stop(errMsg)

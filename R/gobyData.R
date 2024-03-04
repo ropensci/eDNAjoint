@@ -1,4 +1,5 @@
 #' gobyData
+#' @srrstats {G5.1} data that is exported and is available for the the user can confirm tests and run examples
 #'
 #' Tidewater goby (Eucyclogobius newberryi) data from eDNA and traditional (seine) surveys collected from 39 locations in California. Data can be used to demonstrate functions in the R package eDNAjoint. Data is retrieved from Schmelzle and Kinziger, 2016.
 #'

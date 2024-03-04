@@ -2,7 +2,9 @@
 #'
 #' This function plots the median number of survey effort units to necessary detect species presence. Detecting species presence is defined as producing at least one true positive eDNA detection or catching at least one individual.
 #'
+#' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
+#' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param modelfit An object of class `stanfit`.
 #' @param mu.min A value indicating the minimum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.
 #' @param mu.max A value indicating the maximum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.
@@ -13,13 +15,16 @@
 #'
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
+#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input mu.min is a numeric value greater than 0.
 #' \item  Input mu.max is a numeric value.
 #' \item  If model fit contains alpha, cov.val must be provided.
 #' \item  Input cov.val is numeric.
+#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  Input cov.val is the same length as the number of estimated covariates.
-#' \item  Input probability is a numeric value.
+#' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations on lengths of inputs
+#' \item  Input probability is a univariate numeric value.
 #' \item  Input model fit has converged (i.e. no divergent transitions after warm-up).
 #' }
 #'
@@ -62,6 +67,7 @@
 detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probability=0.9, qPCR.N = 3){
 
   # input checks
+  #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
   detectionPlot_input_checks(modelfit, mu.min, mu.max, cov.val, probability)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
@@ -703,6 +709,7 @@ div_check <- function(x){
 # function for input checks
 detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probability){
   ## #1. make sure model fit is of class stanfit
+  #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
     errMsg = paste("modelfit must be of class 'stanfit'.")
     stop(errMsg)
@@ -721,6 +728,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probab
   }
 
   ## #4. make sure probability is a numeric value between 0 and 1
+  #' @srrstats {G2.0} Assertion on length of input, prohibit multivariate input to parameters expected to be univariate
   if(!is.numeric(probability) | length(probability)>1 | probability < 0 | probability > 1) {
     errMsg = paste("probability must be a numeric value between 0 and 1")
     stop(errMsg)
@@ -739,6 +747,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probab
   }
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
+  #' @srrstats {G2.0} Assertion on length of input
   if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
     errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
     stop(errMsg)

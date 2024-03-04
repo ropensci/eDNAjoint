@@ -35,17 +35,6 @@ This function plots the median number of survey effort units to necessary detect
 \note{
 Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 \itemize{
-\item  Input model fit is an object of class 'stanfit'.
-\item  Input mu.min is a numeric value greater than 0.
-\item  Input mu.max is a numeric value.
-\item  If model fit contains alpha, cov.val must be provided.
-\item  Input cov.val is numeric.
-\item  Input cov.val is the same length as the number of estimated covariates.
-\item  Input probability is a numeric value.
-\item  Input model fit has converged (i.e. no divergent transitions after warm-up).
-}
-
-If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{

@@ -9,6 +9,7 @@ test_that("traditionalModel input checks work", {
                "Data should include 'count'.")
 
   #3. make sure dimensions of count and count.type are equal, if count.type is present
+  #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all input data is dimensionally commensurate
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,2),c(1,2))),
                           q=TRUE),
@@ -45,7 +46,7 @@ test_that("traditionalModel input checks work", {
   expect_error(traditionalModel(data=list(count=rbind(c(4.1,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,1,2),c(1,2,NA))),
                                 q=TRUE, family = 'negbin'),
-               "All values in count should be integers.")
+               "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
 
 
   #10. count.type are integers

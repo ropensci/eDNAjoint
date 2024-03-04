@@ -1,13 +1,16 @@
 #' Perform model selection using leave one out cross validation of model objects
 #'
-#' This function performs leave one out cross validation of a list of model fits using functions in the `loo` package. Compare models fit using `jointModel()` or models fits using `traditionalModel()`.
+#' @srrstats {G1.0} The literature reference for leave one out cross validation is provided here.
+#' This function performs leave one out cross validation of a list of model fits using functions in the `loo` package, as described in Vehtari, Gelman, and Gabry (2017) <doi:10.1007/s11222-016-9696-4>. Compare models fit using `jointModel()` or models fits using `traditionalModel()`.
 #'
+#' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
 #' @param modelfits A list containing model fits of class `stanfit`.
 #' @return A matrix of delta elpd (expected log pointwise predictive density) between model fits. Function is performed using the `loo` package.
 #'
 #' @note  Before model selection, this function makes the following check:
 #' \itemize{
+#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item Input is a list of model fits of class 'stanfit'.
 #' \item All models compared were fit wither either `jointModel()` or all with `traditionalModel().`
 #' }
@@ -38,6 +41,7 @@
 jointSelect <- function(modelfits) {
 
   # input checks
+  #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
   jointSelect_input_checks(modelfits)
 
 
@@ -65,6 +69,7 @@ jointSelect_input_checks <- function(modelfits){
   }
 
   ## #2. make sure all data objects are of class stanfit
+  #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   test <- function(modelfit){is(modelfit,'stanfit')}
   if (!all(lapply(modelfits,test)==TRUE)) {
     errMsg = paste("Model fits in modelfits input must be of class 'stanfit'.")

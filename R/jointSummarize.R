@@ -1,8 +1,11 @@
 #' Summarize posterior distributions of model parameters.
 #'
+#' @srrstats {BS5.3,BS6.4} Function to summarize parameter samples and provide convergence statistics (using Stan functions), used to summarize parameter values relevant to the user
 #' This function summarizes the posterior distributions of specified parameters from a model fit. Summary includes mean, sd, and specified quantiles, as well as effective sample size (n_eff) and Rhat for estimated parameters.
 #'
+#' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
+#' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param modelfit An object of class `stanfit`.
 #' @param par A character vector of parameter names. The default is 'all'.
 #' @param probs A numeric vector of quantiles of interest. The default is c(0.025,0.975).
@@ -11,6 +14,7 @@
 #'
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
+#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input probs is a numeric vector.
 #' \item  Input par is a character vector.
@@ -38,6 +42,7 @@
 jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits = 3) {
 
   # input checks
+  #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
   jointSummarize_input_checks(modelfit, par, probs)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
@@ -191,6 +196,7 @@ div_check <- function(x){
 # function for input checks
 jointSummarize_input_checks <- function(modelfit, par, probs){
   ## #1. make sure model fit is of class stanfit
+  #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
     errMsg = paste("modelfit must be of class 'stanfit'.")
     stop(errMsg)

@@ -2,7 +2,9 @@
 #'
 #' This function uses the full posterior distributions of parameters estimated by `jointModel()` to calculate mu_critical, or the expected catch rate at which the probabilities of a false positive eDNA detection and true positive eDNA detection are equal.
 #'
+#' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
+#' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param modelfit An object of class `stanfit`
 #' @param cov.val A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.
 #' @param ci Credible interval calculated using highest density interval (HDI). Default is 0.9 (i.e., 90% credible interval).
@@ -10,11 +12,14 @@
 #'
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
+#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item  Input model fit is an object of class 'stanfit'.
-#' \item  Input credible interval is a numeric value greater than 0 and less than 1.
+#' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations on lengths of inputs
+#' \item  Input credible interval is a univariate numeric value greater than 0 and less than 1.
 #' \item  Input model fit contains p10 parameter.
 #' \item  If model fit contains alpha, cov.val must be provided.
 #' \item  Input cov.val is numeric.
+#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  Input cov.val is the same length as the number of estimated covariates.
 #' \item  Input model fit has converged (i.e. no divergent transitions after warm-up).
 #' }
@@ -55,6 +60,7 @@
 muCritical <- function(modelfit, cov.val = 'None', ci = 0.9) {
 
   # input checks
+  #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
   muCritical_input_checks(modelfit, cov.val, ci)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
@@ -141,13 +147,15 @@ div_check <- function(x){
 # function for input checks
 muCritical_input_checks <- function(modelfit, cov.val, ci){
   ## #1. make sure model fit is of class stanfit
+  #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
     errMsg = paste("modelfit must be of class 'stanfit'.")
     stop(errMsg)
   }
 
   ## #2. make sure ci is valid
-  if(!is.numeric(ci)|ci<=0|ci>=1) {
+  #' @srrstats {G2.0,G2.2} Assertion on length of input, prohibit multivariate input to parameters expected to be univariate
+  if(!is.numeric(ci)|ci<=0|ci>=1|length(ci)>1) {
     errMsg = paste("ci must be a numeric value >0 and <1.")
     stop(errMsg)
   }
@@ -177,6 +185,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   }
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
+  #' @srrstats {G2.0} Assertion on length of input
   if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
     errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
     stop(errMsg)
