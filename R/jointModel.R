@@ -410,9 +410,25 @@ init_joint <- function(n.chain,count_all){
 ################
 #helper functions: input checks
 ################
+#' @srrstats {G5.2a} Pre-processing routines to check inputs have unique messages
 
 # if q = TRUE
 catchability_checks <- function(data,cov){
+
+  ## make sure count.type is not zero-length
+  #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
+  if (dim(data$count.type)[1]==0) {
+    errMsg = paste("count.type contains zero-length data.")
+    stop(errMsg)
+  }
+  ## make sure no column is entirely NA in count.type
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+  if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
+    errMsg = paste("count.type contains a column with all NA.")
+    stop(errMsg)
+  }
+
+  #' @srrstats {G2.13} Pre-processing routines to check for missing data
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, count.type, and site.cov)
   #cov='None'
   if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type') %in% names(data))){
@@ -424,14 +440,16 @@ catchability_checks <- function(data,cov){
     errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', 'count.type', and 'site.cov'.")
     stop(errMsg)
   }
+
   ## make sure dimensions of count and count.type are equal, if count.type is present
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
       errMsg = paste("Dimensions of count and count.type do not match.")
       stop(errMsg)
   }
 
   ## make sure all data is numeric -- if q == TRUE
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(is.numeric(data$qPCR.K)==FALSE |
        is.numeric(data$qPCR.N)==FALSE |
        is.numeric(data$count)==FALSE |
@@ -440,12 +458,12 @@ catchability_checks <- function(data,cov){
       stop(errMsg)
   }
   ## make sure locations of NAs in count data match locations of NAs in count.type data
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
       errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
       stop(errMsg)
   }
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
       errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
       stop(errMsg)
@@ -457,6 +475,7 @@ catchability_checks <- function(data,cov){
   }
 
   ## count.type are integers
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!all(data$count.type %% 1 %in% c(0,NA))){
     errMsg = paste("All values in count.type should be integers.")
     stop(errMsg)
@@ -464,6 +483,8 @@ catchability_checks <- function(data,cov){
 }
 
 no_catchability_checks <- function(data,cov){
+
+  #' @srrstats {G2.13} Pre-processing routines to check for missing data
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, and site.cov)
   #cov='None'
   if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
@@ -477,6 +498,7 @@ no_catchability_checks <- function(data,cov){
   }
 
   ## make sure all data is numeric -- if q == FALSE
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(is.numeric(data$qPCR.K)==FALSE |
        is.numeric(data$qPCR.N)==FALSE |
        is.numeric(data$count)==FALSE ) {
@@ -486,21 +508,50 @@ no_catchability_checks <- function(data,cov){
 }
 
 all_checks <- function(data,cov,family,p10priors,phipriors){
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+
+
+  ## make sure count, qPCR.N, and qPCR.K are not zero-length
+  #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
+  if (dim(data$qPCR.N)[1]==0 | dim(data$qPCR.K)[1]==0 | dim(data$count)[1]==0) {
+    errMsg = paste("Input data contains zero-length data.")
+    stop(errMsg)
+  }
+  ## make sure no column is entirely NA in qPCR.N
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+  if (any(apply(data$qPCR.N, 2, function(col) all(is.na(col))))) {
+    errMsg = paste("qPCR.N contains a column with all NA.")
+    stop(errMsg)
+  }
+
+  ## make sure no column is entirely NA in qPCR.K
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+  if (any(apply(data$qPCR.K, 2, function(col) all(is.na(col))))) {
+    errMsg = paste("qPCR.K contains a column with all NA.")
+    stop(errMsg)
+  }
+
+  ## make sure no column is entirely NA in count
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+  if (any(apply(data$count, 2, function(col) all(is.na(col))))) {
+    errMsg = paste("count contains a column with all NA.")
+    stop(errMsg)
+  }
+
   ## make sure dimensions of qPCR.N and qPCR.K are equal
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
     errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")
     stop(errMsg)
   }
   ## make sure number of rows in count = number of rows in qPCR.N and qPCR.K
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (dim(data$qPCR.N)[1]!=dim(data$count)[1]) {
     errMsg = paste("Number of sites (rows) in qPCR data and traditional survey count data do not match.")
     stop(errMsg)
   }
 
   ## make sure locations of NAs in qPCR.N data match locations of NAs in qPCR.K data
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(any((which(is.na(data$qPCR.N))==which(is.na(data$qPCR.K)))==FALSE)){
     errMsg = paste("Empty data cells (NA) in qPCR.N data should match empty data cells (NA) in qPCR.K data.")
     stop(errMsg)
@@ -527,11 +578,31 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
     stop(errMsg)
   }
 
+  ## make sure no data are undefined
+  #' @srrstats {G2.16} Pre-processing routines to check for undefined data
+  if(any(data$count==Inf) | any(data$count==-Inf)){
+    errMsg = paste("count contains undefined values (i.e., Inf or -Inf)")
+    stop(errMsg)
+  }
 
   ## count are integers, if family is poisson or negbin
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be an integer if a poisson or negative binomial distribution is used), implemented prior to analytic routines
   if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
     errMsg = paste("All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
+    stop(errMsg)
+  }
+
+  ## make sure no data are undefined
+  #' @srrstats {G2.16} Pre-processing routines to check for undefined data
+  if(any(data$qPCR.N==Inf) | any(data$qPCR.N==-Inf)){
+    errMsg = paste("qPCR.N contains undefined values (i.e., Inf or -Inf)")
+    stop(errMsg)
+  }
+
+  ## make sure no data are undefined
+  #' @srrstats {G2.16} Pre-processing routines to check for undefined data
+  if(any(data$qPCR.K==Inf) | any(data$qPCR.K==-Inf)){
+    errMsg = paste("qPCR.K contains undefined values (i.e., Inf or -Inf)")
     stop(errMsg)
   }
 
@@ -549,12 +620,36 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
     stop(errMsg)
   }
 
+
+
 }
 
 covariate_checks <- function(data,cov){
+
+  ## make sure site.cov is not zero-length
+  #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
+  if (dim(data$site.cov)[1]==0) {
+    errMsg = paste("site.cov contains zero-length data.")
+    stop(errMsg)
+  }
+  ## make sure no column is entirely NA in site.cov
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+  if (any(apply(data$site.cov, 2, function(col) all(is.na(col))))) {
+    errMsg = paste("site.cov contains a column with all NA.")
+    stop(errMsg)
+  }
+
   ## site.cov is numeric, if present
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!is.numeric(data$site.cov)){
     errMsg = paste("site.cov should be numeric.")
+    stop(errMsg)
+  }
+
+  ## make sure no data are undefined
+  #' @srrstats {G2.16} Pre-processing routines to check for undefined data
+  if(any(data$site.cov==Inf) | any(data$site.cov==-Inf)){
+    errMsg = paste("site.cov contains undefined values (i.e., Inf or -Inf)")
     stop(errMsg)
   }
 
@@ -569,6 +664,21 @@ covariate_checks <- function(data,cov){
   if(dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
     errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
     stop(errMsg)
+  }
+
+  ## add warning if number of covariates is greater than the number of sites
+  #' @srrstats {G5.8d} Pre-processing routines to check if data is outside scope of algorithm (i.e., # site-level covariates is greater than the number of sites)
+  if(dim(data$site.cov)[1]<dim(data$site.cov)[2]){
+    warnMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
+    warning(warnMsg)
+  }
+
+  ## add warning if number of site-covariate data has perfect collinearity
+  #' @srrstats {BS3.1} Pre-processing routines to check if site covariate data has perfect collinearity
+  rank_mat <- qr(data$site.cov)$rank
+  if(rank_mat < ncol(data$site.cov)){
+    warnMsg = paste("Data in site.cov exhibits perfect collinearity.")
+    warning(warnMsg)
   }
 }
 

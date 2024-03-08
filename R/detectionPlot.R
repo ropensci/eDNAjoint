@@ -75,6 +75,7 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabilit
   }
 
   ## check to see if there are any divergent transitions
+  #' @srrstats {BS4.5} Warning message if the input model fit has divergence transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]]) > 0){
 
     sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),div_check)[[1]])
@@ -707,6 +708,7 @@ div_check <- function(x){
 }
 
 # function for input checks
+#' @srrstats {G5.2a} Pre-processing routines to check inputs have unique messages
 detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probability){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())

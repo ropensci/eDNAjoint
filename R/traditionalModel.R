@@ -231,21 +231,38 @@ init_trad <- function(n.chain, count_all){
 }
 
 # function for input checks
+#' @srrstats {G5.2a} Pre-processing routines to check inputs have unique messages
 traditionalModel_input_checks <- function(data, family, q, phipriors){
-  ## #1. make sure all data tags are valid -- if q == TRUE
+
+  ## make sure all data tags are valid -- if q == TRUE
+  #' @srrstats {G2.13} Pre-processing routines to check for missing data
   if (q==TRUE && !all(c('count.type','count') %in% names(data))){
     errMsg = paste("Data should include 'count' and 'count.type'.")
     stop(errMsg)
   }
 
-  ## #2. make sure all data tags are valid -- if q == FALSE
+  ## make sure all data tags are valid -- if q == FALSE
+  #' @srrstats {G2.13} Pre-processing routines to check for missing data
   if (q==FALSE && !all(c('count') %in% names(data))){
     errMsg = paste("Data should include 'count'.")
     stop(errMsg)
   }
 
-  ## #3. make sure dimensions of count and count.type are equal, if count.type is present
-  #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
+  ## make sure count is not zero-length
+  #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
+  if (dim(data$count)[1]==0) {
+    errMsg = paste("count contains zero-length data.")
+    stop(errMsg)
+  }
+  ## make sure no column is entirely NA in count
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+  if (any(apply(data$count, 2, function(col) all(is.na(col))))) {
+    errMsg = paste("count contains a column with all NA.")
+    stop(errMsg)
+  }
+
+  ## make sure dimensions of count and count.type are equal, if count.type is present
+  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (q==TRUE){
     if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
       errMsg = paste("Dimensions of count and count.type do not match.")
@@ -253,8 +270,16 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
     }
   }
 
-  ## #4. make sure all data is numeric -- if q == TRUE
+  ## make sure no data are undefined
+  #' @srrstats {G2.16} Pre-processing routines to check for undefined data
+  if(any(data$count==Inf) | any(data$count==-Inf)){
+    errMsg = paste("count contains undefined values (i.e., Inf or -Inf)")
+    stop(errMsg)
+  }
+
+  ## make sure all data is numeric -- if q == TRUE
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must numeric), implemented prior to analytic routines
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if (q==TRUE) {
     if(is.numeric(data$count)==FALSE |
        is.numeric(data$count.type)==FALSE) {
@@ -263,8 +288,9 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
     }
   }
 
-  ## #5. make sure all data is numeric -- if q == FALSE
+  ## make sure all data is numeric -- if q == FALSE
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must positive and numeric), implemented prior to analytic routines
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if (q==FALSE) {
     if(is.numeric(data$count)==FALSE | any(data$count < 0)) {
       errMsg = paste("Data should be numeric.")
@@ -272,41 +298,55 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
     }
   }
 
-  ## #6. make sure locations of NAs in count data match locations of NAs in count.type data
   if(q==TRUE){
+    ## make sure locations of NAs in count data match locations of NAs in count.type data
+    #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
     if(any((which(is.na(data$count.type))==which(is.na(data$count)))==FALSE)){
       errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
       stop(errMsg)
     }
+    ## make sure count.type is not zero-length
+    #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
+    if (dim(data$count.type)[1]==0) {
+      errMsg = paste("count.type contains zero-length data.")
+      stop(errMsg)
+    }
+    ## make sure no column is entirely NA in count.type
+    #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
+    if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
+      errMsg = paste("count.type contains a column with all NA.")
+      stop(errMsg)
+    }
   }
 
-  ## #7. make sure family is either 'poisson', 'negbin', or 'gamma'
+  ## make sure family is either 'poisson', 'negbin', or 'gamma'
   #' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
   if(!c(tolower(family) %in% c('poisson','negbin','gamma'))){
     errMsg = paste("Invalid family. Options include 'poisson', 'negbin', or 'gamma'.")
     stop(errMsg)
   }
 
-  ## #8. the smallest count.type is 1
+  ## the smallest count.type is 1
   if(q==TRUE && min(data$count.type,na.rm=TRUE) != 1){
     errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
     stop(errMsg)
   }
 
-  ## #9. count are integers, if family is poisson or negbin
+  ## count are integers, if family is poisson or negbin
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be non-negative integers if a poisson or negative binomial distribution is used), implemented prior to analytic routines
   if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
     errMsg = paste("All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
     stop(errMsg)
   }
 
-  ## #10. count.type are integers
+  ## count.type are integers
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
     errMsg = paste("All values in count.type should be integers.")
     stop(errMsg)
   }
 
-  ## #11. phipriors is a vector of two numeric values
+  ## phipriors is a vector of two numeric values
   #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5} Checks of vector length and appropriateness of distributional parameters (i.e., vector of length 2, numeric values > 0), implemented prior to analytic routines
   if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
     errMsg = paste("phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)")

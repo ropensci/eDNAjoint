@@ -61,6 +61,7 @@ jointSelect <- function(modelfits) {
 }
 
 # function for input checks
+#' @srrstats {G5.2a} Pre-processing routines to check inputs have unique messages
 jointSelect_input_checks <- function(modelfits){
   ## #1. make sure input is a list
   if (!is(modelfits,'list')){

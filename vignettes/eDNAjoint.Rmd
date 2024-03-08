@@ -187,7 +187,7 @@ Next let's look at chain convergence for $p_{10}$ and $\mu_{i=1}$.
 ```{r, message = FALSE, warning = FALSE}
 library(rstan)
 
-#' @srrstats {BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
+#' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
 
 # this will plot the MCMC chains for p10 and mu at site 1
 mcmc_trace(extract(goby.fit1, permuted = FALSE), pars = c('p10', 'mu[1]'))
@@ -408,7 +408,7 @@ Next let's look at chain convergence for $p_{10}$ and $\beta$.
 ```{r}
 library(rstan)
 
-#' @srrstats {BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
+#' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
 
 # this will plot the MCMC chains for p10 and mu at site 1
 mcmc_trace(extract(greencrab.fit.q.negbin, permuted = FALSE), pars = c('p10', 'beta'))
