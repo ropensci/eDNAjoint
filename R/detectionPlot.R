@@ -42,10 +42,10 @@
 #'                      family='poisson', p10priors=c(1,20), q=FALSE)
 #'
 #' # Plot at the mean covariate values (covariates are standardized, so mean=0)
-#' detectionPlot(fit.cov, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), qPCR.N = 3)
+#' detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), qPCR.N = 3)
 #'
 #' # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-#' detectionPlot(fit.cov, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5), qPCR.N = 3)
+#' detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5), qPCR.N = 3)
 #'
 #' # Ex. 2: Calculating necessary effort for detection with multiple traditional gear types
 #'
@@ -57,10 +57,10 @@
 #'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate
-#' detectionPlot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)
+#' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)
 #'
 #' # Change probability of detecting presence to 0.95
-#' detectionPlot(fit.q, mu.min = 0.1, mu.max = 1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
+#' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
 #' }
 #'
 
@@ -713,51 +713,61 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probab
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
-    errMsg = paste("modelfit must be of class 'stanfit'.")
+    errMsg = "modelfit must be of class 'stanfit'."
     stop(errMsg)
   }
 
   ## #2. make sure mu.min is a numeric value
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!is.numeric(mu.min) | length(mu.min)>1 | mu.min <= 0) {
-    errMsg = paste("mu.min must be a numeric value greater than 0")
+    errMsg = "mu.min must be a numeric value greater than 0"
     stop(errMsg)
   }
 
   ## #3. make sure mu.max is a numeric value
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!is.numeric(mu.max) | length(mu.max)>1 | mu.max <= mu.min) {
-    errMsg = paste("mu.max must be a numeric value greater than mu.min")
+    errMsg = "mu.max must be a numeric value greater than mu.min"
     stop(errMsg)
   }
 
   ## #4. make sure probability is a numeric value between 0 and 1
   #' @srrstats {G2.0} Assertion on length of input, prohibit multivariate input to parameters expected to be univariate
   if(!is.numeric(probability) | length(probability)>1 | probability < 0 | probability > 1) {
-    errMsg = paste("probability must be a numeric value between 0 and 1")
+    errMsg = "probability must be a numeric value between 0 and 1"
     stop(errMsg)
   }
 
   ## #5. cov.val is numeric, if provided
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(all(cov.val != 'None') && !is.numeric(cov.val)) {
-    errMsg = paste("cov.val must be a numeric vector")
+    errMsg = "cov.val must be a numeric vector"
     stop(errMsg)
   }
 
   ## #6. Only include input cov.val if covariates are included in model
   if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg = paste("cov.val must be 'None' if the model does not contain site-level covariates.")
+    errMsg = "cov.val must be 'None' if the model does not contain site-level covariates."
     stop(errMsg)
   }
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
   #' @srrstats {G2.0} Assertion on length of input
   if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
-    errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
+    errMsg = "cov.val must be of the same length as the number of non-intercept site-level coefficients in the model."
     stop(errMsg)
   }
 
   ## #8. If covariates are in model, cov.val must be provided
   if('alpha' %in% modelfit@model_pars && all(cov.val == 'None')) {
-    errMsg = paste("cov.val must be provided if the model contains site-level covariates.")
+    errMsg = "cov.val must be provided if the model contains site-level covariates."
+    stop(errMsg)
+  }
+
+  ## #9. qPCR.N must be an integer
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
+  if(qPCR.N %% 1 != 0) {
+    errMsg = "qPCR.N should be an integer."
     stop(errMsg)
   }
 }

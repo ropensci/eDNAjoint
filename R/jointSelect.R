@@ -34,7 +34,7 @@
 #' fit.q = jointModel(data=greencrabData, family='negbin', p10priors=c(1,20), q=TRUE)
 #'
 #' # Perform model selection
-#' jointSelect(modelfits=list(fit.no.q, fit.q))
+#' jointSelect(modelfits=list(fit.no.q$model, fit.q$model))
 #' }
 #'
 
@@ -65,7 +65,7 @@ jointSelect <- function(modelfits) {
 jointSelect_input_checks <- function(modelfits){
   ## #1. make sure input is a list
   if (!is(modelfits,'list')){
-    errMsg = paste("modelfits must be a list.")
+    errMsg = "modelfits must be a list."
     stop(errMsg)
   }
 
@@ -73,14 +73,14 @@ jointSelect_input_checks <- function(modelfits){
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   test <- function(modelfit){is(modelfit,'stanfit')}
   if (!all(lapply(modelfits,test)==TRUE)) {
-    errMsg = paste("Model fits in modelfits input must be of class 'stanfit'.")
+    errMsg = "Model fits in modelfits input must be of class 'stanfit'."
     stop(errMsg)
   }
 
   ## #3. make sure all models are of the same type
   type <- function(modelfit){'p10'%in%modelfit@model_pars}
   if (length(unique(lapply(modelfits,type)))!=1){
-    errMsg = paste("All modelfits must be fit with either jointModel() or all with traditionalModel().")
+    errMsg = "All modelfits must be fit with either jointModel() or all with traditionalModel()."
     stop(errMsg)
   }
 }

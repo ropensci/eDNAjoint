@@ -35,10 +35,10 @@ fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family='poisson', p10priors=c(1,20), q=FALSE)
 
 # Calculate mu_critical at the mean covariate values (covariates are standardized, so mean=0)
-mu.critical(fit.cov, cov.val=c(0,0))
+mu.critical(fit.cov$model, cov.val=c(0,0))
 
 # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-mu.critical(fit.cov, cov.val=c(0,0.5))
+mu.critical(fit.cov$model, cov.val=c(0,0.5))
 
 # Ex. 2: Calculating mu_critical with multiple traditional gear types
 
@@ -50,7 +50,7 @@ fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
                    p10priors=c(1,20), q=TRUE)
 
 # Calculate mu_critical
-muCritical(fit.q, cov.val='None')
+muCritical(fit.q$model, cov.val='None')
 }
 
 }

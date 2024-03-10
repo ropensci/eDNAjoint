@@ -12,6 +12,7 @@ jointModel(
   q = FALSE,
   phipriors = c(0.25, 0.25),
   multicore = TRUE,
+  initial_values = "None",
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
@@ -34,6 +35,8 @@ jointModel(
 
 \item{multicore}{A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.}
 
+\item{initial_values}{A list of lists of initial values to use in MCMC. The length should equal the number of MCMC chains. Initial values can be provided for parameters: beta, p10 (log-scale), mu, q, alpha. If no initial values are provided, default random values are drawn.}
+
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
 \item{n.iter.burn}{Number of warm-up MCMC iterations. Default value is 500.}
@@ -45,7 +48,12 @@ jointModel(
 \item{adapt_delta}{Target average acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
 }
 \value{
-An object of class \code{stanfit} returned by \code{rstan::sampling}
+A list of:
+\itemize{
+\item a model object of class \code{stanfit} returned by \code{rstan::sampling}
+\item seeds used in MCMC chains
+\item initial values used in MCMC
+}
 }
 \description{
 Specify and fit joint model using count data from traditional surveys and eDNA qPCR data
@@ -58,4 +66,45 @@ Before fitting the model, this function checks to ensure that the model specific
 \item  Number of sites in qPCR and count data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
+}
+\examples{
+\donttest{
+# Ex. 1: Implementing the joint model with site-level covariates
+
+# Load data
+data(gobyData)
+
+# Examine data in list
+names(gobyData)
+
+# Note that the surveyed sites (rows) should match in all data
+dim(gobyData$qPCR.N)[1]
+dim(gobyData$count)[1]
+
+# Fit a model including 'Filter_time' and 'Salinity' site-level covariates
+# These covariates will scale the sensitivity of eDNA sampling relative to traditional surveys
+# Count data is modeled using a poisson distribution.
+fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
+                     family='poisson', p10priors=c(1,20), q=FALSE)
+
+
+# Ex. 2: Implementing the joint model with multiple traditional gear types
+
+# Load data
+data(greencrabData)
+
+# Examine data in list
+names(greencrabData)
+
+# Note that the surveyed sites (rows) should match in all data
+dim(greencrabData$qPCR.N)[1]
+dim(greencrabData$count)[1]
+
+# Fit a model estimating a catchability coefficient for traditional survey gear types.
+# This model does not assume all traditional survey methods have the same catchability.
+# Count data is modeled using a negative binomial distribution.
+fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
+                   p10priors=c(1,20), q=TRUE)
+}
+
 }

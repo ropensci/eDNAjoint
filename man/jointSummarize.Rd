@@ -13,7 +13,7 @@ jointSummarize(modelfit, par = "all", probs = c(0.025, 0.975), digits = 3)
 
 \item{probs}{A numeric vector of quantiles of interest. The default is c(0.025,0.975).}
 
-\item{digits}{An integer indicating the number of decimal places to round values in summary table. Default value is 3.}
+\item{as.integer(digits)}{An integer indicating the number of decimal places to round values in summary table. Default value is 3.}
 }
 \value{
 A summary table of parameter estimates.
@@ -33,10 +33,10 @@ data(greencrabData)
 modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE)
 
 # Create summary table of all parameters
-jointSummarize(modelfit)
+jointSummarize(modelfit$model)
 
 # Summarize just 'p10' parameter
-jointSummarize(modelfit, par = 'p10')
+jointSummarize(modelfit$model, par = 'p10')
 }
 
 }

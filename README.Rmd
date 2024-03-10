@@ -51,7 +51,7 @@ And then this model fit can be accessed to do things like summarize the posterio
 
 ```{r example_2}
 # summarize p10 posterior
-jointSummarize(goby.fit, par = 'p10')
+jointSummarize(goby.fit$model, par = 'p10')
 ```
 
 Or to find the number of eDNA samples and traditional survey samples necessary to detect presence of the species at a given expected catch rate:
@@ -59,7 +59,7 @@ Or to find the number of eDNA samples and traditional survey samples necessary t
 ```{r example_3}
 # find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
 # if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
-detectionCalculate(goby.fit, mu = c(0.1,0.5,1), 
+detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1), 
                    cov.val=c(0,0), probability = 0.9)
 ```
 

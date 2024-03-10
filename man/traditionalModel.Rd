@@ -10,6 +10,7 @@ traditionalModel(
   q = FALSE,
   phipriors = c(0.25, 0.25),
   multicore = TRUE,
+  initial_values = "None",
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
@@ -28,6 +29,8 @@ traditionalModel(
 
 \item{multicore}{A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.}
 
+\item{initial_values}{A list of lists of initial values to use in MCMC. The length should equal the number of MCMC chains. Initial values can be provided for parameters: mu and q. If no initial values are provided, default random values are drawn.}
+
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
 \item{n.iter.burn}{Number of warm-up MCMC iterations. Default value is 500.}
@@ -39,7 +42,12 @@ traditionalModel(
 \item{adapt_delta}{Target average acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
 }
 \value{
-An object of class \code{stanfit} returned by \code{rstan::sampling}
+A list of:
+\itemize{
+\item a model object of class \code{stanfit} returned by \code{rstan::sampling}
+\item seeds used in MCMC chains
+\item initial values used in MCMC
+}
 }
 \description{
 This function implements a Bayesian model that estimates expected species catch rate using count data from traditional, non eDNA surveys. When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
@@ -51,4 +59,30 @@ Before fitting the model, this function checks to ensure that the model specific
 \item  Number of sites in count and count type data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in count and count.type.
+}
+\examples{
+\donttest{
+# Load data
+data(greencrabData)
+
+# Examine data in list
+# This function uses only traditional survey count data and optionally the count type data
+names(greencrabData)
+
+# Note that the surveyed sites (rows) should match in the data
+dim(greencrabData$count)[1]
+dim(greencrabData$count.type)[1]
+
+# Fit a model without estimating a catchability coefficient for traditional survey gear types.
+# This model assumes all traditional survey methods have the same catchability.
+# Count data is modeled using a poisson distribution.
+fit.no.q = traditionalModel(data=greencrabData, family='poisson', q=FALSE)
+
+
+# Fit a model estimating a catchability coefficient for traditional survey gear types.
+# This model does not assume all traditional survey methods have the same catchability.
+# Count data is modeled using a negative binomial distribution.
+fit.q = traditionalModel(data=greencrabData, family='negbin', q=TRUE)
+}
+
 }

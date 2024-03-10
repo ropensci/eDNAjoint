@@ -45,10 +45,10 @@ fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family='poisson', p10priors=c(1,20), q=FALSE)
 
 # Calculate at the mean covariate values (covariates are standardized, so mean=0)
-detectionCalculate(fit.cov, mu = seq(from=0.1,to=1,by=0.1), cov.val = c(0,0), qPCR.N = 3)
+detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1), cov.val = c(0,0), qPCR.N = 3)
 
 # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-detectionCalculate(fit.cov, mu = seq(from=0.1,to=1,by=0.1), cov.val = c(0,0.5), qPCR.N = 3)
+detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1), cov.val = c(0,0.5), qPCR.N = 3)
 
 # Ex. 2: Calculating necessary effort for detection with multiple traditional gear types
 
@@ -60,10 +60,10 @@ fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
                    p10priors=c(1,20), q=TRUE)
 
 # Calculate
-detectionCalculate(fit.q, mu = seq(from=0.1,to=1,by=0.1), cov.val = 'None', qPCR.N = 3)
+detectionCalculate(fit.q$model, mu = seq(from=0.1,to=1,by=0.1), cov.val = 'None', qPCR.N = 3)
 
 # Change probability of detecting presence to 0.95
-detectionCalculate(fit.q, mu = 0.1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
+detectionCalculate(fit.q$model, mu = 0.1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
 }
 
 }

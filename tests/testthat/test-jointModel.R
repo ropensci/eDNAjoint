@@ -1,4 +1,5 @@
 test_that("jointModel input checks work", {
+  #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving as expected.
   #1. input tags are valid, q = FALSE, cov = FALSE
   expect_error(jointModel(data=list(qPCR.n=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.k=rbind(c(3,3,3),c(3,3,NA)),

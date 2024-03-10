@@ -1,11 +1,11 @@
 #' Specify and fit joint model using count data from traditional surveys and eDNA qPCR data
 #'
-#' @srrstats {G1.0} The literature reference for the joint model is provided here.
+#' @srrstats {G1.0,G1.1} This software makes available a novel algorithm/model that was previously published in the literature. The literature reference for the joint model is provided here.
 #' This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys, as described in Keller et al. (2022) <https://doi.org/10.1002/eap.2561>. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #'
 #' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export
-#' @srrstats {BS1.1,BS3.0} Descriptions of how to enter data, description of how NAs are handled
+#' @srrstats {BS1.1,BS3.0,G2.14} Descriptions of how to enter data, description of how NAs are handled (which are informative and should be deliberately included in input data, where necessary)
 #' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all qPCR, count, and site covariate data.
 #' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param cov A character vector indicating the site-level covariates to include in the model. Default value is 'None'.
@@ -16,13 +16,21 @@
 #' @srrstats {BS1.0,G2.1a,BS1.2} Description of hyperparameters and how to specify prior distributions, explicit documentation of vector input types
 #' @param phipriors A numeric vector indicating gamma distribution hyperparameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
 #' @param multicore A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.
+#' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each chain
+#' @param initial_values A list of lists of initial values to use in MCMC. The length should equal the number of MCMC chains. Initial values can be provided for parameters: beta, p10 (log-scale), mu, q, alpha. If no initial values are provided, default random values are drawn.
 #' @srrstats {BS1.3} Description of parameters used in the computational process begins here
 #' @param n.chain Number of MCMC chains. Default value is 4.
 #' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
 #' @param thin A positive integer specifying the period for saving samples. Default value is 1.
 #' @param adapt_delta Target average acceptance probability used in `rstan::sampling`. Default value is 0.9.
-#' @return An object of class `stanfit` returned by `rstan::sampling`
+#' @srrstats {BS5.0} function returns seeds and initial values used in computation
+#' @return A list of:
+#' \itemize{
+#' \item a model object of class `stanfit` returned by `rstan::sampling`
+#' \item seeds used in MCMC chains
+#' \item initial values used in MCMC
+#' }
 #'
 #' @note  Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:
 #' \itemize{
@@ -47,7 +55,6 @@
 #' # Ex. 1: Implementing the joint model with site-level covariates
 #'
 #' # Load data
-#' @srrstats {BS1.1} Descriptions of how to enter data
 #' data(gobyData)
 #'
 #' # Examine data in list
@@ -66,7 +73,6 @@
 #'
 #' # Ex. 2: Implementing the joint model with multiple traditional gear types
 #'
-#' @srrstats {G1.5} Example code that reproduces results in the publication (Keller et al., 2022) where the model/algorithm was first developed
 #' # Load data
 #' data(greencrabData)
 #'
@@ -86,7 +92,7 @@
 #'
 
 jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=FALSE,
-                       phipriors=c(0.25,0.25), multicore=TRUE,
+                       phipriors=c(0.25,0.25), multicore=TRUE, initial_values='None',
                        n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, thin=1, adapt_delta=0.9) {
 
@@ -112,6 +118,11 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   # all models
   all_checks(data,cov,family,p10priors,phipriors)
 
+  # initial value checks
+  if(initial_values != 'None'){
+    initial_values_checks(initial_values,data,cov,n.chain)
+  }
+
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
@@ -126,25 +137,31 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   '%>%' <- magrittr::`%>%`
 
   #convert qPCR data to long format
+  #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular form (i.e., matrix, etc.)
   qPCR_all <- as.data.frame(data$qPCR.N) %>%
     dplyr::mutate(L=1:dim(data$qPCR.N)[1]) %>%
     tidyr::pivot_longer(cols=!L,values_to='N') %>%
+    #' @srrstats {G2.15} Software does not assume non-missingness and actually expects it if the number of observations across sites is unequal
     tidyr::drop_na()
   qPCR.K_df <- as.data.frame(data$qPCR.K) %>%
     dplyr::mutate(L=1:dim(data$qPCR.K)[1]) %>%
     tidyr::pivot_longer(cols=!L,values_to='K') %>%
+    #' @srrstats {G2.15} Software does not assume non-missingness and actually expects it if the number of observations across sites is unequal
     tidyr::drop_na()
   qPCR_all$K <- qPCR.K_df$K
 
   #convert count data to long format
+  #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular form (i.e., matrix, etc.)
   count_all <- as.data.frame(data$count) %>%
     dplyr::mutate(L=1:dim(data$count)[1]) %>%
     tidyr::pivot_longer(cols=!L,values_to='count') %>%
+    #' @srrstats {G2.15} Software does not assume non-missingness and actually expects it if the number of observations across sites is unequal
     tidyr::drop_na()
 
   #if q==TRUE, add count type data to count df
   if(q==TRUE){
     q_ref <- 1
+    #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular form (i.e., matrix, etc.)
     count.type_df <- as.data.frame(data$count.type) %>%
       dplyr::mutate(L=1:dim(data$count.type)[1]) %>%
       tidyr::pivot_longer(cols=!L,values_to='count.type') %>%
@@ -154,7 +171,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   #create vector of q coefficient names
   counttypes <- unique(count_all$count.type)
   names <- counttypes[!counttypes==q_ref]
-  q_names <- paste0('q_',names)
+  #' @srrstats {G2.4,G2.4c} Explicit conversion to character
+  q_names <- as.character(paste0('q_',names))
 
   #add dummy variables for count type
   for(i in seq_along(q_names)){
@@ -164,7 +182,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 
   #if present, prepare covariate data
   if(all(cov!='None')){
-    site_mat <- as.data.frame(data$site.cov[,cov])
+    #' @srrstats {G2.7,G2.10} Use as.data.frame() to allow input list of any tabular form (i.e., matrix, etc.) and converts before filtering columns based on input 'cov'
+    site_mat <- as.data.frame(data$site.cov)[,cov]
     site_mat <- cbind(as.data.frame(rep(1,length(site_mat[,1]))),site_mat)
     colnames(site_mat) <- c('int',cov)
   }
@@ -202,11 +221,20 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     cores <- 1
   }
 
+  # prepare seeds
+  seeds <- sample(1:1000000,n.chain)
+  #' @srrstats {BS2.9} Ensure each chain is started with a different seed by default
+  # ensure seeds are not equal
+  while (any(duplicated(seeds))) {
+    seeds <- sample(1:1000000,n.chain)
+  }
+
 
   ##run model, catchability, pois/gamma, no covariates
   if(q==TRUE&&family!='negbin'&&all(cov=='None')){
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
+    inits <- init_joint_catchability(n.chain,count_all,q_names,initial_values)
     out <- rstan::sampling(c(stanmodels$joint_binary_catchability_pois,
                              stanmodels$joint_binary_catchability_gamma)[model_index][[1]],
                            data = rlist::list.append(
@@ -215,14 +243,17 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              mat = as.matrix(count_all[,q_names])
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_catchability(n.chain,count_all,q_names)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==TRUE&&family=='negbin'&&all(cov=='None')){
     ##run model, catchability, negbin, no covariates
+    inits <- init_joint_catchability(n.chain,count_all,q_names,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_catchability_negbin,
                            data = rlist::list.append(
                              data,
@@ -231,42 +262,51 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              mat = as.matrix(count_all[,q_names])
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_catchability(n.chain,count_all,q_names)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==FALSE&&family!='negbin'&&all(cov=='None')){
     ##run model, no catchability, pois/gamma, no covariates
       model_index <- dplyr::case_when(family=='poisson'~ 1,
                                       family=='gamma' ~ 2)
+      inits <- init_joint(n.chain,count_all,initial_values)
       out <- rstan::sampling(c(stanmodels$joint_binary_pois,
                                stanmodels$joint_binary_gamma)[model_index][[1]],
                            data = data,
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint(n.chain,count_all)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==FALSE&&family=='negbin'&&all(cov=='None')){
     ##run model, no catchability, negbin, no covariates
+    inits <- init_joint(n.chain,count_all,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_negbin,
                            data = rlist::list.append(
                              data,
                              phipriors = phipriors
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint(n.chain,count_all)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==TRUE&&family=='negbin'&&all(cov!='None')){
     ##run model, catchability, negbin, covariates
+    inits <- init_joint_cov_catchability(n.chain,count_all,q_names,cov,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_cov_catchability_negbin,
                            data = rlist::list.append(
                              data,
@@ -277,16 +317,19 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              mat_site = as.matrix(site_mat)
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_cov_catchability(n.chain,count_all,q_names,cov)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==TRUE&&family!='negbin'&&all(cov!='None')){
     ##run model, catchability, pois/gamma, covariates
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
+    inits <- init_joint_cov_catchability(n.chain,count_all,q_names,cov,initial_values)
     out <- rstan::sampling(c(stanmodels$joint_binary_cov_catchability_pois,
                              stanmodels$joint_binary_cov_catchability_gamma)[model_index][[1]],
                            data = rlist::list.append(
@@ -297,14 +340,17 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              mat_site = as.matrix(site_mat)
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_cov_catchability(n.chain,count_all,q_names,cov)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==FALSE&&family=='negbin'&&all(cov!='None')){
     ##run model, no catchability, negbin, covariates
+    inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_cov_negbin,
                            data = rlist::list.append(
                              data,
@@ -313,16 +359,19 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              mat_site = as.matrix(site_mat)
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_cov(n.chain,count_all,cov)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   } else if(q==FALSE&&family!='negbin'&&all(cov!='None')){
     ##run model, no catchability, pois/gamma, covariates
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
+    inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
     out <- rstan::sampling(c(stanmodels$joint_binary_cov_pois,
                              stanmodels$joint_binary_cov_gamma)[model_index][[1]],
                            data = rlist::list.append(
@@ -331,77 +380,113 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                              mat_site = as.matrix(site_mat)
                            ),
                            cores = cores,
-                           chains = n.chain,
-                           thin = thin,
-                           warmup = n.iter.burn,
-                           iter = n.iter.burn + n.iter.sample,
-                           init = init_joint_cov(n.chain,count_all,cov)
+                           #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+                           chains = as.integer(n.chain),
+                           seed = seeds,
+                           thin = as.integer(thin),
+                           warmup = as.integer(n.iter.burn),
+                           iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
+                           init = inits
     )
   }
 
   # assert that the log likelihood is a double
+  #' @srrstats {G5.3} assert that model run worked and the log likelihood is valid (i.e., not NA)
   stopifnot(is.double(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik))))
 
-  return(out)
+  # Create a list to store the results
+  #' @srrstats {BS5.0} function returns seeds and initial values used in computation
+  result_list <- list(model = out, seeds = seeds, inits = inits)
+
+  return(result_list)
 }
 
 ###########
 #helper functions: initial values
 ###########
+#' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each chain
 
-init_joint_cov <- function(n.chain,count_all,cov){
+init_joint_cov <- function(n.chain,count_all,cov,initial_values='None'){
   #helper function
   #joint model, catchability coefficient, site covariates
   A <- list()
   for(i in 1:n.chain){
     A[[i]] <- list(
-      mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
-      p10 = log(0.05),
-      alpha = rep(0.1,length(cov)+1)
+      mu = ifelse('mu' %in% names(initial_values[[i]]),
+                  inits[[i]]$mu,
+                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
+      p10 = ifelse('p10' %in% names(initial_values[[i]]),
+                   inits[[i]]$p10,
+                   stats::runif(1,log(0.0001),log(0.08))),
+      alpha = ifelse('alpha' %in% names(initial_values[[i]]),
+                     inits[[i]]$alpha,
+                     rep(0.1,length(cov)+1))
     )
   }
   return(A)
 }
 
-init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov){
+init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,initial_values='None'){
   #helper function
   #joint model, catchability coefficient, site covariates
   A <- list()
   for(i in 1:n.chain){
     A[[i]] <- list(
-      mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
-      q = as.data.frame(stats::runif(length(q_names),0.01,1)),
-      p10 = log(0.05),
-      alpha = rep(0.1,length(cov)+1)
+      mu = ifelse('mu' %in% names(initial_values[[i]]),
+                  inits[[i]]$mu,
+                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
+      q = ifelse('q' %in% names(initial_values[[i]]),
+                 as.data.frame(inits[[i]]$q),
+                 as.data.frame(stats::runif(length(q_names),0.01,1))),
+      p10 = ifelse('p10' %in% names(initial_values[[i]]),
+                   inits[[i]]$p10,
+                   stats::runif(1,log(0.0001),log(0.08))),
+      alpha = ifelse('alpha' %in% names(initial_values[[i]]),
+                     inits[[i]]$alpha,
+                     rep(0.1,length(cov)+1))
     )
   }
   return(A)
 }
 
-init_joint_catchability <- function(n.chain,count_all,q_names){
+init_joint_catchability <- function(n.chain,count_all,q_names,initial_values='None'){
   #helper function
   #joint model, catchability coefficient, no site covariates
   A <- list()
   for(i in 1:n.chain){
     A[[i]] <- list(
-      mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
-      q = as.data.frame(stats::runif(length(q_names),0.01,1)),
-      p10 = log(0.05),
-      beta = .5
+      mu = ifelse('mu' %in% names(initial_values[[i]]),
+                  inits[[i]]$mu,
+                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
+      q = ifelse('q' %in% names(initial_values[[i]]),
+                 as.data.frame(inits[[i]]$q),
+                 as.data.frame(stats::runif(length(q_names),0.01,1))),
+      p10 = ifelse('p10' %in% names(initial_values[[i]]),
+                   inits[[i]]$p10,
+                   stats::runif(1,log(0.0001),log(0.08))),
+      beta = ifelse('beta' %in% names(initial_values[[i]]),
+                    inits[[i]]$beta,
+                    0.5)
     )
   }
   return(A)
 }
 
-init_joint <- function(n.chain,count_all){
+init_joint <- function(n.chain,count_all,initial_values='None'){
   #helper function
   #joint model, no catchability coefficient, no site covariates
   A <- list()
   for(i in 1:n.chain){
     A[[i]] <- list(
-      mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
-      p10 = log(0.05),
-      beta = .5
+      mu = ifelse('mu' %in% names(initial_values[[i]]),
+                  inits[[i]]$mu,
+                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
+      p10 = ifelse('p10' %in% names(initial_values[[i]]),
+                   inits[[i]]$p10,
+                   stats::runif(1,log(0.0001),log(0.08))),
+      beta = ifelse('beta' %in% names(initial_values[[i]]),
+                    inits[[i]]$beta,
+                    0.5)
     )
   }
   return(A)
@@ -412,19 +497,19 @@ init_joint <- function(n.chain,count_all){
 ################
 #' @srrstats {G5.2a} Pre-processing routines to check inputs have unique messages
 
-# if q = TRUE
+# input checks if catchabilty coefficients are used
 catchability_checks <- function(data,cov){
 
   ## make sure count.type is not zero-length
   #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
   if (dim(data$count.type)[1]==0) {
-    errMsg = paste("count.type contains zero-length data.")
+    errMsg = "count.type contains zero-length data."
     stop(errMsg)
   }
   ## make sure no column is entirely NA in count.type
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
   if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
-    errMsg = paste("count.type contains a column with all NA.")
+    errMsg = "count.type contains a column with all NA."
     stop(errMsg)
   }
 
@@ -432,19 +517,19 @@ catchability_checks <- function(data,cov){
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, count.type, and site.cov)
   #cov='None'
   if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', and 'count.type'.")
+    errMsg = "Data should include 'qPCR.N', 'qPCR.K', 'count', and 'count.type'."
     stop(errMsg)
   }
   #q=TRUE and cov!='None'
   if (all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count','count.type','site.cov') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', 'count.type', and 'site.cov'.")
+    errMsg = "Data should include 'qPCR.N', 'qPCR.K', 'count', 'count.type', and 'site.cov'."
     stop(errMsg)
   }
 
   ## make sure dimensions of count and count.type are equal, if count.type is present
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(dim(data$count)[1]!=dim(data$count.type)[1]|dim(data$count)[2]!=dim(data$count.type)[2]) {
-      errMsg = paste("Dimensions of count and count.type do not match.")
+      errMsg = "Dimensions of count and count.type do not match."
       stop(errMsg)
   }
 
@@ -454,46 +539,47 @@ catchability_checks <- function(data,cov){
        is.numeric(data$qPCR.N)==FALSE |
        is.numeric(data$count)==FALSE |
        is.numeric(data$count.type)==FALSE) {
-      errMsg = paste("Data should be numeric.")
+      errMsg = "Data should be numeric."
       stop(errMsg)
   }
   ## make sure locations of NAs in count data match locations of NAs in count.type data
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
-      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
+      errMsg = "Empty data cells (NA) in count data should match empty data cells (NA) in count.type data."
       stop(errMsg)
   }
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
-      errMsg = paste("Empty data cells (NA) in count data should match empty data cells (NA) in count.type data.")
+      errMsg = "Empty data cells (NA) in count data should match empty data cells (NA) in count.type data."
       stop(errMsg)
   }
   ## the smallest count.type is 1
   if(min(data$count.type,na.rm=TRUE) != 1){
-    errMsg = paste("The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc.")
+    errMsg = "The first gear type should be referenced as 1 in count.type. Subsequent gear types should be referenced 2, 3, 4, etc."
     stop(errMsg)
   }
 
   ## count.type are integers
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!all(data$count.type %% 1 %in% c(0,NA))){
-    errMsg = paste("All values in count.type should be integers.")
+    errMsg = "All values in count.type should be integers."
     stop(errMsg)
   }
 }
 
+# input checks if no catchabilty coefficients are used
 no_catchability_checks <- function(data,cov){
 
   #' @srrstats {G2.13} Pre-processing routines to check for missing data
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, and site.cov)
   #cov='None'
   if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', and 'count'.")
+    errMsg = "Data should include 'qPCR.N', 'qPCR.K', and 'count'."
     stop(errMsg)
   }
   #cov!='None'
   if (all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count','site.cov') %in% names(data))){
-    errMsg = paste("Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'.")
+    errMsg = "Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'."
     stop(errMsg)
   }
 
@@ -502,121 +588,122 @@ no_catchability_checks <- function(data,cov){
   if(is.numeric(data$qPCR.K)==FALSE |
        is.numeric(data$qPCR.N)==FALSE |
        is.numeric(data$count)==FALSE ) {
-      errMsg = paste("Data should be numeric.")
+      errMsg = "Data should be numeric."
       stop(errMsg)
   }
 }
 
+# input checks for all variations
 all_checks <- function(data,cov,family,p10priors,phipriors){
 
 
   ## make sure count, qPCR.N, and qPCR.K are not zero-length
   #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
   if (dim(data$qPCR.N)[1]==0 | dim(data$qPCR.K)[1]==0 | dim(data$count)[1]==0) {
-    errMsg = paste("Input data contains zero-length data.")
+    errMsg = "Input data contains zero-length data."
     stop(errMsg)
   }
   ## make sure no column is entirely NA in qPCR.N
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
   if (any(apply(data$qPCR.N, 2, function(col) all(is.na(col))))) {
-    errMsg = paste("qPCR.N contains a column with all NA.")
+    errMsg = "qPCR.N contains a column with all NA."
     stop(errMsg)
   }
 
   ## make sure no column is entirely NA in qPCR.K
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
   if (any(apply(data$qPCR.K, 2, function(col) all(is.na(col))))) {
-    errMsg = paste("qPCR.K contains a column with all NA.")
+    errMsg = "qPCR.K contains a column with all NA."
     stop(errMsg)
   }
 
   ## make sure no column is entirely NA in count
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
   if (any(apply(data$count, 2, function(col) all(is.na(col))))) {
-    errMsg = paste("count contains a column with all NA.")
+    errMsg = "count contains a column with all NA."
     stop(errMsg)
   }
 
   ## make sure dimensions of qPCR.N and qPCR.K are equal
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (dim(data$qPCR.N)[1]!=dim(data$qPCR.K)[1]|dim(data$qPCR.N)[2]!=dim(data$qPCR.K)[2]) {
-    errMsg = paste("Dimensions of qPCR.N and qPCR.K do not match.")
+    errMsg = "Dimensions of qPCR.N and qPCR.K do not match."
     stop(errMsg)
   }
   ## make sure number of rows in count = number of rows in qPCR.N and qPCR.K
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if (dim(data$qPCR.N)[1]!=dim(data$count)[1]) {
-    errMsg = paste("Number of sites (rows) in qPCR data and traditional survey count data do not match.")
+    errMsg = "Number of sites (rows) in qPCR data and traditional survey count data do not match."
     stop(errMsg)
   }
 
   ## make sure locations of NAs in qPCR.N data match locations of NAs in qPCR.K data
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(any((which(is.na(data$qPCR.N))==which(is.na(data$qPCR.K)))==FALSE)){
-    errMsg = paste("Empty data cells (NA) in qPCR.N data should match empty data cells (NA) in qPCR.K data.")
+    errMsg = "Empty data cells (NA) in qPCR.N data should match empty data cells (NA) in qPCR.K data."
     stop(errMsg)
   }
 
   ## make sure family is either 'poisson', 'negbin', or 'gamma'
   #' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
   if(!c(tolower(family) %in% c('poisson','negbin','gamma'))){
-    errMsg = paste("Invalid family. Options include 'poisson', 'negbin', and 'gamma'.")
+    errMsg = "Invalid family. Options include 'poisson', 'negbin', and 'gamma'."
     stop(errMsg)
   }
 
   ## p10priors is a vector of two integers
   #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5,BS2.6} Checks of vector length and appropriateness of distributional parameters (i.e., vector of length 2, numeric values > 0), implemented prior to analytic routines
   if(!is.numeric(p10priors) | length(p10priors)!=2 | any(p10priors<=0)){
-    errMsg = paste("p10priors should be a vector of two positive numeric values. ex. c(1,20)")
+    errMsg = "p10priors should be a vector of two positive numeric values. ex. c(1,20)"
     stop(errMsg)
   }
 
   ## phipriors is a vector of two numeric values
   #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5,BS2.6} Checks of vector length and appropriateness of distributional parameters (i.e., vector of length 2, numeric values > 0), implemented prior to analytic routines
   if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
-    errMsg = paste("phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)")
+    errMsg = "phipriors should be a vector of two positive numeric values. ex. c(0.25,0.25)"
     stop(errMsg)
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$count==Inf) | any(data$count==-Inf)){
-    errMsg = paste("count contains undefined values (i.e., Inf or -Inf)")
+    errMsg = "count contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## count are integers, if family is poisson or negbin
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be an integer if a poisson or negative binomial distribution is used), implemented prior to analytic routines
   if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
-    errMsg = paste("All values in count should be non-negative integers. Use family = 'gamma' if count is continuous.")
+    errMsg = "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous."
     stop(errMsg)
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$qPCR.N==Inf) | any(data$qPCR.N==-Inf)){
-    errMsg = paste("qPCR.N contains undefined values (i.e., Inf or -Inf)")
+    errMsg = "qPCR.N contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$qPCR.K==Inf) | any(data$qPCR.K==-Inf)){
-    errMsg = paste("qPCR.K contains undefined values (i.e., Inf or -Inf)")
+    errMsg = "qPCR.K contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## qPCR.N are integers
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., qPCR data are non-negative integers), implemented prior to analytic routines
   if(!all(data$qPCR.N %% 1 %in% c(0,NA)) | any(data$qPCR.N < 0)){
-    errMsg = paste("All values in qPCR.N should be non-negative integers.")
+    errMsg = "All values in qPCR.N should be non-negative integers."
     stop(errMsg)
   }
 
   ## qPCR.K are integers
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., qPCR data are non-negative integers), implemented prior to analytic routines
   if(!all(data$qPCR.K %% 1 %in% c(0,NA)) | any(data$qPCR.K < 0)){
-    errMsg = paste("All values in qPCR.K should be non-negative integers.")
+    errMsg = "All values in qPCR.K should be non-negative integers."
     stop(errMsg)
   }
 
@@ -624,52 +711,53 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
 
 }
 
+# input checks if site-level covariates are used
 covariate_checks <- function(data,cov){
 
   ## make sure site.cov is not zero-length
   #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length data
   if (dim(data$site.cov)[1]==0) {
-    errMsg = paste("site.cov contains zero-length data.")
+    errMsg = "site.cov contains zero-length data."
     stop(errMsg)
   }
   ## make sure no column is entirely NA in site.cov
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with all NA
   if (any(apply(data$site.cov, 2, function(col) all(is.na(col))))) {
-    errMsg = paste("site.cov contains a column with all NA.")
+    errMsg = "site.cov contains a column with all NA."
     stop(errMsg)
   }
 
   ## site.cov is numeric, if present
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!is.numeric(data$site.cov)){
-    errMsg = paste("site.cov should be numeric.")
+    errMsg = "site.cov should be numeric."
     stop(errMsg)
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$site.cov==Inf) | any(data$site.cov==-Inf)){
-    errMsg = paste("site.cov contains undefined values (i.e., Inf or -Inf)")
+    errMsg = "site.cov contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## cov values match column names in site.cov
   if(!all(cov %in% colnames(data$site.cov))){
-    errMsg = paste("cov values should be listed in the column names of site.cov in the data.")
+    errMsg = "cov values should be listed in the column names of site.cov in the data."
     stop(errMsg)
   }
 
   ## site.cov has same number of rows as qPCR.N and count, if present
   #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is dimensionally commensurate
   if(dim(data$qPCR.N)[1]!=dim(data$site.cov)[1]){
-    errMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
+    errMsg = "The number of rows in site.cov matrix should match the number of rows in all other matrices."
     stop(errMsg)
   }
 
   ## add warning if number of covariates is greater than the number of sites
   #' @srrstats {G5.8d} Pre-processing routines to check if data is outside scope of algorithm (i.e., # site-level covariates is greater than the number of sites)
   if(dim(data$site.cov)[1]<dim(data$site.cov)[2]){
-    warnMsg = paste("The number of rows in site.cov matrix should match the number of rows in all other matrices.")
+    warnMsg = "The number of rows in site.cov matrix should match the number of rows in all other matrices."
     warning(warnMsg)
   }
 
@@ -677,8 +765,95 @@ covariate_checks <- function(data,cov){
   #' @srrstats {BS3.1} Pre-processing routines to check if site covariate data has perfect collinearity
   rank_mat <- qr(data$site.cov)$rank
   if(rank_mat < ncol(data$site.cov)){
-    warnMsg = paste("Data in site.cov exhibits perfect collinearity.")
+    warnMsg = "Data in site.cov exhibits perfect collinearity."
     warning(warnMsg)
+  }
+}
+
+# checks if initial values are provided
+initial_values_checks <- function(initial_values,data,cov,n.chain){
+
+  ## length of initial values is equal to the number of chains
+  if(length(initial_values)!=n.chain){
+    errMsg = "The length of the list of initial values should equal the number of chains (n.chain, default is 4)."
+    stop(errMsg)
+  }
+
+  for(i in 1:n.chain){
+
+    ## check mu input
+    if('mu' %in% names(initial_values[[i]])){
+      ## if mu is numeric
+      if(any(!is.numeric(initial_values[[i]]$mu)) | any(initial_values[[i]]$mu < 0)){
+        errMsg = "Initial values for 'mu' should be numeric values > 0."
+        stop(errMsg)
+      }
+      ## check mu length
+      if(length(initial_values[[i]]$mu)!=dim(data$count)[1]){
+        errMsg = "The length of initial values for 'mu' should equal the number of sites."
+        stop(errMsg)
+      }
+    }
+
+    ## check p10 input
+    if('p10' %in% names(initial_values[[i]])){
+      ## warning that p10 is estimated on a log scale
+      warning('warning: p10 is estimated on a log scale')
+      ## if p10 is numeric
+      if(!is.numeric(initial_values[[i]]$p10)){
+        errMsg = "Initial values for 'p10' should be numeric."
+        stop(errMsg)
+      }
+      ## check p10 length
+      if(length(initial_values[[i]]$p10)!=1){
+        errMsg = "The length of initial values for 'p10' should equal 1."
+        stop(errMsg)
+      }
+    }
+
+    ## check beta input
+    if('beta' %in% names(initial_values[[i]])){
+      ## if beta is numeric
+      if(!is.numeric(initial_values[[i]]$beta)){
+        errMsg = "Initial values for 'beta' should be numeric."
+        stop(errMsg)
+      }
+      ## check beta length
+      if(length(initial_values[[i]]$p10)!=1){
+        errMsg = "The length of initial values for 'beta' should equal 1."
+        stop(errMsg)
+      }
+    }
+
+    ## check alpha input
+    if('alpha' %in% names(initial_values[[i]])){
+      ## if alpha is numeric
+      if(any(!is.numeric(initial_values[[i]]$alpha)) | any(initial_values[[i]]$alpha < 0)){
+        errMsg = "Initial values for 'alpha' should be numeric."
+        stop(errMsg)
+      }
+      ## check alpha length
+      if(length(initial_values[[i]]$alpha)!=(length(cov)+1)){
+        errMsg = "The length of initial values for 'alpha' should equal: # covariates + 1 (i.e., including intercept)."
+        stop(errMsg)
+      }
+    }
+
+    ## check q input
+    if('q' %in% names(initial_values[[i]])){
+      ## if q is numeric
+      if(any(!is.numeric(initial_values[[i]]$q)) | any(initial_values[[i]]$q < 0)){
+        errMsg = "Initial values for 'q' should be numeric."
+        stop(errMsg)
+      }
+      ## check q length
+      if(length(initial_values[[i]]$q)!=(length(table(data$count.type))-1)){
+        errMsg = "The length of initial values for 'q' should equal: # unique gear types - 1 (i.e., q for reference type = 1)."
+        stop(errMsg)
+      }
+    }
+
+
   }
 }
 

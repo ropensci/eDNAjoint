@@ -9,7 +9,7 @@
 #' @param modelfit An object of class `stanfit`.
 #' @param par A character vector of parameter names. The default is 'all'.
 #' @param probs A numeric vector of quantiles of interest. The default is c(0.025,0.975).
-#' @param digits An integer indicating the number of decimal places to round values in summary table. Default value is 3.
+#' @param as.integer(digits) An integer indicating the number of decimal places to round values in summary table. Default value is 3.
 #' @return A summary table of parameter estimates.
 #'
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
@@ -32,10 +32,10 @@
 #' modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE)
 #'
 #' # Create summary table of all parameters
-#' jointSummarize(modelfit)
+#' jointSummarize(modelfit$model)
 #'
 #' # Summarize just 'p10' parameter
-#' jointSummarize(modelfit, par = 'p10')
+#' jointSummarize(modelfit$model, par = 'p10')
 #' }
 #'
 
@@ -64,123 +64,142 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975), digits
   if(all(c('p10','q','phi','beta') %in% modelfit@model_pars)==TRUE &&
      !c('alpha') %in% modelfit@model_pars &&
      all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','phi','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(as.integer(digits)))
 
   }
   #joint, catchability, pois
   else if(all(c('p10','beta','q') %in% modelfit@model_pars)==TRUE &&
             all(!c('phi','alpha') %in% modelfit@model_pars) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, catchability, gamma
   else if(all(c('p10','beta','q','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, no catchability, negbin
   else if(all(c('p10','phi','beta') %in% modelfit@model_pars)==TRUE &&
             all(!c('q','alpha') %in% modelfit@model_pars) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','beta','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','phi','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, no catchability, pois
   else if(all(c('p10','beta') %in% modelfit@model_pars)==TRUE &&
             all(!c('q','phi','alpha') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, no catchability, gamma
   else if(all(c('p10','beta','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, catchability, negbin, site covariates
   else if(all(c('p10','q','phi','alpha') %in% modelfit@model_pars)==TRUE &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','phi','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, catchability, pois, site covariates
   else if(all(c('p10','alpha','q') %in% modelfit@model_pars)==TRUE &&
             !c('phi') %in% modelfit@model_pars &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, catchability, gamma, site covariates
   else if(all(c('p10','alpha','q','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, no catchability, negbin, site covariates
   else if(all(c('p10','phi','alpha') %in% modelfit@model_pars)==TRUE &&
             !c('q') %in% modelfit@model_pars &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','phi','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, no catchability, pois, site covariates
   else if(all(c('p10','alpha') %in% modelfit@model_pars)==TRUE &&
             all(!c('q','phi') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #joint, no catchability, gamma, site covariates
   else if(all(c('p10','alpha','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #traditional, catchability, negbin
   else if(all(c('q','phi') %in% modelfit@model_pars)==TRUE &&
             all(!c('p10','beta') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('q','phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('q','phi','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #traditional, catchability, pois
   else if(all(c('q') %in% modelfit@model_pars)==TRUE &&
             all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #traditional, catchability, gamma
   else if(all(c('q','alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #traditional, no catchability, negbin
   else if(all(c('phi') %in% modelfit@model_pars)==TRUE &&
             all(!c('p10','beta','q') %in% modelfit@model_pars==TRUE) &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars=c('phi','mu'),probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=c('phi','mu'),probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #traditional, no catchability, pois
   else if(all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
             all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars='mu',probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars='mu',probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   }
   #traditional, no catchability, gamma
   else if(all(c('alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
-    out <- round(rstan::summary(modelfit,pars='mu',probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars='mu',probs=probs,use_cache=FALSE)$summary,as.integer(digits))
 
   } else {
-    out <- round(rstan::summary(modelfit,pars=par,probs=probs,use_cache=FALSE)$summary,digits)
+    #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
+    out <- round(rstan::summary(modelfit,pars=par,probs=probs,use_cache=FALSE)$summary,as.integer(digits))
   }
 
 
@@ -200,25 +219,27 @@ jointSummarize_input_checks <- function(modelfit, par, probs){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
-    errMsg = paste("modelfit must be of class 'stanfit'.")
+    errMsg = "modelfit must be of class 'stanfit'."
     stop(errMsg)
   }
 
   ## #2. make sure probs is a numeric vector
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!is.numeric(probs)) {
-    errMsg = paste("probs must be a numeric vector.")
+    errMsg = "probs must be a numeric vector."
     stop(errMsg)
   }
 
   ## #3. make sure all values of probs are between 0 and 1
   if(any(probs > 1 | probs < 0)) {
-    errMsg = paste("probs must be between 0 and 1.")
+    errMsg = "probs must be between 0 and 1."
     stop(errMsg)
   }
 
   ## #4. make sure par is a character vector
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(!is.character(par)) {
-    errMsg = paste("par must be a character vector.")
+    errMsg = "par must be a character vector."
     stop(errMsg)
   }
 

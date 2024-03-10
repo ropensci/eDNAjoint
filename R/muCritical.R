@@ -38,10 +38,10 @@
 #'                      family='poisson', p10priors=c(1,20), q=FALSE)
 #'
 #' # Calculate mu_critical at the mean covariate values (covariates are standardized, so mean=0)
-#' mu.critical(fit.cov, cov.val=c(0,0))
+#' mu.critical(fit.cov$model, cov.val=c(0,0))
 #'
 #' # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-#' mu.critical(fit.cov, cov.val=c(0,0.5))
+#' mu.critical(fit.cov$model, cov.val=c(0,0.5))
 #'
 #' # Ex. 2: Calculating mu_critical with multiple traditional gear types
 #'
@@ -53,7 +53,7 @@
 #'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate mu_critical
-#' muCritical(fit.q, cov.val='None')
+#' muCritical(fit.q$model, cov.val='None')
 #' }
 #'
 
@@ -151,45 +151,46 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
-    errMsg = paste("modelfit must be of class 'stanfit'.")
+    errMsg = "modelfit must be of class 'stanfit'."
     stop(errMsg)
   }
 
   ## #2. make sure ci is valid
   #' @srrstats {G2.0,G2.2} Assertion on length of input, prohibit multivariate input to parameters expected to be univariate
   if(!is.numeric(ci)|ci<=0|ci>=1|length(ci)>1) {
-    errMsg = paste("ci must be a numeric value >0 and <1.")
+    errMsg = "ci must be a numeric value >0 and <1."
     stop(errMsg)
   }
 
   ## #3. make sure model fit contains p10 parameter
   if(!("p10" %in% modelfit@model_pars)) {
-    errMsg = paste("modelfit must be contain 'p10' parameter.")
+    errMsg = "modelfit must be contain 'p10' parameter."
     stop(errMsg)
   }
 
   ## #4. if modelfit contains alpha, cov.val must be provided
   if('alpha' %in% modelfit@model_pars && all(cov.val=='None')) {
-    errMsg = paste("If modelfit contains site-level covariates, values must be provided for cov.val")
+    errMsg = "If modelfit contains site-level covariates, values must be provided for cov.val"
     stop(errMsg)
   }
 
   ## #5. cov.val is numeric, if provided
+  #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if(all(cov.val != 'None') && !is.numeric(cov.val)) {
-    errMsg = paste("cov.val must be a numeric vector")
+    errMsg = "cov.val must be a numeric vector"
     stop(errMsg)
   }
 
   ## #6. Only include input cov.val if covariates are included in model
   if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg = paste("cov.val must be 'None' if the model does not contain site-level covariates.")
+    errMsg = "cov.val must be 'None' if the model does not contain site-level covariates."
     stop(errMsg)
   }
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
   #' @srrstats {G2.0} Assertion on length of input
   if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
-    errMsg = paste("cov.val must be of the same length as the number of non-intercept site-level coefficients in the model.")
+    errMsg = "cov.val must be of the same length as the number of non-intercept site-level coefficients in the model."
     stop(errMsg)
   }
 }

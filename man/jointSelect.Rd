@@ -35,7 +35,7 @@ fit.no.q = jointModel(data=greencrabData, family='poisson', p10priors=c(1,20), q
 fit.q = jointModel(data=greencrabData, family='negbin', p10priors=c(1,20), q=TRUE)
 
 # Perform model selection
-jointSelect(modelfits=list(fit.no.q, fit.q))
+jointSelect(modelfits=list(fit.no.q$model, fit.q$model))
 }
 
 }

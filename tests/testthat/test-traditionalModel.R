@@ -1,4 +1,5 @@
 test_that("traditionalModel input checks work", {
+  #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving as expected.
   #1. input tags are valid, q = TRUE
   expect_error(traditionalModel(data=list(Count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,2,1),c(1,2,NA))),q=TRUE),
