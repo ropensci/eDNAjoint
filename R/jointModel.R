@@ -366,7 +366,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
     inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
-    out <- rstan::sampling(stan_model,
+    out <- rstan::sampling(c(stanmodels$joint_binary_cov_pois,
+                             stanmodels$joint_binary_cov_gamma)[model_index][[1]],
                            data = rlist::list.append(
                              data,
                              nsitecov = length(cov)+1,
@@ -839,7 +840,7 @@ covariate_checks <- function(data,cov){
 
   ## add warning if number of covariates is greater than the number of sites
   #' @srrstats {G5.8d} Pre-processing routines to check if data is outside scope of algorithm (i.e., # site-level covariates is greater than the number of sites)
-  if(length(cov)<dim(data$site.cov)[2]){
+  if(length(cov)>dim(data$site.cov)[2]){
     warnMsg = "The number of site-level covariates exceeds the number of sites (i.e., n < p)."
     warning(warnMsg)
   }

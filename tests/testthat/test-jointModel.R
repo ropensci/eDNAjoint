@@ -405,3 +405,176 @@ test_that("jointModel input checks work", {
 
 
 })
+
+
+# parameter recovery tests
+#' @srrstats {G5.6} Parameter recovery tests to test that the implementation produces expected results given data with known properties
+test_that("jointModel parameter recovery tests work",{
+
+  # simulate data: seed 123
+  set.seed(123)
+  # constants
+  nsite <- 20
+  nobs_count <- 200
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rpois(nobs_count,mu[i])
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] = mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] = min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    site.cov = mat_site
+  )
+  # run model
+  fit <- jointModel(data=data, cov=c('var_a','var_b'))
+  # summary
+  summary <- as.data.frame(rstan::summary(fit$model, pars = c('mu','alpha','log_p10'), probs = c(0.025, 0.975))$summary)
+
+  # set up empty vector to check if true values are in 95% interval of posterior estimates
+  check <- rep(NA,length(mu)+length(alpha)+length(log_p10))
+  # check mu
+  for(i in 1:nsite){
+    par <- paste0('mu[',i,']')
+    if(mu[i] > summary[par,'2.5%'] && mu[i] < summary[par,'97.5%']){
+      check[i] <- TRUE
+    } else {
+      check[i] <- FALSE
+    }
+  }
+  # check alpha
+  for(i in 1:length(alpha)){
+    par <- paste0('alpha[',i,']')
+    if(alpha[i] > summary[par,'2.5%'] && alpha[i] < summary[par,'97.5%']){
+      check[nsite+i] <- TRUE
+    } else {
+      check[nsite+i] <- FALSE
+    }
+  }
+  # check p10
+  if(log_p10 > summary['log_p10','2.5%'] && log_p10 < summary['log_p10','97.5%']){
+    check[nsite+length(alpha)+1] <- TRUE
+  } else {
+    check[nsite+length(alpha)+1] <- FALSE
+  }
+
+  #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for equality, here the model is tested to determine if the true parameter values are within the 95% quantiles of the posterior
+  # all should be equal to true
+  expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
+
+
+  #' @srrstats {G5.6b,G5.9b} Run test for multiple seeds with same data
+  # simulate data: seed 222
+  set.seed(222)
+  # constants
+  nsite <- 20
+  nobs_count <- 200
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rpois(nobs_count,mu[i])
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] = mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] = min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    site.cov = mat_site
+  )
+  # run model
+  fit <- jointModel(data=data, cov=c('var_a','var_b'))
+  # summary
+  summary <- as.data.frame(rstan::summary(fit$model, pars = c('mu','alpha','log_p10'), probs = c(0.025, 0.975))$summary)
+
+  # set up empty vector to check if true values are in 95% interval of posterior estimates
+  check <- rep(NA,length(mu)+length(alpha)+length(log_p10))
+  # check mu
+  for(i in 1:nsite){
+    par <- paste0('mu[',i,']')
+    if(mu[i] > summary[par,'2.5%'] && mu[i] < summary[par,'97.5%']){
+      check[i] <- TRUE
+    } else {
+      check[i] <- FALSE
+    }
+  }
+  # check alpha
+  for(i in 1:length(alpha)){
+    par <- paste0('alpha[',i,']')
+    if(alpha[i] > summary[par,'2.5%'] && alpha[i] < summary[par,'97.5%']){
+      check[nsite+i] <- TRUE
+    } else {
+      check[nsite+i] <- FALSE
+    }
+  }
+  # check p10
+  if(log_p10 > summary['log_p10','2.5%'] && log_p10 < summary['log_p10','97.5%']){
+    check[nsite+length(alpha)+1] <- TRUE
+  } else {
+    check[nsite+length(alpha)+1] <- FALSE
+  }
+
+  #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for equality, here the model is tested to determine if the true parameter values are within the 95% quantiles of the posterior
+  # all should be equal to true
+  expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
+
+})
