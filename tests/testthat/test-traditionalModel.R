@@ -60,6 +60,65 @@ test_that("traditionalModel input checks work", {
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
                                 phipriors=c(0,1)),
                "phipriors should be a vector of two positive numeric values. ex. c\\(0.25,0.25\\)")
+
+  #12. make sure no column is entirely NA in count
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,NA),c(1,1,NA)))),
+               "count contains a column with all NA.")
+
+  #13. make sure no data are undefined
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,Inf),c(1,1,NA)))),
+               "count contains undefined values \\(i.e., Inf or -Inf\\)")
+
+  #14. length of initial values is equal to the number of chains
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(2,0,1)
+    )
+  }
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
+                                n.chain=5, initial_values=inits),
+               "The length of the list of initial values should equal the number of chains \\(n.chain, default is 4\\).")
+
+  #15. initial values check mu length
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(3,0,1)
+    )
+  }
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
+                                initial_values=inits),
+               "The length of initial values for 'mu' should equal the number of sites.")
+
+  #16. initial values check mu is positive numeric
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(3,-1,0)
+    )
+  }
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
+                                initial_values=inits),
+               "Initial values for 'mu' should be numeric values > 0.")
+
+  #17. initial values check q
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      q = c(0.1,0.1)
+    )
+  }
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,1,2),c(1,2,NA))),
+                                initial_values=inits),
+               "The length of initial values for 'q' should equal: \\# unique gear types \\- 1 \\(i.e., q for reference type = 1\\).")
+
+
 })
 
 

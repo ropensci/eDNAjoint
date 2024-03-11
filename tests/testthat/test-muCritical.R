@@ -21,7 +21,7 @@ test_that("muCritical input checks work", {
 
   #3. make sure model fit contains p10 parameter
   expect_error(muCritical(model2$model),
-               "modelfit must be contain 'p10' parameter.")
+               "modelfit must contain 'p10' parameter.")
 
   #4. if modelfit contains alpha, cov.val must be provided
   expect_error(muCritical(model1$model),

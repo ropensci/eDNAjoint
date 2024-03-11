@@ -38,5 +38,9 @@ test_that("detectionCalculate input checks work", {
   #8. If covariates are in model, cov.val must be provided
   expect_error(detectionCalculate(model1$model, mu = c(0.1, 0.5)),
                "cov.val must be provided if the model contains site-level covariates.")
+
+  #9. qPCR.N must be an integer
+  expect_error(detectionCalculate(model1$model, mu = c(0.1, 0.5), cov.val = c(0,0), qPCR.N = 6.8),
+               "qPCR.N should be an integer.")
 })
 

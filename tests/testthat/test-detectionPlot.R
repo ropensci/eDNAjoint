@@ -46,5 +46,9 @@ test_that("detectionPlot input checks work", {
   #10. If covariates are in model, cov.val must be provided
   expect_error(detectionPlot(model1$model, mu.min = 0.1, mu.max = 1),
                "cov.val must be provided if the model contains site-level covariates.")
+
+  #11. qPCR.N must be an integer
+  expect_error(detectionPlot(model1$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), qPCR.N = 6.8),
+               "qPCR.N should be an integer.")
 })
 

@@ -71,6 +71,7 @@ NULL
 #' @srrstatsNA {BS1.3b} This software uses Stan that implements only one type of algorithm (HMC/NUTS)
 #' @srrstatsNA {BS1.5} This software enables convergence checks through interaction with other packages, but does not enable multiple types of convergence checks itself necessary for comparison
 #' @srrstatsNA {BS4.1} This software is not presenting a new sampler
+#' @srrstatsNA {BS2.9} This software uses rstan's sampling, which ensures different seeds are used (from rstan's sampling() documentation: "Even if multiple chains are used, only one seed is needed, with other chains having seeds derived from that of the first chain to avoid dependent samples")
 #' @srrstatsNA {BS2.10} This software ensures that the same seed is not passed to multiple computational chains
 #'
 #' Any non-applicable standards can have their tags changed from `@srrstatsTODO`

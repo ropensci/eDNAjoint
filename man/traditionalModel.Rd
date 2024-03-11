@@ -45,7 +45,6 @@ traditionalModel(
 A list of:
 \itemize{
 \item a model object of class \code{stanfit} returned by \code{rstan::sampling}
-\item seeds used in MCMC chains
 \item initial values used in MCMC
 }
 }

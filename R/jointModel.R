@@ -24,11 +24,10 @@
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
 #' @param thin A positive integer specifying the period for saving samples. Default value is 1.
 #' @param adapt_delta Target average acceptance probability used in `rstan::sampling`. Default value is 0.9.
-#' @srrstats {BS5.0} function returns seeds and initial values used in computation
+#' @srrstats {BS5.0} function returns initial values used in computation
 #' @return A list of:
 #' \itemize{
 #' \item a model object of class `stanfit` returned by `rstan::sampling`
-#' \item seeds used in MCMC chains
 #' \item initial values used in MCMC
 #' }
 #'
@@ -119,7 +118,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   all_checks(data,cov,family,p10priors,phipriors)
 
   # initial value checks
-  if(initial_values != 'None'){
+  if(all(initial_values != 'None')){
     initial_values_checks(initial_values,data,cov,n.chain)
   }
 
@@ -183,7 +182,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   #if present, prepare covariate data
   if(all(cov!='None')){
     #' @srrstats {G2.7,G2.10} Use as.data.frame() to allow input list of any tabular form (i.e., matrix, etc.) and converts before filtering columns based on input 'cov'
-    site_mat <- as.data.frame(data$site.cov)[,cov]
+    site_mat <- as.data.frame(as.data.frame(data$site.cov)[,cov])
     site_mat <- cbind(as.data.frame(rep(1,length(site_mat[,1]))),site_mat)
     colnames(site_mat) <- c('int',cov)
   }
@@ -221,14 +220,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
     cores <- 1
   }
 
-  # prepare seeds
-  seeds <- sample(1:1000000,n.chain)
-  #' @srrstats {BS2.9} Ensure each chain is started with a different seed by default
-  # ensure seeds are not equal
-  while (any(duplicated(seeds))) {
-    seeds <- sample(1:1000000,n.chain)
-  }
-
 
   ##run model, catchability, pois/gamma, no covariates
   if(q==TRUE&&family!='negbin'&&all(cov=='None')){
@@ -245,7 +236,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -264,7 +254,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -281,7 +270,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -298,7 +286,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -319,7 +306,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -342,7 +328,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -361,7 +346,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -382,7 +366,6 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -395,8 +378,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
   stopifnot(is.double(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik))))
 
   # Create a list to store the results
-  #' @srrstats {BS5.0} function returns seeds and initial values used in computation
-  result_list <- list(model = out, seeds = seeds, inits = inits)
+  #' @srrstats {BS5.0} function returns initial values used in computation
+  result_list <- list(model = out, inits = inits)
 
   return(result_list)
 }
@@ -406,89 +389,177 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
 ###########
 #' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each chain
 
-init_joint_cov <- function(n.chain,count_all,cov,initial_values='None'){
+init_joint_cov <- function(n.chain,count_all,cov,initial_values){
   #helper function
   #joint model, catchability coefficient, site covariates
   A <- list()
-  for(i in 1:n.chain){
-    A[[i]] <- list(
-      mu = ifelse('mu' %in% names(initial_values[[i]]),
-                  inits[[i]]$mu,
-                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
-      p10 = ifelse('p10' %in% names(initial_values[[i]]),
-                   inits[[i]]$p10,
-                   stats::runif(1,log(0.0001),log(0.08))),
-      alpha = ifelse('alpha' %in% names(initial_values[[i]]),
-                     inits[[i]]$alpha,
-                     rep(0.1,length(cov)+1))
-    )
+  if(all(initial_values != 'None')){
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        if('mu' %in% names(initial_values[[i]])){
+          mu = inits[[i]]$mu
+        } else {
+          mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+        },
+
+        if('p10' %in% names(initial_values[[i]])){
+          p10 = inits[[i]]$p10
+        } else {
+          p10 = stats::runif(1,log(0.0001),log(0.08))
+        },
+
+        if('alpha' %in% names(initial_values[[i]])){
+          alpha = inits[[i]]$alpha
+        } else {
+          alpha = rep(0.1,length(cov)+1)
+        }
+      )
+      names(A[[i]]) <- c('mu','p10','alpha')
+    }
+  } else {
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
+        p10 = stats::runif(1,log(0.0001),log(0.08)),
+        alpha = rep(0.1,length(cov)+1)
+      )
+    }
   }
+
   return(A)
 }
 
-init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,initial_values='None'){
+init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,initial_values){
   #helper function
   #joint model, catchability coefficient, site covariates
   A <- list()
-  for(i in 1:n.chain){
-    A[[i]] <- list(
-      mu = ifelse('mu' %in% names(initial_values[[i]]),
-                  inits[[i]]$mu,
-                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
-      q = ifelse('q' %in% names(initial_values[[i]]),
-                 as.data.frame(inits[[i]]$q),
-                 as.data.frame(stats::runif(length(q_names),0.01,1))),
-      p10 = ifelse('p10' %in% names(initial_values[[i]]),
-                   inits[[i]]$p10,
-                   stats::runif(1,log(0.0001),log(0.08))),
-      alpha = ifelse('alpha' %in% names(initial_values[[i]]),
-                     inits[[i]]$alpha,
-                     rep(0.1,length(cov)+1))
-    )
+  if(all(initial_values != 'None')){
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        if('mu' %in% names(initial_values[[i]])){
+          mu = inits[[i]]$mu
+        } else {
+          mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+        },
+
+        if('q' %in% names(initial_values[[i]])){
+          q = as.data.frame(inits[[i]]$q)
+        } else {
+          q = as.data.frame(stats::runif(length(q_names),0.01,1))
+        },
+
+        if('p10' %in% names(initial_values[[i]])){
+          p10 = inits[[i]]$p10
+        } else {
+          p10 = stats::runif(1,log(0.0001),log(0.08))
+        },
+
+        if('alpha' %in% names(initial_values[[i]])){
+          alpha = inits[[i]]$alpha
+        } else {
+          alpha = rep(0.1,length(cov)+1)
+        }
+      )
+      names(A[[i]]) <- c('mu','q','p10','alpha')
+    }
+  } else {
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
+        q = as.data.frame(stats::runif(length(q_names),0.01,1)),
+        p10 = stats::runif(1,log(0.0001),log(0.08)),
+        alpha = rep(0.1,length(cov)+1)
+      )
+    }
   }
+
   return(A)
 }
 
-init_joint_catchability <- function(n.chain,count_all,q_names,initial_values='None'){
+init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
   #helper function
   #joint model, catchability coefficient, no site covariates
   A <- list()
-  for(i in 1:n.chain){
-    A[[i]] <- list(
-      mu = ifelse('mu' %in% names(initial_values[[i]]),
-                  inits[[i]]$mu,
-                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
-      q = ifelse('q' %in% names(initial_values[[i]]),
-                 as.data.frame(inits[[i]]$q),
-                 as.data.frame(stats::runif(length(q_names),0.01,1))),
-      p10 = ifelse('p10' %in% names(initial_values[[i]]),
-                   inits[[i]]$p10,
-                   stats::runif(1,log(0.0001),log(0.08))),
-      beta = ifelse('beta' %in% names(initial_values[[i]]),
-                    inits[[i]]$beta,
-                    0.5)
-    )
+  if(all(initial_values != 'None')){
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        if('mu' %in% names(initial_values[[i]])){
+          mu = inits[[i]]$mu
+        } else {
+          mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+        },
+
+        if('q' %in% names(initial_values[[i]])){
+          q = as.data.frame(inits[[i]]$q)
+        } else {
+          q = as.data.frame(stats::runif(length(q_names),0.01,1))
+        },
+
+        if('p10' %in% names(initial_values[[i]])){
+          p10 = inits[[i]]$p10
+        } else {
+          p10 = stats::runif(1,log(0.0001),log(0.08))
+        },
+
+        if('beta' %in% names(initial_values[[i]])){
+          beta = inits[[i]]$beta
+        } else {
+          beta = 0.5
+        }
+      )
+      names(A[[i]]) <- c('mu','q','p10','beta')
+    }
+  } else {
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
+        q = as.data.frame(stats::runif(length(q_names),0.01,1)),
+        p10 = stats::runif(1,log(0.0001),log(0.08)),
+        beta = 0.5
+      )
+    }
   }
+
   return(A)
 }
 
-init_joint <- function(n.chain,count_all,initial_values='None'){
+init_joint <- function(n.chain,count_all,initial_values){
   #helper function
   #joint model, no catchability coefficient, no site covariates
   A <- list()
-  for(i in 1:n.chain){
-    A[[i]] <- list(
-      mu = ifelse('mu' %in% names(initial_values[[i]]),
-                  inits[[i]]$mu,
-                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
-      p10 = ifelse('p10' %in% names(initial_values[[i]]),
-                   inits[[i]]$p10,
-                   stats::runif(1,log(0.0001),log(0.08))),
-      beta = ifelse('beta' %in% names(initial_values[[i]]),
-                    inits[[i]]$beta,
-                    0.5)
-    )
+  if(all(initial_values != 'None')){
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        if('mu' %in% names(initial_values[[i]])){
+          mu = inits[[i]]$mu
+        } else {
+          mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+        },
+
+        if('p10' %in% names(initial_values[[i]])){
+          p10 = inits[[i]]$p10
+        } else {
+          p10 = stats::runif(1,log(0.0001),log(0.08))
+        },
+
+        if('beta' %in% names(initial_values[[i]])){
+          beta = inits[[i]]$beta
+        } else {
+          beta = 0.5
+        }
+      )
+      names(A[[i]]) <- c('mu','p10','beta')
+    }
+  } else {
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
+        p10 = stats::runif(1,log(0.0001),log(0.08)),
+        beta = 0.5
+      )
+    }
   }
+
   return(A)
 }
 
@@ -667,42 +738,44 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
-  if(any(data$count==Inf) | any(data$count==-Inf)){
+  if(any(data$count==Inf,na.rm=TRUE) | any(data$count==-Inf,na.rm=TRUE)){
     errMsg = "count contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## count are integers, if family is poisson or negbin
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be an integer if a poisson or negative binomial distribution is used), implemented prior to analytic routines
-  if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
-    errMsg = "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous."
-    stop(errMsg)
+  if(tolower(family) %in% c('poisson','negbin')){
+    if(!all(data$count %% 1 %in% c(0,NA)) | any(data$count < 0,na.rm=TRUE)){
+      errMsg = "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous."
+      stop(errMsg)
+    }
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
-  if(any(data$qPCR.N==Inf) | any(data$qPCR.N==-Inf)){
+  if(any(data$qPCR.N==Inf,na.rm=TRUE) | any(data$qPCR.N==-Inf,na.rm=TRUE)){
     errMsg = "qPCR.N contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
-  if(any(data$qPCR.K==Inf) | any(data$qPCR.K==-Inf)){
+  if(any(data$qPCR.K==Inf,na.rm=TRUE) | any(data$qPCR.K==-Inf,na.rm=TRUE)){
     errMsg = "qPCR.K contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
 
   ## qPCR.N are integers
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., qPCR data are non-negative integers), implemented prior to analytic routines
-  if(!all(data$qPCR.N %% 1 %in% c(0,NA)) | any(data$qPCR.N < 0)){
+  if(!all(data$qPCR.N %% 1 %in% c(0,NA)) | any(data$qPCR.N < 0,na.rm=TRUE)){
     errMsg = "All values in qPCR.N should be non-negative integers."
     stop(errMsg)
   }
 
   ## qPCR.K are integers
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., qPCR data are non-negative integers), implemented prior to analytic routines
-  if(!all(data$qPCR.K %% 1 %in% c(0,NA)) | any(data$qPCR.K < 0)){
+  if(!all(data$qPCR.K %% 1 %in% c(0,NA)) | any(data$qPCR.K < 0,na.rm=TRUE)){
     errMsg = "All values in qPCR.K should be non-negative integers."
     stop(errMsg)
   }
@@ -756,8 +829,8 @@ covariate_checks <- function(data,cov){
 
   ## add warning if number of covariates is greater than the number of sites
   #' @srrstats {G5.8d} Pre-processing routines to check if data is outside scope of algorithm (i.e., # site-level covariates is greater than the number of sites)
-  if(dim(data$site.cov)[1]<dim(data$site.cov)[2]){
-    warnMsg = "The number of rows in site.cov matrix should match the number of rows in all other matrices."
+  if(length(cov)<dim(data$site.cov)[2]){
+    warnMsg = "The number of site-level covariates exceeds the number of sites (i.e., n < p)."
     warning(warnMsg)
   }
 
@@ -797,8 +870,6 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
 
     ## check p10 input
     if('p10' %in% names(initial_values[[i]])){
-      ## warning that p10 is estimated on a log scale
-      warning('warning: p10 is estimated on a log scale')
       ## if p10 is numeric
       if(!is.numeric(initial_values[[i]]$p10)){
         errMsg = "Initial values for 'p10' should be numeric."
@@ -819,7 +890,7 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         stop(errMsg)
       }
       ## check beta length
-      if(length(initial_values[[i]]$p10)!=1){
+      if(length(initial_values[[i]]$beta)!=1){
         errMsg = "The length of initial values for 'beta' should equal 1."
         stop(errMsg)
       }

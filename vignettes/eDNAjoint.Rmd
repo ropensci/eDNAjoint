@@ -136,8 +136,7 @@ goby.fit1 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'),
 
 `goby.fit1` is a list containing:
 1. model fit (`goby.fit1$model`) of the class 'stanfit' and can be accessed and interpreted using all functions in the [rstan](https://mc-stan.org/rstan/) package.
-2. seeds used in MCMC (`goby.fit1$seeds`).
-3. initial values used for each chain in MCMC (`goby.fit1$inits`)
+2. initial values used for each chain in MCMC (`goby.fit1$inits`)
 
 ## Model selection
 
@@ -178,7 +177,7 @@ We can also use functions from the `bayesplot` package to examine the posterior 
 
 First let's look at the posterior distribution for $p_{10}$.
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, fig.width = 7}
 library(bayesplot)
 #' @srrstats {BS6.3} Example of plotting posterior distributional estimates
 
@@ -188,7 +187,7 @@ mcmc_areas(as.matrix(goby.fit1$model), pars = 'p10', prob = 0.8)
 
 Next let's look at chain convergence for $p_{10}$ and $\mu_{i=1}$.
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, fig.width = 7}
 library(rstan)
 
 #' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
@@ -230,7 +229,7 @@ We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in t
 
 ```{r, fig.width = 7}
 #' @srrstats {BS1.2c} documentation of detectionPlot() function
-detectionPlot(goby.fit1$model, mu.min=0.1, mu.max =1, cov.val = c(0,0), probability = 0.9)
+detectionPlot(goby.fit1$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), probability = 0.9)
 ```
 
 ### Calculate $\mu_{critical}$
@@ -297,8 +296,8 @@ n.chain <- 4
 inits <- list()
 for(i in 1:n.chain){
   inits[[i]] <- list(
-    # length should equal the number of sites (dim(data$count)[1]) for each chain
-    mu = stats::runif(dim(data$count)[1], 0.01, 5), 
+    # length should equal the number of sites (dim(gobyData$count)[1]) for each chain
+    mu = stats::runif(dim(gobyData$count)[1], 0.01, 5), 
     # length should equal 1 for each chain 
     p10 = stats::runif(1,log(0.0001),log(0.08)),
     # length should equal the number of covariates plus 1 (to account for intercept in regression)
@@ -435,7 +434,7 @@ We can also use functions from the `bayesplot` package to examine the posterior 
 
 First let's look at the posterior distribution for $p_{10}$.
 
-```{r}
+```{r, fig.width = 7}
 library(bayesplot)
 
 #' @srrstats {BS6.3} Example of plotting posterior distributional estimates
@@ -446,7 +445,7 @@ mcmc_areas(as.matrix(greencrab.fit.q.negbin$model), pars = 'p10', prob = 0.8)
 
 Next let's look at chain convergence for $p_{10}$ and $\beta$.
 
-```{r}
+```{r, fig.width = 7}
 library(rstan)
 
 #' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples

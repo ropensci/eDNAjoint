@@ -68,7 +68,7 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None', probabilit
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
-  detectionPlot_input_checks(modelfit, mu.min, mu.max, cov.val, probability)
+  detectionPlot_input_checks(modelfit, mu.min, mu.max, cov.val, probability, qPCR.N)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
@@ -709,7 +709,7 @@ div_check <- function(x){
 
 # function for input checks
 #' @srrstats {G5.2a} Pre-processing routines to check inputs have unique messages
-detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probability){
+detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val, probability, qPCR.N){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {

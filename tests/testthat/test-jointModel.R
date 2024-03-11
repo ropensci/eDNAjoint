@@ -190,4 +190,218 @@ test_that("jointModel input checks work", {
                           cov=c('var_a','var_b'),q=TRUE),
                "The number of rows in site.cov matrix should match the number of rows in all other matrices.")
 
+  #25. make sure count.type is not zero-length
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=matrix(NA,ncol=3,nrow=0)),
+                          q=TRUE),
+               "count.type contains zero-length data.")
+
+  #26. make sure no column is entirely NA in count.type
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(4,1,NA),c(1,1,NA))),
+                          q=TRUE),
+               "count.type contains a column with all NA.")
+
+  #27. make sure no column is entirely NA in qPCR.N
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,NA),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)))),
+               "qPCR.N contains a column with all NA.")
+
+  #28. make sure no column is entirely NA in qPCR.K
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,NA),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)))),
+               "qPCR.K contains a column with all NA.")
+
+  #29. make sure no column is entirely NA in count
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,NA),c(1,1,NA)))),
+               "count contains a column with all NA.")
+
+  #30. make sure no data are undefined
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,Inf),c(1,1,NA)))),
+               "count contains undefined values \\(i.e., Inf or -Inf\\)")
+
+  #31. make sure no data are undefined
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,Inf),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)))),
+               "qPCR.K contains undefined values \\(i.e., Inf or -Inf\\)")
+
+  #32. make sure no data are undefined
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,Inf),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)))),
+               "qPCR.N contains undefined values \\(i.e., Inf or -Inf\\)")
+
+  #33. make sure site.cov is not zero-length
+  site.cov=matrix(NA,ncol=2,nrow=0)
+  colnames(site.cov)=c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b')),
+               "site.cov contains zero-length data.")
+
+  #34. make sure no column is entirely NA in site.cov
+  site.cov=rbind(c(4,1,NA),c(1,1,NA))
+  colnames(site.cov)=c('var_a','var_b','var_c')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b')),
+               "site.cov contains a column with all NA.")
+
+  #35. make sure no data are undefined
+  site.cov=rbind(c(4,1,Inf),c(1,1,NA))
+  colnames(site.cov)=c('var_a','var_b','var_c')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b')),
+               "site.cov contains undefined values \\(i.e., Inf or -Inf\\)")
+
+  #36. length of initial values is equal to the number of chains
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(3, 0.01, 5),
+      p10 = stats::runif(1,log(0.0001),log(0.08)),
+      alpha = rep(0.1,3)
+    )
+  }
+  site.cov=rbind(c(4,1),c(1,1))
+  colnames(site.cov)=c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits,
+                          n.chain=5),
+               "The length of the list of initial values should equal the number of chains \\(n.chain, default is 4\\).")
+
+  #37. initial values check: if mu is numeric
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(3, -1, 0),
+      p10 = stats::runif(1,log(0.0001),log(0.08)),
+      alpha = rep(0.1,3)
+    )
+  }
+  site.cov=rbind(c(4,1),c(1,1))
+  colnames(site.cov)=c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits),
+               "Initial values for 'mu' should be numeric values > 0.")
+
+  #38. initial values check: mu length
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(4, 0.1, 1),
+      p10 = stats::runif(1,log(0.0001),log(0.08)),
+      alpha = rep(0.1,3)
+    )
+  }
+  site.cov=rbind(c(4,1),c(1,1))
+  colnames(site.cov)=c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits),
+               "The length of initial values for 'mu' should equal the number of sites.")
+
+
+  #39. initial values check: p10 length
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(2,0,1),
+      p10 = stats::runif(2,log(0.0001),log(0.08)),
+      alpha = rep(0.1,3)
+    )
+  }
+  site.cov=rbind(c(4,1),c(1,1))
+  colnames(site.cov)=c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits),
+               "The length of initial values for 'p10' should equal 1.")
+
+  #40. initial values check: beta length
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(2,0,1),
+      p10 = stats::runif(1,log(0.0001),log(0.08)),
+      beta = c(1,0)
+    )
+  }
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA))),
+                          initial_values=inits),
+               "The length of initial values for 'beta' should equal 1.")
+
+  #41. initial values check: alpha length
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu = stats::runif(2,0,1),
+      p10 = stats::runif(1,log(0.0001),log(0.08)),
+      alpha = rep(0.1,2)
+    )
+  }
+  site.cov=rbind(c(4,1),c(1,1))
+  colnames(site.cov)=c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits),
+               "The length of initial values for 'alpha' should equal\\: \\# covariates \\+ 1 \\(i.e., including intercept\\).")
+
+  #42. initial values check: beta length
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      q = c(0.1,0.1)
+    )
+  }
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          initial_values=inits),
+               "The length of initial values for 'q' should equal: \\# unique gear types \\- 1 \\(i.e., q for reference type = 1\\).")
+
+
+
+
+
 })

@@ -19,11 +19,9 @@
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
 #' @param thin A positive integer specifying the period for saving samples. Default value is 1.
 #' @param adapt_delta Target average acceptance probability used in `rstan::sampling`. Default value is 0.9.
-#' @srrstats {BS5.0} function returns seeds and initial values used in computation
 #' @return A list of:
 #' \itemize{
 #' \item a model object of class `stanfit` returned by `rstan::sampling`
-#' \item seeds used in MCMC chains
 #' \item initial values used in MCMC
 #' }
 #'
@@ -79,7 +77,7 @@ traditionalModel <- function(data, family='poisson',
   traditionalModel_input_checks(data, family, q, phipriors)
 
   # initial value checks
-  if(initial_values != 'None'){
+  if(all(initial_values != 'None')){
     initial_values_checks_trad(initial_values,data,n.chain)
   }
 
@@ -134,14 +132,6 @@ traditionalModel <- function(data, family='poisson',
     cores <- 1
   }
 
-  # prepare seeds
-  seeds <- sample(1:1000000,n.chain)
-  #' @srrstats {BS2.9} Ensure each chain is started with a different seed by default
-  # ensure seeds are not equal
-  while (any(duplicated(seeds))) {
-    seeds <- sample(1:1000000,n.chain)
-  }
-
   ##run model, catchability, pois/gamma
   if(q==TRUE&&family!='negbin'){
     model_index <- dplyr::case_when(family=='poisson'~ 1,
@@ -161,7 +151,6 @@ traditionalModel <- function(data, family='poisson',
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -184,7 +173,6 @@ traditionalModel <- function(data, family='poisson',
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -208,7 +196,6 @@ traditionalModel <- function(data, family='poisson',
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -229,7 +216,6 @@ traditionalModel <- function(data, family='poisson',
                            cores = cores,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling arguments
                            chains = as.integer(n.chain),
-                           seed = seeds,
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
@@ -242,8 +228,8 @@ traditionalModel <- function(data, family='poisson',
   stopifnot(is.double(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik))))
 
   # Create a list to store the results
-  #' @srrstats {BS5.0} function returns seeds and initial values used in computation
-  result_list <- list(model = out, seeds = seeds, inits = inits)
+  #' @srrstats {BS5.0} function returns initial values used in computation
+  result_list <- list(model = out, inits = inits)
 
   return(result_list)
 }
@@ -252,34 +238,62 @@ traditionalModel <- function(data, family='poisson',
 #helper functions: initial values
 ###########
 #' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each chain
-init_trad_catchability <- function(n.chain, count_all, q_names, initial_values='None'){
+init_trad_catchability <- function(n.chain, count_all, q_names, initial_values){
   #helper function
   #traditional model, catchability coefficient
   A <- list()
-  for(i in 1:n.chain){
-    A[[i]] <- list(
-      mu = ifelse('mu' %in% names(initial_values[[i]]),
-                  inits[[i]]$mu,
-                  stats::runif(length(unique(count_all$L)), 0.01, 5)),
-      q = ifelse('q' %in% names(initial_values[[i]]),
-                 as.data.frame(inits[[i]]$q),
-                 as.data.frame(stats::runif(length(q_names),0.01,1)))
-    )
+  if(all(initial_values != 'None')){
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        if('mu' %in% names(initial_values[[i]])){
+          mu = inits[[i]]$mu
+        } else {
+          mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+        },
+
+        if('q' %in% names(initial_values[[i]])){
+          q = as.data.frame(inits[[i]]$q)
+        } else {
+          q = as.data.frame(stats::runif(length(q_names),0.01,1))
+        }
+      )
+      names(A[[i]]) <- c('mu','q')
+    }
+  } else {
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        mu = stats::runif(length(unique(count_all$L)), 0.01, 5),
+        q = as.data.frame(stats::runif(length(q_names),0.01,1))
+      )
+    }
   }
+
   return(A)
 }
 
-init_trad <- function(n.chain, count_all, initial_values='None'){
+init_trad <- function(n.chain, count_all, initial_values){
   #helper function
   #traditional model
   A <- list()
-  for(i in 1:n.chain){
-    A[[i]] <- list(
-      mu = ifelse('mu' %in% names(initial_values[[i]]),
-                  inits[[i]]$mu,
-                  stats::runif(length(unique(count_all$L)), 0.01, 5))
-    )
+  if(all(initial_values != 'None')){
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        if('mu' %in% names(initial_values[[i]])){
+          mu = inits[[i]]$mu
+        } else {
+          mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+        }
+      )
+      names(A[[i]]) <- 'mu'
+    }
+  } else {
+    for(i in 1:n.chain){
+      A[[i]] <- list(
+        mu = stats::runif(length(unique(count_all$L)), 0.01, 5)
+      )
+    }
   }
+
   return(A)
 }
 
@@ -325,7 +339,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
-  if(any(data$count==Inf) | any(data$count==-Inf)){
+  if(any(data$count==Inf,na.rm=TRUE) | any(data$count==-Inf,na.rm=TRUE)){
     errMsg = "count contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
@@ -345,7 +359,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must positive and numeric), implemented prior to analytic routines
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of unsupported type
   if (q==FALSE) {
-    if(is.numeric(data$count)==FALSE | any(data$count < 0)) {
+    if(is.numeric(data$count)==FALSE | any(data$count < 0,na.rm=TRUE)) {
       errMsg = "Data should be numeric."
       stop(errMsg)
     }
@@ -387,9 +401,11 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
 
   ## count are integers, if family is poisson or negbin
   #' @srrstats {BS2.5} Checks of appropriateness of numeric values submitted for distributional parameters (i.e., count data must be non-negative integers if a poisson or negative binomial distribution is used), implemented prior to analytic routines
-  if(!all(data$count %% 1 %in% c(0,NA)) && tolower(family) %in% c('poisson','negbin') | any(data$count < 0)){
-    errMsg = "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous."
-    stop(errMsg)
+  if(tolower(family) %in% c('poisson','negbin')){
+    if(!all(data$count %% 1 %in% c(0,NA)) | any(data$count < 0,na.rm=TRUE)){
+      errMsg = "All values in count should be non-negative integers. Use family = 'gamma' if count is continuous."
+      stop(errMsg)
+    }
   }
 
   ## count.type are integers

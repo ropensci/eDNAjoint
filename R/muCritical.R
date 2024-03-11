@@ -164,7 +164,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
 
   ## #3. make sure model fit contains p10 parameter
   if(!("p10" %in% modelfit@model_pars)) {
-    errMsg = "modelfit must be contain 'p10' parameter."
+    errMsg = "modelfit must contain 'p10' parameter."
     stop(errMsg)
   }
 

@@ -6,6 +6,10 @@
 <img src="man/figures/logo.png" align="right" height="250" dpi="700" />
 <!-- badges: start --> <!-- badges: end -->
 
+``` r
+#' @srrstats {BS1.2a} README with high-level overview and examples here
+```
+
 The package *eDNAjoint* is useful for interpreting observations from
 paired environmental DNA (eDNA) and traditional surveys. The package
 runs a Bayesian model that integrates these two data streams to jointly
@@ -54,9 +58,9 @@ detection, $p_{10}$:
 
 ``` r
 # summarize p10 posterior
-jointSummarize(goby.fit, par = 'p10')
+jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 18602.21    1
+#> p10 0.003       0 0.001 0.001 0.007 15659.83    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -66,7 +70,7 @@ rate:
 ``` r
 # find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
 # if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
-detectionCalculate(goby.fit, mu = c(0.1,0.5,1), 
+detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1), 
                    cov.val=c(0,0), probability = 0.9)
 #>       mu n_traditional n_eDNA
 #> [1,] 0.1            24     14
