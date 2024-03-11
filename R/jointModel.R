@@ -3,7 +3,7 @@
 #' @srrstats {G1.0,G1.1} This software makes available a novel algorithm/model that was previously published in the literature. The literature reference for the joint model is provided here.
 #' This function implements a Bayesian model that integrates data from paired eDNA and traditional surveys, as described in Keller et al. (2022) <https://doi.org/10.1002/eap.2561>. The model estimates parameters including the expected species catch rate and the probability of false positive eDNA detection. This function allows for optional model variations, like inclusion of site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling, as well as estimation of catchability coefficients when multiple traditional gear types are used. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #'
-#' @srrstats {G1.4} Roxygen function documentation begins here
+#' @srrstats {G1.4,G1.3} Roxygen function documentation begins here, with definitions of statistical terminology and inputs
 #' @export
 #' @srrstats {BS1.1,BS3.0,G2.14} Descriptions of how to enter data, description of how NAs are handled (which are informative and should be deliberately included in input data, where necessary)
 #' @param data A list containing data necessary for model fitting. Valid tags are `qPCR.N`, `qPCR.K`, `count`, `count.type`, and `site.cov`. `qPCR.N` and `qPCR.K` are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). `qPCR.N` contains the total number of qPCR replicates per site and eDNA sample, and `qPCR.K` contains the total number of positive qPCR detections per site and eDNA sample. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). `site.cov` is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). `site.cov` should include informative column names. Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all qPCR, count, and site covariate data.
@@ -24,6 +24,8 @@
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
 #' @param thin A positive integer specifying the period for saving samples. Default value is 1.
 #' @param adapt_delta Target average acceptance probability used in `rstan::sampling`. Default value is 0.9.
+#' @srrstats {BS2.12} Parameter controlling the verbosity of output
+#' @param verbose Logical value controlling the verbosity of output (i.e., warnings, messages, progress bar). Default is TRUE.
 #' @srrstats {BS5.0} function returns initial values used in computation
 #' @return A list of:
 #' \itemize{
@@ -93,7 +95,8 @@
 jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=FALSE,
                        phipriors=c(0.25,0.25), multicore=TRUE, initial_values='None',
                        n.chain=4, n.iter.burn=500,
-                       n.iter.sample=2500, thin=1, adapt_delta=0.9) {
+                       n.iter.sample=2500, thin=1, adapt_delta=0.9,
+                       verbose=TRUE) {
 
   ####
   # input checks
@@ -239,7 +242,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==TRUE&&family=='negbin'&&all(cov=='None')){
     ##run model, catchability, negbin, no covariates
@@ -257,7 +261,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==FALSE&&family!='negbin'&&all(cov=='None')){
     ##run model, no catchability, pois/gamma, no covariates
@@ -273,7 +278,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==FALSE&&family=='negbin'&&all(cov=='None')){
     ##run model, no catchability, negbin, no covariates
@@ -289,7 +295,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==TRUE&&family=='negbin'&&all(cov!='None')){
     ##run model, catchability, negbin, covariates
@@ -309,7 +316,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==TRUE&&family!='negbin'&&all(cov!='None')){
     ##run model, catchability, pois/gamma, covariates
@@ -331,7 +339,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==FALSE&&family=='negbin'&&all(cov!='None')){
     ##run model, no catchability, negbin, covariates
@@ -349,15 +358,15 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==FALSE&&family!='negbin'&&all(cov!='None')){
     ##run model, no catchability, pois/gamma, covariates
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
     inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
-    out <- rstan::sampling(c(stanmodels$joint_binary_cov_pois,
-                             stanmodels$joint_binary_cov_gamma)[model_index][[1]],
+    out <- rstan::sampling(stan_model,
                            data = rlist::list.append(
                              data,
                              nsitecov = length(cov)+1,
@@ -369,7 +378,8 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20), q=
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   }
 

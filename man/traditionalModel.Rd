@@ -15,7 +15,8 @@ traditionalModel(
   n.iter.burn = 500,
   n.iter.sample = 2500,
   thin = 1,
-  adapt_delta = 0.9
+  adapt_delta = 0.9,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ traditionalModel(
 \item{thin}{A positive integer specifying the period for saving samples. Default value is 1.}
 
 \item{adapt_delta}{Target average acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
+
+\item{verbose}{Logical value controlling the verbosity of output (i.e., warnings, messages, progress bar). Default is TRUE.}
 }
 \value{
 A list of:

@@ -10,7 +10,6 @@
 #' @srrstatsVerbose TRUE
 #'
 #' @srrstatsTODO {G1.2} *Statistical Software should include a* Life Cycle Statement *describing current and anticipated future states of development.*
-#' @srrstatsTODO {G1.3} *All statistical terminology should be clarified and unambiguously defined.*
 #' @srrstatsTODO {G2.4b} *explicit conversion to continuous via `as.numeric()`*
 #' @srrstatsTODO {G2.4d} *explicit conversion to factor via `as.factor()`*
 #' @srrstatsTODO {G2.4e} *explicit conversion from factor via `as...()` functions*
@@ -35,10 +34,8 @@
 #' @srrstatsTODO {G5.12} *Any conditions necessary to run extended tests such as platform requirements, memory, expected runtime, and artefacts produced that may need manual inspection, should be described in developer documentation such as a `CONTRIBUTING.md` or `tests/README.md` file.*
 #' @srrstatsTODO {BS1.3a} *Bayesian Software should document, both in text and examples, how to use the output of previous simulations as starting points of subsequent simulations.*
 #' @srrstatsTODO {BS2.8} *Enable results of previous runs to be used as starting points for subsequent runs.*
-#' @srrstatsTODO {BS2.12} *Bayesian Software should implement at least one parameter controlling the verbosity of output, defaulting to verbose output of all appropriate messages, warnings, errors, and progress indicators.*
 #' @srrstatsTODO {BS2.13} *Bayesian Software should enable suppression of messages and progress indicators, while retaining verbosity of warnings and errors. This should be tested.*
 #' @srrstatsTODO {BS2.14} *Bayesian Software should enable suppression of warnings where appropriate. This should be tested.*
-#' @srrstatsTODO {BS2.15} *Bayesian Software should explicitly enable errors to be caught, and appropriately processed either through conversion to warnings, or otherwise captured in return values. This should be tested.*
 #' @srrstatsTODO {BS3.2} *Provide distinct routines for processing perfectly collinear data, potentially bypassing sampling algorithms*
 #' @srrstatsTODO {BS4.4} *Enable computations to be stopped on convergence (although not necessarily by default).*
 #' @srrstatsTODO {BS4.6} *Implement tests to confirm that results with convergence checker are statistically equivalent to results from equivalent fixed number of samples without convergence checking.*

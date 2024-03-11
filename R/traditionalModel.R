@@ -2,7 +2,7 @@
 #'
 #' This function implements a Bayesian model that estimates expected species catch rate using count data from traditional, non eDNA surveys. When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the `rstan` package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #'
-#' @srrstats {G1.4} Roxygen function documentation begins here
+#' @srrstats {G1.4,G1.3} Roxygen function documentation begins here, with definitions of statistical terminology and inputs
 #' @export
 #' @srrstats {BS1.1,BS3.0,G2.14} Descriptions of how to enter data, description of how NAs are handled (which are informative and should be deliberately included in input data, where necessary)
 #' @param data A list containing data necessary for model fitting. Valid tags are `count` and `count.type`. `count` is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). `count.type` is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all count data.
@@ -19,6 +19,8 @@
 #' @param n.iter.sample Number of sampling MCMC iterations. Default value is 2500.
 #' @param thin A positive integer specifying the period for saving samples. Default value is 1.
 #' @param adapt_delta Target average acceptance probability used in `rstan::sampling`. Default value is 0.9.
+#' @srrstats {BS2.12} Parameter controlling the verbosity of output
+#' @param verbose Logical value controlling the verbosity of output (i.e., warnings, messages, progress bar). Default is TRUE.
 #' @return A list of:
 #' \itemize{
 #' \item a model object of class `stanfit` returned by `rstan::sampling`
@@ -70,7 +72,7 @@ traditionalModel <- function(data, family='poisson',
                              multicore=TRUE, initial_values = 'None',
                              n.chain=4, n.iter.burn=500,
                              n.iter.sample=2500, thin=1,
-                             adapt_delta=0.9) {
+                             adapt_delta=0.9, verbose=TRUE) {
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper function
@@ -154,7 +156,8 @@ traditionalModel <- function(data, family='poisson',
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==TRUE&&family=='negbin'){
     ##run model, catchability, negbin
@@ -176,7 +179,8 @@ traditionalModel <- function(data, family='poisson',
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==FALSE&&family!='negbin'){
     ##run model, no catchability, pois/gamma
@@ -199,7 +203,8 @@ traditionalModel <- function(data, family='poisson',
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   } else if(q==FALSE&&family=='negbin'){
     ##run model, no catchability, negbin
@@ -219,7 +224,8 @@ traditionalModel <- function(data, family='poisson',
                            thin = as.integer(thin),
                            warmup = as.integer(n.iter.burn),
                            iter = as.integer(n.iter.burn) + as.integer(n.iter.sample),
-                           init = inits
+                           init = inits,
+                           refresh = ifelse(verbose==TRUE,500,0)
     )
   }
 
