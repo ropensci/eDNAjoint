@@ -68,6 +68,14 @@ Before fitting the model, this function checks to ensure that the model specific
 \item  Number of sites in qPCR and count data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
+\item  family is either 'poisson', 'negbin', or 'gamma'.
+\item  p10priors and phipriors (if used) is a vector of two numeric values.
+\item  site.cov has same number of rows as qPCR.N and count, if present
+\item  site.cov is numeric, if present
+\item  cov values match column names in site.cov, if present
+}
+
+If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{

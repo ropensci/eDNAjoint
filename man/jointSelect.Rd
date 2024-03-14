@@ -18,6 +18,11 @@ Perform model selection using leave one out cross validation of model objects
 \note{
 Before model selection, this function makes the following check:
 \itemize{
+\item Input is a list of model fits of class 'stanfit'.
+\item All models compared were fit wither either \code{jointModel()} or all with \verb{traditionalModel().}
+}
+
+If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{

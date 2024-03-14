@@ -61,6 +61,11 @@ Before fitting the model, this function checks to ensure that the model specific
 \item  Number of sites in count and count type data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in count and count.type.
+\item  family is 'poisson', 'negbin', or 'gamma'.
+\item  phipriors (if used) is a vector of two numeric values.
+}
+
+If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{

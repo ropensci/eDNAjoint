@@ -14,7 +14,6 @@
 #'
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
-#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input probs is a numeric vector.
 #' \item  Input par is a character vector.

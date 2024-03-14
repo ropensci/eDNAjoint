@@ -27,15 +27,14 @@
 #' \item initial values used in MCMC
 #' }
 #'
+#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
 #' @note  Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:
 #' \itemize{
 #' \item  All tags in data are valid (i.e., include count and count.type).
 #' \item  Number of sites in count and count type data are equal.
 #' \item  All data are numeric (i.e., integer or NA).
 #' \item  Empty data cells (NA) match in count and count.type.
-#' @srrstats {G2.3,G2.3a,G2.3b} Permit only expected univariate (case-insensitive) parameter values
 #' \item  family is 'poisson', 'negbin', or 'gamma'.
-#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  phipriors (if used) is a vector of two numeric values.
 #' }
 #'
@@ -237,6 +236,7 @@ traditionalModel <- function(data, family='poisson',
   #' @srrstats {BS5.0} function returns initial values used in computation
   result_list <- list(model = out, inits = inits)
 
+  #' @srrstats {BS5.5} the `model` return object is of class `stanfit`, which includes information about convergence
   return(result_list)
 }
 

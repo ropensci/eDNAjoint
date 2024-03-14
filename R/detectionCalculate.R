@@ -11,16 +11,14 @@
 #' @param qPCR.N An integer indicating the number of qPCR replicates per eDNA sample. The default is 3.
 #' @return A summary table of survey efforts necessary to detect species presence, given mu, for each survey type.
 #'
+#' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations on lengths of inputs
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
-#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input mu is a numeric vector.
-#' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  Input probability is a univariate numeric value.
 #' \item  If model fit contains alpha, cov.val must be provided.
 #' \item  Input cov.val is numeric.
-#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  Input cov.val is the same length as the number of estimated covariates.
 #' \item  Input model fit has converged (i.e. no divergent transitions after warm-up).
 #' }

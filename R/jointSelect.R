@@ -10,7 +10,6 @@
 #'
 #' @note  Before model selection, this function makes the following check:
 #' \itemize{
-#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item Input is a list of model fits of class 'stanfit'.
 #' \item All models compared were fit wither either `jointModel()` or all with `traditionalModel().`
 #' }

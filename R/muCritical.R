@@ -10,16 +10,14 @@
 #' @param ci Credible interval calculated using highest density interval (HDI). Default is 0.9 (i.e., 90% credible interval).
 #' @return A list with median mu_critical and lower and upper bounds on the credible interval. If multiple gear types are used, a table of mu_critical and lower and upper credible interval bounds is returned with one column for each gear type.
 #'
+#' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations on lengths of inputs
 #' @note  Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
 #' \itemize{
-#' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit' (i.e., output of jointModel())
 #' \item  Input model fit is an object of class 'stanfit'.
-#' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  Input credible interval is a univariate numeric value greater than 0 and less than 1.
 #' \item  Input model fit contains p10 parameter.
 #' \item  If model fit contains alpha, cov.val must be provided.
 #' \item  Input cov.val is numeric.
-#' @srrstats {G2.0a} Explicit secondary documentation of any expectations on lengths of inputs
 #' \item  Input cov.val is the same length as the number of estimated covariates.
 #' \item  Input model fit has converged (i.e. no divergent transitions after warm-up).
 #' }
