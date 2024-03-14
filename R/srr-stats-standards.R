@@ -8,18 +8,6 @@
 #' (These comments may be deleted at any time.)
 #'
 #' @srrstatsVerbose TRUE
-#'
-#' @srrstatsTODO {G2.6} *Software which accepts one-dimensional input should ensure values are appropriately pre-processed regardless of class structures.*
-#' @srrstatsTODO {G2.11} *Software should ensure that `data.frame`-like tabular objects which have columns which do not themselves have standard class attributes (typically, `vector`) are appropriately processed, and do not error without reason. This behaviour should be tested. Again, columns created by the [`units` package](https://github.com/r-quantities/units/) provide a good test case.*
-#' @srrstatsTODO {G2.12} *Software should ensure that `data.frame`-like tabular objects which have list columns should ensure that those columns are appropriately pre-processed either through being removed, converted to equivalent vector columns where appropriate, or some other appropriate treatment such as an informative error. This behaviour should be tested.*
-#' @srrstatsTODO {G5.7} **Algorithm performance tests** *to test that implementation performs as expected as properties of data change. For instance, a test may show that parameters approach correct estimates within tolerance as data size increases, or that convergence times decrease for higher convergence thresholds.*
-#' @srrstatsTODO {BS5.1} *Return values should include appropriate metadata on types (or classes) and dimensions of input data*
-#' @srrstatsTODO {BS5.2} *Bayesian Software should either return the input function or prior distributional specification in the return object; or enable direct access to such via additional functions which accept the return object as single argument.*
-#' @srrstatsTODO {BS7.0} *Software should demonstrate and confirm recovery of parametric estimates of a prior distribution*
-#' @srrstatsTODO {BS7.1} *Software should demonstrate and confirm recovery of a prior distribution in the absence of any additional data or information*
-#' @srrstatsTODO {BS7.2} *Software should demonstrate and confirm recovery of a expected posterior distribution given a specified prior and some input data*
-#' @srrstatsTODO {BS7.4} *Bayesian software should implement tests which confirm that predicted or fitted values are on (approximately) the same scale as input values.*
-#' @srrstatsTODO {BS7.4a} *The implications of any assumptions on scales on input objects should be explicitly tested in this context; for example that the scales of inputs which do not have means of zero will not be able to be recovered.*
 #' @noRd
 NULL
 
@@ -30,7 +18,9 @@ NULL
 #' @srrstatsNA {G2.4b} It didn't seems obvious where to put as.numeric, as many of my function input checks tested if values that are expected to be numeric are in fact numeric.
 #' @srrstatsNA {G2.4d,G2.4e} I don't believe I have anything that should be a factor in my functions.
 #' @srrstatsNA {G2.5} There are no inputs of type 'factor' in this software.
+#' @srrstatsNA {G2.6} I do not believe this applies but would be interested in guidance as to where I can implement this.
 #' @srrstatsNA {G2.9} I do not belive I am doing any type conversions that could result in lost data.
+#' @srrstatsNA {G2.11,G2.12} I do not believe this applies but would be interested in guidance as to where I can implement this.
 #' @srrstatsNA {G2.14a,G2.14b,G2.14c} NAs in data input are meaningful and should not create an error, nor be imputed
 #' @srrstatsNA {G3.1} No covariance methods are used in this software.
 #' @srrstatsNA {G3.1a} No covariance methods are used in this software.
@@ -51,11 +41,15 @@ NULL
 #' @srrstatsNA {BS3.2} I do not provide a distinct routine for processing collinear data, although I give the user a warning if input data has perfect collinearity
 #' @srrstatsNA {BS4.4} This software uses `rstan`'s `sampling`, and it does not appear to yet be a mechanism of stopping the chain upon convergence
 #' @srrstatsNA {BS4.6,BS4.7,BS5.4} This software does not include any convergence checkers, although I do provide examples of how to examine convergence in the package vignette.
+#' @srrstatsNA {BS5.1} If I'm interpreting this standard correctly, I think the `rstan` `stanfit` object returns appropriate metadata? i.e., if you are estimating parameters at 20 sites, the output mu vector would be of length 20
+#' @srrstatsNA {BS5.2} Parameters for non-uniform priors are provided by the user, so it is unclear to me if this would be relevant.
 #' @srrstatsNA {BS6.0} The main function, `jointModel()`, returns an object of class `stanfit`. I would prefer to not print this output, as this software is focused on a user who may want the actual model output to be abstracted. I have therefore created `jointSummarize()` so that the user can interpret the output
 #' in terms of the parameters described in the 'About the model' section of the vignetter. If a user prefers, they can inspect the original `stanfit` object.
 #' @srrstatsNA {BS6.1} It is unclear to me which information/return objects should be plotted
 #' @srrstatsNA {BS6.5} Providing joint plotting options seems redundant to functions in packages like `bayesplot`, but I'm open to suggestions.
+#' @srrstatsNA {BS7.0,BS7.1,BS7.2} This software uses `rstan`'s HMC/NUTS algorithm, where I am assuming that the algorithm will recover expected prior and posterior distributions. Although I am open to suggestions for how to test this here.
 #' @srrstatsNA {BS7.3} It is unclear to me how to evaluate algorithmic efficiency, as the MCMC can't be stopped upon convergence with `rstan`'s sampling, and using something like Sys.time() doesn't seem like it would provide an accurate estimate of computation time, but I'm open to other suggestions.
+#'
 #'
 #' Any non-applicable standards can have their tags changed from `@srrstatsTODO`
 #' to `@srrstatsNA`, and placed together in this block, along with explanations

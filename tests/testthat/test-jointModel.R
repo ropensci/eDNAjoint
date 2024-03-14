@@ -498,6 +498,21 @@ test_that("jointModel parameter recovery tests work",{
   # all should be equal to true
   expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
 
+  # test that output values are on the same scale as the data
+  mu_estimates <- rep(NA,nsite)
+  for(i in 1:nsite){
+    mu_estimates[i] <- summary[paste0('mu[',i,']'),'mean']
+  }
+
+  # get mean of input count data at each site
+  data_mean <- rep(NA,nsite)
+  for(i in 1:nsite){
+    data_mean[i] <- mean(data$count[i,])
+  }
+  #' @srrstats {BS7.4, BS7.4a} Check to ensure that mean posterior estimates are on the same scale as the mean of the input data (here checking estimates of mu, i.e., expected catch rate at each site)
+  # check that estimates are on same scale as data
+  expect_equal(round(mu_estimates,0),round(data_mean,0))
+
   ##########################################
   # model run 2: smaller dataset, new seed #
   ##########################################
@@ -592,9 +607,9 @@ test_that("jointModel parameter recovery tests work",{
   # simulate data: seed 123
   set.seed(123)
   # constants
-  nsite <- 40 # increased dataset size
-  nobs_count <- 400 # increased dataset size
-  nobs_pcr <- 20 # increased dataset size
+  nsite <- 20
+  nobs_count <- 200 # increased dataset size (doubled)
+  nobs_pcr <- 16 # increased dataset size (doubled)
   # params
   mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
   alpha <- c(0.5, 0.1, -0.4)
@@ -638,37 +653,30 @@ test_that("jointModel parameter recovery tests work",{
   # run model
   fit_large <- jointModel(data=data, cov=c('var_a','var_b'))
   # summary
-  summary_large <- as.data.frame(rstan::summary(fit_large$model, pars = c('mu','alpha','log_p10'), probs = c(0.025, 0.975))$summary)
+  summary_large <- as.data.frame(rstan::summary(fit_large$model, pars = c('alpha','log_p10'), probs = c(0.025, 0.975))$summary)
 
-  # set up empty vector to check if true values are in 95% interval of posterior estimates
-  check <- rep(NA,length(mu)+length(alpha)+length(log_p10))
-  # check mu
-  for(i in 1:nsite){
-    par <- paste0('mu[',i,']')
-    if(mu[i] > summary_large[par,'2.5%'] && mu[i] < summary_large[par,'97.5%']){
-      check[i] <- TRUE
-    } else {
-      check[i] <- FALSE
-    }
-  }
-  # check alpha
-  for(i in 1:length(alpha)){
-    par <- paste0('alpha[',i,']')
-    if(alpha[i] > summary[par,'2.5%'] && alpha[i] < summary[par,'97.5%']){
-      check[nsite+i] <- TRUE
-    } else {
-      check[nsite+i] <- FALSE
-    }
-  }
-  # check p10
-  if(log_p10 > summary['log_p10','2.5%'] && log_p10 < summary['log_p10','97.5%']){
-    check[nsite+length(alpha)+1] <- TRUE
-  } else {
-    check[nsite+length(alpha)+1] <- FALSE
+  # compare standard errors of estimates of alpha and p10 with implementation with a smaller dataset
+  se_large <- c(summary_large['alpha[1]','se_mean'],
+                summary_large['alpha[2]','se_mean'],
+                summary_large['alpha[3]','se_mean'],
+                summary_large['log_p10','se_mean']
+                )
+
+  # get values for smaller dataset
+  se_small <- c(summary['alpha[1]','se_mean'],
+                summary['alpha[2]','se_mean'],
+                summary['alpha[3]','se_mean'],
+                summary['log_p10','se_mean']
+                )
+
+  # set up empty vector to check if standard errors are smaller with larger dataset
+  check <- rep(NA,length(alpha)+length(log_p10))
+  for(i in 1:length(check)){
+    check[i] <- se_large[i] < se_small[i]
   }
 
-  #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for equality, here the model is tested to determine if the true parameter values are within the 95% quantiles of the posterior
+  #' @srrstats {G5.7} Check to see that implementation performs as expected properties of data change (i.e., standard error of posteriors is smaller if there are more data observations)
   # all should be equal to true
-  expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
+  expect_equal(check,rep(TRUE,length(alpha)+length(log_p10)))
 
 })
