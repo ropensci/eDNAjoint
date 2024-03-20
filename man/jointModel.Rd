@@ -95,7 +95,7 @@ dim(gobyData$count)[1]
 # These covariates will scale the sensitivity of eDNA sampling relative to traditional surveys
 # Count data is modeled using a poisson distribution.
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family='poisson', p10priors=c(1,20), q=FALSE)
+                     family="poisson", p10priors=c(1,20), q=FALSE)
 
 
 # Ex. 2: Implementing the joint model with multiple traditional gear types
@@ -113,7 +113,7 @@ dim(greencrabData$count)[1]
 # Fit a model estimating a catchability coefficient for traditional survey gear types.
 # This model does not assume all traditional survey methods have the same catchability.
 # Count data is modeled using a negative binomial distribution.
-fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
+fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
                    p10priors=c(1,20), q=TRUE)
 }
 
