@@ -28,6 +28,7 @@ If any of these checks fail, the function returns an error message.
 \donttest{
 data(greencrabData)
 
+# Fit a model without estimating a catchability coefficient for traditional survey gear types.
 # This model assumes all traditional survey methods have the same catchability.
 # Count data is modeled using a poisson distribution.
 fit.no.q = jointModel(data=greencrabData, family='poisson', p10priors=c(1,20), q=FALSE)
