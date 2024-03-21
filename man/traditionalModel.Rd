@@ -20,29 +20,56 @@ traditionalModel(
 )
 }
 \arguments{
-\item{data}{A list containing data necessary for model fitting. Valid tags are \code{count} and \code{count.type}. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type (k) used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all count data.}
+\item{data}{A list containing data necessary for model fitting. Valid tags
+are \code{count} and \code{count.type}. \code{count} is a matrix or data frame of
+traditional survey count data, with first dimension equal to the number of
+sites (i) and second dimension equal to the maximum number of traditional
+survey replicates at a given site (j). \code{count.type} is an optional matrix
+or data frame of integers indicating gear type (k) used in corresponding
+count data, with first dimension equal to the number of sites (i) and
+second dimension equal to the maximum number of traditional survey
+replicates at a given site (j). Values should be integers beginning with
+1 (referring to the first gear type) to n (last gear type). Empty cells
+should be NA and will be removed during processing. Sites, i, should be
+consistent in all count data.}
 
-\item{family}{The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.}
+\item{family}{The distribution class used to model traditional survey count
+data. Options include poisson ('poisson'), negative binomial ('negbin'),
+and gamma ('gamma'). Default value is 'poisson'.}
 
-\item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
+\item{q}{A logical value indicating whether to estimate a catchability
+coefficient, q, for traditional survey gear types (TRUE) or to not estimate
+a catchability coefficient, q, for traditional survey gear types (FALSE).
+Default value is FALSE.}
 
-\item{phipriors}{A numeric vector indicating gamma distribution hyperparameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+\item{phipriors}{A numeric vector indicating gamma distribution
+hyperparameters (shape, rate) used as the prior distribution for phi, the
+overdispersion in the negative binomial distribution for traditional survey
+gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
 
-\item{multicore}{A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.}
+\item{multicore}{A logical value indicating whether to parallelize chains
+with multiple cores. Default is TRUE.}
 
-\item{initial_values}{A list of lists of initial values to use in MCMC. The length should equal the number of MCMC chains. Initial values can be provided for parameters: mu and q. If no initial values are provided, default random values are drawn.}
+\item{initial_values}{A list of lists of initial values to use in MCMC. The
+length should equal the number of MCMC chains. Initial values can be
+provided for parameters: mu and q. If no initial values are provided,
+default random values are drawn.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
 \item{n.iter.burn}{Number of warm-up MCMC iterations. Default value is 500.}
 
-\item{n.iter.sample}{Number of sampling MCMC iterations. Default value is 2500.}
+\item{n.iter.sample}{Number of sampling MCMC iterations. Default value is
+2500.}
 
-\item{thin}{A positive integer specifying the period for saving samples. Default value is 1.}
+\item{thin}{A positive integer specifying the period for saving samples.
+Default value is 1.}
 
-\item{adapt_delta}{Target average acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
+\item{adapt_delta}{Target average acceptance probability used in
+\code{rstan::sampling}. Default value is 0.9.}
 
-\item{verbose}{Logical value controlling the verbosity of output (i.e., warnings, messages, progress bar). Default is TRUE.}
+\item{verbose}{Logical value controlling the verbosity of output (i.e.,
+warnings, messages, progress bar). Default is TRUE.}
 }
 \value{
 A list of:
@@ -52,10 +79,17 @@ A list of:
 }
 }
 \description{
-This function implements a Bayesian model that estimates expected species catch rate using count data from traditional, non eDNA surveys. When multiple traditional gear types are used, an optional variation allows estimation of catchability coefficients, which scale the catchability of gear types relative to the expected catch rate of a reference gear type. Model is implemented using Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+This function implements a Bayesian model that estimates expected species
+catch rate using count data from traditional, non eDNA surveys. When
+multiple traditional gear types are used, an optional variation allows
+estimation of catchability coefficients, which scale the catchability of
+gear types relative to the expected catch rate of a reference gear type.
+Model is implemented using Bayesian inference using the \code{rstan} package,
+which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 }
 \note{
-Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:
+Before fitting the model, this function checks to ensure that the
+model specification is possible given the data files. These checks include:
 \itemize{
 \item  All tags in data are valid (i.e., include count and count.type).
 \item  Number of sites in count and count type data are equal.
@@ -73,21 +107,26 @@ If any of these checks fail, the function returns an error message.
 data(greencrabData)
 
 # Examine data in list
-# This function uses only traditional survey count data and optionally the count type data
+# This function uses only traditional survey count data and optionally
+# the count type data
 names(greencrabData)
 
 # Note that the surveyed sites (rows) should match in the data
 dim(greencrabData$count)[1]
 dim(greencrabData$count.type)[1]
 
-# Fit a model without estimating a catchability coefficient for traditional survey gear types.
-# This model assumes all traditional survey methods have the same catchability.
+# Fit a model without estimating a catchability coefficient for traditional
+# survey gear types.
+# This model assumes all traditional survey methods have the same
+# catchability.
 # Count data is modeled using a poisson distribution.
 fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE)
 
 
-# Fit a model estimating a catchability coefficient for traditional survey gear types.
-# This model does not assume all traditional survey methods have the same catchability.
+# Fit a model estimating a catchability coefficient for traditional survey
+# gear types.
+# This model does not assume all traditional survey methods have the same
+# catchability.
 # Count data is modeled using a negative binomial distribution.
 fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE)
 }

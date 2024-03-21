@@ -2,7 +2,8 @@
 % Please edit documentation in R/jointModel.R
 \name{jointModel}
 \alias{jointModel}
-\title{Specify and fit joint model using count data from traditional surveys and eDNA qPCR data}
+\title{Specify and fit joint model using count data from traditional surveys and
+eDNA qPCR data}
 \usage{
 jointModel(
   data,
@@ -22,33 +23,70 @@ jointModel(
 )
 }
 \arguments{
-\item{data}{A list containing data necessary for model fitting. Valid tags are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and \code{qPCR.K} are matrices or data frames with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of eDNA samples at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates per site and eDNA sample, and \code{qPCR.K} contains the total number of positive qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame of traditional survey count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site (j). \code{count.type} is an optional matrix or data frame of integers indicating gear type used in corresponding count data, with first dimension equal to the number of sites (i) and second dimension equal to the maximum number of traditional survey replicates at a given site. Values should be integers beginning with 1 (referring to the first gear type) to n (last gear type). \code{site.cov} is an optional matrix or data frame of site-level covariate data, with first dimension equal to the number of sites (i). \code{site.cov} should include informative column names. Empty cells should be NA and will be removed during processing. Sites, i, should be consistent in all qPCR, count, and site covariate data.}
+\item{data}{A list containing data necessary for model fitting. Valid tags
+are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and
+\code{qPCR.K} are matrices or data frames with first dimension equal to the number
+of sites (i) and second dimension equal to the maximum number of eDNA samples
+at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates
+per site and eDNA sample, and \code{qPCR.K} contains the total number of positive
+qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame
+of traditional survey count data, with first dimension equal to the number of
+sites (i) and second dimension equal to the maximum number of traditional
+survey replicates at a given site (j). \code{count.type} is an optional matrix or
+data frame of integers indicating gear type used in corresponding count data,
+with first dimension equal to the number of sites (i) and second dimension
+equal to the maximum number of traditional survey replicates at a given site.
+Values should be integers beginning with 1 (referring to the first gear type)
+to n (last gear type). \code{site.cov} is an optional matrix or data frame of
+site-level covariate data, with first dimension equal to the number of sites
+(i). \code{site.cov} should include informative column names. Empty cells should
+be NA and will be removed during processing. Sites, i, should be consistent
+in all qPCR, count, and site covariate data.}
 
-\item{cov}{A character vector indicating the site-level covariates to include in the model. Default value is 'None'.}
+\item{cov}{A character vector indicating the site-level covariates to include
+in the model. Default value is 'None'.}
 
-\item{family}{The distribution class used to model traditional survey count data. Options include poisson ('poisson'), negative binomial ('negbin'), and gamma ('gamma'). Default value is 'poisson'.}
+\item{family}{The distribution class used to model traditional survey count
+data. Options include poisson ('poisson'), negative binomial ('negbin'), and
+gamma ('gamma'). Default value is 'poisson'.}
 
-\item{p10priors}{A numeric vector indicating beta distribution hyperparameters (alpha, beta) used as the prior distribution for the eDNA false positive probability (p10). Default vector is c(1,20).}
+\item{p10priors}{A numeric vector indicating beta distribution
+hyperparameters (alpha, beta) used as the prior distribution for the eDNA
+false positive probability (p10). Default vector is c(1,20).}
 
-\item{q}{A logical value indicating whether to estimate a catchability coefficient, q, for traditional survey gear types (TRUE) or to not estimate a catchability coefficient, q, for traditional survey gear types (FALSE). Default value is FALSE.}
+\item{q}{A logical value indicating whether to estimate a catchability
+coefficient, q, for traditional survey gear types (TRUE) or to not estimate a
+catchability coefficient, q, for traditional survey gear types (FALSE).
+Default value is FALSE.}
 
-\item{phipriors}{A numeric vector indicating gamma distribution hyperparameters (shape, rate) used as the prior distribution for phi, the overdispersion in the negative binomial distribution for traditional survey gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+\item{phipriors}{A numeric vector indicating gamma distribution
+hyperparameters (shape, rate) used as the prior distribution for phi, the
+overdispersion in the negative binomial distribution for traditional survey
+gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
 
-\item{multicore}{A logical value indicating whether to parallelize chains with multiple cores. Default is TRUE.}
+\item{multicore}{A logical value indicating whether to parallelize chains
+with multiple cores. Default is TRUE.}
 
-\item{initial_values}{A list of lists of initial values to use in MCMC. The length should equal the number of MCMC chains. Initial values can be provided for parameters: beta, p10 (log-scale), mu, q, alpha. If no initial values are provided, default random values are drawn.}
+\item{initial_values}{A list of lists of initial values to use in MCMC. The
+length should equal the number of MCMC chains. Initial values can be provided
+for parameters: beta, p10 (log-scale), mu, q, alpha. If no initial values
+are provided, default random values are drawn.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
 \item{n.iter.burn}{Number of warm-up MCMC iterations. Default value is 500.}
 
-\item{n.iter.sample}{Number of sampling MCMC iterations. Default value is 2500.}
+\item{n.iter.sample}{Number of sampling MCMC iterations. Default value is
+2500.}
 
-\item{thin}{A positive integer specifying the period for saving samples. Default value is 1.}
+\item{thin}{A positive integer specifying the period for saving samples.
+Default value is 1.}
 
-\item{adapt_delta}{Target average acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
+\item{adapt_delta}{Target average acceptance probability used in
+\code{rstan::sampling}. Default value is 0.9.}
 
-\item{verbose}{Logical value controlling the verbosity of output (i.e., warnings, messages, progress bar). Default is TRUE.}
+\item{verbose}{Logical value controlling the verbosity of output (i.e.,
+warnings, messages, progress bar). Default is TRUE.}
 }
 \value{
 A list of:
@@ -58,16 +96,21 @@ A list of:
 }
 }
 \description{
-Specify and fit joint model using count data from traditional surveys and eDNA qPCR data
+Specify and fit joint model using count data from traditional surveys and
+eDNA qPCR data
 }
 \note{
-Before fitting the model, this function checks to ensure that the model specification is possible given the data files. These checks include:
+Before fitting the model, this function checks to ensure that the
+model specification is possible given the data files. These checks include:
 \itemize{
-\item  All tags in data are valid (i.e., include qPCR.N, qPCR.K, count, count.type, and site.cov).
-\item  Dimensions of qPCR.N and qPCR.K are equal, and dimensions of count and count.type are equal (if count.type provided).
+\item  All tags in data are valid (i.e., include qPCR.N, qPCR.K, count,
+count.type, and site.cov).
+\item  Dimensions of qPCR.N and qPCR.K are equal, and dimensions of count and
+count.type are equal (if count.type provided).
 \item  Number of sites in qPCR and count data are equal.
 \item  All data are numeric (i.e., integer or NA).
-\item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and count.type.
+\item  Empty data cells (NA) match in qPCR.N and qPCR.K and in count and
+count.type.
 \item  family is either 'poisson', 'negbin', or 'gamma'.
 \item  p10priors and phipriors (if used) is a vector of two numeric values.
 \item  site.cov has same number of rows as qPCR.N and count, if present
@@ -92,7 +135,8 @@ dim(gobyData$qPCR.N)[1]
 dim(gobyData$count)[1]
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-# These covariates will scale the sensitivity of eDNA sampling relative to traditional surveys
+# These covariates will scale the sensitivity of eDNA sampling relative to
+# traditional surveys
 # Count data is modeled using a poisson distribution.
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family="poisson", p10priors=c(1,20), q=FALSE)
@@ -110,8 +154,10 @@ names(greencrabData)
 dim(greencrabData$qPCR.N)[1]
 dim(greencrabData$count)[1]
 
-# Fit a model estimating a catchability coefficient for traditional survey gear types.
-# This model does not assume all traditional survey methods have the same catchability.
+# Fit a model estimating a catchability coefficient for traditional survey
+# gear types.
+# This model does not assume all traditional survey methods have the same
+# catchability.
 # Count data is modeled using a negative binomial distribution.
 fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
                    p10priors=c(1,20), q=TRUE)

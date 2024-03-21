@@ -10,7 +10,8 @@ jointSelect(modelfits)
 \item{modelfits}{A list containing model fits of class \code{stanfit}.}
 }
 \value{
-A matrix of delta elpd (expected log pointwise predictive density) between model fits. Function is performed using the \code{loo} package.
+A matrix of delta elpd (expected log pointwise predictive density)
+between model fits. Function is performed using the \code{loo} package.
 }
 \description{
 Perform model selection using leave one out cross validation of model objects
@@ -19,7 +20,8 @@ Perform model selection using leave one out cross validation of model objects
 Before model selection, this function makes the following check:
 \itemize{
 \item Input is a list of model fits of class 'stanfit'.
-\item All models compared were fit wither either \code{jointModel()} or all with \verb{traditionalModel().}
+\item All models compared were fit wither either \code{jointModel()} or all with
+\verb{traditionalModel().}
 }
 
 If any of these checks fail, the function returns an error message.
@@ -28,17 +30,23 @@ If any of these checks fail, the function returns an error message.
 \donttest{
 data(greencrabData)
 
-# Fit a model without estimating a catchability coefficient for traditional survey gear types.
-# This model assumes all traditional survey methods have the same catchability.
+# Fit a model without estimating a catchability coefficient for traditional
+# survey gear types.
+# This model assumes all traditional survey methods have the same
+# catchability.
 # Count data is modeled using a poisson distribution.
-fit.no.q = jointModel(data=greencrabData, family='poisson', p10priors=c(1,20), q=FALSE)
+fit.no.q = jointModel(data=greencrabData, family='poisson',
+                      p10priors=c(1,20), q=FALSE)
 
 
-# Fit a model estimating a catchability coefficient for traditional survey gear types.
-# This model does not assume all traditional survey methods have the same catchability.
+# Fit a model estimating a catchability coefficient for traditional
+# survey gear types.
+# This model does not assume all traditional survey methods have the
+# same catchability.
 # Gear type 1 is used as the reference gear type.
 # Count data is modeled using a negative binomial distribution.
-fit.q = jointModel(data=greencrabData, family='negbin', p10priors=c(1,20), q=TRUE)
+fit.q = jointModel(data=greencrabData, family='negbin',
+                   p10priors=c(1,20), q=TRUE)
 
 # Perform model selection
 jointSelect(modelfits=list(fit.no.q$model, fit.q$model))

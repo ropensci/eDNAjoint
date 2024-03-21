@@ -11,9 +11,11 @@ jointSummarize(modelfit, par = "all", probs = c(0.025, 0.975), digits = 3)
 
 \item{par}{A character vector of parameter names. The default is 'all'.}
 
-\item{probs}{A numeric vector of quantiles of interest. The default is c(0.025,0.975).}
+\item{probs}{A numeric vector of quantiles of interest. The default is
+c(0.025,0.975).}
 
-\item{as.integer(digits)}{An integer indicating the number of decimal places to round values in summary table. Default value is 3.}
+\item{as.integer(digits)}{An integer indicating the number of decimal
+places to round values in summary table. Default value is 3.}
 }
 \value{
 A summary table of parameter estimates.
@@ -22,13 +24,15 @@ A summary table of parameter estimates.
 Summarize posterior distributions of model parameters.
 }
 \note{
-Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
+Before fitting the model, this function checks to ensure that the
+function is possible given the inputs. These checks include:
 \itemize{
 \item  Input model fit is an object of class 'stanfit'.
 \item  Input probs is a numeric vector.
 \item  Input par is a character vector.
 \item  Input par are present in fitted model.
-\item  Input model fit has converged (i.e. no divergent transitions after warm-up).
+\item  Input model fit has converged (i.e. no divergent transitions after
+warm-up).
 }
 
 If any of these checks fail, the function returns an error message.

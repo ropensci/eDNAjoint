@@ -2,7 +2,8 @@
 % Please edit documentation in R/detectionPlot.R
 \name{detectionPlot}
 \alias{detectionPlot}
-\title{Plot the survey effort necessary to detect species presence, given the species expected catch rate.}
+\title{Plot the survey effort necessary to detect species presence, given the
+species expected catch rate.}
 \usage{
 detectionPlot(
   modelfit,
@@ -16,40 +17,55 @@ detectionPlot(
 \arguments{
 \item{modelfit}{An object of class \code{stanfit}.}
 
-\item{mu.min}{A value indicating the minimum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.}
+\item{mu.min}{A value indicating the minimum expected species catch rate for
+plotting. If multiple traditional gear types are represented in the model,
+mu is the catch rate of gear type 1.}
 
-\item{mu.max}{A value indicating the maximum expected species catch rate for plotting. If multiple traditional gear types are represented in the model, mu is the catch rate of gear type 1.}
+\item{mu.max}{A value indicating the maximum expected species catch rate for
+plotting. If multiple traditional gear types are represented in the model,
+mu is the catch rate of gear type 1.}
 
-\item{cov.val}{A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.}
+\item{cov.val}{A numeric vector indicating the values of site-level
+covariates to use for prediction. Default is 'None'.}
 
-\item{probability}{A numeric value indicating the probability of detecting presence. The default is 0.9.}
+\item{probability}{A numeric value indicating the probability of detecting
+presence. The default is 0.9.}
 
-\item{qPCR.N}{An integer indicating the number of qPCR replicates per eDNA sample. The default is 3.}
+\item{qPCR.N}{An integer indicating the number of qPCR replicates per eDNA
+sample. The default is 3.}
 }
 \value{
-A plot displaying survey efforts necessary to detect species presence, given mu, for each survey type.
+A plot displaying survey efforts necessary to detect species
+presence, given mu, for each survey type.
 }
 \description{
-This function plots the median number of survey effort units to necessary detect species presence. Detecting species presence is defined as producing at least one true positive eDNA detection or catching at least one individual.
+This function plots the median number of survey effort units to necessary
+detect species presence. Detecting species presence is defined as producing
+at least one true positive eDNA detection or catching at least one
+individual.
 }
 \note{
-Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
+Before fitting the model, this function checks to ensure that the
+function is possible given the inputs. These checks include:
 \itemize{
 \item  Input model fit is an object of class 'stanfit'.
 \item  Input mu.min is a numeric value greater than 0.
 \item  Input mu.max is a numeric value.
 \item  If model fit contains alpha, cov.val must be provided.
 \item  Input cov.val is numeric.
-\item  Input cov.val is the same length as the number of estimated covariates.
+\item  Input cov.val is the same length as the number of estimated
+covariates.
 \item  Input probability is a univariate numeric value.
-\item  Input model fit has converged (i.e. no divergent transitions after warm-up).
+\item  Input model fit has converged (i.e. no divergent transitions after
+warm-up).
 }
 
 If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{
-# Ex. 1: Calculating necessary effort for detection with site-level covariates
+# Ex. 1: Calculating necessary effort for detection with site-level
+covariates
 
 # Load data
 data(gobyData)
@@ -59,12 +75,15 @@ fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family='poisson', p10priors=c(1,20), q=FALSE)
 
 # Plot at the mean covariate values (covariates are standardized, so mean=0)
-detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), qPCR.N = 3)
+detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1,
+              cov.val = c(0,0), qPCR.N = 3)
 
 # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5), qPCR.N = 3)
+detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5),
+              qPCR.N = 3)
 
-# Ex. 2: Calculating necessary effort for detection with multiple traditional gear types
+# Ex. 2: Calculating necessary effort for detection with multiple
+# traditional gear types
 
 # Load data
 data(greencrabData)
@@ -74,10 +93,12 @@ fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
                    p10priors=c(1,20), q=TRUE)
 
 # Calculate
-detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = 'None', qPCR.N = 3)
+detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,
+              cov.val = 'None', qPCR.N = 3)
 
 # Change probability of detecting presence to 0.95
-detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = 'None', probability = 0.95, qPCR.N = 3)
+detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = 'None',
+              probability = 0.95, qPCR.N = 3)
 }
 
 }

@@ -9,26 +9,38 @@ muCritical(modelfit, cov.val = "None", ci = 0.9)
 \arguments{
 \item{modelfit}{An object of class \code{stanfit}}
 
-\item{cov.val}{A numeric vector indicating the values of site-level covariates to use for prediction. Default is 'None'.}
+\item{cov.val}{A numeric vector indicating the values of site-level
+covariates to use for prediction. Default is 'None'.}
 
-\item{ci}{Credible interval calculated using highest density interval (HDI). Default is 0.9 (i.e., 90\% credible interval).}
+\item{ci}{Credible interval calculated using highest density interval (HDI).
+Default is 0.9 (i.e., 90\% credible interval).}
 }
 \value{
-A list with median mu_critical and lower and upper bounds on the credible interval. If multiple gear types are used, a table of mu_critical and lower and upper credible interval bounds is returned with one column for each gear type.
+A list with median mu_critical and lower and upper bounds on the
+credible interval. If multiple gear types are used, a table of mu_critical
+and lower and upper credible interval bounds is returned with one column
+for each gear type.
 }
 \description{
-This function uses the full posterior distributions of parameters estimated by \code{jointModel()} to calculate mu_critical, or the expected catch rate at which the probabilities of a false positive eDNA detection and true positive eDNA detection are equal.
+This function uses the full posterior distributions of parameters estimated
+by \code{jointModel()} to calculate mu_critical, or the expected catch rate at
+which the probabilities of a false positive eDNA detection and true positive
+eDNA detection are equal.
 }
 \note{
-Before fitting the model, this function checks to ensure that the function is possible given the inputs. These checks include:
+Before fitting the model, this function checks to ensure that the
+function is possible given the inputs. These checks include:
 \itemize{
 \item  Input model fit is an object of class 'stanfit'.
-\item  Input credible interval is a univariate numeric value greater than 0 and less than 1.
+\item  Input credible interval is a univariate numeric value greater than 0
+and less than 1.
 \item  Input model fit contains p10 parameter.
 \item  If model fit contains alpha, cov.val must be provided.
 \item  Input cov.val is numeric.
-\item  Input cov.val is the same length as the number of estimated covariates.
-\item  Input model fit has converged (i.e. no divergent transitions after warm-up).
+\item  Input cov.val is the same length as the number of estimated
+covariates.
+\item  Input model fit has converged (i.e. no divergent transitions after
+warm-up).
 }
 
 If any of these checks fail, the function returns an error message.
@@ -44,7 +56,8 @@ data(gobyData)
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family='poisson', p10priors=c(1,20), q=FALSE)
 
-# Calculate mu_critical at the mean covariate values (covariates are standardized, so mean=0)
+# Calculate mu_critical at the mean covariate values (covariates are
+# standardized, so mean=0)
 mu.critical(fit.cov$model, cov.val=c(0,0))
 
 # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
