@@ -26,7 +26,8 @@ library(eDNAjoint)
 ```
 
 ```{r}
-#' @srrstats {BS1.2a, BS1.2b} Detailed vignette with examples and explanations here
+#' @srrstats {BS1.2a, BS1.2b} Detailed vignette with examples and explanations 
+#' here
 ```
 
 # Introduction
@@ -37,19 +38,31 @@ The primary purpose of the joint model is to use observations from both environm
 
 
 ```{r, echo=FALSE}
-symbol <- c("$\\mu_{i,k}$","$p_{10}$","$q_k$","$\\beta$","$\\alpha_n$", "$\\phi$")
+symbol <- c("$\\mu_{i,k}$","$p_{10}$","$q_k$","$\\beta$","$\\alpha_n$", 
+            "$\\phi$")
 name <- c("mu", "p10", "q", "beta","alpha", "phi")
-description <- c(paste0("Vector of expected catch rate at site, i. If multiple traditional gear types are used, mu is an array of expected catch rate at site, i, with gear type, k."),
+description <- c(paste0("Vector of expected catch rate at site, i. If ",
+                        "multiple traditional gear types are used, mu is ",
+                        "an array of expected catch rate at site, i, with ",
+                        "gear type, k."),
           "Probability of false positive eDNA detection",
-          paste0("Vector of catchability coefficients for traditional gear type, k."),
-          paste0("Parameter that scales the sensitivity of eDNA relative to traditional sampling. If site-level covariates are used, ", 
-                 "$\u03B2$", " is a vector of length, i, and a function of ", "$\u03B1_n$",". If site-level covariates are not used, ",
+          paste0("Vector of catchability coefficients for traditional gear ",
+                 "type, k."),
+          paste0("Parameter that scales the sensitivity of eDNA relative to ",
+                 "traditional sampling. If site-level covariates are used, ", 
+                 "$\u03B2$", " is a vector of length, i, and a function of ", 
+                 "$\u03B1_n$",". If site-level covariates are not used, ",
                  "$\u03B2$", " is a scalar."),
-          paste0("Vector of regression coefficients for site-level covariates that scale the sensitivity of eDNA sampling relative to traditional sampling. Note ", "$\u03B1_1$", " refers to the regression intercept."),
-          "Overdispersion parameter in negative binomial distribution, if used.")
+          paste0("Vector of regression coefficients for site-level covariates ",
+                 "that scale the sensitivity of eDNA sampling relative to ",
+                 "traditional sampling. Note ", "$\u03B1_1$", 
+                 " refers to the regression intercept."),
+          "Overdispersion parameter in negative binomial distribution, ",
+          "if used.")
 param_table <- cbind(symbol,name,description)
 knitr::kable(param_table,
-             caption = "Parameters included in joint model, including symbols, names, and descriptions.")
+             caption = paste0("Parameters included in joint model, including ",
+                              "symbols, names, and descriptions."))
 
 ```
 
@@ -128,7 +141,8 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with two covariates
-#' @srrstats {G1.5} Example code that reproduces results in the publication (Keller et al., 2022) where the model/algorithm was first developed
+#' @srrstats {G1.5} Example code that reproduces results in the publication 
+#' (Keller et al., 2022) where the model/algorithm was first developed
 #' @srrstats {BS1.2c} documentation of jointModel() function
 goby.fit1 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'), 
                         family = 'poisson', p10priors = c(1,20), q=FALSE)
@@ -181,7 +195,8 @@ First let's look at the posterior distribution for $p_{10}$.
 library(bayesplot)
 #' @srrstats {BS6.3} Example of plotting posterior distributional estimates
 
-# this will plot the posterior distribution and will highlight the median and 80% credibility interval
+# this will plot the posterior distribution and will highlight the median and 
+# 80% credibility interval
 mcmc_areas(as.matrix(goby.fit1$model), pars = 'p10', prob = 0.8)
 ```
 
@@ -190,10 +205,12 @@ Next let's look at chain convergence for $p_{10}$ and $\mu_{i=1}$.
 ```{r, message = FALSE, warning = FALSE, fig.width = 7}
 library(rstan)
 
-#' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
+#' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and 
+#' # plotting posterior samples
 
 # this will plot the MCMC chains for p10 and mu at site 1
-mcmc_trace(extract(goby.fit1$model, permuted = FALSE), pars = c('p10', 'mu[1]'))
+mcmc_trace(extract(goby.fit1$model, permuted = FALSE), 
+           pars = c('p10', 'mu[1]'))
 
 ```
 
@@ -204,7 +221,8 @@ To further highlight the relative sensitivity of eDNA and traditional sampling, 
 This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1. The `cov.val` argument indicates the value of the covariates used for the prediction. Since the covariate data was standardized, c(0,0) indicates that the prediction is made at the mean `Filter_time` and `Salinity` values.
 
 ```{r}
-detectionCalculate(goby.fit1$model, mu=c(0.1,0.5,1), cov.val = c(0,0), probability = 0.9)
+detectionCalculate(goby.fit1$model, mu=c(0.1,0.5,1), cov.val = c(0,0), 
+                   probability = 0.9)
 ```
 
 We can see that at the mean covariate values, it takes 14 eDNA samples or 24 seine samples to detect goby presence with 0.9 probability if the expected catch rate is 0.1. 
@@ -213,7 +231,8 @@ Now let's perform the same calculation under a condition where the `Filter_time`
 
 ```{r}
 #' @srrstats {BS1.2c} documentation of detectionCalculate() function
-detectionCalculate(goby.fit1$model, mu=c(0.1,0.5,1), cov.val = c(0.5,0), probability = 0.9)
+detectionCalculate(goby.fit1$model, mu=c(0.1,0.5,1), cov.val = c(0.5,0), 
+                   probability = 0.9)
 ```
 
 At sites with a longer eDNA sample filter time, it would now take 22 eDNA samples or 24 seine samples to detect goby presence if the expected catch rate is 0.1.
@@ -221,7 +240,8 @@ At sites with a longer eDNA sample filter time, it would now take 22 eDNA sample
 Let's do the same for salinity.
 
 ```{r}
-detectionCalculate(goby.fit1$model, mu=c(0.1,0.5,1), cov.val = c(0,0.5), probability = 0.9)
+detectionCalculate(goby.fit1$model, mu=c(0.1,0.5,1), cov.val = c(0,0.5), 
+                   probability = 0.9)
 ```
 At sites with higher salinity, it would now take 12 eDNA samples or 24 seine samples to detect goby presence if the expected catch rate is 0.1.
 
@@ -229,7 +249,8 @@ We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in t
 
 ```{r, fig.width = 7}
 #' @srrstats {BS1.2c} documentation of detectionPlot() function
-detectionPlot(goby.fit1$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), probability = 0.9)
+detectionPlot(goby.fit1$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0), 
+              probability = 0.9)
 ```
 
 ### Calculate $\mu_{critical}$
@@ -296,11 +317,13 @@ n.chain <- 4
 inits <- list()
 for(i in 1:n.chain){
   inits[[i]] <- list(
-    # length should equal the number of sites (dim(gobyData$count)[1]) for each chain
+    # length should equal the number of sites (dim(gobyData$count)[1]) 
+    # for each chain
     mu = stats::runif(dim(gobyData$count)[1], 0.01, 5), 
     # length should equal 1 for each chain 
     p10 = stats::runif(1,log(0.0001),log(0.08)),
-    # length should equal the number of covariates plus 1 (to account for intercept in regression)
+    # length should equal the number of covariates plus 1 
+    # (to account for intercept in regression)
     alpha = rep(0.1,length(c('Filter_time','Salinity'))+1)
     )
 }
@@ -367,7 +390,8 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with catchability coefficients
-greencrab.fit.q.negbin <- jointModel(data = greencrabData, cov='None', family = 'negbin', 
+greencrab.fit.q.negbin <- jointModel(data = greencrabData, cov='None', 
+                                     family = 'negbin', 
                                      p10priors = c(1,20), q=TRUE)
 ```
 
@@ -377,16 +401,19 @@ We previously made a choice to model the green crab count data with a negative b
 
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with poisson distribution
-greencrab.fit.q.pois <- jointModel(data = greencrabData, cov='None', family = 'poisson', 
+greencrab.fit.q.pois <- jointModel(data = greencrabData, cov='None', 
+                                   family = 'poisson', 
                                    p10priors = c(1,20), q=TRUE)
 ```
 
 Let's also fit some models where we assume that both gear types have the same catchability. We set q=FALSE to not estimate catchability coefficients.
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with four covariates
-greencrab.fit.negbin <- jointModel(data = greencrabData, cov='None', family = 'negbin', 
+greencrab.fit.negbin <- jointModel(data = greencrabData, cov='None', 
+                                   family = 'negbin', 
                                    p10priors = c(1,20), q=FALSE)
-greencrab.fit.pois <- jointModel(data = greencrabData, cov='None', family = 'poisson', 
+greencrab.fit.pois <- jointModel(data = greencrabData, cov='None', 
+                                 family = 'poisson', 
                                  p10priors = c(1,20), q=FALSE)
 ```
 
@@ -439,7 +466,8 @@ library(bayesplot)
 
 #' @srrstats {BS6.3} Example of plotting posterior distributional estimates
 
-# this will plot the posterior distribution and will highlight the median and 80% credibility interval
+# this will plot the posterior distribution and will highlight the median and 
+# 80% credibility interval
 mcmc_areas(as.matrix(greencrab.fit.q.negbin$model), pars = 'p10', prob = 0.8)
 ```
 
@@ -448,7 +476,8 @@ Next let's look at chain convergence for $p_{10}$ and $\beta$.
 ```{r, fig.width = 7}
 library(rstan)
 
-#' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and plotting posterior samples
+#' @srrstats {BS1.4,BS4.3,BS6.2} Example of convergence checking here and 
+#' plotting posterior samples
 
 # this will plot the MCMC chains for p10 and mu at site 1
 mcmc_trace(extract(greencrab.fit.q.negbin$model, permuted = FALSE), pars = c('p10', 'beta'))
@@ -460,7 +489,8 @@ mcmc_trace(extract(greencrab.fit.q.negbin$model, permuted = FALSE), pars = c('p1
 To further highlight these results, we can use `detectionCalculate()` to find the units of survey effort necessary to detect presence of the species. This function is finding the median number of survey units necessary to detect species presence if the expected catch rate, $\mu$ is 0.1, 0.5, or 1.  $\mu$ now represents the expected catch rate of gear type 1.
 
 ```{r}
-detectionCalculate(greencrab.fit.q.negbin$model, mu = c(0.1,0.5,1), probability = 0.9)
+detectionCalculate(greencrab.fit.q.negbin$model, mu = c(0.1,0.5,1), 
+                   probability = 0.9)
 ```
 
 We can see that it takes 27 eDNA samples, 25 trap samples (gear type 1), and 31 trap samples (gear type 2) to detect green crab presence with 0.9 probability if the expected catch rate with gear type 1 is 0.1.
@@ -468,7 +498,8 @@ We can see that it takes 27 eDNA samples, 25 trap samples (gear type 1), and 31 
 We can also plot these comparisons. `mu.min` and `mu.max` define the x-axis in the plot and represent the expected catch rate of gear type 1.
 
 ```{r, fig.width = 7}
-detectionPlot(greencrab.fit.q.negbin$model, mu.min = 0.1, mu.max = 1, probability = 0.9)
+detectionPlot(greencrab.fit.q.negbin$model, mu.min = 0.1, mu.max = 1, 
+              probability = 0.9)
 ```
 
 ### Calculate $\mu_{critical}$
@@ -493,7 +524,8 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 
 ```{r, eval = FALSE}
 #run the traditional model model with catchability coefficients
-greencrab.traditional <- traditionalModel(data = greencrabData, family = 'negbin', q = TRUE) 
+greencrab.traditional <- traditionalModel(data = greencrabData, 
+                                          family = 'negbin', q = TRUE) 
 ```
  
 
