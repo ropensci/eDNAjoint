@@ -463,24 +463,25 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
     inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
-    out <- rstan::sampling(c(stanmodels$joint_binary_cov_pois,
-                             stanmodels$joint_binary_cov_gamma)[model_index][[1]],
-                           data = rlist::list.append(
-                             data,
-                             nsitecov = length(cov)+1,
-                             mat_site = as.matrix(site_mat)
-                           ),
-                           cores = cores,
-                           #' @srrstats {G2.4,G2.4a} explicit conversion to
-                           #' integers for sampling arguments
-                           chains = as.integer(n.chain),
-                           thin = as.integer(thin),
-                           warmup = as.integer(n.iter.burn),
-                           iter = (
-                             as.integer(n.iter.burn) + as.integer(n.iter.sample)
-                           ),
-                           init = inits,
-                           refresh = ifelse(verbose==TRUE,500,0)
+    out <- rstan::sampling(
+      c(stanmodels$joint_binary_cov_pois,
+        stanmodels$joint_binary_cov_gamma)[model_index][[1]],
+      data = rlist::list.append(
+        data,
+        nsitecov = length(cov)+1,
+        mat_site = as.matrix(site_mat)
+      ),
+      cores = cores,
+      #' @srrstats {G2.4,G2.4a} explicit conversion to
+      #' integers for sampling arguments
+      chains = as.integer(n.chain),
+      thin = as.integer(thin),
+      warmup = as.integer(n.iter.burn),
+      iter = (
+        as.integer(n.iter.burn) + as.integer(n.iter.sample)
+      ),
+      init = inits,
+      refresh = ifelse(verbose==TRUE,500,0)
     )
   }
 
@@ -1006,8 +1007,8 @@ covariate_checks <- function(data,cov){
   #' scope of algorithm (i.e., # site-level covariates is greater than the
   #' number of sites)
   if(length(cov)>dim(data$site.cov)[2]){
-    warnMsg = paste0("The number of site-level covariates exceeds the number ",
-                     "of sites (i.e., n < p).")
+    warnMsg <- paste0("The number of site-level covariates exceeds the number ",
+                      "of sites (i.e., n < p).")
     warning(warnMsg)
   }
 
@@ -1016,7 +1017,7 @@ covariate_checks <- function(data,cov){
   #' data has perfect collinearity
   rank_mat <- qr(data$site.cov)$rank
   if(rank_mat < ncol(data$site.cov)){
-    warnMsg = "Data in site.cov exhibits perfect collinearity."
+    warnMsg <- "Data in site.cov exhibits perfect collinearity."
     warning(warnMsg)
   }
 }

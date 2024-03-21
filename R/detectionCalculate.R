@@ -122,7 +122,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #number of traditional survey effort
     ntrad_out <- vector(length = length(mu))
 
-    for(i in 1:length(mu)){
+    for(i in seq_along(mu)){
       #number of traditional survey replicates
       ntrad <- seq(from = 0, to = 50000, by = 1)
 
@@ -142,7 +142,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     # (among N replicates)
     ndna_out <- vector(length = length(mu))
 
-    for(i in 1:length(mu)){
+    for(i in seq_along(mu)){
       #number of eDNA samples
       ndna <- seq(from = 0, to = 50000, by = 1)
 
@@ -169,7 +169,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #number of traditional survey effort
     ntrad_out <- vector(length = length(mu))
 
-    for(i in 1:length(mu)){
+    for(i in seq_along(mu)){
       #number of traditional survey replicates
       ntrad <- seq(from = 0, to = 50000, by = 1)
 
@@ -189,7 +189,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     # (among N replicates)
     ndna_out <- vector(length = length(mu))
 
-    for(i in 1:length(mu)){
+    for(i in seq_along(mu)){
       #number of eDNA samples
       ndna <- seq(from = 0, to = 50000, by = 1)
 

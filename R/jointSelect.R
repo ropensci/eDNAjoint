@@ -78,7 +78,7 @@ jointSelect <- function(modelfits) {
 jointSelect_input_checks <- function(modelfits){
   ## #1. make sure input is a list
   if (!is(modelfits,'list')){
-    errMsg = "modelfits must be a list."
+    errMsg <- "modelfits must be a list."
     stop(errMsg)
   }
 

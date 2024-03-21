@@ -45,7 +45,8 @@ test_that("detectionPlot input checks work", {
                "cov.val must be a numeric vector")
 
   #8. Only include input cov.val if covariates are included in model
-  expect_error(detectionPlot(model2$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0)),
+  expect_error(detectionPlot(model2$model, mu.min = 0.1, mu.max = 1,
+                             cov.val = c(0,0)),
                paste0("cov.val must be 'None' if the model does not contain ",
                       "site-level covariates."))
 

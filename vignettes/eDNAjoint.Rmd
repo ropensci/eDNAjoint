@@ -480,7 +480,8 @@ library(rstan)
 #' plotting posterior samples
 
 # this will plot the MCMC chains for p10 and mu at site 1
-mcmc_trace(extract(greencrab.fit.q.negbin$model, permuted = FALSE), pars = c('p10', 'beta'))
+mcmc_trace(extract(greencrab.fit.q.negbin$model, permuted = FALSE), 
+           pars = c('p10', 'beta'))
 
 ```
 
