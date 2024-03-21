@@ -1,11 +1,12 @@
 test_that("jointSummarize input checks work", {
-  #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving as expected.
+  #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are
+  #' behaving as expected.
 
   # run traditional model to do tests with
   data <- data("greencrabData")
 
   out <- traditionalModel(data=greencrabData, family='negbin',multicore=FALSE,
-                            n.chain=2,n.iter.burn=50,n.iter.sample=200)
+                          n.chain=2,n.iter.burn=50,n.iter.sample=200)
 
   #1. make sure model fit is of class stanfit
   data <- data.frame(y=c(1,2,3),x=c(1,2,3))
