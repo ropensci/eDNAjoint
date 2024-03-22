@@ -14,7 +14,7 @@ jointSummarize(modelfit, par = "all", probs = c(0.025, 0.975), digits = 3)
 \item{probs}{A numeric vector of quantiles of interest. The default is
 c(0.025,0.975).}
 
-\item{as.integer(digits)}{An integer indicating the number of decimal
+\item{digits}{An integer indicating the number of decimal
 places to round values in summary table. Default value is 3.}
 }
 \value{

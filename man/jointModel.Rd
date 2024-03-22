@@ -25,21 +25,22 @@ jointModel(
 \arguments{
 \item{data}{A list containing data necessary for model fitting. Valid tags
 are \code{qPCR.N}, \code{qPCR.K}, \code{count}, \code{count.type}, and \code{site.cov}. \code{qPCR.N} and
-\code{qPCR.K} are matrices or data frames with first dimension equal to the number
-of sites (i) and second dimension equal to the maximum number of eDNA samples
-at a given site (m). \code{qPCR.N} contains the total number of qPCR replicates
-per site and eDNA sample, and \code{qPCR.K} contains the total number of positive
-qPCR detections per site and eDNA sample. \code{count} is a matrix or data frame
-of traditional survey count data, with first dimension equal to the number of
-sites (i) and second dimension equal to the maximum number of traditional
-survey replicates at a given site (j). \code{count.type} is an optional matrix or
-data frame of integers indicating gear type used in corresponding count data,
-with first dimension equal to the number of sites (i) and second dimension
-equal to the maximum number of traditional survey replicates at a given site.
-Values should be integers beginning with 1 (referring to the first gear type)
-to n (last gear type). \code{site.cov} is an optional matrix or data frame of
-site-level covariate data, with first dimension equal to the number of sites
-(i). \code{site.cov} should include informative column names. Empty cells should
+\code{qPCR.K} are matrices or data frames with first dimension equal to the
+number of sites (i) and second dimension equal to the maximum number of
+eDNA samples at a given site (m). \code{qPCR.N} contains the total number of
+qPCR replicates per site and eDNA sample, and \code{qPCR.K} contains the total
+number of positive qPCR detections per site and eDNA sample. \code{count} is a
+matrix or data frame of traditional survey count data, with first
+dimension equal to the number of sites (i) and second dimension equal to
+the maximum number of traditional survey replicates at a given site (j).
+\code{count.type} is an optional matrix or data frame of integers indicating
+gear type used in corresponding count data, with first dimension equal to
+the number of sites (i) and second dimension equal to the maximum number
+of traditional survey replicates at a given site. Values should be
+integers beginning with 1 (referring to the first gear type) to n (last
+gear type). \code{site.cov} is an optional matrix or data frame of site-level
+covariate data, with first dimension equal to the number of sites (i).
+\code{site.cov} should include informative column names. Empty cells should
 be NA and will be removed during processing. Sites, i, should be consistent
 in all qPCR, count, and site covariate data.}
 
@@ -47,17 +48,17 @@ in all qPCR, count, and site covariate data.}
 in the model. Default value is 'None'.}
 
 \item{family}{The distribution class used to model traditional survey count
-data. Options include poisson ('poisson'), negative binomial ('negbin'), and
-gamma ('gamma'). Default value is 'poisson'.}
+data. Options include poisson ('poisson'), negative binomial ('negbin'),
+and gamma ('gamma'). Default value is 'poisson'.}
 
 \item{p10priors}{A numeric vector indicating beta distribution
 hyperparameters (alpha, beta) used as the prior distribution for the eDNA
 false positive probability (p10). Default vector is c(1,20).}
 
 \item{q}{A logical value indicating whether to estimate a catchability
-coefficient, q, for traditional survey gear types (TRUE) or to not estimate a
-catchability coefficient, q, for traditional survey gear types (FALSE).
-Default value is FALSE.}
+coefficient, q, for traditional survey gear types (TRUE) or to not
+estimate a catchability coefficient, q, for traditional survey gear types
+(FALSE). Default value is FALSE.}
 
 \item{phipriors}{A numeric vector indicating gamma distribution
 hyperparameters (shape, rate) used as the prior distribution for phi, the
@@ -68,9 +69,9 @@ gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
 with multiple cores. Default is TRUE.}
 
 \item{initial_values}{A list of lists of initial values to use in MCMC. The
-length should equal the number of MCMC chains. Initial values can be provided
-for parameters: beta, p10 (log-scale), mu, q, alpha. If no initial values
-are provided, default random values are drawn.}
+length should equal the number of MCMC chains. Initial values can be
+provided for parameters: beta, p10 (log-scale), mu, q, alpha. If no
+initial values are provided, default random values are drawn.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 

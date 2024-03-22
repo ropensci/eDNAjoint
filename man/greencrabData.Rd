@@ -15,14 +15,14 @@ sample replicates.}
 (row) and eDNA sample replicate (column). Data includes 20 total sites and
 5 eDNA sample replicates.}
 \item{count}{Count of green crab individuals in trap samples at each site
-(row) and trap sample replicate (column). Data includes 20 total sites and
-a maximum of 420 trap replicates. NA indicates that fewer trap samples were
-collected than the maximum at a site.}
+(row) and trap sample replicate (column). Data includes 20 total sites
+and a maximum of 420 trap replicates. NA indicates that fewer trap
+samples were collected than the maximum at a site.}
 \item{count.type}{Integer indicating the traditional gear type used at each
 site (row) and trap sample replicate (column). '1' refers to Fukui traps,
-and '2' refers to Minnow traps. Data includes 20 total sites and a maximum
-of 420 trap replicates. NA indicates that fewer trap samples were collected
-than the maximum at a site.}
+and '2' refers to Minnow traps. Data includes 20 total sites and a
+maximum of 420 trap replicates. NA indicates that fewer trap samples
+were collected than the maximum at a site.}
 }
 }
 \source{

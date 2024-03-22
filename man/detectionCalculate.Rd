@@ -17,8 +17,8 @@ detectionCalculate(
 \item{modelfit}{An object of class \code{stanfit}.}
 
 \item{mu}{A numeric vector of species densities/capture rates. If multiple
-traditional gear types are represented in the model, mu is the catch rate of
-gear type 1.}
+traditional gear types are represented in the model, mu is the catch rate
+of gear type 1.}
 
 \item{cov.val}{A numeric vector indicating the values of site-level
 covariates to use for prediction. Default is 'None'.}
