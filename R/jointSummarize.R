@@ -1,8 +1,9 @@
 #' Summarize posterior distributions of model parameters.
 #'
 #' @srrstats {BS5.3,BS6.4} Function to summarize parameter samples and provide
-#' convergence statistics (using Stan functions), used to summarize parameter
-#' values relevant to the user
+#'   convergence statistics (using Stan functions), used to summarize parameter
+#'   values relevant to the user
+#'
 #' This function summarizes the posterior distributions of specified parameters
 #' from a model fit. Summary includes mean, sd, and specified quantiles, as
 #' well as effective sample size (n_eff) and Rhat for estimated parameters.
@@ -13,20 +14,20 @@
 #' @param modelfit An object of class `stanfit`.
 #' @param par A character vector of parameter names. The default is 'all'.
 #' @param probs A numeric vector of quantiles of interest. The default is
-#' c(0.025,0.975).
-#' @param as.integer(digits) An integer indicating the number of decimal
-#' places to round values in summary table. Default value is 3.
+#'   c(0.025,0.975).
+#' @param digits An integer indicating the number of decimal
+#'   places to round values in summary table. Default value is 3.
 #' @return A summary table of parameter estimates.
 #'
 #' @note  Before fitting the model, this function checks to ensure that the
-#' function is possible given the inputs. These checks include:
+#'   function is possible given the inputs. These checks include:
 #' \itemize{
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input probs is a numeric vector.
 #' \item  Input par is a character vector.
 #' \item  Input par are present in fitted model.
 #' \item  Input model fit has converged (i.e. no divergent transitions after
-#' warm-up).
+#'   warm-up).
 #' }
 #'
 #' If any of these checks fail, the function returns an error message.
@@ -36,13 +37,13 @@
 #' data(greencrabData)
 #'
 #' # Fit a model
-#' modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE)
+#' modelfit = jointModel(data=greencrabData, family="negbin", q=TRUE)
 #'
 #' # Create summary table of all parameters
 #' jointSummarize(modelfit$model)
 #'
 #' # Summarize just 'p10' parameter
-#' jointSummarize(modelfit$model, par = 'p10')
+#' jointSummarize(modelfit$model, par = "p10")
 #' }
 #'
 
@@ -51,7 +52,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
-  #' function
+  #'   function
   jointSummarize_input_checks(modelfit, par, probs)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
@@ -60,7 +61,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
 
   ## check to see if there are any divergent transitions
   #' @srrstats {BS4.5} Warning message if the input model fit has
-  #' divergence transitions
+  #'   divergence transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,
                                           inc_warmup=FALSE),
                 div_check)[[1]]) > 0){
@@ -80,7 +81,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
      !c('alpha') %in% modelfit@model_pars &&
      all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','phi','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(as.integer(digits)))
@@ -91,7 +92,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('phi','alpha') %in% modelfit@model_pars) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -102,7 +103,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
                 'alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','q','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -113,7 +114,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('q','alpha') %in% modelfit@model_pars) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','phi','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -124,7 +125,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('q','phi','alpha') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -135,7 +136,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
                 'beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','beta','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -145,7 +146,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   else if(all(c('p10','q','phi','alpha') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,
                                 pars=c('p10','alpha','beta','q','phi','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
@@ -157,7 +158,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           !c('phi') %in% modelfit@model_pars &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -168,7 +169,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
                 'beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','q','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -179,7 +180,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           !c('q') %in% modelfit@model_pars &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,
                                 pars=c('p10','alpha','beta','phi','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
@@ -191,7 +192,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('q','phi') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -202,7 +203,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
                 'beta_gamma') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('p10','alpha','beta','mu'),
                                 probs=probs,use_cache=FALSE)$summary,
                  as.integer(digits))
@@ -213,7 +214,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('p10','beta') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('q','phi','mu'),probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
 
@@ -223,7 +224,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
 
@@ -234,7 +235,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('q','mu'),probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
 
@@ -244,7 +245,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('p10','beta','q') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=c('phi','mu'),probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
 
@@ -253,7 +254,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   else if(all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars='mu',probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
 
@@ -263,13 +264,13 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
           all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars='mu',probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
 
   } else {
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
-    #' arguments
+    #'   arguments
     out <- round(rstan::summary(modelfit,pars=par,probs=probs,
                                 use_cache=FALSE)$summary,as.integer(digits))
   }
@@ -287,11 +288,11 @@ div_check <- function(x){
 
 # function for input checks
 #' @srrstats {G5.2a} Pre-processing routines to check inputs have
-#' unique messages
+#'   unique messages
 jointSummarize_input_checks <- function(modelfit, par, probs){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit'
-  #' (i.e., output of jointModel())
+  #'   (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
     errMsg <- "modelfit must be of class 'stanfit'."
     stop(errMsg)
@@ -299,7 +300,7 @@ jointSummarize_input_checks <- function(modelfit, par, probs){
 
   ## #2. make sure probs is a numeric vector
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(!is.numeric(probs)) {
     errMsg <- "probs must be a numeric vector."
     stop(errMsg)
@@ -313,7 +314,7 @@ jointSummarize_input_checks <- function(modelfit, par, probs){
 
   ## #4. make sure par is a character vector
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(!is.character(par)) {
     errMsg <- "par must be a character vector."
     stop(errMsg)

@@ -66,7 +66,7 @@ data(gobyData)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family='poisson', p10priors=c(1,20), q=FALSE)
+                     family="poisson", p10priors=c(1,20), q=FALSE)
 
 # Calculate at the mean covariate values
 # (covariates are standardized, so mean=0)
@@ -84,15 +84,15 @@ detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1),
 data(greencrabData)
 
 # Fit a model with no site-level covariates
-fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
+fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
                    p10priors=c(1,20), q=TRUE)
 
 # Calculate
 detectionCalculate(fit.q$model, mu = seq(from=0.1,to=1,by=0.1),
-                   cov.val = 'None', qPCR.N = 3)
+                   cov.val = "None", qPCR.N = 3)
 
 # Change probability of detecting presence to 0.95
-detectionCalculate(fit.q$model, mu = 0.1, cov.val = 'None',
+detectionCalculate(fit.q$model, mu = 0.1, cov.val = "None",
                    probability = 0.95, qPCR.N = 3)
 }
 

@@ -11,24 +11,24 @@
 #' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param modelfit An object of class `stanfit`.
 #' @param mu.min A value indicating the minimum expected species catch rate for
-#' plotting. If multiple traditional gear types are represented in the model,
-#' mu is the catch rate of gear type 1.
+#'   plotting. If multiple traditional gear types are represented in the model,
+#'   mu is the catch rate of gear type 1.
 #' @param mu.max A value indicating the maximum expected species catch rate for
-#' plotting. If multiple traditional gear types are represented in the model,
-#' mu is the catch rate of gear type 1.
+#'   plotting. If multiple traditional gear types are represented in the model,
+#'   mu is the catch rate of gear type 1.
 #' @param cov.val A numeric vector indicating the values of site-level
-#' covariates to use for prediction. Default is 'None'.
+#'   covariates to use for prediction. Default is 'None'.
 #' @param qPCR.N An integer indicating the number of qPCR replicates per eDNA
-#' sample. The default is 3.
+#'   sample. The default is 3.
 #' @param probability A numeric value indicating the probability of detecting
-#' presence. The default is 0.9.
+#'   presence. The default is 0.9.
 #' @return A plot displaying survey efforts necessary to detect species
-#' presence, given mu, for each survey type.
+#'   presence, given mu, for each survey type.
 #'
 #' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations
-#' on lengths of inputs
+#'   on lengths of inputs
 #' @note  Before fitting the model, this function checks to ensure that the
-#' function is possible given the inputs. These checks include:
+#'   function is possible given the inputs. These checks include:
 #' \itemize{
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input mu.min is a numeric value greater than 0.
@@ -36,10 +36,10 @@
 #' \item  If model fit contains alpha, cov.val must be provided.
 #' \item  Input cov.val is numeric.
 #' \item  Input cov.val is the same length as the number of estimated
-#' covariates.
+#'   covariates.
 #' \item  Input probability is a univariate numeric value.
 #' \item  Input model fit has converged (i.e. no divergent transitions after
-#' warm-up).
+#'   warm-up).
 #' }
 #'
 #' If any of these checks fail, the function returns an error message.
@@ -54,7 +54,7 @@
 #'
 #' # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 #' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-#'                      family='poisson', p10priors=c(1,20), q=FALSE)
+#'                      family="poisson", p10priors=c(1,20), q=FALSE)
 #'
 #' # Plot at the mean covariate values (covariates are standardized, so mean=0)
 #' detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1,
@@ -71,15 +71,15 @@
 #' data(greencrabData)
 #'
 #' # Fit a model with no site-level covariates
-#' fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
+#' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
 #'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate
 #' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,
-#'               cov.val = 'None', qPCR.N = 3)
+#'               cov.val = "None", qPCR.N = 3)
 #'
 #' # Change probability of detecting presence to 0.95
-#' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = 'None',
+#' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = "None",
 #'               probability = 0.95, qPCR.N = 3)
 #' }
 #'
@@ -89,7 +89,7 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None',
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
-  #' function
+  #'   function
   detectionPlot_input_checks(modelfit, mu.min, mu.max, cov.val,
                              probability, qPCR.N)
 
@@ -99,7 +99,7 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None',
 
   ## check to see if there are any divergent transitions
   #' @srrstats {BS4.5} Warning message if the input model fit has divergence
-  #' transitions
+  #'   transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),
                 div_check)[[1]]) > 0){
 
@@ -779,12 +779,12 @@ div_check <- function(x){
 
 # function for input checks
 #' @srrstats {G5.2a} Pre-processing routines to check inputs have unique
-#' messages
+#'   messages
 detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
                                        probability, qPCR.N){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit'
-  #' (i.e., output of jointModel())
+  #'   (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
     errMsg <- "modelfit must be of class 'stanfit'."
     stop(errMsg)
@@ -792,7 +792,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
 
   ## #2. make sure mu.min is a numeric value
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(!is.numeric(mu.min) | length(mu.min)>1 | mu.min <= 0) {
     errMsg <- "mu.min must be a numeric value greater than 0"
     stop(errMsg)
@@ -800,7 +800,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
 
   ## #3. make sure mu.max is a numeric value
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(!is.numeric(mu.max) | length(mu.max)>1 | mu.max <= mu.min) {
     errMsg <- "mu.max must be a numeric value greater than mu.min"
     stop(errMsg)
@@ -808,7 +808,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
 
   ## #4. make sure probability is a numeric value between 0 and 1
   #' @srrstats {G2.0} Assertion on length of input, prohibit multivariate input
-  #' to parameters expected to be univariate
+  #'   to parameters expected to be univariate
   if(!is.numeric(probability) | length(probability)>1 | probability < 0 |
      probability > 1) {
     errMsg <- "probability must be a numeric value between 0 and 1"
@@ -817,7 +817,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
 
   ## #5. cov.val is numeric, if provided
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(all(cov.val != 'None') && !is.numeric(cov.val)) {
     errMsg <- "cov.val must be a numeric vector"
     stop(errMsg)
@@ -847,7 +847,7 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
 
   ## #9. qPCR.N must be an integer
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(qPCR.N %% 1 != 0) {
     errMsg <- "qPCR.N should be an integer."
     stop(errMsg)

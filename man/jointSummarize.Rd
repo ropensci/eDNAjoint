@@ -42,13 +42,13 @@ If any of these checks fail, the function returns an error message.
 data(greencrabData)
 
 # Fit a model
-modelfit = jointModel(data=greencrabData, family='negbin', q=TRUE)
+modelfit = jointModel(data=greencrabData, family="negbin", q=TRUE)
 
 # Create summary table of all parameters
 jointSummarize(modelfit$model)
 
 # Summarize just 'p10' parameter
-jointSummarize(modelfit$model, par = 'p10')
+jointSummarize(modelfit$model, par = "p10")
 }
 
 }

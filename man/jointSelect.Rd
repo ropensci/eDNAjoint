@@ -35,7 +35,7 @@ data(greencrabData)
 # This model assumes all traditional survey methods have the same
 # catchability.
 # Count data is modeled using a poisson distribution.
-fit.no.q = jointModel(data=greencrabData, family='poisson',
+fit.no.q = jointModel(data=greencrabData, family="poisson",
                       p10priors=c(1,20), q=FALSE)
 
 
@@ -45,7 +45,7 @@ fit.no.q = jointModel(data=greencrabData, family='poisson',
 # same catchability.
 # Gear type 1 is used as the reference gear type.
 # Count data is modeled using a negative binomial distribution.
-fit.q = jointModel(data=greencrabData, family='negbin',
+fit.q = jointModel(data=greencrabData, family="negbin",
                    p10priors=c(1,20), q=TRUE)
 
 # Perform model selection

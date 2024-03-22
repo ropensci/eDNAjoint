@@ -10,29 +10,29 @@
 #' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param modelfit An object of class `stanfit`
 #' @param cov.val A numeric vector indicating the values of site-level
-#' covariates to use for prediction. Default is 'None'.
+#'   covariates to use for prediction. Default is 'None'.
 #' @param ci Credible interval calculated using highest density interval (HDI).
-#' Default is 0.9 (i.e., 90% credible interval).
+#'   Default is 0.9 (i.e., 90% credible interval).
 #' @return A list with median mu_critical and lower and upper bounds on the
-#' credible interval. If multiple gear types are used, a table of mu_critical
-#' and lower and upper credible interval bounds is returned with one column
-#' for each gear type.
+#'   credible interval. If multiple gear types are used, a table of mu_critical
+#'   and lower and upper credible interval bounds is returned with one column
+#'   for each gear type.
 #'
 #' @srrstats {G2.0a,G2.2} Explicit secondary documentation of any expectations
-#' on lengths of inputs
+#'   on lengths of inputs
 #' @note  Before fitting the model, this function checks to ensure that the
-#' function is possible given the inputs. These checks include:
+#'   function is possible given the inputs. These checks include:
 #' \itemize{
 #' \item  Input model fit is an object of class 'stanfit'.
 #' \item  Input credible interval is a univariate numeric value greater than 0
-#' and less than 1.
+#'   and less than 1.
 #' \item  Input model fit contains p10 parameter.
 #' \item  If model fit contains alpha, cov.val must be provided.
 #' \item  Input cov.val is numeric.
 #' \item  Input cov.val is the same length as the number of estimated
-#' covariates.
+#'   covariates.
 #' \item  Input model fit has converged (i.e. no divergent transitions after
-#' warm-up).
+#'   warm-up).
 #' }
 #'
 #' If any of these checks fail, the function returns an error message.
@@ -46,7 +46,7 @@
 #'
 #' # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 #' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-#'                      family='poisson', p10priors=c(1,20), q=FALSE)
+#'                      family="poisson", p10priors=c(1,20), q=FALSE)
 #'
 #' # Calculate mu_critical at the mean covariate values (covariates are
 #' # standardized, so mean=0)
@@ -61,11 +61,11 @@
 #' data(greencrabData)
 #'
 #' # Fit a model with no site-level covariates
-#' fit.q = jointModel(data=greencrabData, cov='None', family='negbin',
+#' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
 #'                    p10priors=c(1,20), q=TRUE)
 #'
 #' # Calculate mu_critical
-#' muCritical(fit.q$model, cov.val='None')
+#' muCritical(fit.q$model, cov.val="None")
 #' }
 #'
 
@@ -73,7 +73,7 @@ muCritical <- function(modelfit, cov.val = 'None', ci = 0.9) {
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
-  #' function
+  #'   function
   muCritical_input_checks(modelfit, cov.val, ci)
 
   if (!requireNamespace("rstan", quietly = TRUE)){
@@ -82,7 +82,7 @@ muCritical <- function(modelfit, cov.val = 'None', ci = 0.9) {
 
   ## check to see if there are any divergent transitions
   #' @srrstats {BS4.5} Warning message if the input model fit has divergence
-  #' transitions
+  #'   transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,
                                           inc_warmup=FALSE),
                 div_check)[[1]]) > 0){
@@ -175,11 +175,11 @@ div_check <- function(x){
 
 # function for input checks
 #' @srrstats {G5.2a} Pre-processing routines to check inputs have unique
-#' messages
+#'   messages
 muCritical_input_checks <- function(modelfit, cov.val, ci){
   ## #1. make sure model fit is of class stanfit
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit'
-  #' (i.e., output of jointModel())
+  #'   (i.e., output of jointModel())
   if(!is(modelfit,'stanfit')) {
     errMsg <- "modelfit must be of class 'stanfit'."
     stop(errMsg)
@@ -187,7 +187,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
 
   ## #2. make sure ci is valid
   #' @srrstats {G2.0,G2.2} Assertion on length of input, prohibit multivariate
-  #' input to parameters expected to be univariate
+  #'   input to parameters expected to be univariate
   if(!is.numeric(ci)|ci<=0|ci>=1|length(ci)>1) {
     errMsg <- "ci must be a numeric value >0 and <1."
     stop(errMsg)
@@ -208,7 +208,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
 
   ## #5. cov.val is numeric, if provided
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
-  #' unsupported type
+  #'   unsupported type
   if(all(cov.val != 'None') && !is.numeric(cov.val)) {
     errMsg <- "cov.val must be a numeric vector"
     stop(errMsg)
