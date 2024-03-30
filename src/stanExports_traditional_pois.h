@@ -29,22 +29,22 @@ using namespace stan::math;
 stan::math::profile_map profiles__;
 static constexpr std::array<const char*, 17> locations_array__ =
   {" (found before start of program)",
-  " (in 'traditional_pois', line 8, column 4 to column 33)",
-  " (in 'traditional_pois', line 18, column 2 to column 20)",
-  " (in 'traditional_pois', line 20, column 10 to column 53)",
-  " (in 'traditional_pois', line 19, column 17 to line 21, column 7)",
-  " (in 'traditional_pois', line 19, column 4 to line 21, column 7)",
-  " (in 'traditional_pois', line 14, column 6 to column 31)",
-  " (in 'traditional_pois', line 13, column 17 to line 15, column 5)",
-  " (in 'traditional_pois', line 13, column 4 to line 15, column 5)",
-  " (in 'traditional_pois', line 2, column 4 to column 19)",
-  " (in 'traditional_pois', line 3, column 10 to column 11)",
-  " (in 'traditional_pois', line 3, column 4 to column 28)",
-  " (in 'traditional_pois', line 4, column 4 to column 22)",
-  " (in 'traditional_pois', line 5, column 10 to column 11)",
-  " (in 'traditional_pois', line 5, column 4 to column 28)",
-  " (in 'traditional_pois', line 8, column 10 to column 14)",
-  " (in 'traditional_pois', line 18, column 9 to column 10)"};
+  " (in 'string', line 8, column 4 to column 33)",
+  " (in 'string', line 18, column 2 to column 20)",
+  " (in 'string', line 20, column 10 to column 53)",
+  " (in 'string', line 19, column 17 to line 21, column 7)",
+  " (in 'string', line 19, column 4 to line 21, column 7)",
+  " (in 'string', line 14, column 6 to column 31)",
+  " (in 'string', line 13, column 17 to line 15, column 5)",
+  " (in 'string', line 13, column 4 to line 15, column 5)",
+  " (in 'string', line 2, column 4 to column 19)",
+  " (in 'string', line 3, column 10 to column 11)",
+  " (in 'string', line 3, column 4 to column 28)",
+  " (in 'string', line 4, column 4 to column 22)",
+  " (in 'string', line 5, column 10 to column 11)",
+  " (in 'string', line 5, column 4 to column 28)",
+  " (in 'string', line 8, column 10 to column 14)",
+  " (in 'string', line 18, column 9 to column 10)"};
 #include <stan_meta_header.hpp>
 class model_traditional_pois final : public model_base_crtp<model_traditional_pois> {
 private:
