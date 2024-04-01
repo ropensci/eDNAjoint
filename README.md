@@ -3,12 +3,9 @@
 
 # eDNAjoint
 
-<img src="man/figures/logo.png" align="right" height="250" dpi="700" />
-<!-- badges: start --> <!-- badges: end -->
-
-``` r
-#' @srrstats {BS1.2a} README with high-level overview and examples here
-```
+<img src="man/figures/logo.png" align="right" height="200" dpi="700" />
+<!-- badges: start --> [![codecov](https://codecov.io/gh/abigailkeller/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/abigailkeller/eDNAjoint)
+<!-- badges: end -->
 
 The package *eDNAjoint* is useful for interpreting observations from
 paired environmental DNA (eDNA) and traditional surveys. The package
@@ -60,7 +57,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 15659.83    1
+#> p10 0.003       0 0.001 0.001 0.007 17227.74    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
