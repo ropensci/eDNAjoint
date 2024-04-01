@@ -541,6 +541,7 @@ init_joint_cov <- function(n.chain,count_all,cov,initial_values){
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         alpha <- rep(0.1,length(cov)+1)
       )
+      names(A[[i]]) <- c('mu','p10','alpha')
     }
   }
 
@@ -589,6 +590,7 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         alpha <- rep(0.1,length(cov)+1)
       )
+      names(A[[i]]) <- c('mu','q','p10','alpha')
     }
   }
 
@@ -636,6 +638,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         beta <- 0.5
       )
+      names(A[[i]]) <- c('mu','q','p10','beta')
     }
   }
 
@@ -676,6 +679,7 @@ init_joint <- function(n.chain,count_all,initial_values){
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         beta <- 0.5
       )
+      names(A[[i]]) <- c('mu','p10','beta')
     }
   }
 

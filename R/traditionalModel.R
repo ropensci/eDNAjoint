@@ -341,6 +341,7 @@ init_trad_catchability <- function(n.chain, count_all, q_names, initial_values){
         mu <- stats::runif(length(unique(count_all$L)), 0.01, 5),
         q <- as.data.frame(stats::runif(length(q_names),0.01,1))
       )
+      names(A[[i]]) <- c('mu','q')
     }
   }
 
@@ -367,6 +368,7 @@ init_trad <- function(n.chain, count_all, initial_values){
       A[[i]] <- list(
         mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
       )
+      names(A[[i]]) <- 'mu'
     }
   }
 
