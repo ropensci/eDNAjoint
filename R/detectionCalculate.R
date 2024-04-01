@@ -782,8 +782,8 @@ detectionCalculate_input_checks <- function(modelfit, mu, cov.val,
 
   ## #7. If covariates are in model, cov.val must be provided
   if('alpha' %in% modelfit@model_pars && all(cov.val == 'None')) {
-    errMsg <- paste0("cov.val must be provided if the model contains ","
-                     site-level covariates.")
+    errMsg <- paste0("cov.val must be provided if the model contains ",
+                     "site-level covariates.")
     stop(errMsg)
   }
 

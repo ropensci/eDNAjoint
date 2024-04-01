@@ -3,11 +3,9 @@ test_that("detectionPlot input checks work", {
   #' as expected.
   # run joint model to do tests with
   model1 <- jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                       multicore=FALSE,
-                       n.chain=2,n.iter.burn=50,n.iter.sample=200)
+                       multicore=FALSE)
 
-  model2 <- jointModel(data=greencrabData,family='negbin',multicore=FALSE,
-                       n.chain=2,n.iter.burn=50,n.iter.sample=200)
+  model2 <- jointModel(data=greencrabData,family='negbin',multicore=FALSE)
 
   #1. make sure model fit is of class stanfit
   expect_error(detectionPlot(as.matrix(model1$model), mu.min = 0.1,

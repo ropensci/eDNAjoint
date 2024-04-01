@@ -4,11 +4,13 @@ test_that("traditionalModel input checks work", {
   #1. input tags are valid, q = TRUE
   expect_error(traditionalModel(data=list(Count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,2,1),c(1,2,NA))),
-                                q=TRUE),
+                                q=TRUE,
+                                multicore=FALSE),
                "Data should include 'count' and 'count.type'.")
 
   #2. input tags are valid, q = FALSE
-  expect_error(traditionalModel(data=list(Count=rbind(c(4,1,1),c(1,1,NA)))),
+  expect_error(traditionalModel(data=list(Count=rbind(c(4,1,1),c(1,1,NA))),
+                                multicore=FALSE),
                "Data should include 'count'.")
 
   #3. make sure dimensions of count and count.type are equal, if count.type is
@@ -17,38 +19,44 @@ test_that("traditionalModel input checks work", {
   #' input data is dimensionally commensurate
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,2),c(1,2))),
-                                q=TRUE),
+                                q=TRUE,
+                                multicore=FALSE),
                "Dimensions of count and count.type do not match.")
 
   #4. make sure all data is numeric -- if q == TRUE
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c('NA',2,2),
                                                            c(1,2,2))),
-                                q=TRUE),
+                                q=TRUE,
+                                multicore=FALSE),
                "Data should be numeric.")
 
   #5. make sure all data is numeric -- if q == FALSE
-  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,'NA')))),
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,'NA'))),
+                                multicore=FALSE),
                "Data should be numeric.")
 
   #6. make sure locations of NAs in count data match locations of NAs in
   # count.type data
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(NA,2,2),c(1,2,2))),
-                                q=TRUE),
+                                q=TRUE,
+                                multicore=FALSE),
                paste0("Empty data cells \\(NA\\) in count data should match ",
                       "empty data cells \\(NA\\) in count.type data."))
 
   #7. make sure family is either 'poisson', 'negbin', or 'gamma'
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
-                                family='normal'),
+                                family='normal',
+                                multicore=FALSE),
                paste0("Invalid family. Options include 'poisson', ",
                       "'negbin', or 'gamma'."))
 
   #8. the smallest count.type is 1
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(0,1,2),c(1,2,NA))),
-                                q=TRUE),
+                                q=TRUE,
+                                multicore=FALSE),
                paste0("The first gear type should be referenced as 1 in ",
                       "count.type. Subsequent gear types should be ",
                       "referenced 2, 3, 4, etc."))
@@ -56,7 +64,8 @@ test_that("traditionalModel input checks work", {
   #9. count are integers
   expect_error(traditionalModel(data=list(count=rbind(c(4.1,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,1,2),c(1,2,NA))),
-                                q=TRUE, family = 'negbin'),
+                                q=TRUE, family = 'negbin',
+                                multicore=FALSE),
                paste0("All values in count should be non-negative integers. ",
                       "Use family = 'gamma' if count is continuous."))
 
@@ -65,21 +74,25 @@ test_that("traditionalModel input checks work", {
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1.1,1,2),
                                                            c(1,2,NA))),
-                                q=TRUE),
+                                q=TRUE,
+                                multicore=FALSE),
                "All values in count.type should be integers.")
 
   #11. phi priors is a vector of two numeric values
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
-                                phipriors=c(0,1)),
+                                phipriors=c(0,1),
+                                multicore=FALSE),
                paste0("phipriors should be a vector of two positive ",
                       "numeric values. ex. c\\(0.25,0.25\\)"))
 
   #12. make sure no column is entirely NA in count
-  expect_error(traditionalModel(data=list(count=rbind(c(4,1,NA),c(1,1,NA)))),
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,NA),c(1,1,NA))),
+                                multicore=FALSE),
                "count contains a column with all NA.")
 
   #13. make sure no data are undefined
-  expect_error(traditionalModel(data=list(count=rbind(c(4,1,Inf),c(1,1,NA)))),
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,Inf),c(1,1,NA))),
+                                multicore=FALSE),
                "count contains undefined values \\(i.e., Inf or -Inf\\)")
 
   #14. length of initial values is equal to the number of chains
@@ -91,7 +104,8 @@ test_that("traditionalModel input checks work", {
     )
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
-                                n.chain=5, initial_values=inits),
+                                n.chain=5, initial_values=inits,
+                                multicore=FALSE),
                paste0("The length of the list of initial values should equal ",
                       "the number of chains \\(n.chain, default is 4\\)."))
 
@@ -104,7 +118,8 @@ test_that("traditionalModel input checks work", {
     )
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
-                                initial_values=inits),
+                                initial_values=inits,
+                                multicore=FALSE),
                paste0("The length of initial values for 'mu' should ",
                       "equal the number of sites."))
 
@@ -117,7 +132,8 @@ test_that("traditionalModel input checks work", {
     )
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
-                                initial_values=inits),
+                                initial_values=inits,
+                                multicore=FALSE),
                "Initial values for 'mu' should be numeric values > 0.")
 
   #17. initial values check q
@@ -130,7 +146,8 @@ test_that("traditionalModel input checks work", {
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,1,2),c(1,2,NA))),
-                                initial_values=inits),
+                                initial_values=inits,
+                                multicore=FALSE),
                paste0("The length of initial values for 'q' should equal: ",
                       "\\# unique gear types \\- 1 \\(i.e., q for reference ",
                       "type = 1\\)."))
