@@ -65,14 +65,15 @@ If any of these checks fail, the function returns an error message.
 \examples{
 \donttest{
 # Ex. 1: Calculating necessary effort for detection with site-level
-covariates
+# covariates
 
 # Load data
 data(gobyData)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family="poisson", p10priors=c(1,20), q=FALSE)
+                     family="poisson", p10priors=c(1,20), q=FALSE,
+                     multicore=FALSE)
 
 # Plot at the mean covariate values (covariates are standardized, so mean=0)
 detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1,
@@ -90,7 +91,8 @@ data(greencrabData)
 
 # Fit a model with no site-level covariates
 fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
-                   p10priors=c(1,20), q=TRUE)
+                   p10priors=c(1,20), q=TRUE,
+                   multicore=FALSE)
 
 # Calculate
 detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,

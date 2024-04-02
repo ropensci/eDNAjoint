@@ -140,7 +140,8 @@ dim(gobyData$count)[1]
 # traditional surveys
 # Count data is modeled using a poisson distribution.
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family="poisson", p10priors=c(1,20), q=FALSE)
+                     family="poisson", p10priors=c(1,20), q=FALSE,
+                     multicore=FALSE)
 
 
 # Ex. 2: Implementing the joint model with multiple traditional gear types
@@ -161,7 +162,8 @@ dim(greencrabData$count)[1]
 # catchability.
 # Count data is modeled using a negative binomial distribution.
 fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
-                   p10priors=c(1,20), q=TRUE)
+                   p10priors=c(1,20), q=TRUE,
+                   multicore=FALSE)
 }
 
 }

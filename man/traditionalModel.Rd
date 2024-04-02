@@ -120,7 +120,8 @@ dim(greencrabData$count.type)[1]
 # This model assumes all traditional survey methods have the same
 # catchability.
 # Count data is modeled using a poisson distribution.
-fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE)
+fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE,
+                            multicore=FALSE)
 
 
 # Fit a model estimating a catchability coefficient for traditional survey
@@ -128,7 +129,8 @@ fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE)
 # This model does not assume all traditional survey methods have the same
 # catchability.
 # Count data is modeled using a negative binomial distribution.
-fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE)
+fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE,
+                         multicore=FALSE)
 }
 
 }

@@ -36,7 +36,7 @@ data(greencrabData)
 # catchability.
 # Count data is modeled using a poisson distribution.
 fit.no.q = jointModel(data=greencrabData, family="poisson",
-                      p10priors=c(1,20), q=FALSE)
+                      p10priors=c(1,20), q=FALSE, multicore=FALSE)
 
 
 # Fit a model estimating a catchability coefficient for traditional
@@ -46,7 +46,7 @@ fit.no.q = jointModel(data=greencrabData, family="poisson",
 # Gear type 1 is used as the reference gear type.
 # Count data is modeled using a negative binomial distribution.
 fit.q = jointModel(data=greencrabData, family="negbin",
-                   p10priors=c(1,20), q=TRUE)
+                   p10priors=c(1,20), q=TRUE, multicore=FALSE)
 
 # Perform model selection
 jointSelect(modelfits=list(fit.no.q$model, fit.q$model))
