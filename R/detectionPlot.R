@@ -47,7 +47,7 @@
 #' @examples
 #' \donttest{
 #' # Ex. 1: Calculating necessary effort for detection with site-level
-#' covariates
+#' # covariates
 #'
 #' # Load data
 #' data(gobyData)
