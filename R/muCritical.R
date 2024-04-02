@@ -46,7 +46,8 @@
 #'
 #' # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 #' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-#'                      family="poisson", p10priors=c(1,20), q=FALSE)
+#'                      family="poisson", p10priors=c(1,20), q=FALSE,
+#'                      multicore=FALSE)
 #'
 #' # Calculate mu_critical at the mean covariate values (covariates are
 #' # standardized, so mean=0)
@@ -62,7 +63,7 @@
 #'
 #' # Fit a model with no site-level covariates
 #' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
-#'                    p10priors=c(1,20), q=TRUE)
+#'                    p10priors=c(1,20), q=TRUE, multicore=FALSE)
 #'
 #' # Calculate mu_critical
 #' muCritical(fit.q$model, cov.val="None")

@@ -145,7 +145,8 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 #' (Keller et al., 2022) where the model/algorithm was first developed
 #' @srrstats {BS1.2c} documentation of jointModel() function
 goby.fit1 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'), 
-                        family = 'poisson', p10priors = c(1,20), q=FALSE)
+                        family = 'poisson', p10priors = c(1,20), q=FALSE, 
+                        multicore=FALSE)
 ```
 
 `goby.fit1` is a list containing:
@@ -159,7 +160,8 @@ We previously made a choice to include two site-level covariates. Perhaps we wan
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 # fit a new model with one site-level covariate
 goby.fit2 <- jointModel(data = gobyData, cov='Other_fishes',
-                        family = 'poisson', p10priors = c(1,20), q=FALSE)
+                        family = 'poisson', p10priors = c(1,20), q=FALSE, 
+                        multicore=FALSE)
 ```
 
 We can now compare the fit of these model to our data using the `jointSelect()` function, which performs leave-one-out cross validation with functions from the `loo` package.
@@ -284,7 +286,8 @@ jointSummarize(fit.prior.1, par = c('p10','alpha'))
 Prior choice 2: c(1,15). The mean and sd of this prior distribution are 0.063 and 0.058, respectively.
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 fit.prior.2 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'), 
-                          family = 'poisson', p10priors = c(1,15), q=FALSE)
+                          family = 'poisson', p10priors = c(1,15), q=FALSE, 
+                          multicore=FALSE)
 ```
 
 ```{r}
@@ -294,7 +297,8 @@ jointSummarize(fit.prior.2$model, par = c('p10','alpha'))
 Prior choice 3: c(1,10). The mean and sd of this prior distribution are 0.091 and 0.083, respectively.
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 fit.prior.3 <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'),
-                          family = 'poisson', p10priors = c(1,10), q=FALSE)
+                          family = 'poisson', p10priors = c(1,10), q=FALSE, 
+                          multicore=FALSE)
 ```
 
 ```{r}
@@ -326,11 +330,12 @@ for(i in 1:n.chain){
     # (to account for intercept in regression)
     alpha = rep(0.1,length(c('Filter_time','Salinity'))+1)
     )
+  names(inits[[i]]) <- c('mu','p10','alpha')
 }
 
 # now fit the model
 fit.w.inits <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'),
-                          initial_values = inits)
+                          initial_values = inits, multicore=FALSE)
 
 # check to see the initial values that were used
 fit.w.inits$inits
@@ -392,7 +397,8 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 #run the joint model with catchability coefficients
 greencrab.fit.q.negbin <- jointModel(data = greencrabData, cov='None', 
                                      family = 'negbin', 
-                                     p10priors = c(1,20), q=TRUE)
+                                     p10priors = c(1,20), q=TRUE, 
+                                     multicore=FALSE)
 ```
 
 ## Model selection
@@ -403,7 +409,8 @@ We previously made a choice to model the green crab count data with a negative b
 #run the joint model with poisson distribution
 greencrab.fit.q.pois <- jointModel(data = greencrabData, cov='None', 
                                    family = 'poisson', 
-                                   p10priors = c(1,20), q=TRUE)
+                                   p10priors = c(1,20), q=TRUE,
+                                   multicore=FALSE)
 ```
 
 Let's also fit some models where we assume that both gear types have the same catchability. We set q=FALSE to not estimate catchability coefficients.
@@ -411,10 +418,12 @@ Let's also fit some models where we assume that both gear types have the same ca
 #run the joint model with four covariates
 greencrab.fit.negbin <- jointModel(data = greencrabData, cov='None', 
                                    family = 'negbin', 
-                                   p10priors = c(1,20), q=FALSE)
+                                   p10priors = c(1,20), q=FALSE, 
+                                   multicore=FALSE)
 greencrab.fit.pois <- jointModel(data = greencrabData, cov='None', 
                                  family = 'poisson', 
-                                 p10priors = c(1,20), q=FALSE)
+                                 p10priors = c(1,20), q=FALSE, 
+                                 multicore=FALSE)
 ```
 
 Now let's perform model selection using leave-one-out cross validation.
@@ -526,7 +535,8 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 ```{r, eval = FALSE}
 #run the traditional model model with catchability coefficients
 greencrab.traditional <- traditionalModel(data = greencrabData, 
-                                          family = 'negbin', q = TRUE) 
+                                          family = 'negbin', q = TRUE, 
+                                          multicore=FALSE) 
 ```
  
 

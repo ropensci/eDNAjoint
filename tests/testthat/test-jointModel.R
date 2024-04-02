@@ -361,6 +361,7 @@ test_that("jointModel input checks work", {
       p10 <- stats::runif(1,log(0.0001),log(0.08)),
       alpha <- rep(0.1,3)
     )
+    names(inits[[i]]) <- c('mu','p10','alpha')
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
@@ -381,6 +382,7 @@ test_that("jointModel input checks work", {
       p10 <- stats::runif(1,log(0.0001),log(0.08)),
       alpha <- rep(0.1,3)
     )
+    names(inits[[i]]) <- c('mu','p10','alpha')
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
@@ -403,6 +405,7 @@ test_that("jointModel input checks work", {
       p10 <- stats::runif(2,log(0.0001),log(0.08)),
       alpha <- rep(0.1,3)
     )
+    names(inits[[i]]) <- c('mu','p10','alpha')
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
@@ -423,6 +426,7 @@ test_that("jointModel input checks work", {
       p10 <- stats::runif(1,log(0.0001),log(0.08)),
       beta <- c(1,0)
     )
+    names(inits[[i]]) <- c('mu','p10','beta')
   }
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
@@ -440,6 +444,7 @@ test_that("jointModel input checks work", {
       p10 <- stats::runif(1,log(0.0001),log(0.08)),
       alpha <- rep(0.1,2)
     )
+    names(inits[[i]]) <- c('mu','p10','alpha')
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
@@ -460,6 +465,7 @@ test_that("jointModel input checks work", {
     inits[[i]] <- list(
       q <- c(0.1,0.1)
     )
+    names(inits[[i]]) <- c('q')
   }
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),

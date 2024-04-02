@@ -37,7 +37,8 @@
 #' data(greencrabData)
 #'
 #' # Fit a model
-#' modelfit = jointModel(data=greencrabData, family="negbin", q=TRUE)
+#' modelfit = jointModel(data=greencrabData, family="negbin", q=TRUE,
+#'                       multicore=FALSE)
 #'
 #' # Create summary table of all parameters
 #' jointSummarize(modelfit$model)

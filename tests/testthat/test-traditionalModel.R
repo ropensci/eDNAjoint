@@ -102,6 +102,7 @@ test_that("traditionalModel input checks work", {
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1)
     )
+    names(inits[[i]]) <- c('mu')
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
                                 n.chain=5, initial_values=inits,
@@ -116,6 +117,7 @@ test_that("traditionalModel input checks work", {
     inits[[i]] <- list(
       mu <- stats::runif(3,0,1)
     )
+    names(inits[[i]]) <- c('mu')
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
                                 initial_values=inits,
@@ -130,6 +132,7 @@ test_that("traditionalModel input checks work", {
     inits[[i]] <- list(
       mu <- stats::runif(3,-1,0)
     )
+    names(inits[[i]]) <- c('mu')
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
                                 initial_values=inits,
@@ -143,6 +146,7 @@ test_that("traditionalModel input checks work", {
     inits[[i]] <- list(
       q <- c(0.1,0.1)
     )
+    names(inits[[i]]) <- c('q')
   }
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,1,2),c(1,2,NA))),
@@ -154,6 +158,7 @@ test_that("traditionalModel input checks work", {
 
 
 })
+
 
 
 

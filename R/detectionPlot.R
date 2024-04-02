@@ -54,7 +54,8 @@
 #'
 #' # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 #' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-#'                      family="poisson", p10priors=c(1,20), q=FALSE)
+#'                      family="poisson", p10priors=c(1,20), q=FALSE,
+#'                      multicore=FALSE)
 #'
 #' # Plot at the mean covariate values (covariates are standardized, so mean=0)
 #' detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1,
@@ -72,7 +73,8 @@
 #'
 #' # Fit a model with no site-level covariates
 #' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
-#'                    p10priors=c(1,20), q=TRUE)
+#'                    p10priors=c(1,20), q=TRUE,
+#'                    multicore=FALSE)
 #'
 #' # Calculate
 #' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,
@@ -825,8 +827,8 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
 
   ## #6. Only include input cov.val if covariates are included in model
   if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg <- paste0("cov.val must be 'None' if the model does not contain ","
-                     site-level covariates.")
+    errMsg <- paste0("cov.val must be 'None' if the model does not contain ",
+                     "site-level covariates.")
     stop(errMsg)
   }
 
