@@ -704,9 +704,9 @@ test_that("jointModel parameter recovery tests work",{
   # simulate data: seed 123
   set.seed(123)
   # constants
-  nsite <- 20
+  nsite <- 100
   nobs_count <- 200 # increased dataset size (doubled)
-  nobs_pcr <- 16 # increased dataset size (doubled)
+  nobs_pcr <- 100 # increased dataset size
   # params
   mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
   alpha <- c(0.5, 0.1, -0.4)
