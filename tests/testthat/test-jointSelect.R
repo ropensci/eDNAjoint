@@ -1,6 +1,6 @@
 test_that("jointSelect input checks work", {
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving
-  #' as expected.
+  #'   as expected.
 
   # run joint model and traditional model to do tests with
   data <- data("greencrabData")

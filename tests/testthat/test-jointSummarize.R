@@ -1,6 +1,6 @@
 test_that("jointSummarize input checks work", {
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are
-  #' behaving as expected.
+  #'   behaving as expected.
 
   # run traditional model to do tests with
   data <- data("greencrabData")

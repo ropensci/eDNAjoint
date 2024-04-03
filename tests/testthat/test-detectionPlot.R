@@ -1,6 +1,6 @@
 test_that("detectionPlot input checks work", {
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving
-  #' as expected.
+  #'   as expected.
   # run joint model to do tests with
   model1 <- jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                        multicore=FALSE)

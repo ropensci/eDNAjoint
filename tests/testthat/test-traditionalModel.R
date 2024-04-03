@@ -1,6 +1,6 @@
 test_that("traditionalModel input checks work", {
   #' @srrstats {G5.2,G5.2b,BS2.15} Tests the assure function input checks are
-  #' behaving as expected.
+  #'   behaving as expected.
   #1. input tags are valid, q = TRUE
   expect_error(traditionalModel(data=list(Count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,2,1),c(1,2,NA))),
@@ -16,7 +16,7 @@ test_that("traditionalModel input checks work", {
   #3. make sure dimensions of count and count.type are equal, if count.type is
   # present
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
-  #' input data is dimensionally commensurate
+  #'   input data is dimensionally commensurate
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
                                           count.type=rbind(c(1,2),c(1,2))),
                                 q=TRUE,

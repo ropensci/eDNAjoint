@@ -1,6 +1,6 @@
 test_that("jointModel input checks work", {
   #' @srrstats {G5.2,G5.2b,BS2.15} Tests the assure function input checks are
-  #' behaving as expected.
+  #'   behaving as expected.
   #1. input tags are valid, q = FALSE, cov = FALSE
   expect_error(jointModel(data=list(qPCR.n=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.k=rbind(c(3,3,3),c(3,3,NA)),
@@ -42,7 +42,7 @@ test_that("jointModel input checks work", {
 
   #5. make sure dimensions of qPCR.N and qPCR.K are equal
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
-  #' input data is dimensionally commensurate
+  #'   input data is dimensionally commensurate
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1,1),c(1,1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
@@ -52,7 +52,7 @@ test_that("jointModel input checks work", {
   #6. make sure dimensions of count and count.type are equal, if count.type is
   # present
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
-  #' input data is dimensionally commensurate
+  #'   input data is dimensionally commensurate
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
@@ -63,7 +63,7 @@ test_that("jointModel input checks work", {
 
   #7. make sure number of rows in count = number of rows in qPCR.N and qPCR.K
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
-  #' input data is dimensionally commensurate
+  #'   input data is dimensionally commensurate
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA),c(4,1,1))),
@@ -486,7 +486,8 @@ test_that("jointModel input checks work", {
 
 # correctness and parameter recovery tests
 #' @srrstats {G5.4, G5.6} Correctness/parameter recovery tests to test that
-#' the implementation produces expected results given data with known properties
+#'   the implementation produces expected results given data with known
+#'   properties
 test_that("jointModel parameter recovery tests work",{
 
   ################################
@@ -542,12 +543,12 @@ test_that("jointModel parameter recovery tests work",{
     site.cov = mat_site
   )
   # run model
-  fit <- jointModel(data=data, cov=c('var_a','var_b'),
-                    multicore=FALSE)
+  fit1 <- jointModel(data=data, cov=c('var_a','var_b'),
+                    multicore=FALSE, seed = 10)
   # summary
-  summary <- as.data.frame(rstan::summary(fit$model,
-                                          pars = c('mu','alpha','log_p10'),
-                                          probs = c(0.025, 0.975))$summary)
+  summary1 <- as.data.frame(rstan::summary(fit1$model,
+                                           pars = c('mu','alpha','log_p10'),
+                                           probs = c(0.025, 0.975))$summary)
 
   # set up empty vector to check if true values are in 95% interval of
   # posterior estimates
@@ -555,7 +556,7 @@ test_that("jointModel parameter recovery tests work",{
   # check mu
   for(i in 1:nsite){
     par <- paste0('mu[',i,']')
-    if(mu[i] > summary[par,'2.5%'] && mu[i] < summary[par,'97.5%']){
+    if(mu[i] > summary1[par,'2.5%'] && mu[i] < summary1[par,'97.5%']){
       check[i] <- TRUE
     } else {
       check[i] <- FALSE
@@ -564,30 +565,30 @@ test_that("jointModel parameter recovery tests work",{
   # check alpha
   for(i in seq_along(alpha)){
     par <- paste0('alpha[',i,']')
-    if(alpha[i] > summary[par,'2.5%'] && alpha[i] < summary[par,'97.5%']){
+    if(alpha[i] > summary1[par,'2.5%'] && alpha[i] < summary1[par,'97.5%']){
       check[nsite+i] <- TRUE
     } else {
       check[nsite+i] <- FALSE
     }
   }
   # check p10
-  if(log_p10 > summary['log_p10','2.5%'] &&
-     log_p10 < summary['log_p10','97.5%']){
+  if(log_p10 > summary1['log_p10','2.5%'] &&
+     log_p10 < summary1['log_p10','97.5%']){
     check[nsite+length(alpha)+1] <- TRUE
   } else {
     check[nsite+length(alpha)+1] <- FALSE
   }
 
   #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for
-  #' equality, here the model is tested to determine if the true parameter
-  #' values are within the 95% quantiles of the posterior
+  #'   equality, here the model is tested to determine if the true parameter
+  #'   values are within the 95% quantiles of the posterior
   # all should be equal to true
   expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
 
   # test that output values are on the same scale as the data
   mu_estimates <- rep(NA,nsite)
   for(i in 1:nsite){
-    mu_estimates[i] <- summary[paste0('mu[',i,']'),'mean']
+    mu_estimates[i] <- summary1[paste0('mu[',i,']'),'mean']
   }
 
   # get mean of input count data at each site
@@ -596,8 +597,8 @@ test_that("jointModel parameter recovery tests work",{
     data_mean[i] <- mean(data$count[i,])
   }
   #' @srrstats {BS7.4, BS7.4a} Check to ensure that mean posterior estimates
-  #' are on the same scale as the mean of the input data (here checking
-  #' estimates of mu, i.e., expected catch rate at each site)
+  #'   are on the same scale as the mean of the input data (here checking
+  #'   estimates of mu, i.e., expected catch rate at each site)
   # check that estimates are on same scale as data
   expect_equal(round(mu_estimates,0),round(data_mean,0))
 
@@ -654,12 +655,12 @@ test_that("jointModel parameter recovery tests work",{
     site.cov = mat_site
   )
   # run model
-  fit <- jointModel(data=data, cov=c('var_a','var_b'),
-                    multicore=FALSE)
+  fit2 <- jointModel(data=data, cov=c('var_a','var_b'),
+                    multicore=FALSE, seed = 2)
   # summary
-  summary <- as.data.frame(rstan::summary(fit$model,
-                                          pars = c('mu','alpha','log_p10'),
-                                          probs = c(0.025, 0.975))$summary)
+  summary2 <- as.data.frame(rstan::summary(fit2$model,
+                                           pars = c('mu','alpha','log_p10'),
+                                           probs = c(0.025, 0.975))$summary)
 
   # set up empty vector to check if true values are in 95% interval of
   # posterior estimates
@@ -667,7 +668,7 @@ test_that("jointModel parameter recovery tests work",{
   # check mu
   for(i in 1:nsite){
     par <- paste0('mu[',i,']')
-    if(mu[i] > summary[par,'2.5%'] && mu[i] < summary[par,'97.5%']){
+    if(mu[i] > summary2[par,'2.5%'] && mu[i] < summary2[par,'97.5%']){
       check[i] <- TRUE
     } else {
       check[i] <- FALSE
@@ -676,23 +677,23 @@ test_that("jointModel parameter recovery tests work",{
   # check alpha
   for(i in seq_along(alpha)){
     par <- paste0('alpha[',i,']')
-    if(alpha[i] > summary[par,'2.5%'] && alpha[i] < summary[par,'97.5%']){
+    if(alpha[i] > summary2[par,'2.5%'] && alpha[i] < summary2[par,'97.5%']){
       check[nsite+i] <- TRUE
     } else {
       check[nsite+i] <- FALSE
     }
   }
   # check p10
-  if(log_p10 > summary['log_p10','2.5%'] &&
-     log_p10 < summary['log_p10','97.5%']){
+  if(log_p10 > summary2['log_p10','2.5%'] &&
+     log_p10 < summary2['log_p10','97.5%']){
     check[nsite+length(alpha)+1] <- TRUE
   } else {
     check[nsite+length(alpha)+1] <- FALSE
   }
 
   #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for
-  #' equality, here the model is tested to determine if the true parameter
-  #' values are within the 95% quantiles of the posterior
+  #'   equality, here the model is tested to determine if the true parameter
+  #'   values are within the 95% quantiles of the posterior
   # all should be equal to true
   expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
 
@@ -749,7 +750,7 @@ test_that("jointModel parameter recovery tests work",{
   )
   # run model
   fit_large <- jointModel(data=data, cov=c('var_a','var_b'),
-                          multicore=FALSE)
+                          multicore=FALSE, seed = 10)
   # summary
   summary_large <- as.data.frame(rstan::summary(fit_large$model,
                                                 pars = c('alpha','log_p10'),
@@ -764,10 +765,10 @@ test_that("jointModel parameter recovery tests work",{
   )
 
   # get values for smaller dataset
-  se_small <- c(summary['alpha[1]','se_mean'],
-                summary['alpha[2]','se_mean'],
-                summary['alpha[3]','se_mean'],
-                summary['log_p10','se_mean']
+  se_small <- c(summary1['alpha[1]','se_mean'],
+                summary1['alpha[2]','se_mean'],
+                summary1['alpha[3]','se_mean'],
+                summary1['log_p10','se_mean']
   )
 
   # set up empty vector to check if standard errors are smaller with
@@ -778,8 +779,8 @@ test_that("jointModel parameter recovery tests work",{
   }
 
   #' @srrstats {G5.7} Check to see that implementation performs as expected
-  #' properties of data change (i.e., standard error of posteriors is smaller
-  #' if there are more data observations)
+  #'   properties of data change (i.e., standard error of posteriors is smaller
+  #'   if there are more data observations)
   # all should be equal to true
   expect_equal(check,rep(TRUE,length(alpha)+length(log_p10)))
 

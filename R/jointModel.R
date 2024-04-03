@@ -84,6 +84,9 @@
 #' @srrstats {BS2.12} Parameter controlling the verbosity of output
 #' @param verbose Logical value controlling the verbosity of output (i.e.,
 #'   warnings, messages, progress bar). Default is TRUE.
+#' @param seed A positive integer seed used for random number generation in
+#'   MCMC. Default is 'None', which means the seed is generated from 1 to the
+#'   maximum integer supported by R.
 #' @srrstats {BS5.0} function returns initial values used in computation
 #' @return A list of:
 #' \itemize{
@@ -163,7 +166,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                        q=FALSE, phipriors=c(0.25,0.25), multicore=TRUE,
                        initial_values='None', n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, thin=1, adapt_delta=0.9,
-                       verbose=TRUE) {
+                       verbose=TRUE, seed = 'None') {
 
   ####
   # input checks
@@ -299,6 +302,11 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
     cores <- 1
   }
 
+  # get seed
+  SEED <- ifelse(seed != 'None',
+                 as.integer(seed),
+                 sample.int(.Machine$integer.max, 1))
+
 
   ##run model, catchability, pois/gamma, no covariates
   if(q==TRUE&&family!='negbin'&&all(cov=='None')){
@@ -314,6 +322,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
         mat = as.matrix(count_all[,q_names])
       ),
       cores = cores,
+      seed = SEED,
       #' @srrstats {G2.4,G2.4a} explicit conversion to
       #'   integers for sampling arguments
       chains = as.integer(n.chain),
@@ -336,6 +345,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                              mat = as.matrix(count_all[,q_names])
                            ),
                            cores = cores,
+                           seed = SEED,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to
                            #'   integers for sampling arguments
                            chains = as.integer(n.chain),
@@ -356,6 +366,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                              stanmodels$joint_binary_gamma)[model_index][[1]],
                            data = data,
                            cores = cores,
+                           seed = SEED,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to
                            #'   integers for sampling arguments
                            chains = as.integer(n.chain),
@@ -376,6 +387,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                              phipriors = phipriors
                            ),
                            cores = cores,
+                           seed = SEED,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to
                            #' integers for sampling arguments
                            chains = as.integer(n.chain),
@@ -401,6 +413,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                              mat_site = as.matrix(site_mat)
                            ),
                            cores = cores,
+                           seed = SEED,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to
                            #'   integers for sampling arguments
                            chains = as.integer(n.chain),
@@ -429,6 +442,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
         mat_site = as.matrix(site_mat)
       ),
       cores = cores,
+      seed = SEED,
       #' @srrstats {G2.4,G2.4a} explicit conversion to
       #'   integers for sampling arguments
       chains = as.integer(n.chain),
@@ -451,6 +465,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                              mat_site = as.matrix(site_mat)
                            ),
                            cores = cores,
+                           seed = SEED,
                            #' @srrstats {G2.4,G2.4a} explicit conversion to
                            #'   integers for sampling arguments
                            chains = as.integer(n.chain),
@@ -476,6 +491,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
         mat_site = as.matrix(site_mat)
       ),
       cores = cores,
+      seed = SEED,
       #' @srrstats {G2.4,G2.4a} explicit conversion to
       #'   integers for sampling arguments
       chains = as.integer(n.chain),

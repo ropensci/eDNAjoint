@@ -19,7 +19,8 @@ jointModel(
   n.iter.sample = 2500,
   thin = 1,
   adapt_delta = 0.9,
-  verbose = TRUE
+  verbose = TRUE,
+  seed = "None"
 )
 }
 \arguments{
@@ -88,6 +89,10 @@ Default value is 1.}
 
 \item{verbose}{Logical value controlling the verbosity of output (i.e.,
 warnings, messages, progress bar). Default is TRUE.}
+
+\item{seed}{A positive integer seed used for random number generation in
+MCMC. Default is 'None', which means the seed is generated from 1 to the
+maximum integer supported by R.}
 }
 \value{
 A list of:
