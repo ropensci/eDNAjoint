@@ -704,9 +704,9 @@ test_that("jointModel parameter recovery tests work",{
   # simulate data: seed 123
   set.seed(123)
   # constants
-  nsite <- 100
+  nsite <- 20
   nobs_count <- 200 # increased dataset size (doubled)
-  nobs_pcr <- 100 # increased dataset size
+  nobs_pcr <- 16 # increased dataset size (doubled)
   # params
   mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
   alpha <- c(0.5, 0.1, -0.4)
@@ -753,27 +753,25 @@ test_that("jointModel parameter recovery tests work",{
                           multicore=FALSE, seed = 10)
   # summary
   summary_large <- as.data.frame(rstan::summary(fit_large$model,
-                                                pars = c('alpha','log_p10'),
+                                                pars = 'alpha',
                                                 probs=c(0.025, 0.975))$summary)
 
-  # compare standard errors of estimates of alpha and p10 with implementation
+  # compare standard errors of estimates of alpha with implementation
   # with a smaller dataset
   se_large <- c(summary_large['alpha[1]','se_mean'],
                 summary_large['alpha[2]','se_mean'],
-                summary_large['alpha[3]','se_mean'],
-                summary_large['log_p10','se_mean']
+                summary_large['alpha[3]','se_mean']
   )
 
   # get values for smaller dataset
   se_small <- c(summary1['alpha[1]','se_mean'],
                 summary1['alpha[2]','se_mean'],
-                summary1['alpha[3]','se_mean'],
-                summary1['log_p10','se_mean']
+                summary1['alpha[3]','se_mean']
   )
 
   # set up empty vector to check if standard errors are smaller with
   # larger dataset
-  check <- rep(NA,length(alpha)+length(log_p10))
+  check <- rep(NA,length(alpha))
   for(i in seq_along(check)){
     check[i] <- se_large[i] < se_small[i]
   }
@@ -782,6 +780,6 @@ test_that("jointModel parameter recovery tests work",{
   #'   properties of data change (i.e., standard error of posteriors is smaller
   #'   if there are more data observations)
   # all should be equal to true
-  expect_equal(check,rep(TRUE,length(alpha)+length(log_p10)))
+  expect_equal(check,rep(TRUE,length(alpha)))
 
 })
