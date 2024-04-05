@@ -17,8 +17,8 @@
 #'     eDNA sample replicate (column). Data includes 20 total sites and 5 eDNA
 #'     sample replicates.}
 #'   \item{qPCR.K}{Total number of positive eDNA qPCR detections at each site
-#'     (row) and eDNA sample replicate (column). Data includes 20 total sites and
-#'     5 eDNA sample replicates.}
+#'     (row) and eDNA sample replicate (column). Data includes 20 total sites
+#'     and 5 eDNA sample replicates.}
 #'   \item{count}{Count of green crab individuals in trap samples at each site
 #'     (row) and trap sample replicate (column). Data includes 20 total sites
 #'     and a maximum of 420 trap replicates. NA indicates that fewer trap

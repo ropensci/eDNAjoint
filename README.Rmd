@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 <img src="man/figures/logo.png" align="right" height="200" dpi="700" />
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/abigailkeller/eDNAjoint/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/abigailkeller/eDNAjoint/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/abigailkeller/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/abigailkeller/eDNAjoint)
 <!-- badges: end -->
 
