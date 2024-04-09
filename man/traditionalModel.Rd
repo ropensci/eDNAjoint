@@ -135,7 +135,10 @@ fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE,
 # catchability.
 # Count data is modeled using a negative binomial distribution.
 fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE,
-                         multicore=FALSE)
+                         phipriors=c(0.25,0.25) multicore=FALSE,
+                         initial_values='None',n.chain=4,n.iter.burn=500,
+                         n.iter.sample=2500,thin=1,adapt_delta=0.9,
+                         verbose=TRUE,seed=123)
 }
 
 }

@@ -44,7 +44,8 @@
 #' jointSummarize(modelfit$model)
 #'
 #' # Summarize just 'p10' parameter
-#' jointSummarize(modelfit$model, par = "p10")
+#' jointSummarize(modelfit$model, par = "p10", probs = c(0.025, 0.975),
+#'                digits = 3)
 #' }
 #'
 

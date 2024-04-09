@@ -157,8 +157,10 @@
 #' # catchability.
 #' # Count data is modeled using a negative binomial distribution.
 #' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
-#'                    p10priors=c(1,20), q=TRUE,
-#'                    multicore=FALSE)
+#'                    p10priors=c(1,20), q=TRUE,multicore=FALSE,
+#'                    initial_values='None',n.chain=4,n.iter.burn=500,
+#'                    n.iter.sample=2500,thin=1,adapt_delta=0.9,
+#'                    verbose=TRUE,seed=123)
 #' }
 #'
 
