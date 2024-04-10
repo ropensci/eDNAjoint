@@ -30,4 +30,1146 @@ test_that("jointSummarize input checks work", {
                "modelfit must contain all selected parameters: alpha")
 })
 
+test_that("jointSummarize outputs work", {
+
+  ## 1.
+  # model includes 'p10','q','phi','beta'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+  q <- 2
+  phi <- 1.2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+      } else {
+        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+      }
+    }
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    count.type = count_type
+  )
+
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+  mu = mu,
+  p10 = log_p10,
+  beta = beta,
+  phi = phi
+  )
+  names(inits[[1]]) <- c('mu','p10','beta','phi')
+
+  # run model
+  fit <- jointModel(data=data, q=TRUE, family = 'negbin',
+                    n.iter.burn = 500, initial_values = inits,
+                    n.chain=1, multicore=FALSE#, seed = 10,
+                    #adapt_delta = 0.99
+                    )
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','q[1]','phi','beta') %in% output_params))
+
+  ## 2.
+  # model includes 'p10','beta','q'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+  q <- 2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rpois(1,mu[i])
+      } else {
+        count[i,j] <- rpois(1,mu[i]*q)
+      }
+    }
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    count.type = count_type
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10,
+    beta = beta
+  )
+  names(inits[[1]]) <- c('mu','p10','beta')
+  # run model
+  fit <- jointModel(data=data, q=TRUE,
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values = inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','q[1]','beta') %in% output_params))
+
+  ## 3.
+  # model includes 'p10','beta','q', 'alpha_gamma','beta_gamma'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+  q <- 2
+  beta_gamma <- 1
+  alpha_gamma <- mu * beta_gamma
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rgamma(1,shape=alpha_gamma[i],rate=beta_gamma)
+      } else {
+        count[i,j] <- rgamma(1,shape=alpha_gamma[i]*q,rate=beta_gamma)
+      }
+    }
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    count.type = count_type
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    alpha_gamma = mu,
+    beta_gamma = rep(1,length(mu)),
+    p10 = log_p10,
+    beta = beta
+  )
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
+  # run model
+  fit <- jointModel(data=data, q=TRUE, family = 'gamma',
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','q[1]','beta') %in% output_params))
+
+  ## 4.
+  # model includes 'p10','phi','beta'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+  q <- 2
+  phi <- 1.2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+      } else {
+        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+      }
+    }
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10,
+    beta = beta,
+    phi = phi
+  )
+  names(inits[[1]]) <- c('mu','p10','beta','phi')
+  # run model
+  fit <- jointModel(data=data, family = 'negbin', initial_values=inits,
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    )
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','phi','beta') %in% output_params))
+
+
+  ## 5.
+  # model includes 'p10','beta'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rpois(nobs_count,mu[i])
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10,
+    beta = beta
+  )
+  names(inits[[1]]) <- c('mu','p10','beta')
+  # run model
+  fit <- jointModel(data=data, initial_values = inits,
+                    n.chain=1, multicore=FALSE, seed = 10)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','beta') %in% output_params))
+
+  ## 6.
+  # model includes 'p10','beta','alpha_gamma','alpha_beta'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+  beta_gamma <- 1
+  alpha_gamma <- mu * beta_gamma
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rgamma(nobs_count,shape=alpha_gamma[i],rate=beta_gamma)
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    alpha_gamma = mu,
+    beta_gamma = rep(1,length(mu)),
+    p10 = log_p10,
+    beta = beta
+  )
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
+  # run model
+  fit <- jointModel(data=data, initial_values=inits, family = 'gamma',
+                    n.chain=1, multicore=FALSE, seed = 10)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','beta') %in% output_params))
+
+
+  ## 7.
+  # model includes 'p10','q','phi','alpha'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  q <- 2
+  phi <- 1.2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+      } else {
+        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+      }
+    }
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    count.type = count_type,
+    site.cov = mat_site
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10#,
+    #alpha = alpha
+  )
+  names(inits[[1]]) <- c('mu','p10'#,'alpha'
+                         )
+  # run model
+  fit <- jointModel(data=data, family = 'negbin', q=TRUE,
+                    cov=c('var_a','var_b'),
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits
+                    )
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
+
+
+  ## 8.
+  # model includes 'p10','alpha','q'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  q <- 2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rpois(n=1,mu[i])
+      } else {
+        count[i,j] <- rpois(n=1,mu[i]*q)
+      }
+    }
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    count.type = count_type,
+    site.cov = mat_site
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10#,
+    #alpha = alpha
+  )
+  names(inits[[1]]) <- c('mu','p10'#,'alpha'
+                         )
+  # run model
+  fit <- jointModel(data=data, q=TRUE,
+                    cov=c('var_a','var_b'),
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+
+
+  ## 9.
+  # model includes 'p10','alpha','q', 'alpha_gamma', 'alpha_beta'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  q <- 2
+  beta_gamma <- 1
+  alpha_gamma <- mu * beta_gamma
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rgamma(1,shape=alpha_gamma[i],rate=beta_gamma)
+      } else {
+        count[i,j] <- rgamma(1,shape=alpha_gamma[i]*q,rate=beta_gamma)
+      }
+    }
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    count.type = count_type,
+    site.cov = mat_site
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    alpha_gamma = mu,
+    beta_gamma = rep(1,length(mu)),
+    p10 = log_p10#,
+    #alpha = alpha
+  )
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10'#,'alpha'
+                         )
+  # run model
+  fit <- jointModel(data=data, q=TRUE, family = 'gamma',
+                    cov=c('var_a','var_b'),
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+
+
+  ## 10.
+  # model includes 'p10','phi','alpha'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  phi <- 1.2
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rnbinom(n=nobs_count,mu=mu[i],size=phi)
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    site.cov = mat_site
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10,
+    #alpha = alpha,
+    phi = phi
+  )
+  names(inits[[1]]) <- c('mu','p10',#'alpha',
+                         'phi')
+  # run model
+  fit <- jointModel(data=data, family = 'negbin',
+                    cov=c('var_a','var_b'),
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
+
+
+  ## 11.
+  # model includes 'p10','alpha'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rpois(nobs_count,mu[i])
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    site.cov = mat_site
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    p10 = log_p10#,
+    #alpha = alpha
+  )
+  names(inits[[1]]) <- c('mu','p10'#,'alpha'
+                         )
+  # run model
+  fit <- jointModel(data=data,
+                    cov=c('var_a','var_b'),
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','alpha[1]') %in% output_params))
+
+
+  ## 12.
+  # model includes 'p10','alpha','alpha_gamma','beta_gamma'
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  alpha <- c(0.5, 0.1, -0.4)
+  log_p10 <- -4.5
+  beta_gamma <- 1
+  alpha_gamma <- mu * beta_gamma
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rgamma(nobs_count,shape=alpha_gamma[i],rate=beta_gamma)
+  }
+  # site-level covariates
+  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site[,1] <- 1 # intercept
+  for(i in 2:length(alpha)){
+    mat_site[,i] <- rnorm(nsite,0,1)
+  }
+  colnames(mat_site) <- c('int','var_a','var_b')
+  # p11 (probability of true positive eDNA detection) and p (probability
+  # of eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(sum(mat_site[i,]*alpha)))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count,
+    site.cov = mat_site
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    alpha_gamma = mu,
+    beta_gamma = rep(1,length(mu)),
+    p10 = log_p10#,
+    #alpha = alpha
+  )
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10'#,'alpha'
+                         )
+  # run model
+  fit <- jointModel(data=data,family='gamma',
+                    cov=c('var_a','var_b'),
+                    n.chain=1, multicore=FALSE, seed = 10,
+                    initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('p10','alpha[1]') %in% output_params))
+
+
+  ## 13.
+  # model includes 'q','phi' (traditional model)
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  phi <- 1.2
+  q <- 2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+      } else {
+        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+      }
+    }
+  }
+
+  # collect data
+  data <- list(
+    count = count,
+    count.type = count_type
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    phi = phi
+  )
+  names(inits[[1]]) <- c('mu','phi')
+  # run model
+  fit <- traditionalModel(data=data, q=TRUE, family='negbin',
+                          n.chain=1, multicore=FALSE, seed = 10,
+                          initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('q[1]','phi') %in% output_params))
+
+
+  ## 14.
+  # model includes 'q' (traditional model)
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  q <- 2
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    for(j in 1:nobs_count){
+      if(count_type[i,j]==1){
+        count[i,j] <- rpois(n=1,mu[i])
+      } else {
+        count[i,j] <- rpois(n=1,mu[i]*q)
+      }
+    }
+  }
+
+  # collect data
+  data <- list(
+    count = count,
+    count.type = count_type
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu
+  )
+  names(inits[[1]]) <- c('mu')
+  # run model
+  fit <- traditionalModel(data=data, q=TRUE,
+                          n.chain=1, multicore=FALSE, seed = 10,
+                          initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('q[1]') %in% output_params))
+
+  ## 15.
+  # model includes 'q','alpha_gamma','beta_gamma' (traditional model)
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  q <- 2
+  beta_gamma <- 1
+  alpha_gamma <- mu * beta_gamma
+  # traditional type
+  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
+                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+
+  # collect data
+  data <- list(
+    count = count,
+    count.type = count_type
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    alpha_gamma = mu,
+    beta_gamma = rep(1,length(mu))
+  )
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma')
+  # run model
+  fit <- traditionalModel(data=data, q=TRUE,family='gamma',
+                          n.chain=1, multicore=FALSE, seed = 10,
+                          initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('q[1]') %in% output_params))
+
+
+  ## 16.
+  # model includes 'phi' (traditional model)
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  phi <- 1.2
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rnbinom(n=nobs_count,mu=mu[i],size=phi)
+
+  }
+
+  # collect data
+  data <- list(
+    count = count
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu,
+    phi = phi
+  )
+  names(inits[[1]]) <- c('mu','phi')
+  # run model
+  fit <- traditionalModel(data=data,family='negbin',
+                          n.chain=1, multicore=FALSE, seed = 10,
+                          initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(c('phi') %in% output_params))
+
+
+  ## 17.
+  # model, pois (traditional model)
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rpois(n=nobs_count,mu[i])
+
+  }
+
+  # collect data
+  data <- list(
+    count = count
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    mu = mu
+  )
+  names(inits[[1]]) <- c('mu')
+  # run model
+  fit <- traditionalModel(data=data,n.chain=1, multicore=FALSE, seed = 10,
+                          initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(!c('p10','beta','q','phi') %in% output_params))
+
+  ## 18.
+  # model, gamma (traditional model)
+
+  # constants
+  nsite <- 20
+  nobs_count <- 100
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta_gamma <- 1
+  alpha_gamma <- mu * beta_gamma
+
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rgamma(nobs_count,shape=alpha_gamma[i],rate=beta_gamma)
+  }
+
+  # collect data
+  data <- list(
+    count = count
+  )
+  # initial values
+  inits <- list()
+  inits[[1]] <- list(
+    alpha_gamma = mu,
+    beta_gamma = rep(1,length(mu))
+  )
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma')
+  # run model
+  fit <- traditionalModel(data=data,n.chain=1, family='gamma',
+                          multicore=FALSE, seed = 10,
+                          initial_values=inits)
+
+  # get output params
+  output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
+
+  # test expectation
+  expect_true(all(!c('p10','beta','q','phi') %in% output_params))
+
+
+})
+
 
