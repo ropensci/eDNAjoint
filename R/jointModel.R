@@ -535,19 +535,19 @@ init_joint_cov <- function(n.chain,count_all,cov,initial_values){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu <- inits[[i]]$mu
+          mu <- initial_values[[i]]$mu
         } else {
           mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
         },
 
         if('p10' %in% names(initial_values[[i]])){
-          p10 <- inits[[i]]$p10
+          p10 <- initial_values[[i]]$p10
         } else {
           p10 <- stats::runif(1,log(0.0001),log(0.08))
         },
 
         if('alpha' %in% names(initial_values[[i]])){
-          alpha <- inits[[i]]$alpha
+          alpha <- initial_values[[i]]$alpha
         } else {
           alpha <- rep(0.1,length(cov)+1)
         }
@@ -577,25 +577,25 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu <- inits[[i]]$mu
+          mu <- initial_values[[i]]$mu
         } else {
           mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
         },
 
         if('q' %in% names(initial_values[[i]])){
-          q <- as.data.frame(inits[[i]]$q)
+          q <- as.data.frame(initial_values[[i]]$q)
         } else {
           q <- as.data.frame(stats::runif(length(q_names),0.01,1))
         },
 
         if('p10' %in% names(initial_values[[i]])){
-          p10 <- inits[[i]]$p10
+          p10 <- initial_values[[i]]$p10
         } else {
           p10 <- stats::runif(1,log(0.0001),log(0.08))
         },
 
         if('alpha' %in% names(initial_values[[i]])){
-          alpha <- inits[[i]]$alpha
+          alpha <- initial_values[[i]]$alpha
         } else {
           alpha <- rep(0.1,length(cov)+1)
         }
@@ -625,25 +625,25 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu <- inits[[i]]$mu
+          mu <- initial_values[[i]]$mu
         } else {
           mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
         },
 
         if('q' %in% names(initial_values[[i]])){
-          q <- as.data.frame(inits[[i]]$q)
+          q <- as.data.frame(initial_values[[i]]$q)
         } else {
           q <- as.data.frame(stats::runif(length(q_names),0.01,1))
         },
 
         if('p10' %in% names(initial_values[[i]])){
-          p10 <- inits[[i]]$p10
+          p10 <- initial_values[[i]]$p10
         } else {
           p10 <- stats::runif(1,log(0.0001),log(0.08))
         },
 
         if('beta' %in% names(initial_values[[i]])){
-          beta <- inits[[i]]$beta
+          beta <- initial_values[[i]]$beta
         } else {
           beta <- 0.5
         }
@@ -673,19 +673,19 @@ init_joint <- function(n.chain,count_all,initial_values){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu <- inits[[i]]$mu
+          mu <- initial_values[[i]]$mu
         } else {
           mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
         },
 
         if('p10' %in% names(initial_values[[i]])){
-          p10 <- inits[[i]]$p10
+          p10 <- initial_values[[i]]$p10
         } else {
           p10 <- stats::runif(1,log(0.0001),log(0.08))
         },
 
         if('beta' %in% names(initial_values[[i]])){
-          beta <- inits[[i]]$beta
+          beta <- initial_values[[i]]$beta
         } else {
           beta <- 0.5
         }

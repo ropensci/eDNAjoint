@@ -339,13 +339,13 @@ init_trad_catchability <- function(n.chain, count_all, q_names, initial_values){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu <- inits[[i]]$mu
+          mu <- initial_values[[i]]$mu
         } else {
           mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
         },
 
         if('q' %in% names(initial_values[[i]])){
-          q <- as.data.frame(inits[[i]]$q)
+          q <- as.data.frame(initial_values[[i]]$q)
         } else {
           q <- as.data.frame(stats::runif(length(q_names),0.01,1))
         }
@@ -373,7 +373,7 @@ init_trad <- function(n.chain, count_all, initial_values){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu <- inits[[i]]$mu
+          mu <- initial_values[[i]]$mu
         } else {
           mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
         }

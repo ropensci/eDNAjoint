@@ -79,7 +79,7 @@ fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
 detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1,
               cov.val = c(0,0), qPCR.N = 3)
 
-# Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
+# Calculate mu_critical at salinity 0.5 z-scores greater than the mean
 detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5),
               qPCR.N = 3)
 

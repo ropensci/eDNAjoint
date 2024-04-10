@@ -65,18 +65,16 @@ If any of these checks fail, the function returns an error message.
 data(gobyData)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-fit.cov = jointModel(data=greencrabData, cov="None", family="negbin",
-                     p10priors=c(1,20), q=TRUE,multicore=FALSE,
-                     initial_values='None',n.chain=4,n.iter.burn=500,
-                     n.iter.sample=2500,thin=1,adapt_delta=0.9,
-                     verbose=TRUE,seed=123)
+fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
+                     family="poisson", p10priors=c(1,20), q=FALSE,
+                     multicore=FALSE)
 
 # Calculate at the mean covariate values
 # (covariates are standardized, so mean=0)
 detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1),
                    cov.val = c(0,0), qPCR.N = 3)
 
-# Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
+# Calculate mu_critical at salinity 0.5 z-scores greater than the mean
 detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1),
                    cov.val = c(0,0.5), qPCR.N = 3)
 
