@@ -221,7 +221,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   #traditional, catchability, negbin
   else if(all(c('q','phi') %in% modelfit@model_pars)==TRUE &&
           all(!c('p10','beta',
-                 'alpha_gamma','beta_gamma') %in% modelfit@model_pars==TRUE) &&
+                 'alpha','beta') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments
@@ -232,7 +232,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   #traditional, catchability, pois
   else if(all(c('q') %in% modelfit@model_pars)==TRUE &&
           all(!c('p10','beta','phi',
-                 'alpha_gamma','beta_gamma') %in% modelfit@model_pars==TRUE) &&
+                 'alpha','beta') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments
@@ -241,9 +241,8 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
 
   }
   #traditional, catchability, gamma
-  else if(all(c('q','alpha_gamma',
-                'beta_gamma') %in% modelfit@model_pars)==TRUE &&
-          all(!c('p10','beta','phi') %in% modelfit@model_pars==TRUE) &&
+  else if(all(c('q','alpha','beta') %in% modelfit@model_pars)==TRUE &&
+          all(!c('p10','phi') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments
@@ -254,7 +253,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   #traditional, no catchability, negbin
   else if(all(c('phi') %in% modelfit@model_pars)==TRUE &&
           all(!c('p10','beta','q',
-                 'alpha_gamma','beta_gamma') %in% modelfit@model_pars==TRUE) &&
+                 'alpha','beta') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments
@@ -264,7 +263,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   }
   #traditional, no catchability, pois
   else if(all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
-          all(!c('alpha_gamma','beta_gamma') %in% modelfit@model_pars==TRUE) &&
+          all(!c('alpha','beta') %in% modelfit@model_pars==TRUE) &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments
@@ -273,8 +272,8 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
 
   }
   #traditional, no catchability, gamma
-  else if(all(c('alpha_gamma','beta_gamma') %in% modelfit@model_pars)==TRUE &&
-          all(!c('p10','beta','q','phi') %in% modelfit@model_pars)==TRUE &&
+  else if(all(c('alpha','beta') %in% modelfit@model_pars)==TRUE &&
+          all(!c('p10','q','phi') %in% modelfit@model_pars)==TRUE &&
           all(par == 'all')){
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments

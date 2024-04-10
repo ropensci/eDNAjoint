@@ -92,14 +92,15 @@ test_that("jointSummarize outputs work", {
   mu = mu,
   p10 = log_p10,
   beta = beta,
-  phi = phi
+  phi = phi,
+  q = q
   )
-  names(inits[[1]]) <- c('mu','p10','beta','phi')
+  names(inits[[1]]) <- c('mu','p10','beta','phi','q')
 
   # run model
   fit <- jointModel(data=data, q=TRUE, family = 'negbin',
-                    n.iter.burn = 500, initial_values = inits,
-                    n.chain=1, multicore=FALSE#, seed = 10,
+                    initial_values = inits,
+                    n.chain=1, multicore=FALSE, seed = 10#,
                     #adapt_delta = 0.99
                     )
 
@@ -166,9 +167,10 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     mu = mu,
     p10 = log_p10,
-    beta = beta
+    beta = beta,
+    q = q
   )
-  names(inits[[1]]) <- c('mu','p10','beta')
+  names(inits[[1]]) <- c('mu','p10','beta','q')
   # run model
   fit <- jointModel(data=data, q=TRUE,
                     n.chain=1, multicore=FALSE, seed = 10,
@@ -240,9 +242,10 @@ test_that("jointSummarize outputs work", {
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
     p10 = log_p10,
-    beta = beta
+    beta = beta,
+    q = q
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta','q')
   # run model
   fit <- jointModel(data=data, q=TRUE, family = 'gamma',
                     n.chain=1, multicore=FALSE, seed = 10,
@@ -258,29 +261,18 @@ test_that("jointSummarize outputs work", {
   # model includes 'p10','phi','beta'
 
   # constants
-  nsite <- 20
+  nsite <- 50
   nobs_count <- 100
   nobs_pcr <- 8
   # params
   mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
   beta <- 0.5
   log_p10 <- -4.5
-  q <- 2
   phi <- 1.2
-  # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
-
   # count
   count <- matrix(NA,nrow=nsite,ncol=nobs_count)
   for(i in 1:nsite){
-    for(j in 1:nobs_count){
-      if(count_type[i,j]==1){
-        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
-      } else {
-        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
-      }
-    }
+    count[i,] <- rnbinom(n=nobs_count,mu=mu[i],size=phi)
   }
   # p11 (probability of true positive eDNA detection) and p (probability
   # of eDNA detection)
@@ -331,7 +323,7 @@ test_that("jointSummarize outputs work", {
   # model includes 'p10','beta'
 
   # constants
-  nsite <- 20
+  nsite <- 50
   nobs_count <- 100
   nobs_pcr <- 8
   # params
@@ -461,7 +453,7 @@ test_that("jointSummarize outputs work", {
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
   q <- 2
-  phi <- 1.2
+  phi <- 10
   # traditional type
   count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
                       matrix(2,nrow=nsite,ncol=nobs_count/2))
@@ -514,16 +506,18 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10#,
-    #alpha = alpha
+    p10 = log_p10,
+    alpha = alpha,
+    q = q,
+    phi = phi
   )
-  names(inits[[1]]) <- c('mu','p10'#,'alpha'
+  names(inits[[1]]) <- c('mu','p10','alpha','q','phi'
                          )
   # run model
   fit <- jointModel(data=data, family = 'negbin', q=TRUE,
-                    cov=c('var_a','var_b'),
+                    cov=c('var_a','var_b'),#n.iter.burn=5000,
                     n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits
+                    initial_values=inits, adapt_delta = 0.99,
                     )
 
   # get output params
@@ -597,10 +591,10 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10#,
-    #alpha = alpha
+    p10 = log_p10,
+    alpha = alpha
   )
-  names(inits[[1]]) <- c('mu','p10'#,'alpha'
+  names(inits[[1]]) <- c('mu','p10','alpha'
                          )
   # run model
   fit <- jointModel(data=data, q=TRUE,
@@ -682,16 +676,18 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10#,
-    #alpha = alpha
+    p10 = log_p10,
+    alpha = alpha,
+    q = q
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10'#,'alpha'
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha','q'
                          )
   # run model
   fit <- jointModel(data=data, q=TRUE, family = 'gamma',
                     cov=c('var_a','var_b'),
                     n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits)
+                    initial_values=inits
+                    )
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -711,7 +707,7 @@ test_that("jointSummarize outputs work", {
   mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
-  phi <- 1.2
+  phi <- 10
 
   # count
   count <- matrix(NA,nrow=nsite,ncol=nobs_count)
@@ -755,10 +751,10 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     mu = mu,
     p10 = log_p10,
-    #alpha = alpha,
+    alpha = alpha,
     phi = phi
   )
-  names(inits[[1]]) <- c('mu','p10',#'alpha',
+  names(inits[[1]]) <- c('mu','p10','alpha',
                          'phi')
   # run model
   fit <- jointModel(data=data, family = 'negbin',
@@ -826,10 +822,10 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10#,
-    #alpha = alpha
+    p10 = log_p10,
+    alpha = alpha
   )
-  names(inits[[1]]) <- c('mu','p10'#,'alpha'
+  names(inits[[1]]) <- c('mu','p10','alpha'
                          )
   # run model
   fit <- jointModel(data=data,
@@ -900,10 +896,10 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10#,
-    #alpha = alpha
+    p10 = log_p10,
+    alpha = alpha
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10'#,'alpha'
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha'
                          )
   # run model
   fit <- jointModel(data=data,family='gamma',
@@ -1038,10 +1034,11 @@ test_that("jointSummarize outputs work", {
   # initial values
   inits <- list()
   inits[[1]] <- list(
-    alpha_gamma = mu,
-    beta_gamma = rep(1,length(mu))
+    alpha = mu,
+    beta = rep(1,length(mu)),
+    q=q
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma')
+  names(inits[[1]]) <- c('alpha','beta','q')
   # run model
   fit <- traditionalModel(data=data, q=TRUE,family='gamma',
                           n.chain=1, multicore=FALSE, seed = 10,
@@ -1154,10 +1151,10 @@ test_that("jointSummarize outputs work", {
   # initial values
   inits <- list()
   inits[[1]] <- list(
-    alpha_gamma = mu,
-    beta_gamma = rep(1,length(mu))
+    alpha = mu,
+    beta = rep(1,length(mu))
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma')
+  names(inits[[1]]) <- c('alpha','beta')
   # run model
   fit <- traditionalModel(data=data,n.chain=1, family='gamma',
                           multicore=FALSE, seed = 10,
@@ -1167,7 +1164,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(!c('p10','beta','q','phi') %in% output_params))
+  expect_true(all(!c('p10','q','phi') %in% output_params))
 
 
 })

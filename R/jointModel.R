@@ -1107,8 +1107,7 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
     ## check alpha input
     if('alpha' %in% names(initial_values[[i]])){
       ## if alpha is numeric
-      if(any(!is.numeric(initial_values[[i]]$alpha)) |
-         any(initial_values[[i]]$alpha < 0)){
+      if(any(!is.numeric(initial_values[[i]]$alpha))){
         errMsg <- "Initial values for 'alpha' should be numeric."
         stop(errMsg)
       }
