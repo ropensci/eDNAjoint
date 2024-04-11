@@ -12,7 +12,7 @@
 #'   (Markov chain Monte Carlo) using the 'Stan' probabilistic programming
 #'   language.
 #'
-#' @docType package
+#' @docType _PACKAGE
 #' @name eDNAjoint-package
 #' @aliases eDNAjoint
 #' @useDynLib eDNAjoint, .registration = TRUE
