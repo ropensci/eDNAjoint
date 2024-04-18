@@ -24,3 +24,22 @@ test_that("jointSelect input checks work", {
                paste0("All modelfits must be fit with either jointModel\\(\\) ",
                       "or all with traditionalModel\\(\\)."))
 })
+
+test_that("jointSelect output check", {
+  # fit models
+  fit.q1 = jointModel(data=greencrabData, family="negbin",
+                     p10priors=c(1,20), q=TRUE, multicore=FALSE)
+  fit.q2 = jointModel(data=greencrabData, family="negbin",
+                      p10priors=c(1,50), q=TRUE, multicore=FALSE)
+
+  # run select
+  select <- jointSelect(modelfits=list(fit.q1$model, fit.q2$model))
+
+  # check dimensions
+  expect_equal(dim(select)[1],2)
+
+  # check numeric
+  expect_equal(is.numeric(select[,1]),TRUE)
+  expect_equal(is.numeric(select[,2]),TRUE)
+
+})

@@ -43,4 +43,44 @@ test_that("muCritical input checks work", {
 
 })
 
+test_that("muCritical output check", {
 
+  # fit two models
+  fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
+                       family="poisson", p10priors=c(1,20), q=FALSE,
+                       multicore=FALSE)
+  fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+                     p10priors=c(1,20), q=TRUE, multicore=FALSE)
+
+  # check lengths of muCritical output
+  expect_equal(length(muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)),
+               3)
+  expect_equal(dim(muCritical(fit.q$model, ci = 0.9)),
+               c(3,2))
+
+  # check names of muCritical output
+  expect_equal(names(muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)),
+               c('median','lower_ci','upper_ci'))
+  expect_equal(rownames(muCritical(fit.q$model, ci = 0.9)),
+               c('median','lower_ci','upper_ci'))
+  expect_equal(names(muCritical(fit.q$model, ci = 0.9)),
+               c('gear_1','gear_2'))
+
+  # check values of muCritical output
+  expect_equal(is.numeric(muCritical(fit.cov$model,
+                                     cov.val=c(0,0), ci = 0.9)$median),
+               TRUE)
+  expect_equal(is.numeric(muCritical(fit.cov$model,
+                                     cov.val=c(0,0),
+                                     ci = 0.9)$lower_ci$CI_low),
+               TRUE)
+  expect_equal(is.numeric(muCritical(fit.cov$model,
+                                     cov.val=c(0,0),
+                                     ci = 0.9)$upper_ci$CI_high),
+               TRUE)
+  expect_equal(is.numeric(muCritical(fit.q$model, ci = 0.9)$gear_1),
+               TRUE)
+  expect_equal(is.numeric(muCritical(fit.q$model, ci = 0.9)$gear_2),
+               TRUE)
+
+})

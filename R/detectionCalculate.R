@@ -113,7 +113,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
   #joint, no catchability, negbin, no sitecov#
   ############################################
 
-  if('phi' %in% modelfit@model_pars &&
+  if(all(c('phi','p10') %in% modelfit@model_pars) &&
      all(!c('q','alpha') %in% modelfit@model_pars)){
     #get median parameter estimates
     phi <- stats::median(unlist(rstan::extract(modelfit,pars='phi')))
@@ -162,7 +162,8 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     ##########################################
     #joint, no catchability, pois, no sitecov#
     ##########################################
-  } else if(all(!c('q','phi','alpha') %in% modelfit@model_pars)){
+  } else if('p10' %in% modelfit@model_pars &&
+            all(!c('q','phi','alpha') %in% modelfit@model_pars)){
     #get median parameter estimates
     beta <- stats::median(unlist(rstan::extract(modelfit,pars='beta')))
 
@@ -209,7 +210,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #########################################
     #joint, catchability, negbin, no sitecov#
     #########################################
-  } else if(all(c('phi','q') %in% modelfit@model_pars) &&
+  } else if(all(c('phi','q','p10') %in% modelfit@model_pars) &&
             !c('alpha') %in% modelfit@model_pars){
     #get median parameter estimates
     phi <- stats::median(unlist(rstan::extract(modelfit,pars='phi')))
@@ -274,7 +275,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #######################################
     #joint, catchability, pois, no sitecov#
     #######################################
-  } else if('q' %in% modelfit@model_pars &&
+  } else if(all(c('p10','q') %in% modelfit@model_pars) &&
             all(!c('phi','alpha') %in% modelfit@model_pars)){
     #get median parameter estimates
     beta <- stats::median(unlist(rstan::extract(modelfit,pars='beta')))
@@ -339,7 +340,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #joint, no catchability, negbin, sitecov#
     #########################################
 
-  } else if(all(c('phi','alpha') %in% modelfit@model_pars) &&
+  } else if(all(c('p10','phi','alpha') %in% modelfit@model_pars) &&
             !c('q') %in% modelfit@model_pars){
     #get median parameter estimates
     phi <- stats::median(unlist(rstan::extract(modelfit,pars='phi')))
@@ -389,7 +390,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #######################################
     #joint, no catchability, pois, sitecov#
     #######################################
-  } else if('alpha' %in% modelfit@model_pars &&
+  } else if(all(c('p10','alpha') %in% modelfit@model_pars) &&
             all(!c('q','phi') %in% modelfit@model_pars)){
     #get median parameter estimates
     alpha <- apply(rstan::extract(modelfit,pars='alpha')$alpha,2,'median')
@@ -439,7 +440,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     ######################################
     #joint, catchability, negbin, sitecov#
     ######################################
-  } else if(all(c('phi','q','alpha') %in% modelfit@model_pars)){
+  } else if(all(c('phi','q','alpha','p10') %in% modelfit@model_pars)){
     #get median parameter estimates
     phi <- stats::median(unlist(rstan::extract(modelfit,pars='phi')))
     alpha <- apply(rstan::extract(modelfit,pars='alpha')$alpha,2,'median')
@@ -505,7 +506,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = 'None', probability=0.9,
     #######################################
     #joint, catchability, pois, no sitecov#
     #######################################
-  } else if(all(c('alpha','q') %in% modelfit@model_pars) &&
+  } else if(all(c('alpha','q','p10') %in% modelfit@model_pars) &&
             !c('phi') %in% modelfit@model_pars){
     #get median parameter estimates
     alpha <- apply(rstan::extract(modelfit,pars='alpha')$alpha,2,'median')
@@ -782,7 +783,7 @@ detectionCalculate_input_checks <- function(modelfit, mu, cov.val,
   }
 
   ## #7. If covariates are in model, cov.val must be provided
-  if('alpha' %in% modelfit@model_pars && all(cov.val == 'None')) {
+  if(all(c('alpha','p10') %in% modelfit@model_pars) && all(cov.val == 'None')) {
     errMsg <- paste0("cov.val must be provided if the model contains ",
                      "site-level covariates.")
     stop(errMsg)

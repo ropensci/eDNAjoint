@@ -396,7 +396,28 @@ test_that("jointModel input checks work", {
                       "equal the number of sites."))
 
 
-  #39. initial values check: p10 length
+  #39. initial values check: p10 numeric
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu <- stats::runif(2,0,1),
+      p10 <- "-1",
+      alpha <- rep(0.1,3)
+    )
+    names(inits[[i]]) <- c('mu','p10','alpha')
+  }
+  site.cov <- rbind(c(4,1),c(1,1))
+  colnames(site.cov) <- c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits,
+                          multicore=FALSE),
+               "Initial values for 'p10' should be numeric.")
+
+  #40. initial values check: p10 length
   n.chain <- 4
   inits <- list()
   for(i in 1:n.chain){
@@ -417,7 +438,25 @@ test_that("jointModel input checks work", {
                           multicore=FALSE),
                "The length of initial values for 'p10' should equal 1.")
 
-  #40. initial values check: beta length
+  #41. initial values check: beta numeric
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu <- stats::runif(2,0,1),
+      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      beta <- "1"
+    )
+    names(inits[[i]]) <- c('mu','p10','beta')
+  }
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA))),
+                          initial_values=inits,
+                          multicore=FALSE),
+               "Initial values for 'beta' should be numeric.")
+
+  #42. initial values check: beta length
   n.chain <- 4
   inits <- list()
   for(i in 1:n.chain){
@@ -435,7 +474,28 @@ test_that("jointModel input checks work", {
                           multicore=FALSE),
                "The length of initial values for 'beta' should equal 1.")
 
-  #41. initial values check: alpha length
+  #43. initial values check: alpha numeric
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      mu <- stats::runif(2,0,1),
+      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      alpha <- c("1","2")
+    )
+    names(inits[[i]]) <- c('mu','p10','alpha')
+  }
+  site.cov <- rbind(c(4,1),c(1,1))
+  colnames(site.cov) <- c('var_a','var_b')
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    site.cov=site.cov),
+                          cov=c('var_a','var_b'), initial_values=inits,
+                          multicore=FALSE),
+               paste0("Initial values for 'alpha' should be numeric."))
+
+  #44. initial values check: alpha length
   n.chain <- 4
   inits <- list()
   for(i in 1:n.chain){
@@ -458,7 +518,24 @@ test_that("jointModel input checks work", {
                       "equal\\: \\# covariates \\+ 1 \\(i.e., ",
                       "including intercept\\)."))
 
-  #42. initial values check: beta length
+  #45. initial values check: q numeric
+  n.chain <- 4
+  inits <- list()
+  for(i in 1:n.chain){
+    inits[[i]] <- list(
+      q <- "0.1"
+    )
+    names(inits[[i]]) <- c('q')
+  }
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          initial_values=inits,
+                          multicore=FALSE),
+               paste0("Initial values for 'q' should be numeric."))
+
+  #46. initial values check: q length
   n.chain <- 4
   inits <- list()
   for(i in 1:n.chain){

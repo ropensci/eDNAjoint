@@ -772,13 +772,6 @@ catchability_checks <- function(data,cov){
   ## count.type data
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input
   #'   data is dimensionally commensurate
-  if(sum(is.na(data$count.type))!=sum(is.na(data$count))){
-    errMsg <- paste0("Empty data cells (NA) in count data should match ",
-                     "empty data cells (NA) in count.type data.")
-    stop(errMsg)
-  }
-  #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input
-  #'   data is dimensionally commensurate
   if(any((which(is.na(data$count))==which(is.na(data$count.type)))==FALSE)){
     errMsg <- paste0("Empty data cells (NA) in count data should match ",
                      "empty data cells (NA) in count.type data.")
