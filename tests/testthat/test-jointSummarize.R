@@ -110,6 +110,35 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','q[1]','phi','beta') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,4)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3]),
+                  is.numeric(out[,4])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
+
   ## 2.
   # model includes 'p10','beta','q'
 
@@ -181,6 +210,34 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('p10','q[1]','beta') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,4)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3]),
+                  is.numeric(out[,4])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
 
   ## 3.
   # model includes 'p10','beta','q', 'alpha_gamma','beta_gamma'
@@ -318,6 +375,32 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','phi','beta') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 5.
   # model includes 'p10','beta'
@@ -377,6 +460,33 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('p10','beta') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 6.
   # model includes 'p10','beta','alpha_gamma','alpha_beta'
@@ -526,6 +636,35 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
+                            cov.val=c(0,0))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,4)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3]),
+                  is.numeric(out[,4])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1, cov.val = c(0,0))
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 8.
   # model includes 'p10','alpha','q'
@@ -607,6 +746,35 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
+                            cov.val=c(0,0))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,4)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3]),
+                  is.numeric(out[,4])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1, cov.val = c(0,0))
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
 
 
   ## 9.
@@ -768,6 +936,33 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
+                            cov.val=c(0,0))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1, cov.val = c(0,0))
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 11.
   # model includes 'p10','alpha'
@@ -838,6 +1033,33 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('p10','alpha[1]') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
+                            cov.val=c(0,0))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1, cov.val = c(0,0))
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
 
 
   ## 12.
@@ -913,6 +1135,33 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','alpha[1]') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
+                            cov.val=c(0,0))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional','n_eDNA')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1, cov.val = c(0,0))
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 13.
   # model includes 'q','phi' (traditional model)
@@ -963,6 +1212,33 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('q[1]','phi') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 14.
   # model includes 'q' (traditional model)
@@ -1011,6 +1287,33 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('q[1]') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
   ## 15.
   # model includes 'q','alpha_gamma','beta_gamma' (traditional model)
 
@@ -1049,6 +1352,33 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('q[1]') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,3)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional_1',
+                                               'n_traditional_2')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2]),
+                  is.numeric(out[,3])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
 
 
   ## 16.
@@ -1090,6 +1420,31 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('phi') %in% output_params))
 
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,2)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
+
 
   ## 17.
   # model, pois (traditional model)
@@ -1126,6 +1481,31 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(!c('p10','beta','q','phi') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,2)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
 
   ## 18.
   # model, gamma (traditional model)
@@ -1165,6 +1545,31 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(!c('p10','q','phi') %in% output_params))
+
+  # detectionCalculate and detectionPlot
+  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+
+  # test dimensions
+  expect_true(all(dim(out) == c(10,2)))
+
+  # test names
+  expect_true(all(names(as.data.frame(out))==c('mu','n_traditional')))
+
+  # test numeric
+  expect_true(all(is.numeric(out[,1]),
+                  is.numeric(out[,2])),TRUE)
+
+  # test plot
+  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+                            mu.max = 1)
+
+  # test plot type
+  expect_equal(mode(out_plot),'list')
+
+  # test data in plot
+  expect_equal(all(is.numeric(out_plot$data$mu),
+                   is.character(out_plot$data$survey_type),
+                   is.numeric(out_plot$data$value)), TRUE)
 
 
 })
