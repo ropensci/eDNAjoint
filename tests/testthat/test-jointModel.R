@@ -621,8 +621,7 @@ test_that("jointModel parameter recovery tests work",{
   )
   # run model
   fit1 <- jointModel(data=data, cov=c('var_a','var_b'),
-                    multicore=FALSE, seed = 10, n.chain=1,
-                    n.iter.sample = 1000)
+                    multicore=FALSE, seed = 10, n.chain=1)
   # summary
   summary1 <- as.data.frame(rstan::summary(fit1$model,
                                            pars = c('mu','alpha','log_p10'),
@@ -734,8 +733,7 @@ test_that("jointModel parameter recovery tests work",{
   )
   # run model
   fit2 <- jointModel(data=data, cov=c('var_a','var_b'),
-                    multicore=FALSE, seed = 2,n.chain=1,
-                    n.iter.sample = 1000)
+                    multicore=FALSE, seed = 2, n.chain=1)
   # summary
   summary2 <- as.data.frame(rstan::summary(fit2$model,
                                            pars = c('mu','alpha','log_p10'),
@@ -829,8 +827,7 @@ test_that("jointModel parameter recovery tests work",{
   )
   # run model
   fit_large <- jointModel(data=data, cov=c('var_a','var_b'),
-                          multicore=FALSE, seed = 10, n.chain=1,
-                          n.iter.sample = 1000)
+                          multicore=FALSE, seed = 10, n.chain=1)
   # summary
   summary_large <- as.data.frame(rstan::summary(fit_large$model,
                                                 pars = 'alpha',

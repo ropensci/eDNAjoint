@@ -100,7 +100,7 @@ test_that("jointSummarize outputs work", {
 
   # run model
   fit <- jointModel(data=data, q=TRUE, family = 'negbin',
-                    initial_values = inits, n.iter.sample = 1000,
+                    initial_values = inits, 
                     n.chain=1, multicore=FALSE, seed = 10#,
                     #adapt_delta = 0.99
                     )
@@ -931,7 +931,7 @@ test_that("jointSummarize outputs work", {
   fit <- jointModel(data=data, family = 'negbin',
                     cov=c('var_a','var_b'),
                     n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.sample = 1000)
+                    initial_values=inits)
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1130,7 +1130,7 @@ test_that("jointSummarize outputs work", {
   fit <- jointModel(data=data,family='gamma',
                     cov=c('var_a','var_b'),
                     n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.sample = 1000)
+                    initial_values=inits)
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
