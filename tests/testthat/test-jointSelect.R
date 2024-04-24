@@ -6,8 +6,10 @@ test_that("jointSelect input checks work", {
   data <- data("greencrabData")
 
   model1 <- traditionalModel(data=greencrabData, family='negbin',
-                             multicore=FALSE)
-  model2 <- jointModel(data=greencrabData, family='negbin',multicore=FALSE)
+                             multicore=FALSE, n.chain=1,
+                             n.iter.sample = 1000)
+  model2 <- jointModel(data=greencrabData, family='negbin',multicore=FALSE,
+                       n.chain=1,n.iter.sample = 1000)
 
 
   # 1. Check that model inputs are a list
@@ -28,9 +30,11 @@ test_that("jointSelect input checks work", {
 test_that("jointSelect output check", {
   # fit models
   fit.q1 = jointModel(data=greencrabData, family="negbin",
-                     p10priors=c(1,20), q=TRUE, multicore=FALSE)
+                     p10priors=c(1,20), q=TRUE, multicore=FALSE,
+                     n.chain=1, n.iter.sample = 1000)
   fit.q2 = jointModel(data=greencrabData, family="negbin",
-                      p10priors=c(1,50), q=TRUE, multicore=FALSE)
+                      p10priors=c(1,50), q=TRUE, multicore=FALSE,
+                      n.chain=1, n.iter.sample = 1000)
 
   # run select
   select <- jointSelect(modelfits=list(fit.q1$model, fit.q2$model))
