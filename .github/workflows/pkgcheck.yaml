@@ -20,4 +20,13 @@ jobs:
     permissions:
       issues: write
     steps:
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '3.5.3' # Specify the version of R you want to use
+      - name: Install dependencies
+        run: |
+          install.packages("ggplot2")
+          install.packages("MASS")
+
       - uses: ropensci-review-tools/pkgcheck-action@main
