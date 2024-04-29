@@ -26,7 +26,7 @@ jobs:
           r-version: '3.5.3' # Specify the version of R you want to use
       - name: Install dependencies
         run: |
-          install.packages("ggplot2")
-          install.packages("MASS")
+          Rscript -e "install.packages('ggplot2', repos='http://cran.rstudio.com/')"
+          Rscript -e "install.packages('MASS', repos='http://cran.rstudio.com/')"
 
       - uses: ropensci-review-tools/pkgcheck-action@main
