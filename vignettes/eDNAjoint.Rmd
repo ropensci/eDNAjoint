@@ -395,7 +395,7 @@ More parameters exist to further customize the MCMC sampling, but we'll stick wi
 
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with catchability coefficients
-greencrab.fit.q.negbin <- jointModel(data = greencrabData, cov='None', 
+greencrab.fit.q.negbin <- jointModel(data = greencrabData, cov=NULL, 
                                      family = 'negbin', 
                                      p10priors = c(1,20), q=TRUE, 
                                      multicore=FALSE)
@@ -407,7 +407,7 @@ We previously made a choice to model the green crab count data with a negative b
 
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with poisson distribution
-greencrab.fit.q.pois <- jointModel(data = greencrabData, cov='None', 
+greencrab.fit.q.pois <- jointModel(data = greencrabData, cov=NULL, 
                                    family = 'poisson', 
                                    p10priors = c(1,20), q=TRUE,
                                    multicore=FALSE)
@@ -416,11 +416,11 @@ greencrab.fit.q.pois <- jointModel(data = greencrabData, cov='None',
 Let's also fit some models where we assume that both gear types have the same catchability. We set q=FALSE to not estimate catchability coefficients.
 ```{r, message = FALSE, warning = FALSE, results = 'hide'}
 #run the joint model with four covariates
-greencrab.fit.negbin <- jointModel(data = greencrabData, cov='None', 
+greencrab.fit.negbin <- jointModel(data = greencrabData, cov=NULL, 
                                    family = 'negbin', 
                                    p10priors = c(1,20), q=FALSE, 
                                    multicore=FALSE)
-greencrab.fit.pois <- jointModel(data = greencrabData, cov='None', 
+greencrab.fit.pois <- jointModel(data = greencrabData, cov=NULL, 
                                  family = 'poisson', 
                                  p10priors = c(1,20), q=FALSE, 
                                  multicore=FALSE)
@@ -517,7 +517,7 @@ detectionPlot(greencrab.fit.q.negbin$model, mu.min = 0.1, mu.max = 1,
 Now let's calculate $\mu_{critical}$, which is the value of $\mu$ where the probability of a false positive eDNA detection equals the probability of a true positive eDNA detection.
 
 ```{r}
-muCritical(greencrab.fit.q.negbin$model, cov.val = 'None', ci = 0.9)
+muCritical(greencrab.fit.q.negbin$model, cov.val = NULL, ci = 0.9)
 ```
 
 This function calculates $\mu_{critical}$ using the entire posterior distributions of parameters from the model, and 'HDI' corresponds to the 90% credibility interval calculated using the highest density interval. The first column corresponds to $\mu_{critical}$ if gear type 1 is used, and the second columns corresponds to $\mu_{critical}$ if gear type 2 is used.

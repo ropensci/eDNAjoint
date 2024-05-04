@@ -44,7 +44,7 @@
 #'   in all qPCR, count, and site covariate data.
 #' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param cov A character vector indicating the site-level covariates to include
-#'   in the model. Default value is 'None'.
+#'   in the model. Default value is NULL.
 #' @param family The distribution class used to model traditional survey count
 #'   data. Options include poisson ('poisson'), negative binomial ('negbin'),
 #'   and gamma ('gamma'). Default value is 'poisson'.
@@ -85,7 +85,7 @@
 #' @param verbose Logical value controlling the verbosity of output (i.e.,
 #'   warnings, messages, progress bar). Default is TRUE.
 #' @param seed A positive integer seed used for random number generation in
-#'   MCMC. Default is 'None', which means the seed is generated from 1 to the
+#'   MCMC. Default is NULL, which means the seed is generated from 1 to the
 #'   maximum integer supported by R.
 #' @srrstats {BS5.0} function returns initial values used in computation
 #' @return A list of:
@@ -156,19 +156,19 @@
 #' # This model does not assume all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a negative binomial distribution.
-#' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+#' fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
 #'                    p10priors=c(1,20), q=TRUE,multicore=FALSE,
-#'                    initial_values='None',n.chain=4,n.iter.burn=500,
+#'                    initial_values=NULL,n.chain=4,n.iter.burn=500,
 #'                    n.iter.sample=2500,thin=1,adapt_delta=0.9,
-#'                    verbose=TRUE,seed=123)
+#'                    verbose=TRUE, seed=123)
 #' }
 #'
 
-jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
+jointModel <- function(data, cov=NULL, family='poisson', p10priors=c(1,20),
                        q=FALSE, phipriors=c(0.25,0.25), multicore=TRUE,
-                       initial_values='None', n.chain=4, n.iter.burn=500,
+                       initial_values=NULL, n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, thin=1, adapt_delta=0.9,
-                       verbose=TRUE, seed = 'None') {
+                       verbose=TRUE, seed = NULL) {
 
   ####
   # input checks
@@ -186,7 +186,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
   }
 
   # model with covariates
-  if (all(cov!='None')) {
+  if (all(!is.null(cov))) {
     covariate_checks(data,cov)
   }
 
@@ -194,7 +194,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
   all_checks(data,cov,family,p10priors,phipriors)
 
   # initial value checks
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     initial_values_checks(initial_values,data,cov,n.chain)
   }
 
@@ -262,7 +262,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
   }
 
   #if present, prepare covariate data
-  if(all(cov!='None')){
+  if(all(!is.null(cov))){
     #' @srrstats {G2.7,G2.10} Use as.data.frame() to allow input list of any
     #'   tabular form (i.e., matrix, etc.) and converts before filtering columns
     #'   based on input 'cov'
@@ -305,13 +305,13 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
   }
 
   # get seed
-  SEED <- ifelse(seed != 'None',
+  SEED <- ifelse(!is.null(seed),
                  as.integer(seed),
                  sample.int(.Machine$integer.max, 1))
 
 
   ##run model, catchability, pois/gamma, no covariates
-  if(q==TRUE&&family!='negbin'&&all(cov=='None')){
+  if(q==TRUE&&family!='negbin'&&all(is.null(cov))){
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
     inits <- init_joint_catchability(n.chain,count_all,q_names,initial_values)
@@ -336,7 +336,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
       init = inits,
       refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==TRUE&&family=='negbin'&&all(cov=='None')){
+  } else if(q==TRUE&&family=='negbin'&&all(is.null(cov))){
     ##run model, catchability, negbin, no covariates
     inits <- init_joint_catchability(n.chain,count_all,q_names,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_catchability_negbin,
@@ -359,7 +359,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                            init = inits,
                            refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==FALSE&&family!='negbin'&&all(cov=='None')){
+  } else if(q==FALSE&&family!='negbin'&&all(is.null(cov))){
     ##run model, no catchability, pois/gamma, no covariates
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
@@ -380,7 +380,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                            init = inits,
                            refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==FALSE&&family=='negbin'&&all(cov=='None')){
+  } else if(q==FALSE&&family=='negbin'&&all(is.null(cov))){
     ##run model, no catchability, negbin, no covariates
     inits <- init_joint(n.chain,count_all,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_negbin,
@@ -401,7 +401,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                            init = inits,
                            refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==TRUE&&family=='negbin'&&all(cov!='None')){
+  } else if(q==TRUE&&family=='negbin'&&all(!is.null(cov))){
     ##run model, catchability, negbin, covariates
     inits <- init_joint_cov_catchability(n.chain,count_all,
                                          q_names,cov,initial_values)
@@ -427,7 +427,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                            init = inits,
                            refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==TRUE&&family!='negbin'&&all(cov!='None')){
+  } else if(q==TRUE&&family!='negbin'&&all(!is.null(cov))){
     ##run model, catchability, pois/gamma, covariates
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
@@ -456,7 +456,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
       init = inits,
       refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==FALSE&&family=='negbin'&&all(cov!='None')){
+  } else if(q==FALSE&&family=='negbin'&&all(!is.null(cov))){
     ##run model, no catchability, negbin, covariates
     inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
     out <- rstan::sampling(stanmodels$joint_binary_cov_negbin,
@@ -479,7 +479,7 @@ jointModel <- function(data, cov='None', family='poisson', p10priors=c(1,20),
                            init = inits,
                            refresh = ifelse(verbose==TRUE,500,0)
     )
-  } else if(q==FALSE&&family!='negbin'&&all(cov!='None')){
+  } else if(q==FALSE&&family!='negbin'&&all(!is.null(cov))){
     ##run model, no catchability, pois/gamma, covariates
     model_index <- dplyr::case_when(family=='poisson'~ 1,
                                     family=='gamma' ~ 2)
@@ -531,7 +531,7 @@ init_joint_cov <- function(n.chain,count_all,cov,initial_values){
   #helper function
   #joint model, catchability coefficient, site covariates
   A <- list()
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
@@ -573,7 +573,7 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
   #helper function
   #joint model, catchability coefficient, site covariates
   A <- list()
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
@@ -621,7 +621,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
   #helper function
   #joint model, catchability coefficient, no site covariates
   A <- list()
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_value))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
@@ -669,7 +669,7 @@ init_joint <- function(n.chain,count_all,initial_values){
   #helper function
   #joint model, no catchability coefficient, no site covariates
   A <- list()
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
@@ -734,15 +734,15 @@ catchability_checks <- function(data,cov){
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count,
   ## count.type, and site.cov)
   #cov='None'
-  if (all(cov=='None') && !all(c('qPCR.N', 'qPCR.K',
-                                 'count','count.type') %in% names(data))){
+  if (all(is.null(cov)) && !all(c('qPCR.N', 'qPCR.K',
+                                  'count','count.type') %in% names(data))){
     errMsg <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                      "'count', and 'count.type'.")
     stop(errMsg)
   }
   #q=TRUE and cov!='None'
-  if (all(cov!='None') && !all(c('qPCR.N', 'qPCR.K', 'count',
-                                 'count.type','site.cov') %in% names(data))){
+  if (all(!is.null(cov)) && !all(c('qPCR.N', 'qPCR.K', 'count',
+                                   'count.type','site.cov') %in% names(data))){
     errMsg <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                      "'count', 'count.type', and 'site.cov'.")
     stop(errMsg)
@@ -801,13 +801,13 @@ no_catchability_checks <- function(data,cov){
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count,
   ## and site.cov)
   #cov='None'
-  if (all(cov=='None') &&
+  if (all(is.null(cov)) &&
       !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
     errMsg <- "Data should include 'qPCR.N', 'qPCR.K', and 'count'."
     stop(errMsg)
   }
   #cov!='None'
-  if (all(cov!='None') &&
+  if (all(!is.null(cov)) &&
       !all(c('qPCR.N', 'qPCR.K', 'count','site.cov') %in% names(data))){
     errMsg <- "Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'."
     stop(errMsg)

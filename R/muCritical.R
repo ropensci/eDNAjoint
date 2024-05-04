@@ -10,7 +10,7 @@
 #' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param modelfit An object of class `stanfit`
 #' @param cov.val A numeric vector indicating the values of site-level
-#'   covariates to use for prediction. Default is 'None'.
+#'   covariates to use for prediction. Default is NULL.
 #' @param ci Credible interval calculated using highest density interval (HDI).
 #'   Default is 0.9 (i.e., 90% credible interval).
 #' @return A list with median mu_critical and lower and upper bounds on the
@@ -62,15 +62,15 @@
 #' data(greencrabData)
 #'
 #' # Fit a model with no site-level covariates
-#' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+#' fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
 #'                    p10priors=c(1,20), q=TRUE, multicore=FALSE)
 #'
 #' # Calculate mu_critical
-#' muCritical(fit.q$model, cov.val="None", ci = 0.9)
+#' muCritical(fit.q$model, cov.val=NULL, ci = 0.9)
 #' }
 #'
 
-muCritical <- function(modelfit, cov.val = 'None', ci = 0.9) {
+muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
@@ -97,7 +97,7 @@ muCritical <- function(modelfit, cov.val = 'None', ci = 0.9) {
 
   }
 
-  if(all(cov.val=='None')){
+  if(all(is.null(cov.val))){
     #extract posteriors for beta and p10 parameters
     ##beta
     posterior_beta <- unlist(rstan::extract(modelfit, pars = "beta"))
@@ -201,7 +201,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   }
 
   ## #4. if modelfit contains alpha, cov.val must be provided
-  if('alpha' %in% modelfit@model_pars && all(cov.val=='None')) {
+  if('alpha' %in% modelfit@model_pars && all(is.null(cov.val))) {
     errMsg <- paste0("If modelfit contains site-level covariates, values ",
                      "must be provided for cov.val")
     stop(errMsg)
@@ -210,23 +210,24 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   ## #5. cov.val is numeric, if provided
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
-  if(all(cov.val != 'None') && !is.numeric(cov.val)) {
+  if(all(!is.null(cov.val)) && !is.numeric(cov.val)) {
     errMsg <- "cov.val must be a numeric vector"
     stop(errMsg)
   }
 
   ## #6. Only include input cov.val if covariates are included in model
-  if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg <- paste0("cov.val must be 'None' if the model does not contain ",
+  if(all(!is.null(cov.val)) && !c('alpha') %in% modelfit@model_pars) {
+    errMsg <- paste0("cov.val must be NULL if the model does not contain ",
                      "site-level covariates.")
     stop(errMsg)
   }
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
   #' @srrstats {G2.0} Assertion on length of input
-  if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
+  if(all(!is.null(cov.val)) && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
     errMsg <- paste0("cov.val must be of the same length as the number of ",
                      "non-intercept site-level coefficients in the model.")
     stop(errMsg)
   }
 }
+

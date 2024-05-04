@@ -10,14 +10,14 @@ traditionalModel(
   q = FALSE,
   phipriors = c(0.25, 0.25),
   multicore = TRUE,
-  initial_values = "None",
+  initial_values = NULL,
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
   thin = 1,
   adapt_delta = 0.9,
   verbose = TRUE,
-  seed = "None"
+  seed = NULL
 )
 }
 \arguments{
@@ -73,7 +73,7 @@ Default value is 1.}
 warnings, messages, progress bar). Default is TRUE.}
 
 \item{seed}{A positive integer seed used for random number generation in
-MCMC. Default is 'None', which means the seed is generated from 1 to the
+MCMC. Default is NULL, which means the seed is generated from 1 to the
 maximum integer supported by R.}
 }
 \value{
@@ -136,9 +136,9 @@ fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE,
 # Count data is modeled using a negative binomial distribution.
 fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE,
                          phipriors=c(0.25,0.25), multicore=FALSE,
-                         initial_values='None',n.chain=4,n.iter.burn=500,
-                         n.iter.sample=2500,thin=1,adapt_delta=0.9,
-                         verbose=TRUE,seed=123)
+                         initial_values=NULL, n.chain=4, n.iter.burn=500,
+                         n.iter.sample=2500 ,thin=1, adapt_delta=0.9,
+                         verbose=TRUE, seed=123)
 }
 
 }

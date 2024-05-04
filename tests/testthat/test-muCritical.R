@@ -36,7 +36,7 @@ test_that("muCritical input checks work", {
 
   #6. Only include input cov.val if covariates are included in model
   expect_error(muCritical(model3$model, cov.val=c(0,0)),
-               paste0("cov.val must be 'None' if the model does not ",
+               paste0("cov.val must be NULL if the model does not ",
                       "contain site-level covariates."))
 
   #7. Only include input cov.val if covariates are included in model
@@ -53,7 +53,7 @@ test_that("muCritical output check", {
                        family="poisson", p10priors=c(1,20), q=FALSE,
                        multicore=FALSE, n.chain=1,
                        n.iter.sample = 1000)
-  fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+  fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
                      p10priors=c(1,20), q=TRUE, multicore=FALSE, n.chain=1,
                      n.iter.sample = 1000)
 

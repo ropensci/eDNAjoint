@@ -7,20 +7,20 @@ eDNA qPCR data}
 \usage{
 jointModel(
   data,
-  cov = "None",
+  cov = NULL,
   family = "poisson",
   p10priors = c(1, 20),
   q = FALSE,
   phipriors = c(0.25, 0.25),
   multicore = TRUE,
-  initial_values = "None",
+  initial_values = NULL,
   n.chain = 4,
   n.iter.burn = 500,
   n.iter.sample = 2500,
   thin = 1,
   adapt_delta = 0.9,
   verbose = TRUE,
-  seed = "None"
+  seed = NULL
 )
 }
 \arguments{
@@ -46,7 +46,7 @@ be NA and will be removed during processing. Sites, i, should be consistent
 in all qPCR, count, and site covariate data.}
 
 \item{cov}{A character vector indicating the site-level covariates to include
-in the model. Default value is 'None'.}
+in the model. Default value is NULL.}
 
 \item{family}{The distribution class used to model traditional survey count
 data. Options include poisson ('poisson'), negative binomial ('negbin'),
@@ -91,7 +91,7 @@ Default value is 1.}
 warnings, messages, progress bar). Default is TRUE.}
 
 \item{seed}{A positive integer seed used for random number generation in
-MCMC. Default is 'None', which means the seed is generated from 1 to the
+MCMC. Default is NULL, which means the seed is generated from 1 to the
 maximum integer supported by R.}
 }
 \value{
@@ -166,11 +166,11 @@ dim(greencrabData$count)[1]
 # This model does not assume all traditional survey methods have the same
 # catchability.
 # Count data is modeled using a negative binomial distribution.
-fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
                    p10priors=c(1,20), q=TRUE,multicore=FALSE,
-                   initial_values='None',n.chain=4,n.iter.burn=500,
+                   initial_values=NULL,n.chain=4,n.iter.burn=500,
                    n.iter.sample=2500,thin=1,adapt_delta=0.9,
-                   verbose=TRUE,seed=123)
+                   verbose=TRUE, seed=123)
 }
 
 }

@@ -4,13 +4,13 @@
 \alias{muCritical}
 \title{Calculate mu_critical}
 \usage{
-muCritical(modelfit, cov.val = "None", ci = 0.9)
+muCritical(modelfit, cov.val = NULL, ci = 0.9)
 }
 \arguments{
 \item{modelfit}{An object of class \code{stanfit}}
 
 \item{cov.val}{A numeric vector indicating the values of site-level
-covariates to use for prediction. Default is 'None'.}
+covariates to use for prediction. Default is NULL.}
 
 \item{ci}{Credible interval calculated using highest density interval (HDI).
 Default is 0.9 (i.e., 90\% credible interval).}
@@ -70,11 +70,11 @@ muCritical(fit.cov$model, cov.val=c(0,0.5), ci = 0.9)
 data(greencrabData)
 
 # Fit a model with no site-level covariates
-fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
                    p10priors=c(1,20), q=TRUE, multicore=FALSE)
 
 # Calculate mu_critical
-muCritical(fit.q$model, cov.val="None", ci = 0.9)
+muCritical(fit.q$model, cov.val=NULL, ci = 0.9)
 }
 
 }

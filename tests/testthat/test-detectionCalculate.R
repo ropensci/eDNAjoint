@@ -35,7 +35,7 @@ test_that("detectionCalculate input checks work", {
   #6. Only include input cov.val if covariates are included in model
   expect_error(detectionCalculate(model2$model, mu = c(0.1, 0.5),
                                   cov.val = c(0,0)),
-               paste0("cov.val must be 'None' if the model does not ",
+               paste0("cov.val must be NULL if the model does not ",
                       "contain site-level covariates."))
 
   #7. Input cov.val is the same length as the number of estimated covariates.

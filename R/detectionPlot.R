@@ -17,7 +17,7 @@
 #'   plotting. If multiple traditional gear types are represented in the model,
 #'   mu is the catch rate of gear type 1.
 #' @param cov.val A numeric vector indicating the values of site-level
-#'   covariates to use for prediction. Default is 'None'.
+#'   covariates to use for prediction. Default is NULL.
 #' @param qPCR.N An integer indicating the number of qPCR replicates per eDNA
 #'   sample. The default is 3.
 #' @param probability A numeric value indicating the probability of detecting
@@ -72,21 +72,21 @@
 #' data(greencrabData)
 #'
 #' # Fit a model with no site-level covariates
-#' fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+#' fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
 #'                    p10priors=c(1,20), q=TRUE,
 #'                    multicore=FALSE)
 #'
 #' # Calculate
 #' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,
-#'               cov.val = "None", qPCR.N = 3)
+#'               cov.val = NULL, qPCR.N = 3)
 #'
 #' # Change probability of detecting presence to 0.95
-#' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = "None",
+#' detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = NULL,
 #'               probability = 0.95, qPCR.N = 3)
 #' }
 #'
 
-detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = 'None',
+detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = NULL,
                           probability=0.9, qPCR.N = 3){
 
   # input checks
@@ -821,28 +821,28 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
   ## #5. cov.val is numeric, if provided
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
-  if(all(cov.val != 'None') && !is.numeric(cov.val)) {
+  if(all(!is.null(cov.val)) && !is.numeric(cov.val)) {
     errMsg <- "cov.val must be a numeric vector"
     stop(errMsg)
   }
 
   ## #6. Only include input cov.val if covariates are included in model
-  if(all(cov.val != 'None') && !c('alpha') %in% modelfit@model_pars) {
-    errMsg <- paste0("cov.val must be 'None' if the model does not contain ",
+  if(all(!is.null(cov.val)) && !c('alpha') %in% modelfit@model_pars) {
+    errMsg <- paste0("cov.val must be NULL if the model does not contain ",
                      "site-level covariates.")
     stop(errMsg)
   }
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
   #' @srrstats {G2.0} Assertion on length of input
-  if(all(cov.val != 'None') && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
+  if(all(!is.null(cov.val)) && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
     errMsg <- paste0("cov.val must be of the same length as the number of ",
                      "non-intercept site-level coefficients in the model.")
     stop(errMsg)
   }
 
   ## #8. If covariates are in model, cov.val must be provided
-  if(all(c('alpha','p10') %in% modelfit@model_pars) && all(cov.val == 'None')) {
+  if(all(c('alpha','p10') %in% modelfit@model_pars) && all(is.null(cov.val))) {
     errMsg <- paste0("cov.val must be provided if the model contains ",
                      "site-level covariates.")
     stop(errMsg)

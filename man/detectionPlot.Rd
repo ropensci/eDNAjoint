@@ -9,7 +9,7 @@ detectionPlot(
   modelfit,
   mu.min,
   mu.max,
-  cov.val = "None",
+  cov.val = NULL,
   probability = 0.9,
   qPCR.N = 3
 )
@@ -26,7 +26,7 @@ plotting. If multiple traditional gear types are represented in the model,
 mu is the catch rate of gear type 1.}
 
 \item{cov.val}{A numeric vector indicating the values of site-level
-covariates to use for prediction. Default is 'None'.}
+covariates to use for prediction. Default is NULL.}
 
 \item{probability}{A numeric value indicating the probability of detecting
 presence. The default is 0.9.}
@@ -90,16 +90,16 @@ detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5),
 data(greencrabData)
 
 # Fit a model with no site-level covariates
-fit.q = jointModel(data=greencrabData, cov="None", family="negbin",
+fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
                    p10priors=c(1,20), q=TRUE,
                    multicore=FALSE)
 
 # Calculate
 detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,
-              cov.val = "None", qPCR.N = 3)
+              cov.val = NULL, qPCR.N = 3)
 
 # Change probability of detecting presence to 0.95
-detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = "None",
+detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1, cov.val = NULL,
               probability = 0.95, qPCR.N = 3)
 }
 

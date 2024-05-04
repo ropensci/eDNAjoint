@@ -61,7 +61,7 @@
 #' @param verbose Logical value controlling the verbosity of output (i.e.,
 #'   warnings, messages, progress bar). Default is TRUE.
 #' @param seed A positive integer seed used for random number generation in
-#'   MCMC. Default is 'None', which means the seed is generated from 1 to the
+#'   MCMC. Default is NULL, which means the seed is generated from 1 to the
 #'   maximum integer supported by R.
 #' @return A list of:
 #' \itemize{
@@ -114,18 +114,18 @@
 #' # Count data is modeled using a negative binomial distribution.
 #' fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE,
 #'                          phipriors=c(0.25,0.25), multicore=FALSE,
-#'                          initial_values='None',n.chain=4,n.iter.burn=500,
-#'                          n.iter.sample=2500,thin=1,adapt_delta=0.9,
-#'                          verbose=TRUE,seed=123)
+#'                          initial_values=NULL, n.chain=4, n.iter.burn=500,
+#'                          n.iter.sample=2500 ,thin=1, adapt_delta=0.9,
+#'                          verbose=TRUE, seed=123)
 #' }
 #'
 
 traditionalModel <- function(data, family='poisson',
                              q=FALSE, phipriors=c(0.25,0.25),
-                             multicore=TRUE, initial_values = 'None',
+                             multicore=TRUE, initial_values = NULL,
                              n.chain=4, n.iter.burn=500,
                              n.iter.sample=2500, thin=1,
-                             adapt_delta=0.9, verbose=TRUE, seed = 'None') {
+                             adapt_delta=0.9, verbose=TRUE, seed = NULL) {
 
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
@@ -133,7 +133,7 @@ traditionalModel <- function(data, family='poisson',
   traditionalModel_input_checks(data, family, q, phipriors)
 
   # initial value checks
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     initial_values_checks_trad(initial_values,data,n.chain)
   }
 
@@ -194,7 +194,7 @@ traditionalModel <- function(data, family='poisson',
   }
 
   # get seed
-  SEED <- ifelse(seed != 'None',
+  SEED <- ifelse(!is.null(seed),
                  as.integer(seed),
                  sample.int(.Machine$integer.max, 1))
 
@@ -335,7 +335,7 @@ init_trad_catchability <- function(n.chain, count_all, q_names, initial_values){
   #helper function
   #traditional model, catchability coefficient
   A <- list()
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
@@ -369,7 +369,7 @@ init_trad <- function(n.chain, count_all, initial_values){
   #helper function
   #traditional model
   A <- list()
-  if(all(initial_values != 'None')){
+  if(all(!is.null(initial_values))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
@@ -594,3 +594,4 @@ initial_values_checks_trad <- function(initial_values,data,n.chain){
 
   }
 }
+
