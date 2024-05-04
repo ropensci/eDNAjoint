@@ -621,7 +621,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
   #helper function
   #joint model, catchability coefficient, no site covariates
   A <- list()
-  if(all(!is.null(initial_value))){
+  if(all(!is.null(initial_values))){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
