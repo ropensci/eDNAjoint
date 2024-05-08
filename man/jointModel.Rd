@@ -11,7 +11,7 @@ jointModel(
   family = "poisson",
   p10priors = c(1, 20),
   q = FALSE,
-  phipriors = c(0.25, 0.25),
+  phipriors = NULL,
   multicore = TRUE,
   initial_values = NULL,
   n.chain = 4,
@@ -64,7 +64,8 @@ estimate a catchability coefficient, q, for traditional survey gear types
 \item{phipriors}{A numeric vector indicating gamma distribution
 hyperparameters (shape, rate) used as the prior distribution for phi, the
 overdispersion in the negative binomial distribution for traditional survey
-gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+gear data. Used when family = 'negbin.' If family = 'negbin', then
+default vector is c(0.25,0.25), otherwise, default is NULL.}
 
 \item{multicore}{A logical value indicating whether to parallelize chains
 with multiple cores. Default is TRUE.}
@@ -146,7 +147,7 @@ dim(gobyData$count)[1]
 # Count data is modeled using a poisson distribution.
 fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
                      family="poisson", p10priors=c(1,20), q=FALSE,
-                     multicore=FALSE)
+                     phipriors=NULL, multicore=FALSE, verbose=TRUE)
 
 
 # Ex. 2: Implementing the joint model with multiple traditional gear types
@@ -167,9 +168,10 @@ dim(greencrabData$count)[1]
 # catchability.
 # Count data is modeled using a negative binomial distribution.
 fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-                   p10priors=c(1,20), q=TRUE,multicore=FALSE,
-                   initial_values=NULL,n.chain=4,n.iter.burn=500,
-                   n.iter.sample=2500,thin=1,adapt_delta=0.9,
+                   p10priors=c(1,20), q=TRUE, phipriors=c(0.25,0.25),
+                   multicore=FALSE, initial_values=NULL,
+                   n.chain=4, n.iter.burn=500,
+                   n.iter.sample=2500, thin=1, adapt_delta=0.9,
                    verbose=TRUE, seed=123)
 }
 

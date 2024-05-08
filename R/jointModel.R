@@ -62,7 +62,8 @@
 #' @param phipriors A numeric vector indicating gamma distribution
 #'   hyperparameters (shape, rate) used as the prior distribution for phi, the
 #'   overdispersion in the negative binomial distribution for traditional survey
-#'   gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
+#'   gear data. Used when family = 'negbin.' If family = 'negbin', then
+#'   default vector is c(0.25,0.25), otherwise, default is NULL.
 #' @param multicore A logical value indicating whether to parallelize chains
 #'   with multiple cores. Default is TRUE.
 #' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each
@@ -136,7 +137,7 @@
 #' # Count data is modeled using a poisson distribution.
 #' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
 #'                      family="poisson", p10priors=c(1,20), q=FALSE,
-#'                      multicore=FALSE)
+#'                      phipriors=NULL, multicore=FALSE, verbose=TRUE)
 #'
 #'
 #' # Ex. 2: Implementing the joint model with multiple traditional gear types
@@ -157,18 +158,34 @@
 #' # catchability.
 #' # Count data is modeled using a negative binomial distribution.
 #' fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-#'                    p10priors=c(1,20), q=TRUE,multicore=FALSE,
-#'                    initial_values=NULL,n.chain=4,n.iter.burn=500,
-#'                    n.iter.sample=2500,thin=1,adapt_delta=0.9,
+#'                    p10priors=c(1,20), q=TRUE, phipriors=c(0.25,0.25),
+#'                    multicore=FALSE, initial_values=NULL,
+#'                    n.chain=4, n.iter.burn=500,
+#'                    n.iter.sample=2500, thin=1, adapt_delta=0.9,
 #'                    verbose=TRUE, seed=123)
 #' }
 #'
 
 jointModel <- function(data, cov=NULL, family='poisson', p10priors=c(1,20),
-                       q=FALSE, phipriors=c(0.25,0.25), multicore=TRUE,
+                       q=FALSE, phipriors=NULL, multicore=TRUE,
                        initial_values=NULL, n.chain=4, n.iter.burn=500,
                        n.iter.sample=2500, thin=1, adapt_delta=0.9,
                        verbose=TRUE, seed = NULL) {
+
+
+  # make character inputs case-insensitive
+  #' @srrstats {G2.3b} Allow case-insensitive character parameter values
+  family <- tolower(family)
+
+
+  # get phipriors
+  if(family != 'negbin'){
+    phipriors <- NULL
+  } else if(family == 'negbin' && is.null(phipriors)){
+    phipriors <- c(0.25,0.25)
+  } else if(family == 'negbin' && !is.null(phipriors)){
+    phipriors <- phipriors
+  }
 
   ####
   # input checks
@@ -201,10 +218,6 @@ jointModel <- function(data, cov=NULL, family='poisson', p10priors=c(1,20),
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
-
-  # make character inputs case-insensitive
-  #' @srrstats {G2.3b} Allow case-insensitive character parameter values
-  family <- tolower(family)
 
   ###
   #convert data to long format
@@ -715,21 +728,6 @@ init_joint <- function(n.chain,count_all,initial_values){
 # input checks if catchabilty coefficients are used
 catchability_checks <- function(data,cov){
 
-  ## make sure count.type is not zero-length
-  #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length
-  #'   data
-  if (dim(data$count.type)[1]==0) {
-    errMsg <- "count.type contains zero-length data."
-    stop(errMsg)
-  }
-  ## make sure no column is entirely NA in count.type
-  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
-  #' all NA
-  if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
-    errMsg <- "count.type contains a column with all NA."
-    stop(errMsg)
-  }
-
   #' @srrstats {G2.13} Pre-processing routines to check for missing data
   ## All tags in data are valid (i.e., include qPCR.N, qPCR.K, count,
   ## count.type, and site.cov)
@@ -745,6 +743,21 @@ catchability_checks <- function(data,cov){
                                    'count.type','site.cov') %in% names(data))){
     errMsg <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                      "'count', 'count.type', and 'site.cov'.")
+    stop(errMsg)
+  }
+
+  ## make sure count.type is not zero-length
+  #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length
+  #'   data
+  if (dim(data$count.type)[1]==0) {
+    errMsg <- "count.type contains zero-length data."
+    stop(errMsg)
+  }
+  ## make sure no column is entirely NA in count.type
+  #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
+  #' all NA
+  if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
+    errMsg <- "count.type contains a column with all NA."
     stop(errMsg)
   }
 
@@ -910,10 +923,12 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
   #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5,BS2.6} Checks of vector length
   #'   and appropriateness of distributional parameters (i.e., vector of length
   #'   2, numeric values > 0), implemented prior to analytic routines
-  if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
-    errMsg <- paste0("phipriors should be a vector of two positive numeric ",
-                     "values. ex. c(0.25,0.25)")
-    stop(errMsg)
+  if(family == 'negbin'){
+    if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
+      errMsg <- paste0("phipriors should be a vector of two positive numeric ",
+                       "values. ex. c(0.25,0.25)")
+      stop(errMsg)
+    }
   }
 
   ## make sure no data are undefined
