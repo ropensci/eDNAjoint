@@ -369,7 +369,8 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','p10','beta','phi')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, family = 'negbin', initial_values=inits,
+  fit <- suppressWarnings({jointModel(data=data, family = 'negbin',
+                                      initial_values=inits,
                     n.chain=1, multicore=FALSE, seed = 10,
                     n.iter.burn = 25,
                     n.iter.sample = 75)})
@@ -1142,7 +1143,7 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data=data,family='gamma',
                     cov=c('var_a','var_b'),
                     n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=initsn.iter.burn = 25,
+                    initial_values=inits, n.iter.burn = 25,
                     n.iter.sample = 75)})
 
   # get output params
