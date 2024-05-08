@@ -80,8 +80,8 @@
 #'   2500.
 #' @param thin A positive integer specifying the period for saving samples.
 #'   Default value is 1.
-#' @param adapt_delta Target average acceptance probability used in
-#'   `rstan::sampling`. Default value is 0.9.
+#' @param adapt_delta Numeric value between 0 and 1 indicating target average
+#'   acceptance probability used in `rstan::sampling`. Default value is 0.9.
 #' @srrstats {BS2.12} Parameter controlling the verbosity of output
 #' @param verbose Logical value controlling the verbosity of output (i.e.,
 #'   warnings, messages, progress bar). Default is TRUE.
@@ -208,7 +208,8 @@ jointModel <- function(data, cov=NULL, family='poisson', p10priors=c(1,20),
   }
 
   # all models
-  all_checks(data,cov,family,p10priors,phipriors)
+  all_checks(data,cov,family,p10priors,phipriors,n.chain,n.iter.burn,
+             n.iter.sample,thin,adapt_delta,seed)
 
   # initial value checks
   if(all(!is.null(initial_values))){
@@ -838,7 +839,8 @@ no_catchability_checks <- function(data,cov){
 }
 
 # input checks for all variations
-all_checks <- function(data,cov,family,p10priors,phipriors){
+all_checks <- function(data,cov,family,p10priors,phipriors,n.chain,n.iter.burn,
+                       n.iter.sample,thin,adapt_delta,seed){
 
 
   ## make sure count, qPCR.N, and qPCR.K are not zero-length
@@ -982,6 +984,46 @@ all_checks <- function(data,cov,family,p10priors,phipriors){
     errMsg <- "All values in qPCR.K should be non-negative integers."
     stop(errMsg)
   }
+
+  ## check length and range of n.chain
+  if(any(length(as.integer(n.chain))>1 | n.chain < 1)){
+    errMsg <- "n.chain should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of n.iter.sample
+  if(any(length(as.integer(n.iter.sample))>1 | n.iter.sample < 1)){
+    errMsg <- "n.iter.sample should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of n.iter.burn
+  if(any(length(as.integer(n.iter.burn))>1 | n.iter.burn < 1)){
+    errMsg <- "n.iter.burn should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of thin
+  if(any(length(as.integer(thin))>1 | thin < 1)){
+    errMsg <- "thin should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of adapt_delta
+  if(any(length(adapt_delta)>1 | adapt_delta < 0 | adapt_delta > 1)){
+    errMsg <- paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
+                     "of length 1.")
+    stop(errMsg)
+  }
+
+  ## check length of seed
+  if(!is.null(seed)){
+    if(length(as.integer(seed)) > 1){
+      errMsg <- "seed should be an integer of length 1."
+      stop(errMsg)
+    }
+  }
+
 
 
 

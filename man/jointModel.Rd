@@ -85,8 +85,8 @@ initial values are provided, default random values are drawn.}
 \item{thin}{A positive integer specifying the period for saving samples.
 Default value is 1.}
 
-\item{adapt_delta}{Target average acceptance probability used in
-\code{rstan::sampling}. Default value is 0.9.}
+\item{adapt_delta}{Numeric value between 0 and 1 indicating target average
+acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
 
 \item{verbose}{Logical value controlling the verbosity of output (i.e.,
 warnings, messages, progress bar). Default is TRUE.}

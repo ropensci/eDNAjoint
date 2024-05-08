@@ -38,7 +38,8 @@
 #' @param phipriors A numeric vector indicating gamma distribution
 #'   hyperparameters (shape, rate) used as the prior distribution for phi, the
 #'   overdispersion in the negative binomial distribution for traditional survey
-#'   gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).
+#'   gear data. Used when family = 'negbin.' If family = 'negbin', then
+#'   default vector is c(0.25,0.25), otherwise, default is NULL.
 #' @param multicore A logical value indicating whether to parallelize chains
 #'   with multiple cores. Default is TRUE.
 #' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each
@@ -55,8 +56,8 @@
 #'   2500.
 #' @param thin A positive integer specifying the period for saving samples.
 #'   Default value is 1.
-#' @param adapt_delta Target average acceptance probability used in
-#'   `rstan::sampling`. Default value is 0.9.
+#' @param adapt_delta Numeric value between 0 and 1 indicating target average
+#'   acceptance probability used in `rstan::sampling`. Default value is 0.9.
 #' @srrstats {BS2.12} Parameter controlling the verbosity of output
 #' @param verbose Logical value controlling the verbosity of output (i.e.,
 #'   warnings, messages, progress bar). Default is TRUE.
@@ -104,7 +105,7 @@
 #' # catchability.
 #' # Count data is modeled using a poisson distribution.
 #' fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE,
-#'                             multicore=FALSE)
+#'                             phipriors=NULL, multicore=FALSE, verbose=TRUE)
 #'
 #'
 #' # Fit a model estimating a catchability coefficient for traditional survey
@@ -121,16 +122,32 @@
 #'
 
 traditionalModel <- function(data, family='poisson',
-                             q=FALSE, phipriors=c(0.25,0.25),
+                             q=FALSE, phipriors=NULL,
                              multicore=TRUE, initial_values = NULL,
                              n.chain=4, n.iter.burn=500,
                              n.iter.sample=2500, thin=1,
                              adapt_delta=0.9, verbose=TRUE, seed = NULL) {
 
+
+  # make character inputs case-insensitive
+  #' @srrstats {G2.3b} Allow case-insensitive character parameter values
+  family <- tolower(family)
+
+  # get phipriors
+  if(family != 'negbin'){
+    phipriors <- NULL
+  } else if(family == 'negbin' && is.null(phipriors)){
+    phipriors <- c(0.25,0.25)
+  } else if(family == 'negbin' && !is.null(phipriors)){
+    phipriors <- phipriors
+  }
+
   # input checks
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
   #'   function
-  traditionalModel_input_checks(data, family, q, phipriors)
+  traditionalModel_input_checks(data, family, q, phipriors, n.chain,
+                                n.iter.burn, n.iter.sample,
+                                thin, adapt_delta, seed)
 
   # initial value checks
   if(all(!is.null(initial_values))){
@@ -140,10 +157,6 @@ traditionalModel <- function(data, family='poisson',
   if (!requireNamespace("rstan", quietly = TRUE)){
     stop ("The 'rstan' package is not installed.", call. = FALSE)
   }
-
-  # make character inputs case-insensitive
-  #' @srrstats {G2.3b} Allow case-insensitive character parameter values
-  family <- tolower(family)
 
   ###
   #convert data to long format
@@ -395,7 +408,9 @@ init_trad <- function(n.chain, count_all, initial_values){
 # function for input checks
 #' @srrstats {G5.2a} Pre-processing routines to check inputs have unique
 #'   messages
-traditionalModel_input_checks <- function(data, family, q, phipriors){
+traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
+                                          n.iter.burn, n.iter.sample,
+                                          thin, adapt_delta, seed){
 
   ## make sure all data tags are valid -- if q == TRUE
   #' @srrstats {G2.13} Pre-processing routines to check for missing data
@@ -539,10 +554,51 @@ traditionalModel_input_checks <- function(data, family, q, phipriors){
   #' @srrstats {G2.0,BS2.2,BS2.3,BS2.4,BS2.5} Checks of vector length and
   #'   appropriateness of distributional parameters (i.e., vector of length 2,
   #'   numeric values > 0), implemented prior to analytic routines
-  if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
-    errMsg <- paste0("phipriors should be a vector of two positive ",
-                     "numeric values. ex. c(0.25,0.25)")
+  if(family == 'negbin'){
+    if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
+      errMsg <- paste0("phipriors should be a vector of two positive ",
+                       "numeric values. ex. c(0.25,0.25)")
+      stop(errMsg)
+    }
+  }
+
+  ## check length and range of n.chain
+  if(any(length(as.integer(n.chain))>1 | n.chain < 1)){
+    errMsg <- "n.chain should be an integer > 0 and of length 1."
     stop(errMsg)
+  }
+
+  ## check length and range of n.iter.sample
+  if(any(length(as.integer(n.iter.sample))>1 | n.iter.sample < 1)){
+    errMsg <- "n.iter.sample should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of n.iter.burn
+  if(any(length(as.integer(n.iter.burn))>1 | n.iter.burn < 1)){
+    errMsg <- "n.iter.burn should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of thin
+  if(any(length(as.integer(thin))>1 | thin < 1)){
+    errMsg <- "thin should be an integer > 0 and of length 1."
+    stop(errMsg)
+  }
+
+  ## check length and range of adapt_delta
+  if(any(length(adapt_delta)>1 | adapt_delta < 0 | adapt_delta > 1)){
+    errMsg <- paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
+                     "of length 1.")
+    stop(errMsg)
+  }
+
+  ## check length of seed
+  if(!is.null(seed)){
+    if(length(as.integer(seed)) > 1){
+      errMsg <- "seed should be an integer of length 1."
+      stop(errMsg)
+    }
   }
 }
 

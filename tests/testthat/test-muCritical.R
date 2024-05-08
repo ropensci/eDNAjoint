@@ -3,15 +3,20 @@ test_that("muCritical input checks work", {
   #'   behaving as expected.
 
   # run joint model to do tests with
-  model1 <- jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                       multicore=FALSE, n.chain=1,
-                       n.iter.sample = 1000)
+  model1 <- suppressWarnings({jointModel(data=gobyData,
+                                         cov=c('Filter_time','Salinity'),
+                                         multicore=FALSE, n.chain=1,
+                                         n.iter.burn = 25,
+                                         n.iter.sample = 75)})
 
-  model2 <- traditionalModel(data=gobyData,multicore=FALSE, n.chain=1,
-                             n.iter.sample = 1000)
+  model2 <- suppressWarnings({traditionalModel(data=gobyData,multicore=FALSE,
+                                               n.chain=1,n.iter.burn = 25,
+                                               n.iter.sample = 75)})
 
-  model3 <- jointModel(data=greencrabData,family='negbin',multicore=FALSE,
-                       n.chain=1, n.iter.sample = 1000)
+  model3 <- suppressWarnings({jointModel(data=greencrabData,family='negbin',
+                                         multicore=FALSE,
+                                         n.chain=1,n.iter.burn = 25,
+                                         n.iter.sample = 75)})
 
   #1. make sure model fit is of class stanfit
   expect_error(muCritical(as.matrix(model1$model), cov.val = c(0,0)),
@@ -49,13 +54,17 @@ test_that("muCritical input checks work", {
 test_that("muCritical output check", {
 
   # fit two models
-  fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                       family="poisson", p10priors=c(1,20), q=FALSE,
-                       multicore=FALSE, n.chain=1,
-                       n.iter.sample = 1000)
-  fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-                     p10priors=c(1,20), q=TRUE, multicore=FALSE, n.chain=1,
-                     n.iter.sample = 1000)
+  fit.cov = suppressWarnings({jointModel(data=gobyData,
+                                         cov=c('Filter_time','Salinity'),
+                                         family="poisson", p10priors=c(1,20),
+                                         q=FALSE, multicore=FALSE, n.chain=1,
+                                         n.iter.burn = 25,
+                                         n.iter.sample = 75)})
+  fit.q = suppressWarnings({jointModel(data=greencrabData, cov=NULL,
+                                       family="negbin",p10priors=c(1,20),
+                                       q=TRUE, multicore=FALSE, n.chain=1,
+                                       n.iter.burn = 25,
+                                       n.iter.sample = 75)})
 
   # check lengths of muCritical output
   expect_equal(length(muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)),

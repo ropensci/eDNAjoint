@@ -80,7 +80,7 @@ test_that("traditionalModel input checks work", {
 
   #11. phi priors is a vector of two numeric values
   expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA))),
-                                phipriors=c(0,1),
+                                phipriors=c(0,1), family='negbin',
                                 multicore=FALSE),
                paste0("phipriors should be a vector of two positive ",
                       "numeric values. ex. c\\(0.25,0.25\\)"))
@@ -155,6 +155,74 @@ test_that("traditionalModel input checks work", {
                paste0("The length of initial values for 'q' should equal: ",
                       "\\# unique gear types \\- 1 \\(i.e., q for reference ",
                       "type = 1\\)."))
+
+  #18. check length and range of n.chain
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.chain = c(1,1),multicore=FALSE),
+               paste0("n.chain should be an integer > 0 and of length 1."))
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                n.chain = 0,multicore=FALSE),
+               paste0("n.chain should be an integer > 0 and of length 1."))
+
+  #19. check length and range of n.iter.sample
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                n.iter.sample = c(1,1),multicore=FALSE),
+               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+               )
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                n.iter.sample = 0,multicore=FALSE),
+               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+               )
+
+  #20. check length and range of n.iter.burn
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                n.iter.burn = c(1,1),multicore=FALSE),
+               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+  )
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                n.iter.burn = 0,multicore=FALSE),
+               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+  )
+
+  #21. check length and range of thin
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                thin = c(1,1),multicore=FALSE),
+               paste0("thin should be an integer > 0 and of length 1.")
+  )
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                thin = 0,multicore=FALSE),
+               paste0("thin should be an integer > 0 and of length 1.")
+  )
+
+  #22. check length and range of adapt_delta
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                adapt_delta =  c(0.9,0.9),multicore=FALSE),
+               paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
+                      "of length 1.")
+  )
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                adapt_delta = 1.2,multicore=FALSE),
+               paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
+                      "of length 1.")
+  )
+
+  #23. check length of seed
+  expect_error(traditionalModel(data=list(count=rbind(c(4,1,1),c(1,1,NA)),
+                                          count.type=rbind(c(1,2,1),c(1,1,NA))),
+                                seed = c(1,2),multicore=FALSE),
+               paste0("seed should be an integer of length 1.")
+  )
+
 
 
 })

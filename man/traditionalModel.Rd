@@ -8,7 +8,7 @@ traditionalModel(
   data,
   family = "poisson",
   q = FALSE,
-  phipriors = c(0.25, 0.25),
+  phipriors = NULL,
   multicore = TRUE,
   initial_values = NULL,
   n.chain = 4,
@@ -46,7 +46,8 @@ Default value is FALSE.}
 \item{phipriors}{A numeric vector indicating gamma distribution
 hyperparameters (shape, rate) used as the prior distribution for phi, the
 overdispersion in the negative binomial distribution for traditional survey
-gear data. Used when family = 'negbin.' Default vector is c(0.25,0.25).}
+gear data. Used when family = 'negbin.' If family = 'negbin', then
+default vector is c(0.25,0.25), otherwise, default is NULL.}
 
 \item{multicore}{A logical value indicating whether to parallelize chains
 with multiple cores. Default is TRUE.}
@@ -66,8 +67,8 @@ default random values are drawn.}
 \item{thin}{A positive integer specifying the period for saving samples.
 Default value is 1.}
 
-\item{adapt_delta}{Target average acceptance probability used in
-\code{rstan::sampling}. Default value is 0.9.}
+\item{adapt_delta}{Numeric value between 0 and 1 indicating target average
+acceptance probability used in \code{rstan::sampling}. Default value is 0.9.}
 
 \item{verbose}{Logical value controlling the verbosity of output (i.e.,
 warnings, messages, progress bar). Default is TRUE.}
@@ -126,7 +127,7 @@ dim(greencrabData$count.type)[1]
 # catchability.
 # Count data is modeled using a poisson distribution.
 fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE,
-                            multicore=FALSE)
+                            phipriors=NULL, multicore=FALSE, verbose=TRUE)
 
 
 # Fit a model estimating a catchability coefficient for traditional survey

@@ -147,7 +147,7 @@ test_that("jointModel input checks work", {
   expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
                                     qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
-                          phipriors=c(0,1),
+                          phipriors=c(0,1),family='negbin',
                           multicore=FALSE),
                paste0("phipriors should be a vector of two positive numeric ",
                       "values. ex. c\\(0.25,0.25\\)"))
@@ -554,8 +554,94 @@ test_that("jointModel input checks work", {
                       "\\# unique gear types \\- 1 \\(i.e., q for reference ",
                       "type = 1\\)."))
 
+  #47. check length and range of n.chain
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.chain = c(1,1),multicore=FALSE),
+               paste0("n.chain should be an integer > 0 and of length 1."))
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.chain = 0,multicore=FALSE),
+               paste0("n.chain should be an integer > 0 and of length 1."))
 
+  #48. check length and range of n.iter.sample
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.iter.sample = c(1,1),multicore=FALSE),
+               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+               )
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.iter.sample = 0,multicore=FALSE),
+               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+               )
 
+  #49. check length and range of n.iter.burn
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.iter.burn = c(1,1),multicore=FALSE),
+               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+  )
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          n.iter.burn = 0,multicore=FALSE),
+               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+  )
+
+  #50. check length and range of thin
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          thin = c(1,1),multicore=FALSE),
+               paste0("thin should be an integer > 0 and of length 1.")
+  )
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          thin = 0,multicore=FALSE),
+               paste0("thin should be an integer > 0 and of length 1.")
+  )
+
+  #51. check length and range of adapt_delta
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          adapt_delta = c(0.9,0.9),multicore=FALSE),
+               paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
+                      "of length 1.")
+  )
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          adapt_delta = 1.2,multicore=FALSE),
+               paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
+                      "of length 1.")
+  )
+
+  #52. check length of seed
+  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,2,1),c(1,1,NA))),
+                          seed = c(1,2),multicore=FALSE),
+               paste0("seed should be an integer of length 1.")
+  )
 
 
 })
@@ -620,8 +706,8 @@ test_that("jointModel parameter recovery tests work",{
     site.cov = mat_site
   )
   # run model
-  fit1 <- jointModel(data=data, cov=c('var_a','var_b'),
-                    multicore=FALSE, seed = 10)
+  fit1 <- suppressWarnings({jointModel(data=data, cov=c('var_a','var_b'),
+                    multicore=FALSE, seed = 10)})
   # summary
   summary1 <- as.data.frame(rstan::summary(fit1$model,
                                            pars = c('mu','alpha','log_p10'),
@@ -732,8 +818,8 @@ test_that("jointModel parameter recovery tests work",{
     site.cov = mat_site
   )
   # run model
-  fit2 <- jointModel(data=data, cov=c('var_a','var_b'),
-                    multicore=FALSE, seed = 2)
+  fit2 <- suppressWarnings({jointModel(data=data, cov=c('var_a','var_b'),
+                    multicore=FALSE, seed = 2)})
   # summary
   summary2 <- as.data.frame(rstan::summary(fit2$model,
                                            pars = c('mu','alpha','log_p10'),
@@ -826,8 +912,8 @@ test_that("jointModel parameter recovery tests work",{
     site.cov = mat_site
   )
   # run model
-  fit_large <- jointModel(data=data, cov=c('var_a','var_b'),
-                          multicore=FALSE, seed = 10)
+  fit_large <- suppressWarnings({jointModel(data=data, cov=c('var_a','var_b'),
+                          multicore=FALSE, seed = 10)})
   # summary
   summary_large <- as.data.frame(rstan::summary(fit_large$model,
                                                 pars = 'alpha',
