@@ -7,6 +7,9 @@
 #' gear types relative to the expected catch rate of a reference gear type.
 #' Model is implemented using Bayesian inference using the `rstan` package,
 #' which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+#' See more examples in the
+#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' Vignette}.
 #'
 #' @srrstats {G1.4,G1.3} Roxygen function documentation begins here, with
 #'   definitions of statistical terminology and inputs

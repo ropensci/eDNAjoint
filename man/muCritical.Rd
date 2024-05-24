@@ -25,7 +25,9 @@ for each gear type.
 This function uses the full posterior distributions of parameters estimated
 by \code{jointModel()} to calculate mu_critical, or the expected catch rate at
 which the probabilities of a false positive eDNA detection and true positive
-eDNA detection are equal.
+eDNA detection are equal. See more examples in the
+\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+Vignette}.
 }
 \note{
 Before fitting the model, this function checks to ensure that the

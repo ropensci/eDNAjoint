@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/abigailkeller/eDNAjoint/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/abigailkeller/eDNAjoint/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/abigailkeller/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/abigailkeller/eDNAjoint)
-[![pkgcheck](https://github.com/abigailkeller/eDNAjoint/workflows/pkgcheck/badge.svg)](https://github.com/abigailkeller/eDNAjoint/actions?query=workflow%3Apkgcheck)
 <!-- badges: end -->
 
 

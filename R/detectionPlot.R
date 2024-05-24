@@ -4,7 +4,9 @@
 #' This function plots the median number of survey effort units to necessary
 #' detect species presence. Detecting species presence is defined as producing
 #' at least one true positive eDNA detection or catching at least one
-#' individual.
+#' individual. See more examples in the
+#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' Vignette}.
 #'
 #' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export

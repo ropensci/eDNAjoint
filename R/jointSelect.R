@@ -1,12 +1,14 @@
 #' Perform model selection using leave one out cross validation of model objects
 #'
-#' @srrstats {G1.0} The literature reference for leave one out cross validation
-#'   is provided here.
-#'
 #' This function performs leave one out cross validation of a list of model
 #' fits using functions in the `loo` package, as described in Vehtari, Gelman,
 #' and Gabry (2017) <doi:10.1007/s11222-016-9696-4>. Compare models fit using
-#' `jointModel()` or models fits using `traditionalModel()`.
+#' `jointModel()` or models fits using `traditionalModel()`. See more examples
+#' in the \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' Vignette}.
+#'
+#' @srrstats {G1.0} The literature reference for leave one out cross validation
+#'   is provided here.
 #'
 #' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export

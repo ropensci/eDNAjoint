@@ -3,7 +3,9 @@
 #' This function uses the full posterior distributions of parameters estimated
 #' by `jointModel()` to calculate mu_critical, or the expected catch rate at
 #' which the probabilities of a false positive eDNA detection and true positive
-#' eDNA detection are equal.
+#' eDNA detection are equal. See more examples in the
+#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' Vignette}.
 #'
 #' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export

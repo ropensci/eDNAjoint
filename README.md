@@ -9,7 +9,6 @@
 
 [![R-CMD-check](https://github.com/abigailkeller/eDNAjoint/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/abigailkeller/eDNAjoint/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/abigailkeller/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/abigailkeller/eDNAjoint)
-[![pkgcheck](https://github.com/abigailkeller/eDNAjoint/workflows/pkgcheck/badge.svg)](https://github.com/abigailkeller/eDNAjoint/actions?query=workflow%3Apkgcheck)
 <!-- badges: end -->
 
 The package *eDNAjoint* is useful for interpreting observations from
@@ -62,7 +61,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 17245.09    1
+#> p10 0.003       0 0.001 0.001 0.007 16290.92    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples

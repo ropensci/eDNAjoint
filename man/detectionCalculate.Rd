@@ -31,7 +31,9 @@ presence, given mu, for each survey type.
 This function calculates the median number of survey effort units to
 necessary detect species presence. Detecting species presence is defined
 as producing at least one true positive eDNA detection or catching at least
-one individual.
+one individual. See more examples in the
+\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+Vignette}.
 }
 \note{
 Before fitting the model, this function checks to ensure that the

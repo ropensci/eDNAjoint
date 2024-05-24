@@ -2,16 +2,16 @@ test_that("jointModel input checks work", {
   #' @srrstats {G5.2,G5.2b,BS2.15} Tests the assure function input checks are
   #'   behaving as expected.
   #1. input tags are valid, q = FALSE, cov = FALSE
-  expect_error(jointModel(data=list(qPCR.n=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.k=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.k=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.n=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE),
                "Data should include 'qPCR.N', 'qPCR.K', and 'count'.")
   #2. input tags are valid, q = FALSE, cov = TRUE
   site.cov <- cbind(c(1,0),c(0.4,-0.4))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.n=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.k=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.k=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.n=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'),
@@ -19,8 +19,8 @@ test_that("jointModel input checks work", {
                paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                       "'count', and 'site.cov'."))
   #3. input tags are valid, q = TRUE, cov = FALSE
-  expect_error(jointModel(data=list(qPCR.n=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.k=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.k=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.n=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,2,NA))),
                           q=TRUE,
@@ -30,8 +30,8 @@ test_that("jointModel input checks work", {
   #4. input tags are valid, q = TRUE, cov = TRUE
   site.cov <- cbind(c(1,0),c(0.4,-0.4))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.n=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.k=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.k=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.n=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,2,NA)),
                                     site.cov=site.cov),
@@ -43,8 +43,8 @@ test_that("jointModel input checks work", {
   #5. make sure dimensions of qPCR.N and qPCR.K are equal
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
   #'   input data is dimensionally commensurate
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1,1),c(1,1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1,1),c(1,1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE),
                "Dimensions of qPCR.N and qPCR.K do not match.")
@@ -53,8 +53,8 @@ test_that("jointModel input checks work", {
   # present
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
   #'   input data is dimensionally commensurate
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2),c(1,2))),
                           q=TRUE,
@@ -64,16 +64,16 @@ test_that("jointModel input checks work", {
   #7. make sure number of rows in count = number of rows in qPCR.N and qPCR.K
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
   #'   input data is dimensionally commensurate
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA),c(4,1,1))),
                           multicore=FALSE),
                paste0("Number of sites \\(rows\\) in qPCR data and ",
                       "traditional survey count data do not match."))
 
   #8. make sure all data is numeric -- if q == TRUE
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c('NA',2,2),c(1,2,2))),
                           q=TRUE,
@@ -81,16 +81,16 @@ test_that("jointModel input checks work", {
                "Data should be numeric.")
 
   #9. make sure all data is numeric -- if q == FALSE
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,'NA')),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,'NA')),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE),
                "Data should be numeric.")
 
   #10. make sure locations of NAs in count data match locations of NAs in
   # count.type data
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(NA,2,2),c(1,2,2))),
                           q=TRUE,
@@ -100,16 +100,16 @@ test_that("jointModel input checks work", {
 
   #11. make sure locations of NAs in qPCR.N data match locations of NAs in
   # qPCR.K data
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,NA,1)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,NA,1)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE),
                paste0("Empty data cells \\(NA\\) in qPCR.N data should match ",
                       "empty data cells \\(NA\\) in qPCR.K data."))
 
   #12. make sure family is either 'poisson', 'negbin', or 'gamma'
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           family='normal',
                           multicore=FALSE),
@@ -117,8 +117,8 @@ test_that("jointModel input checks work", {
                       "'negbin', and 'gamma'."))
 
   #13. p10 priors is a vector of two numeric values
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           p10priors=c(1,1,2),
                           multicore=FALSE),
@@ -126,8 +126,8 @@ test_that("jointModel input checks work", {
                       "values. ex. c\\(1,20\\)"))
 
   #14. p10 priors is a vector of two numeric values
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE,
                           p10priors='1,20'),
@@ -135,8 +135,8 @@ test_that("jointModel input checks work", {
                       "values. ex. c\\(1,20\\)"))
 
   #15. p10 priors is a vector of two numeric values
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           p10priors=c(0,20),
                           multicore=FALSE),
@@ -144,8 +144,8 @@ test_that("jointModel input checks work", {
                       "values. ex. c\\(1,20\\)"))
 
   #16. phi priors is a vector of two numeric values
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           phipriors=c(0,1),family='negbin',
                           multicore=FALSE),
@@ -153,8 +153,8 @@ test_that("jointModel input checks work", {
                       "values. ex. c\\(0.25,0.25\\)"))
 
   #17. the smallest count.type is 1
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(0,1,2),c(1,2,NA))),
                           q=TRUE,
@@ -164,8 +164,8 @@ test_that("jointModel input checks work", {
                       "referenced 2, 3, 4, etc."))
 
   #18. count are integers
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4.1,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,1,2),c(1,2,NA))),
                           q=TRUE, family = 'negbin',
@@ -174,26 +174,26 @@ test_that("jointModel input checks work", {
                       "Use family = 'gamma' if count is continuous."))
 
   #19. qPCR.N are integers
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(0.99,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
-                                    count=rbind(c(4,1,1),c(1,1,NA)),
-                                    count.type=rbind(c(1,1,2),c(1,2,NA))),
-                          q=TRUE,
-                          multicore=FALSE),
-               "All values in qPCR.N should be non-negative integers.")
-
-  #20. qPCR.K are integers
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3.1,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(0.99,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,1,2),c(1,2,NA))),
                           q=TRUE,
                           multicore=FALSE),
                "All values in qPCR.K should be non-negative integers.")
 
+  #20. qPCR.K are integers
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3.1,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                                    count.type=rbind(c(1,1,2),c(1,2,NA))),
+                          q=TRUE,
+                          multicore=FALSE),
+               "All values in qPCR.N should be non-negative integers.")
+
   #21. count.type are integers
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1.1,1,2),c(1,2,NA))),
                           q=TRUE,
@@ -203,8 +203,8 @@ test_that("jointModel input checks work", {
   #22. site.cov is numeric, if present
   site.cov <- cbind(c('high','low'),c(0.4,-0.4))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,2,NA)),
                                     site.cov=site.cov),
@@ -214,8 +214,8 @@ test_that("jointModel input checks work", {
 
   #23. cov values match column names in site.cov
   site.cov <- cbind(c(0,1),c(0.4,-0.4))
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,2,NA)),
                                     site.cov=site.cov),
@@ -227,8 +227,8 @@ test_that("jointModel input checks work", {
   #24. site.cov has same number of rows as qPCR.N and count, if present
   site.cov <- cbind(c(0,1,1),c(0.4,-0.4,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,2,NA)),
                                     site.cov=site.cov),
@@ -238,8 +238,8 @@ test_that("jointModel input checks work", {
                       "number of rows in all other matrices."))
 
   #25. make sure count.type is not zero-length
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=matrix(NA,ncol=3,nrow=0)),
                           q=TRUE,
@@ -247,61 +247,61 @@ test_that("jointModel input checks work", {
                "count.type contains zero-length data.")
 
   #26. make sure no column is entirely NA in count.type
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(4,1,NA),c(1,1,NA))),
                           q=TRUE,
                           multicore=FALSE),
                "count.type contains a column with all NA.")
 
-  #27. make sure no column is entirely NA in qPCR.N
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,NA),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
-                                    count=rbind(c(4,1,1),c(1,1,NA))),
-                          multicore=FALSE),
-               "qPCR.N contains a column with all NA.")
-
-  #28. make sure no column is entirely NA in qPCR.K
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,NA),c(3,3,NA)),
+  #27. make sure no column is entirely NA in qPCR.K
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,NA),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE),
                "qPCR.K contains a column with all NA.")
 
+  #28. make sure no column is entirely NA in qPCR.N
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,NA),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA))),
+                          multicore=FALSE),
+               "qPCR.N contains a column with all NA.")
+
   #29. make sure no column is entirely NA in count
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,NA),c(1,1,NA))),
                           multicore=FALSE),
                "count contains a column with all NA.")
 
   #30. make sure no data are undefined
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,Inf),c(1,1,NA))),
                           multicore=FALSE),
                "count contains undefined values \\(i.e., Inf or -Inf\\)")
 
   #31. make sure no data are undefined
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,Inf),c(3,3,NA)),
-                                    count=rbind(c(4,1,1),c(1,1,NA))),
-                          multicore=FALSE),
-               "qPCR.K contains undefined values \\(i.e., Inf or -Inf\\)")
-
-  #32. make sure no data are undefined
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,Inf),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,Inf),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           multicore=FALSE),
                "qPCR.N contains undefined values \\(i.e., Inf or -Inf\\)")
 
+  #32. make sure no data are undefined
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,Inf),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA))),
+                          multicore=FALSE),
+               "qPCR.K contains undefined values \\(i.e., Inf or -Inf\\)")
+
   #33. make sure site.cov is not zero-length
   site.cov <- matrix(NA,ncol=2,nrow=0)
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'),
@@ -311,8 +311,8 @@ test_that("jointModel input checks work", {
   #34. make sure no column is entirely NA in site.cov
   site.cov <- rbind(c(4,1,NA),c(1,1,NA))
   colnames(site.cov) <- c('var_a','var_b','var_c')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'),
@@ -322,8 +322,8 @@ test_that("jointModel input checks work", {
   #35. make sure no data are undefined
   site.cov <- rbind(c(4,1,Inf),c(1,1,NA))
   colnames(site.cov) <- c('var_a','var_b','var_c')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'),
@@ -342,8 +342,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -365,8 +365,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -386,8 +386,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -409,8 +409,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -430,8 +430,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -449,8 +449,8 @@ test_that("jointModel input checks work", {
     )
     names(inits[[i]]) <- c('mu','p10','beta')
   }
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           initial_values=inits,
                           multicore=FALSE),
@@ -467,8 +467,8 @@ test_that("jointModel input checks work", {
     )
     names(inits[[i]]) <- c('mu','p10','beta')
   }
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA))),
                           initial_values=inits,
                           multicore=FALSE),
@@ -487,8 +487,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -508,8 +508,8 @@ test_that("jointModel input checks work", {
   }
   site.cov <- rbind(c(4,1),c(1,1))
   colnames(site.cov) <- c('var_a','var_b')
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     site.cov=site.cov),
                           cov=c('var_a','var_b'), initial_values=inits,
@@ -527,8 +527,8 @@ test_that("jointModel input checks work", {
     )
     names(inits[[i]]) <- c('q')
   }
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           initial_values=inits,
@@ -544,8 +544,8 @@ test_that("jointModel input checks work", {
     )
     names(inits[[i]]) <- c('q')
   }
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           initial_values=inits,
@@ -555,29 +555,29 @@ test_that("jointModel input checks work", {
                       "type = 1\\)."))
 
   #47. check length and range of n.chain
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           n.chain = c(1,1),multicore=FALSE),
                paste0("n.chain should be an integer > 0 and of length 1."))
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           n.chain = 0,multicore=FALSE),
                paste0("n.chain should be an integer > 0 and of length 1."))
 
   #48. check length and range of n.iter.sample
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           n.iter.sample = c(1,1),multicore=FALSE),
                paste0("n.iter.sample should be an integer > 0 and of length 1.")
                )
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           n.iter.sample = 0,multicore=FALSE),
@@ -585,15 +585,15 @@ test_that("jointModel input checks work", {
                )
 
   #49. check length and range of n.iter.burn
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           n.iter.burn = c(1,1),multicore=FALSE),
                paste0("n.iter.burn should be an integer > 0 and of length 1.")
   )
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           n.iter.burn = 0,multicore=FALSE),
@@ -601,15 +601,15 @@ test_that("jointModel input checks work", {
   )
 
   #50. check length and range of thin
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           thin = c(1,1),multicore=FALSE),
                paste0("thin should be an integer > 0 and of length 1.")
   )
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           thin = 0,multicore=FALSE),
@@ -617,16 +617,16 @@ test_that("jointModel input checks work", {
   )
 
   #51. check length and range of adapt_delta
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           adapt_delta = c(0.9,0.9),multicore=FALSE),
                paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
                       "of length 1.")
   )
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           adapt_delta = 1.2,multicore=FALSE),
@@ -635,12 +635,22 @@ test_that("jointModel input checks work", {
   )
 
   #52. check length of seed
-  expect_error(jointModel(data=list(qPCR.N=rbind(c(1,1,1),c(1,1,NA)),
-                                    qPCR.K=rbind(c(3,3,3),c(3,3,NA)),
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(1,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
                                     count=rbind(c(4,1,1),c(1,1,NA)),
                                     count.type=rbind(c(1,2,1),c(1,1,NA))),
                           seed = c(1,2),multicore=FALSE),
                paste0("seed should be an integer of length 1.")
+  )
+
+  #53. check K <= N
+  expect_error(jointModel(data=list(qPCR.K=rbind(c(4,1,1),c(1,1,NA)),
+                                    qPCR.N=rbind(c(3,3,3),c(3,3,NA)),
+                                    count=rbind(c(4,1,1),c(1,1,NA)),
+                          multicore=FALSE)),
+               paste0("N should be >= K in qPCR data. N is the number of qPCR ",
+                     "replicates per sample, and K is the number of positive ",
+                     "detections among replicates.")
   )
 
 

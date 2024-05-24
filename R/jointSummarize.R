@@ -1,12 +1,15 @@
 #' Summarize posterior distributions of model parameters.
 #'
+#' This function summarizes the posterior distributions of specified parameters
+#' from a model fit. Summary includes mean, sd, and specified quantiles, as
+#' well as effective sample size (n_eff) and Rhat for estimated parameters. See
+#' more examples in the
+#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' Vignette}.
+#'
 #' @srrstats {BS5.3,BS6.4} Function to summarize parameter samples and provide
 #'   convergence statistics (using Stan functions), used to summarize parameter
 #'   values relevant to the user
-#'
-#' This function summarizes the posterior distributions of specified parameters
-#' from a model fit. Summary includes mean, sd, and specified quantiles, as
-#' well as effective sample size (n_eff) and Rhat for estimated parameters.
 #'
 #' @srrstats {G1.4} Roxygen function documentation begins here
 #' @export

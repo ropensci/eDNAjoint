@@ -21,7 +21,12 @@ places to round values in summary table. Default value is 3.}
 A summary table of parameter estimates.
 }
 \description{
-Summarize posterior distributions of model parameters.
+This function summarizes the posterior distributions of specified parameters
+from a model fit. Summary includes mean, sd, and specified quantiles, as
+well as effective sample size (n_eff) and Rhat for estimated parameters. See
+more examples in the
+\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+Vignette}.
 }
 \note{
 Before fitting the model, this function checks to ensure that the

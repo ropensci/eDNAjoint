@@ -103,8 +103,18 @@ A list of:
 }
 }
 \description{
-Specify and fit joint model using count data from traditional surveys and
-eDNA qPCR data
+This function implements a Bayesian model that integrates data from paired
+eDNA and traditional surveys, as described in Keller et al. (2022)
+\url{https://doi.org/10.1002/eap.2561}. The model estimates parameters including
+the expected species catch rate and the probability of false positive eDNA
+detection. This function allows for optional model variations, like inclusion
+of site-level covariates that scale the sensitivity of eDNA sampling relative
+to traditional sampling, as well as estimation of catchability coefficients
+when multiple traditional gear types are used. Model is implemented using
+Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte
+Carlo to simulate the posterior distributions. See more examples in the
+\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+Vignette}.
 }
 \note{
 Before fitting the model, this function checks to ensure that the

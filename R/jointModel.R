@@ -1,10 +1,6 @@
 #' Specify and fit joint model using count data from traditional surveys and
 #' eDNA qPCR data
 #'
-#' @srrstats {G1.0,G1.1} This software makes available a novel algorithm/model
-#'   that was previously published in the literature. The literature reference
-#'   for the joint model is provided here.
-#'
 #' This function implements a Bayesian model that integrates data from paired
 #' eDNA and traditional surveys, as described in Keller et al. (2022)
 #' <https://doi.org/10.1002/eap.2561>. The model estimates parameters including
@@ -14,7 +10,13 @@
 #' to traditional sampling, as well as estimation of catchability coefficients
 #' when multiple traditional gear types are used. Model is implemented using
 #' Bayesian inference using the `rstan` package, which uses Hamiltonian Monte
-#' Carlo to simulate the posterior distributions.
+#' Carlo to simulate the posterior distributions. See more examples in the
+#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' Vignette}.
+#'
+#' @srrstats {G1.0,G1.1} This software makes available a novel algorithm/model
+#'   that was previously published in the literature. The literature reference
+#'   for the joint model is provided here.
 #'
 #' @srrstats {G1.4,G1.3} Roxygen function documentation begins here, with
 #'   definitions of statistical terminology and inputs
@@ -1022,6 +1024,14 @@ all_checks <- function(data,cov,family,p10priors,phipriors,n.chain,n.iter.burn,
       errMsg <- "seed should be an integer of length 1."
       stop(errMsg)
     }
+  }
+
+  ## check that N >= K
+  if(any(data$qPCR.K > data$qPCR.N,na.rm=TRUE)){
+    errMsg <- paste0("N should be >= K in qPCR data. N is the number of qPCR ",
+                     "replicates per sample, and K is the number of positive ",
+                     "detections among replicates.")
+    stop(errMsg)
   }
 
 
