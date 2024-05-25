@@ -69,6 +69,8 @@ NULL
 #' @srrstatsNA {BS3.2} I do not provide a distinct routine for processing
 #'   collinear data, although I give the user a warning if input data has
 #'   perfect collinearity
+#' @srrstatsNA {BS4.2} It is a bit unclear to me how I would implement
+#'   simulation-based calibration, so I would be interested in any tips.
 #' @srrstatsNA {BS4.4} This software uses `rstan`'s `sampling`, and it does
 #'   not appear to yet be a mechanism of stopping the chain upon convergence
 #' @srrstatsNA {BS4.6,BS4.7,BS5.4} This software does not include any
