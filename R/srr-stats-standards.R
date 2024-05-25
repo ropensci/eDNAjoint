@@ -102,9 +102,9 @@ NULL
 #'   sampling, and using something like Sys.time() doesn't seem like it would
 #'   provide an accurate estimate of computation time, but I'm open to other
 #'   suggestions.
-#' @srrstatsNA {BS1.2b, BS1.2c} Vignette was removed from package because of
-#'   build size, but textual descriptions of priors and examples can be found in
-#'   sections 4.3 and 2.5 in the user guide
+#' @srrstatsNA {BS1.2a,BS1.2b, BS1.2c} Vignette was removed from package because
+#'   of build size, but textual descriptions of priors and examples can be found
+#'   in sections 4.3 and 2.5 in the user guide
 #'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
 #' @srrstatsNA {G1.5} Vignette was removed from package because of
 #'   build size, but example code that reproduces results in the publication
