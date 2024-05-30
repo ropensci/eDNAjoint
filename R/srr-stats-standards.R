@@ -8,10 +8,12 @@
 #' (These comments may be deleted at any time.)
 #'
 #' @srrstatsVerbose TRUE
+#'
 #' @noRd
 NULL
 
 #' NA_standards
+#'
 #' @srrstatsNA {G1.2} I attempted to add lifecycle statements with the
 #'   lifecycle package but was getting ROxygen errors when doing
 #'   `usethis::use_lifecycle()`. It would be nice to get some guidance on the
@@ -102,7 +104,7 @@ NULL
 #'   sampling, and using something like Sys.time() doesn't seem like it would
 #'   provide an accurate estimate of computation time, but I'm open to other
 #'   suggestions.
-#' @srrstatsNA {BS1.2a,BS1.2b, BS1.2c} Vignette was removed from package because
+#' @srrstatsNA {BS1.2b, BS1.2c} Vignette was removed from package because
 #'   of build size, but textual descriptions of priors and examples can be found
 #'   in sections 4.3 and 2.5 in the user guide
 #'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
@@ -123,7 +125,15 @@ NULL
 #'   build size, but documentation of sampling algorithm can be found in
 #'   section 4.2 in the user guide
 #'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
-#'
+#' @srrstatsNA {PD3.0,PD3.1} This package does not manipulate probability
+#'   distributions
+#' @srrstatsNA {PD3.2,PD3.3,PD3.4,PD3.5,PD3.5a,PD4.3,PD4.4} This package does
+#'   not use optimization or integration algorithms
+#' @srrstatsNA {PD4.1} The output values of the main statistical functions in
+#'   this package are are derived stochastically with MCMC. Additionally,  I use
+#'   the HMC MCMC algorithm in the rstan package's sampling function, rather
+#'   than my own MCMC algorithm, so I'm not sure I would be able to reproduce
+#'   how the output values are derived.
 #'
 #' Any non-applicable standards can have their tags changed from `@srrstatsTODO`
 #' to `@srrstatsNA`, and placed together in this block, along with explanations

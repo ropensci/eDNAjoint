@@ -41,7 +41,7 @@ model{/////////////////////////////////////////////////////////////////////
 
   //priors
   log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
-  beta ~ normal(0,10); // beta shrinkage priors
+  beta ~ normal(0,10);
 
 }
 

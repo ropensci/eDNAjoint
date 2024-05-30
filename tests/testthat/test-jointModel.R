@@ -661,6 +661,12 @@ test_that("jointModel input checks work", {
 #' @srrstats {G5.4, G5.6} Correctness/parameter recovery tests to test that
 #'   the implementation produces expected results given data with known
 #'   properties
+#' @srrstats {PD4.0} These tests do not test for numeric equality of outputs,
+#'   but rather test for the recovery of parameter values. In these tests, I
+#'   simulate data with known parameter values, run the main statistical
+#'   function (jointModel()) with the data, and then test if the known parameter
+#'   values are within the 95% credibility interval of the parameters'
+#'   posteriors in the function output.
 test_that("jointModel parameter recovery tests work",{
 
   ################################
@@ -954,5 +960,94 @@ test_that("jointModel parameter recovery tests work",{
   #'   if there are more data observations)
   # all should be equal to true
   expect_equal(check,rep(TRUE,length(alpha)))
+
+})
+
+
+test_that("jointModel probability distribution tests work",{
+
+  #' @srrstats {PD4.2} This package fits models with fixed distributions to
+  #'   data. Users can choose the distribution used to represent the
+  #'   data generating process for traditional survey data through an input
+  #'   argument to the function (family). This test assesses whether estimates
+  #'   of mu, or the site-level expected catch rate, is different when a
+  #'   negative binomial or poisson distribution is used to represent the data
+  #'   generating process.
+
+  #######################################################
+  # generate data with a negative binomial distribution #
+  set.seed(222)
+  # constants
+  nsite <- 20
+  nobs_count <- 200
+  nobs_pcr <- 8
+  # params
+  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  beta <- 0.5
+  log_p10 <- -4.5
+  phi <- 0.1
+  # count
+  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  for(i in 1:nsite){
+    count[i,] <- rnbinom(nobs_count,mu=mu[i],size=phi)
+  }
+  # p11 (probability of true positive eDNA detection) and p (probability of
+  # eDNA detection)
+  p11 <- rep(NA,nsite)
+  p <- rep(NA,nsite)
+  for (i in 1:nsite){
+    p11[i] <- mu[i] / (mu[i] + exp(beta))
+    p[i] <- min(p11[i] + exp(log_p10),1)
+  }
+  # qPCR.N (# qPCR observations)
+  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for(i in 1:nsite){
+    qPCR.N[i,] <- rep(3,nobs_pcr)
+  }
+  # qPCR.K (# positive qPCR detections)
+  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  for (i in 1:nsite){
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+  }
+  # collect data
+  data <- list(
+    qPCR.N = qPCR.N,
+    qPCR.K = qPCR.K,
+    count = count
+  )
+
+  ##############################################################
+  # fit data with a negative binomial and poisson distribution #
+
+  # run model -- negative binomial distribution
+  negbin.fit <- suppressWarnings({jointModel(data=data, multicore=FALSE,
+                                             family = 'negbin',seed = 2)})
+  # run model -- poisson distribution
+  pois.fit <- suppressWarnings({jointModel(data=data, multicore=FALSE,
+                                           family = 'poisson',seed = 2)})
+
+  # summarize outputs
+  negbin_summary <- as.data.frame(rstan::summary(negbin.fit$model,
+                                                 pars = 'mu',
+                                                 probs=c(0.025,
+                                                         0.975))$summary)
+  pois_summary <- as.data.frame(rstan::summary(pois.fit$model,
+                                                 pars = 'mu',
+                                                 probs=c(0.025,
+                                                         0.975))$summary)
+
+  # summarize differences in mean estimates of mu
+  summary_table <- table(negbin_summary$mean > pois_summary$mean)
+
+  # calculate percentage of mean estimates of mu that are greater when
+  # a negative binomial distribution are used rather than a poisson distribution
+  percent <- summary_table[[2]]/(summary_table[[2]]+summary_table[[1]])
+
+
+  # test that estimates of mu when a negative binomial distribution is used is
+  # greater than estimates of mu when a poisson distribution is used for
+  # >80% of sites
+  expect_gt(percent,0.8)
+
 
 })
