@@ -68,7 +68,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 17656.22    1
+#> p10 0.003       0 0.001 0.001 0.007 16392.28    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -102,4 +102,4 @@ Schmelzle, M.C. and Kinziger, A.P. (2016). Using occupancy modelling to
 compare environmental DNA to traditional field methods for
 regional-scale monitoring of an endangered aquatic species. *Molecular
 Ecology Resources*. 16(4): 895-908.
-[https://doi.org/10.1111/1755-0998.12501](https://doi.org/10.1002/eap.2561)
+<https://doi.org/10.1111/1755-0998.12501>

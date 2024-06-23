@@ -78,4 +78,4 @@ You can find much more detailed examples of the functions in *eDNAjoint* and the
 Keller, A.G., Grason, E.W., McDonald, P.S., Ramon-Laca, A., Kelly, R.P. (2022). Tracking an invasion front with environmental DNA. *Ecological Applications*. 32(4): e2561. [https://doi.org/10.1002/eap.2561](https://doi.org/10.1002/eap.2561)
 
 
-Schmelzle, M.C. and Kinziger, A.P. (2016). Using occupancy modelling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species. *Molecular Ecology Resources*. 16(4): 895-908. [https://doi.org/10.1111/1755-0998.12501](https://doi.org/10.1002/eap.2561)
+Schmelzle, M.C. and Kinziger, A.P. (2016). Using occupancy modelling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species. *Molecular Ecology Resources*. 16(4): 895-908. [https://doi.org/10.1111/1755-0998.12501](https://doi.org/10.1111/1755-0998.12501)
