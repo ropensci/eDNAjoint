@@ -5,29 +5,30 @@ test_that("jointSummarize input checks work", {
   # run traditional model to do tests with
   data <- data("greencrabData")
 
-  out <- traditionalModel(data=greencrabData, family='negbin',multicore=FALSE,
-                          n.chain=1, n.iter.sample = 1000)
+  out <- traditionalModel(data = greencrabData, family = 'negbin',
+                          multicore = FALSE,
+                          n.chain = 1, n.iter.sample = 1000)
 
   #1. make sure model fit is of class stanfit
-  data <- data.frame(y=c(1,2,3),x=c(1,2,3))
-  lm_out <- lm(y ~ x, data=data)
+  data <- data.frame(y = c(1,2,3),x = c(1,2,3))
+  lm_out <- lm(y ~ x, data = data)
   expect_error(jointSummarize(lm_out$model),
                "modelfit must be of class 'stanfit'.")
 
   #2. make sure probs is a numeric vector
-  expect_error(jointSummarize(out$model,probs=c('95%')),
+  expect_error(jointSummarize(out$model,probs = c('95%')),
                "probs must be a numeric vector.")
 
   #3. make sure all values of probs are between 0 and 1
-  expect_error(jointSummarize(out$model,probs=c(5,95)),
+  expect_error(jointSummarize(out$model,probs = c(5,95)),
                "probs must be between 0 and 1.")
 
   #4. make sure par is a character vector
-  expect_error(jointSummarize(out$model,par=c(1,2,3)),
+  expect_error(jointSummarize(out$model,par = c(1,2,3)),
                "par must be a character vector.")
 
   #5. make sure model fit contains all par input
-  expect_error(jointSummarize(out$model,par='alpha'),
+  expect_error(jointSummarize(out$model,par = 'alpha'),
                "modelfit must contain all selected parameters: alpha")
 })
 
@@ -41,23 +42,23 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
   q <- 2
   phi <- 1.2
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i], size = phi)
       } else {
-        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q, size = phi)
       }
     }
   }
@@ -70,12 +71,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -99,11 +100,10 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('mu','p10','beta','phi','q')
 
   # run model
-  fit <- suppressWarnings({jointModel(data=data, q=TRUE, family = 'negbin',
+  fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'negbin',
                     initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75,
-                    n.chain=1, multicore=FALSE, seed = 10#,
-                    #adapt_delta = 0.99
+                    n.chain = 1, multicore = FALSE, seed = 10
                     )})
 
   # get output params
@@ -113,7 +113,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','q[1]','phi','beta') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,4)))
@@ -129,7 +129,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,4])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -149,22 +149,22 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
   q <- 2
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rpois(1,mu[i])
+        count[i,j] <- rpois(1, mu[i])
       } else {
-        count[i,j] <- rpois(1,mu[i]*q)
+        count[i,j] <- rpois(1, mu[i]*q)
       }
     }
   }
@@ -177,14 +177,14 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
-    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
+    qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i], nobs_pcr))
   }
   # collect data
   data <- list(
@@ -203,8 +203,8 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','p10','beta','q')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, q=TRUE,
-                    n.chain=1, multicore=FALSE, seed = 10,
+  fit <- suppressWarnings({jointModel(data = data, q = TRUE,
+                    n.chain = 1, multicore = FALSE, seed = 10,
                     initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75)})
 
@@ -215,7 +215,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','q[1]','beta') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,4)))
@@ -231,7 +231,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,4])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -250,24 +250,24 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
   q <- 2
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rgamma(1,shape=alpha_gamma[i],rate=beta_gamma)
+        count[i,j] <- rgamma(1,shape = alpha_gamma[i],rate = beta_gamma)
       } else {
-        count[i,j] <- rgamma(1,shape=alpha_gamma[i]*q,rate=beta_gamma)
+        count[i,j] <- rgamma(1,shape = alpha_gamma[i]*q,rate = beta_gamma)
       }
     }
   }
@@ -280,12 +280,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -307,9 +307,9 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta','q')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, q=TRUE, family = 'gamma',
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.burn = 25,
+  fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75)})
 
   # get output params
@@ -326,14 +326,14 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
   phi <- 1.2
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rnbinom(n=nobs_count,mu=mu[i],size=phi)
+    count[i,] <- rnbinom(n = nobs_count, mu = mu[i], size = phi)
   }
   # p11 (probability of true positive eDNA detection) and p (probability
   # of eDNA detection)
@@ -344,12 +344,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -369,9 +369,9 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','p10','beta','phi')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, family = 'negbin',
-                                      initial_values=inits,
-                    n.chain=1, multicore=FALSE, seed = 10,
+  fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
+                                      initial_values = inits,
+                    n.chain = 1, multicore = FALSE, seed = 10,
                     n.iter.burn = 25,
                     n.iter.sample = 75)})
 
@@ -382,7 +382,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','phi','beta') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -396,7 +396,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -416,14 +416,14 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rpois(nobs_count,mu[i])
+    count[i,] <- rpois(nobs_count, mu[i])
   }
   # p11 (probability of true positive eDNA detection) and p (probability
   # of eDNA detection)
@@ -434,12 +434,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -458,8 +458,8 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','p10','beta')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, initial_values = inits,
-                    n.chain=1, multicore=FALSE, seed = 10,
+  fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
+                    n.chain = 1, multicore = FALSE, seed = 10,
                     n.iter.burn = 25,
                     n.iter.sample = 75)})
 
@@ -470,7 +470,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','beta') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -484,7 +484,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -504,16 +504,16 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rgamma(nobs_count,shape=alpha_gamma[i],rate=beta_gamma)
+    count[i,] <- rgamma(nobs_count,shape = alpha_gamma[i],rate = beta_gamma)
   }
   # p11 (probability of true positive eDNA detection) and p (probability
   # of eDNA detection)
@@ -524,12 +524,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -549,9 +549,9 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, initial_values=inits,
+  fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       family = 'gamma',
-                    n.chain=1, multicore=FALSE, seed = 10,
+                    n.chain = 1, multicore = FALSE, seed = 10,
                     n.iter.burn = 25,
                     n.iter.sample = 75)})
 
@@ -570,28 +570,28 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
   q <- 2
   phi <- 10
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i], size = phi)
       } else {
-        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q, size = phi)
       }
     }
   }
   # site-level covariates
-  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site <- matrix(NA, nrow = nsite, ncol = length(alpha))
   mat_site[,1] <- 1 # intercept
   for(i in 2:length(alpha)){
     mat_site[,i] <- rnorm(nsite,0,1)
@@ -606,12 +606,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -635,10 +635,10 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('mu','p10','alpha','q','phi'
                          )
   # run model
-  fit <- suppressWarnings({jointModel(data=data, family = 'negbin', q=TRUE,
-                    cov=c('var_a','var_b'),
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, adapt_delta = 0.99,
+  fit <- suppressWarnings({jointModel(data = data, family = 'negbin', q = TRUE,
+                    cov = c('var_a','var_b'),
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits, adapt_delta = 0.99,
                     n.iter.burn = 25,
                     n.iter.sample = 75)})
 
@@ -649,8 +649,8 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
-                            cov.val=c(0,0))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
+                            cov.val = c(0,0))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,4)))
@@ -666,7 +666,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,4])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1, cov.val = c(0,0))
 
   # test plot type
@@ -686,27 +686,27 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
   q <- 2
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rpois(n=1,mu[i])
+        count[i,j] <- rpois(n = 1, mu[i])
       } else {
-        count[i,j] <- rpois(n=1,mu[i]*q)
+        count[i,j] <- rpois(n = 1, mu[i]*q)
       }
     }
   }
   # site-level covariates
-  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site <- matrix(NA, nrow = nsite, ncol = length(alpha))
   mat_site[,1] <- 1 # intercept
   for(i in 2:length(alpha)){
     mat_site[,i] <- rnorm(nsite,0,1)
@@ -721,12 +721,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -748,10 +748,10 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('mu','p10','alpha'
                          )
   # run model
-  fit <- suppressWarnings({jointModel(data=data, q=TRUE,
-                    cov=c('var_a','var_b'),
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.burn = 25,
+  fit <- suppressWarnings({jointModel(data = data, q = TRUE,
+                    cov = c('var_a','var_b'),
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75)})
 
   # get output params
@@ -761,8 +761,8 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
-                            cov.val=c(0,0))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
+                            cov.val = c(0,0))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,4)))
@@ -778,7 +778,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,4])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1, cov.val = c(0,0))
 
   # test plot type
@@ -798,29 +798,29 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
   q <- 2
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rgamma(1,shape=alpha_gamma[i],rate=beta_gamma)
+        count[i,j] <- rgamma(1,shape = alpha_gamma[i],rate = beta_gamma)
       } else {
-        count[i,j] <- rgamma(1,shape=alpha_gamma[i]*q,rate=beta_gamma)
+        count[i,j] <- rgamma(1,shape = alpha_gamma[i]*q,rate = beta_gamma)
       }
     }
   }
   # site-level covariates
-  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site <- matrix(NA, nrow = nsite, ncol = length(alpha))
   mat_site[,1] <- 1 # intercept
   for(i in 2:length(alpha)){
     mat_site[,i] <- rnorm(nsite,0,1)
@@ -835,12 +835,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -864,10 +864,10 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha','q'
                          )
   # run model
-  fit <- suppressWarnings({jointModel(data=data, q=TRUE, family = 'gamma',
-                    cov=c('var_a','var_b'),
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.burn = 25,
+  fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
+                    cov = c('var_a','var_b'),
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75
                     )})
 
@@ -886,18 +886,18 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
   phi <- 10
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rnbinom(n=nobs_count,mu=mu[i],size=phi)
+    count[i,] <- rnbinom(n = nobs_count, mu = mu[i], size = phi)
   }
   # site-level covariates
-  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site <- matrix(NA, nrow = nsite, ncol = length(alpha))
   mat_site[,1] <- 1 # intercept
   for(i in 2:length(alpha)){
     mat_site[,i] <- rnorm(nsite,0,1)
@@ -912,12 +912,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -939,11 +939,11 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('mu','p10','alpha',
                          'phi')
   # run model
-  fit <- suppressWarnings({jointModel(data=data, family = 'negbin',
-                    cov=c('var_a','var_b'),n.iter.burn = 25,
+  fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
+                    cov = c('var_a','var_b'),n.iter.burn = 25,
                     n.iter.sample = 75,
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits)})
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -952,8 +952,8 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
-                            cov.val=c(0,0))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
+                            cov.val = c(0,0))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -967,7 +967,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1, cov.val = c(0,0))
 
   # test plot type
@@ -987,17 +987,17 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rpois(nobs_count,mu[i])
+    count[i,] <- rpois(nobs_count, mu[i])
   }
   # site-level covariates
-  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site <- matrix(NA, nrow = nsite, ncol = length(alpha))
   mat_site[,1] <- 1 # intercept
   for(i in 2:length(alpha)){
     mat_site[,i] <- rnorm(nsite,0,1)
@@ -1012,12 +1012,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -1038,10 +1038,10 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('mu','p10','alpha'
                          )
   # run model
-  fit <- suppressWarnings({jointModel(data=data,
-                    cov=c('var_a','var_b'),
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.burn = 25,
+  fit <- suppressWarnings({jointModel(data = data,
+                    cov = c('var_a','var_b'),
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75)})
 
   # get output params
@@ -1051,8 +1051,8 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
-                            cov.val=c(0,0))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
+                            cov.val = c(0,0))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -1066,7 +1066,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1, cov.val = c(0,0))
 
   # test plot type
@@ -1086,19 +1086,19 @@ test_that("jointSummarize outputs work", {
   nobs_count <- 100
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   alpha <- c(0.5, 0.1, -0.4)
   log_p10 <- -4.5
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rgamma(nobs_count,shape=alpha_gamma[i],rate=beta_gamma)
+    count[i,] <- rgamma(nobs_count,shape = alpha_gamma[i],rate = beta_gamma)
   }
   # site-level covariates
-  mat_site <- matrix(NA,nrow=nsite,ncol=length(alpha))
+  mat_site <- matrix(NA, nrow = nsite, ncol = length(alpha))
   mat_site[,1] <- 1 # intercept
   for(i in 2:length(alpha)){
     mat_site[,i] <- rnorm(nsite,0,1)
@@ -1113,12 +1113,12 @@ test_that("jointSummarize outputs work", {
     p[i] <- min(p11[i] + exp(log_p10),1)
   }
   # qPCR.N (# qPCR observations)
-  qPCR.N <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.N <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for(i in 1:nsite){
     qPCR.N[i,] <- rep(3,nobs_pcr)
   }
   # qPCR.K (# positive qPCR detections)
-  qPCR.K <- matrix(NA,nrow=nsite,ncol=nobs_pcr)
+  qPCR.K <- matrix(NA, nrow = nsite, ncol = nobs_pcr)
   for (i in 1:nsite){
     qPCR.K[i,] <- rbinom(nobs_pcr, qPCR.N[i,], rep(p[i],nobs_pcr))
   }
@@ -1140,10 +1140,10 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha'
                          )
   # run model
-  fit <- suppressWarnings({jointModel(data=data,family='gamma',
-                    cov=c('var_a','var_b'),
-                    n.chain=1, multicore=FALSE, seed = 10,
-                    initial_values=inits, n.iter.burn = 25,
+  fit <- suppressWarnings({jointModel(data = data,family = 'gamma',
+                    cov = c('var_a','var_b'),
+                    n.chain = 1, multicore = FALSE, seed = 10,
+                    initial_values = inits, n.iter.burn = 25,
                     n.iter.sample = 75)})
 
   # get output params
@@ -1153,8 +1153,8 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('p10','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1),
-                            cov.val=c(0,0))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
+                            cov.val = c(0,0))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -1168,7 +1168,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1, cov.val = c(0,0))
 
   # test plot type
@@ -1187,21 +1187,21 @@ test_that("jointSummarize outputs work", {
   nsite <- 20
   nobs_count <- 100
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   phi <- 1.2
   q <- 2
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rnbinom(n=1,mu=mu[i],size=phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i], size = phi)
       } else {
-        count[i,j] <- rnbinom(n=1,mu=mu[i]*q,size=phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q, size = phi)
       }
     }
   }
@@ -1219,10 +1219,13 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','phi')
   # run model
-  fit <- suppressWarnings({traditionalModel(data=data, q=TRUE, family='negbin',
-                          n.chain=1, multicore=FALSE, seed = 10,
-                          initial_values=inits, n.iter.burn = 25,
-                          n.iter.sample = 75)})
+  fit <- suppressWarnings({traditionalModel(data = data, q = TRUE, 
+                                            family = 'negbin',
+                                            n.chain = 1, multicore = FALSE, 
+                                            seed = 10,
+                                            initial_values = inits, 
+                                            n.iter.burn = 25,
+                                            n.iter.sample = 75)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1231,7 +1234,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('q[1]','phi') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -1246,7 +1249,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -1265,20 +1268,20 @@ test_that("jointSummarize outputs work", {
   nsite <- 20
   nobs_count <- 100
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   q <- 2
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
     for(j in 1:nobs_count){
       if(count_type[i,j]==1){
-        count[i,j] <- rpois(n=1,mu[i])
+        count[i,j] <- rpois(n = 1, mu[i])
       } else {
-        count[i,j] <- rpois(n=1,mu[i]*q)
+        count[i,j] <- rpois(n = 1, mu[i]*q)
       }
     }
   }
@@ -1295,9 +1298,9 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu')
   # run model
-  fit <- suppressWarnings({traditionalModel(data=data, q=TRUE,
-                          n.chain=1, multicore=FALSE, seed = 10,
-                          initial_values=inits, n.iter.burn = 25,
+  fit <- suppressWarnings({traditionalModel(data = data, q = TRUE,
+                          n.chain = 1, multicore = FALSE, seed = 10,
+                          initial_values = inits, n.iter.burn = 25,
                           n.iter.sample = 75)})
 
   # get output params
@@ -1307,7 +1310,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('q[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -1322,7 +1325,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -1340,13 +1343,13 @@ test_that("jointSummarize outputs work", {
   nsite <- 20
   nobs_count <- 100
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   q <- 2
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
   # traditional type
-  count_type <- cbind(matrix(1,nrow=nsite,ncol=nobs_count/2),
-                      matrix(2,nrow=nsite,ncol=nobs_count/2))
+  count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
+                      matrix(2, nrow = nsite, ncol = nobs_count/2))
 
   # collect data
   data <- list(
@@ -1358,14 +1361,17 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha = mu,
     beta = rep(1,length(mu)),
-    q=q
+    q = q
   )
   names(inits[[1]]) <- c('alpha','beta','q')
   # run model
-  fit <- suppressWarnings({traditionalModel(data=data, q=TRUE,family='gamma',
-                          n.chain=1, multicore=FALSE, seed = 10,
-                          initial_values=inits, n.iter.burn = 25,
-                          n.iter.sample = 75)})
+  fit <- suppressWarnings({traditionalModel(data = data, q = TRUE,
+                                            family = 'gamma',
+                                            n.chain = 1, multicore = FALSE, 
+                                            seed = 10,
+                                            initial_values = inits, 
+                                            n.iter.burn = 25,
+                                            n.iter.sample = 75)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1374,7 +1380,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('q[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,3)))
@@ -1389,7 +1395,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,3])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -1408,13 +1414,13 @@ test_that("jointSummarize outputs work", {
   nsite <- 20
   nobs_count <- 100
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   phi <- 1.2
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rnbinom(n=nobs_count,mu=mu[i],size=phi)
+    count[i,] <- rnbinom(n = nobs_count, mu = mu[i], size = phi)
 
   }
 
@@ -1430,10 +1436,12 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','phi')
   # run model
-  fit <- suppressWarnings({traditionalModel(data=data,family='negbin',
-                          n.chain=1, multicore=FALSE, seed = 10,
-                          initial_values=inits, n.iter.burn = 25,
-                          n.iter.sample = 75)})
+  fit <- suppressWarnings({traditionalModel(data = data,family = 'negbin',
+                                            n.chain = 1, multicore = FALSE, 
+                                            seed = 10,
+                                            initial_values = inits, 
+                                            n.iter.burn = 25,
+                                            n.iter.sample = 75)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1442,7 +1450,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(c('phi') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,2)))
@@ -1455,7 +1463,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,2])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -1474,12 +1482,12 @@ test_that("jointSummarize outputs work", {
   nsite <- 20
   nobs_count <- 100
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rpois(n=nobs_count,mu[i])
+    count[i,] <- rpois(n = nobs_count, mu[i])
 
   }
 
@@ -1494,10 +1502,11 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu')
   # run model
-  fit <- suppressWarnings({traditionalModel(data=data,n.chain=1,
-                                            multicore=FALSE, seed = 10,
-                          initial_values=inits, n.iter.burn = 25,
-                          n.iter.sample = 75)})
+  fit <- suppressWarnings({traditionalModel(data = data,n.chain = 1,
+                                            multicore = FALSE, seed = 10,
+                                            initial_values = inits, 
+                                            n.iter.burn = 25,
+                                            n.iter.sample = 75)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1506,7 +1515,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(!c('p10','beta','q','phi') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,2)))
@@ -1519,7 +1528,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,2])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type
@@ -1537,14 +1546,14 @@ test_that("jointSummarize outputs work", {
   nsite <- 20
   nobs_count <- 100
   # params
-  mu <- rlnorm(nsite,meanlog=log(1),sdlog=1)
+  mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
 
   # count
-  count <- matrix(NA,nrow=nsite,ncol=nobs_count)
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
   for(i in 1:nsite){
-    count[i,] <- rgamma(nobs_count,shape=alpha_gamma[i],rate=beta_gamma)
+    count[i,] <- rgamma(nobs_count,shape = alpha_gamma[i],rate = beta_gamma)
   }
 
   # collect data
@@ -1559,9 +1568,12 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('alpha','beta')
   # run model
-  fit <- suppressWarnings({traditionalModel(data=data,n.chain=1, family='gamma',
-                          multicore=FALSE, seed = 10,n.iter.burn = 25,
-                          n.iter.sample = 75, initial_values=inits)})
+  fit <- suppressWarnings({traditionalModel(data = data, n.chain = 1, 
+                                            family = 'gamma',
+                                            multicore = FALSE, seed = 10,
+                                            n.iter.burn = 25,
+                                            n.iter.sample = 75, 
+                                            initial_values = inits)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1570,7 +1582,7 @@ test_that("jointSummarize outputs work", {
   expect_true(all(!c('p10','q','phi') %in% output_params))
 
   # detectionCalculate and detectionPlot
-  out <- detectionCalculate(fit$model, mu=seq(from=0.1, to=1, by=0.1))
+  out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
 
   # test dimensions
   expect_true(all(dim(out) == c(10,2)))
@@ -1583,7 +1595,7 @@ test_that("jointSummarize outputs work", {
                   is.numeric(out[,2])),TRUE)
 
   # test plot
-  out_plot <- detectionPlot(fit$model, mu.min=0.1,
+  out_plot <- detectionPlot(fit$model, mu.min = 0.1,
                             mu.max = 1)
 
   # test plot type

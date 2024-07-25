@@ -5,14 +5,15 @@ test_that("jointSelect input checks work", {
   # run joint model and traditional model to do tests with
   data <- data("greencrabData")
 
-  model1 <- suppressWarnings({traditionalModel(data=greencrabData,
-                                               family='negbin',
-                             multicore=FALSE, n.chain=1,n.iter.burn = 25,
+  model1 <- suppressWarnings({traditionalModel(data = greencrabData,
+                                               family = 'negbin',
+                             multicore = FALSE, n.chain = 1,n.iter.burn = 25,
                              n.iter.sample = 75)})
-  model2 <- suppressWarnings({jointModel(data=greencrabData, family='negbin',
-                                         multicore=FALSE,n.chain=1,
+  model2 <- suppressWarnings({jointModel(data = greencrabData, 
+                                         family = 'negbin',
+                                         multicore = FALSE,n.chain = 1,
                                          n.iter.burn = 25,
-                                         n.iter.sample = 75,)})
+                                         n.iter.sample = 75)})
 
 
   # 1. Check that model inputs are a list
@@ -32,15 +33,15 @@ test_that("jointSelect input checks work", {
 
 test_that("jointSelect output check", {
   # fit models
-  fit.q1 = jointModel(data=greencrabData, family="negbin",
-                     p10priors=c(1,20), q=TRUE, multicore=FALSE,
-                     n.chain=1, n.iter.sample = 1000)
-  fit.q2 = jointModel(data=greencrabData, family="negbin",
-                      p10priors=c(1,50), q=TRUE, multicore=FALSE,
-                      n.chain=1, n.iter.sample = 1000)
+  fit.q1 <- jointModel(data = greencrabData, family = "negbin",
+                       p10priors = c(1,20), q = TRUE, multicore = FALSE,
+                       n.chain = 1, n.iter.sample = 1000)
+  fit.q2 <- jointModel(data = greencrabData, family = "negbin",
+                        p10priors = c(1,50), q = TRUE, multicore = FALSE,
+                        n.chain = 1, n.iter.sample = 1000)
 
   # run select
-  select <- jointSelect(modelfits=list(fit.q1$model, fit.q2$model))
+  select <- jointSelect(modelfits = list(fit.q1$model, fit.q2$model))
 
   # check dimensions
   expect_equal(dim(select)[1],2)

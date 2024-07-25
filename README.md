@@ -13,11 +13,6 @@
 Review](https://badges.ropensci.org/642_status.svg)](https://github.com/ropensci/software-review/issues/642)
 <!-- badges: end -->
 
-``` r
-#' @srrstats {BS1.2a} README with high-level overview and examples of specifying
-#'   prior distributions here
-```
-
 The package *eDNAjoint* is useful for interpreting observations from
 paired environmental DNA (eDNA) and traditional surveys. The package
 runs a Bayesian model that integrates these two data streams to jointly
@@ -56,8 +51,8 @@ traditional sampling.
 library(eDNAjoint)
 data(gobyData)
 # run the joint model with two covariates
-goby.fit <- jointModel(data = gobyData, cov=c('Filter_time','Salinity'), 
-                       family = 'poisson', p10priors = c(1,20), q=FALSE)
+goby.fit <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'), 
+                       family = 'poisson', p10priors = c(1,20), q = FALSE)
 ```
 
 And then this model fit can be accessed to do things like summarize the
@@ -68,7 +63,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 16392.28    1
+#> p10 0.003       0 0.001 0.001 0.007 15087.14    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -79,7 +74,7 @@ rate:
 # find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
 # if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
 detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1), 
-                   cov.val=c(0,0), probability = 0.9)
+                   cov.val = c(0,0), probability = 0.9)
 #>       mu n_traditional n_eDNA
 #> [1,] 0.1            24     14
 #> [2,] 0.5             5      4

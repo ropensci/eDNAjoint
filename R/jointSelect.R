@@ -34,8 +34,8 @@
 #' # This model assumes all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a poisson distribution.
-#' fit.no.q = jointModel(data=greencrabData, family="poisson",
-#'                       p10priors=c(1,20), q=FALSE, multicore=FALSE)
+#' fit.no.q <- jointModel(data = greencrabData, family = "poisson",
+#'                        p10priors = c(1,20), q = FALSE, multicore = FALSE)
 #'
 #'
 #' # Fit a model estimating a catchability coefficient for traditional
@@ -44,11 +44,11 @@
 #' # same catchability.
 #' # Gear type 1 is used as the reference gear type.
 #' # Count data is modeled using a negative binomial distribution.
-#' fit.q = jointModel(data=greencrabData, family="negbin",
-#'                    p10priors=c(1,20), q=TRUE, multicore=FALSE)
+#' fit.q <- jointModel(data = greencrabData, family = "negbin",
+#'                     p10priors = c(1,20), q = TRUE, multicore = FALSE)
 #'
 #' # Perform model selection
-#' jointSelect(modelfits=list(fit.no.q$model, fit.q$model))
+#' jointSelect(modelfits = list(fit.no.q$model, fit.q$model))
 #' }
 #'
 
@@ -65,7 +65,7 @@ jointSelect <- function(modelfits) {
 
   ##leave one out cross-validation
   for(i in seq_along(modelfits)){
-    name <- paste('model',i,sep='')
+    name <- paste('model',i,sep = '')
     loo_list[[name]] <- loo::loo(modelfits[[i]])
   }
 
@@ -89,14 +89,14 @@ jointSelect_input_checks <- function(modelfits){
   #' @srrstats {G2.8} Makes sure input of sub-function is of class 'stanfit'
   #'   (i.e., output of jointModel())
   test <- function(modelfit){is(modelfit,'stanfit')}
-  if (!all(lapply(modelfits,test)==TRUE)) {
+  if (!all(lapply(modelfits,test) == TRUE)) {
     errMsg <- "Model fits in modelfits input must be of class 'stanfit'."
     stop(errMsg)
   }
 
   ## #3. make sure all models are of the same type
   type <- function(modelfit){'p10'%in%modelfit@model_pars}
-  if (length(unique(lapply(modelfits,type)))!=1){
+  if (length(unique(lapply(modelfits,type))) != 1){
     errMsg <- paste0("All modelfits must be fit with either jointModel() or ",
                      "all with traditionalModel().")
     stop(errMsg)

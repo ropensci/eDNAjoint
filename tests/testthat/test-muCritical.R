@@ -3,19 +3,21 @@ test_that("muCritical input checks work", {
   #'   behaving as expected.
 
   # run joint model to do tests with
-  model1 <- suppressWarnings({jointModel(data=gobyData,
-                                         cov=c('Filter_time','Salinity'),
-                                         multicore=FALSE, n.chain=1,
+  model1 <- suppressWarnings({jointModel(data = gobyData,
+                                         cov = c('Filter_time','Salinity'),
+                                         multicore = FALSE, n.chain = 1,
                                          n.iter.burn = 25,
                                          n.iter.sample = 75)})
 
-  model2 <- suppressWarnings({traditionalModel(data=gobyData,multicore=FALSE,
-                                               n.chain=1,n.iter.burn = 25,
+  model2 <- suppressWarnings({traditionalModel(data = gobyData,
+                                               multicore = FALSE,
+                                               n.chain = 1, n.iter.burn = 25,
                                                n.iter.sample = 75)})
 
-  model3 <- suppressWarnings({jointModel(data=greencrabData,family='negbin',
-                                         multicore=FALSE,
-                                         n.chain=1,n.iter.burn = 25,
+  model3 <- suppressWarnings({jointModel(data = greencrabData,
+                                         family = 'negbin',
+                                         multicore = FALSE,
+                                         n.chain = 1, n.iter.burn = 25,
                                          n.iter.sample = 75)})
 
   #1. make sure model fit is of class stanfit
@@ -36,16 +38,16 @@ test_that("muCritical input checks work", {
                       "must be provided for cov.val"))
 
   #5. cov.val is numeric, if provided
-  expect_error(muCritical(model1$model, cov.val=c(TRUE,TRUE)),
+  expect_error(muCritical(model1$model, cov.val = c(TRUE,TRUE)),
                "cov.val must be a numeric vector")
 
   #6. Only include input cov.val if covariates are included in model
-  expect_error(muCritical(model3$model, cov.val=c(0,0)),
+  expect_error(muCritical(model3$model, cov.val = c(0,0)),
                paste0("cov.val must be NULL if the model does not ",
                       "contain site-level covariates."))
 
   #7. Only include input cov.val if covariates are included in model
-  expect_error(muCritical(model1$model, cov.val=c(0,0,0)),
+  expect_error(muCritical(model1$model, cov.val = c(0,0,0)),
                paste0("cov.val must be of the same length as the number of ",
                       "non-intercept site-level coefficients in the model."))
 
@@ -54,26 +56,28 @@ test_that("muCritical input checks work", {
 test_that("muCritical output check", {
 
   # fit two models
-  fit.cov = suppressWarnings({jointModel(data=gobyData,
-                                         cov=c('Filter_time','Salinity'),
-                                         family="poisson", p10priors=c(1,20),
-                                         q=FALSE, multicore=FALSE, n.chain=1,
+  fit.cov <- suppressWarnings({jointModel(data = gobyData,
+                                         cov = c('Filter_time','Salinity'),
+                                         family = "poisson", 
+                                         p10priors = c(1,20),
+                                         q = FALSE, multicore = FALSE, 
+                                         n.chain = 1,
                                          n.iter.burn = 25,
                                          n.iter.sample = 75)})
-  fit.q = suppressWarnings({jointModel(data=greencrabData, cov=NULL,
-                                       family="negbin",p10priors=c(1,20),
-                                       q=TRUE, multicore=FALSE, n.chain=1,
+  fit.q <- suppressWarnings({jointModel(data = greencrabData, cov = NULL,
+                                       family = "negbin",p10priors = c(1,20),
+                                       q = TRUE, multicore = FALSE, n.chain = 1,
                                        n.iter.burn = 25,
                                        n.iter.sample = 75)})
 
   # check lengths of muCritical output
-  expect_equal(length(muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)),
+  expect_equal(length(muCritical(fit.cov$model, cov.val = c(0,0), ci = 0.9)),
                3)
   expect_equal(dim(muCritical(fit.q$model, ci = 0.9)),
                c(3,2))
 
   # check names of muCritical output
-  expect_equal(names(muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)),
+  expect_equal(names(muCritical(fit.cov$model, cov.val = c(0,0), ci = 0.9)),
                c('median','lower_ci','upper_ci'))
   expect_equal(rownames(muCritical(fit.q$model, ci = 0.9)),
                c('median','lower_ci','upper_ci'))
@@ -82,14 +86,14 @@ test_that("muCritical output check", {
 
   # check values of muCritical output
   expect_equal(is.numeric(muCritical(fit.cov$model,
-                                     cov.val=c(0,0), ci = 0.9)$median),
+                                     cov.val = c(0,0), ci = 0.9)$median),
                TRUE)
   expect_equal(is.numeric(muCritical(fit.cov$model,
-                                     cov.val=c(0,0),
+                                     cov.val = c(0,0),
                                      ci = 0.9)$lower_ci$CI_low),
                TRUE)
   expect_equal(is.numeric(muCritical(fit.cov$model,
-                                     cov.val=c(0,0),
+                                     cov.val = c(0,0),
                                      ci = 0.9)$upper_ci$CI_high),
                TRUE)
   expect_equal(is.numeric(muCritical(fit.q$model, ci = 0.9)$gear_1),

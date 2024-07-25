@@ -107,8 +107,9 @@
 #' # This model assumes all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a poisson distribution.
-#' fit.no.q = traditionalModel(data=greencrabData, family="poisson", q=FALSE,
-#'                             phipriors=NULL, multicore=FALSE, verbose=TRUE)
+#' fit.no.q <- traditionalModel(data = greencrabData, family = "poisson", 
+#'                              q = FALSE, phipriors = NULL, multicore = FALSE, 
+#'                              verbose = TRUE)
 #'
 #'
 #' # Fit a model estimating a catchability coefficient for traditional survey
@@ -116,20 +117,20 @@
 #' # This model does not assume all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a negative binomial distribution.
-#' fit.q = traditionalModel(data=greencrabData, family="negbin", q=TRUE,
-#'                          phipriors=c(0.25,0.25), multicore=FALSE,
-#'                          initial_values=NULL, n.chain=4, n.iter.burn=500,
-#'                          n.iter.sample=2500 ,thin=1, adapt_delta=0.9,
-#'                          verbose=TRUE, seed=123)
+#' fit.q <- traditionalModel(data = greencrabData, family = "negbin", q = TRUE,
+#'                           phipriors = c(0.25,0.25), multicore = FALSE,
+#'                           initial_values = NULL, n.chain = 4, 
+#'                           n.iter.burn = 500, n.iter.sample = 2500, thin = 1, 
+#'                           adapt_delta = 0.9, verbose = TRUE, seed = 123)
 #' }
 #'
 
-traditionalModel <- function(data, family='poisson',
-                             q=FALSE, phipriors=NULL,
-                             multicore=TRUE, initial_values = NULL,
-                             n.chain=4, n.iter.burn=500,
-                             n.iter.sample=2500, thin=1,
-                             adapt_delta=0.9, verbose=TRUE, seed = NULL) {
+traditionalModel <- function(data, family = 'poisson',
+                             q = FALSE, phipriors = NULL,
+                             multicore = TRUE, initial_values = NULL,
+                             n.chain = 4, n.iter.burn = 500,
+                             n.iter.sample = 2500, thin = 1,
+                             adapt_delta = 0.9, verbose = TRUE, seed = NULL) {
 
 
   # make character inputs case-insensitive
@@ -169,20 +170,20 @@ traditionalModel <- function(data, family='poisson',
   #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular
   #'   form (i.e., matrix, etc.)
   count_all <- as.data.frame(data$count) %>%
-    dplyr::mutate(L=1:dim(data$count)[1]) %>%
-    tidyr::pivot_longer(cols=!L,values_to='count') %>%
+    dplyr::mutate(L = 1:dim(data$count)[1]) %>%
+    tidyr::pivot_longer(cols=!L,values_to = 'count') %>%
     #' @srrstats {G2.15} Software does not assume non-missingness and actually
     #'   expects it if the number of observations across sites is unequal
     tidyr::drop_na()
 
-  #if q==TRUE, add count type data to count df
-  if(q==TRUE){
+  #if q == TRUE, add count type data to count df
+  if(q == TRUE){
     q_ref <- 1
     #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular
     #'   form (i.e., matrix, etc.)
     count.type_df <- as.data.frame(data$count.type) %>%
-      dplyr::mutate(L=1:dim(data$count.type)[1]) %>%
-      tidyr::pivot_longer(cols=!L,values_to='count.type') %>%
+      dplyr::mutate(L = 1:dim(data$count.type)[1]) %>%
+      tidyr::pivot_longer(cols=!L,values_to = 'count.type') %>%
       #' @srrstats {G2.15} Software does not assume non-missingness and
       #'   actually expects it if the number of observations across sites is
       #'   unequal
@@ -191,13 +192,13 @@ traditionalModel <- function(data, family='poisson',
 
     #create vector of q coefficient names
     counttypes <- unique(count_all$count.type)
-    names <- counttypes[!counttypes==q_ref]
+    names <- counttypes[!counttypes == q_ref]
     #' @srrstats {G2.4,G2.4c} Explicit conversion to character
     q_names <- as.character(paste0('q_',names))
 
     #add dummy variables for count type
     for(i in seq_along(q_names)){
-      count_all[,q_names[i]] <- ifelse(count_all$count.type==names[i],1,0)
+      count_all[,q_names[i]] <- ifelse(count_all$count.type == names[i],1,0)
     }
 
   }
@@ -215,9 +216,9 @@ traditionalModel <- function(data, family='poisson',
                  sample.int(.Machine$integer.max, 1))
 
   ##run model, catchability, pois/gamma
-  if(q==TRUE&&family!='negbin'){
-    model_index <- dplyr::case_when(family=='poisson'~ 1,
-                                    family=='gamma' ~ 2)
+  if(q == TRUE && family != 'negbin'){
+    model_index <- dplyr::case_when(family == 'poisson'~ 1,
+                                    family == 'gamma' ~ 2)
     inits <- init_trad_catchability(n.chain, count_all, q_names,
                                     initial_values)
     out <- rstan::sampling(c(
@@ -243,9 +244,9 @@ traditionalModel <- function(data, family='poisson',
         as.integer(n.iter.burn) + as.integer(n.iter.sample)
       ),
       init = inits,
-      refresh = ifelse(verbose==TRUE,500,0)
+      refresh = ifelse(verbose == TRUE,500,0)
     )
-  } else if(q==TRUE&&family=='negbin'){
+  } else if(q == TRUE && family == 'negbin'){
     ##run model, catchability, negbin
     inits <- init_trad_catchability(n.chain, count_all, q_names,
                                     initial_values)
@@ -271,12 +272,12 @@ traditionalModel <- function(data, family='poisson',
                              as.integer(n.iter.burn) + as.integer(n.iter.sample)
                            ),
                            init = inits,
-                           refresh = ifelse(verbose==TRUE,500,0)
+                           refresh = ifelse(verbose == TRUE,500,0)
     )
-  } else if(q==FALSE&&family!='negbin'){
+  } else if(q == FALSE && family != 'negbin'){
     ##run model, no catchability, pois/gamma
-    model_index <- dplyr::case_when(family=='poisson'~ 1,
-                                    family=='gamma' ~ 2)
+    model_index <- dplyr::case_when(family == 'poisson'~ 1,
+                                    family == 'gamma' ~ 2)
     inits <- init_trad(n.chain, count_all, initial_values)
     out <- rstan::sampling(c(stanmodels$traditional_pois,
                              stanmodels$traditional_gamma)[model_index][[1]],
@@ -299,9 +300,9 @@ traditionalModel <- function(data, family='poisson',
                              as.integer(n.iter.burn) + as.integer(n.iter.sample)
                            ),
                            init = inits,
-                           refresh = ifelse(verbose==TRUE,500,0)
+                           refresh = ifelse(verbose == TRUE,500,0)
     )
-  } else if(q==FALSE&&family=='negbin'){
+  } else if(q == FALSE && family == 'negbin'){
     ##run model, no catchability, negbin
     inits <- init_trad(n.chain, count_all, initial_values)
     out <- rstan::sampling(stanmodels$traditional_negbin,
@@ -324,14 +325,15 @@ traditionalModel <- function(data, family='poisson',
                              as.integer(n.iter.burn) + as.integer(n.iter.sample)
                            ),
                            init = inits,
-                           refresh = ifelse(verbose==TRUE,500,0)
+                           refresh = ifelse(verbose == TRUE,500,0)
     )
   }
 
   # assert that the log likelihood is a double
   #' @srrstats {G5.3} assert that model run worked and the log likelihood is
   #'   valid (i.e., not NA)
-  stopifnot(is.double(sum(colMeans(rstan::extract(out,par='log_lik')$log_lik))))
+  stopifnot(is.double(sum(colMeans(rstan::extract(out,
+                                                  par = 'log_lik')$log_lik))))
 
   # Create a list to store the results
   #' @srrstats {BS5.0} function returns initial values used in computation
@@ -417,14 +419,14 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
 
   ## make sure all data tags are valid -- if q == TRUE
   #' @srrstats {G2.13} Pre-processing routines to check for missing data
-  if (q==TRUE && !all(c('count.type','count') %in% names(data))){
+  if (q == TRUE && !all(c('count.type','count') %in% names(data))){
     errMsg <- "Data should include 'count' and 'count.type'."
     stop(errMsg)
   }
 
   ## make sure all data tags are valid -- if q == FALSE
   #' @srrstats {G2.13} Pre-processing routines to check for missing data
-  if (q==FALSE && !all(c('count') %in% names(data))){
+  if (q == FALSE && !all(c('count') %in% names(data))){
     errMsg <- "Data should include 'count'."
     stop(errMsg)
   }
@@ -432,7 +434,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   ## make sure count is not zero-length
   #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for
   #'   zero-length data
-  if (dim(data$count)[1]==0) {
+  if (dim(data$count)[1] == 0) {
     errMsg <- "count contains zero-length data."
     stop(errMsg)
   }
@@ -448,9 +450,9 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   ## present
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data
   #'   is dimensionally commensurate
-  if (q==TRUE){
-    if(dim(data$count)[1]!=dim(data$count.type)[1]|
-       dim(data$count)[2]!=dim(data$count.type)[2]) {
+  if (q == TRUE){
+    if(dim(data$count)[1] != dim(data$count.type)[1]|
+       dim(data$count)[2] != dim(data$count.type)[2]) {
       errMsg <- "Dimensions of count and count.type do not match."
       stop(errMsg)
     }
@@ -458,7 +460,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
-  if(any(data$count==Inf,na.rm=TRUE) | any(data$count==-Inf,na.rm=TRUE)){
+  if(any(data$count == Inf,na.rm=TRUE) | any(data$count == -Inf,na.rm=TRUE)){
     errMsg <- "count contains undefined values (i.e., Inf or -Inf)"
     stop(errMsg)
   }
@@ -469,9 +471,9 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   #'   implemented prior to analytic routines
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
-  if (q==TRUE) {
-    if(is.numeric(data$count)==FALSE |
-       is.numeric(data$count.type)==FALSE) {
+  if (q == TRUE) {
+    if(is.numeric(data$count) == FALSE |
+       is.numeric(data$count.type) == FALSE) {
       errMsg <- "Data should be numeric."
       stop(errMsg)
     }
@@ -483,19 +485,20 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   #'   numeric), implemented prior to analytic routines
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
-  if (q==FALSE) {
-    if(is.numeric(data$count)==FALSE | any(data$count < 0,na.rm=TRUE)) {
+  if (q == FALSE) {
+    if(is.numeric(data$count) == FALSE | any(data$count < 0, na.rm=TRUE)) {
       errMsg <- "Data should be numeric."
       stop(errMsg)
     }
   }
 
-  if(q==TRUE){
+  if(q == TRUE){
     ## make sure locations of NAs in count data match locations of NAs in
     ## count.type data
     #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input
     #'   data is dimensionally commensurate
-    if(any((which(is.na(data$count.type))==which(is.na(data$count)))==FALSE)){
+    if(any((which(is.na(data$count.type)) == which(is.na(data$count))) == FALSE)
+       ){
       errMsg <- paste0("Empty data cells (NA) in count data should match ",
                        "empty data cells (NA) in count.type data.")
       stop(errMsg)
@@ -503,7 +506,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
     ## make sure count.type is not zero-length
     #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for
     #'   zero-length data
-    if (dim(data$count.type)[1]==0) {
+    if (dim(data$count.type)[1] == 0) {
       errMsg <- "count.type contains zero-length data."
       stop(errMsg)
     }
@@ -525,7 +528,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   }
 
   ## the smallest count.type is 1
-  if(q==TRUE && min(data$count.type,na.rm=TRUE) != 1){
+  if(q == TRUE && min(data$count.type,na.rm=TRUE) != 1){
     errMsg <- paste0("The first gear type should be referenced as 1 in ",
                      "count.type. Subsequent gear types should be ",
                      "referenced 2, 3, 4, etc.")
@@ -548,7 +551,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   ## count.type are integers
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
-  if(q==TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
+  if(q == TRUE && !all(data$count.type %% 1 %in% c(0,NA))){
     errMsg <- "All values in count.type should be integers."
     stop(errMsg)
   }
@@ -558,7 +561,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   #'   appropriateness of distributional parameters (i.e., vector of length 2,
   #'   numeric values > 0), implemented prior to analytic routines
   if(family == 'negbin'){
-    if(!is.numeric(phipriors) | length(phipriors)!=2 | any(phipriors<=0)){
+    if(!is.numeric(phipriors) | length(phipriors) != 2 | any(phipriors <= 0)){
       errMsg <- paste0("phipriors should be a vector of two positive ",
                        "numeric values. ex. c(0.25,0.25)")
       stop(errMsg)
@@ -566,31 +569,31 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
   }
 
   ## check length and range of n.chain
-  if(any(length(as.integer(n.chain))>1 | n.chain < 1)){
+  if(any(length(as.integer(n.chain)) > 1 | n.chain < 1)){
     errMsg <- "n.chain should be an integer > 0 and of length 1."
     stop(errMsg)
   }
 
   ## check length and range of n.iter.sample
-  if(any(length(as.integer(n.iter.sample))>1 | n.iter.sample < 1)){
+  if(any(length(as.integer(n.iter.sample)) > 1 | n.iter.sample < 1)){
     errMsg <- "n.iter.sample should be an integer > 0 and of length 1."
     stop(errMsg)
   }
 
   ## check length and range of n.iter.burn
-  if(any(length(as.integer(n.iter.burn))>1 | n.iter.burn < 1)){
+  if(any(length(as.integer(n.iter.burn)) > 1 | n.iter.burn < 1)){
     errMsg <- "n.iter.burn should be an integer > 0 and of length 1."
     stop(errMsg)
   }
 
   ## check length and range of thin
-  if(any(length(as.integer(thin))>1 | thin < 1)){
+  if(any(length(as.integer(thin)) > 1 | thin < 1)){
     errMsg <- "thin should be an integer > 0 and of length 1."
     stop(errMsg)
   }
 
   ## check length and range of adapt_delta
-  if(any(length(adapt_delta)>1 | adapt_delta < 0 | adapt_delta > 1)){
+  if(any(length(adapt_delta) > 1 | adapt_delta < 0 | adapt_delta > 1)){
     errMsg <- paste0("adapt_delta should be a numeric value > 0 and < 1 and ",
                      "of length 1.")
     stop(errMsg)
@@ -609,7 +612,7 @@ traditionalModel_input_checks <- function(data, family, q, phipriors, n.chain,
 initial_values_checks_trad <- function(initial_values,data,n.chain){
 
   ## length of initial values is equal to the number of chains
-  if(length(initial_values)!=n.chain){
+  if(length(initial_values) != n.chain){
     errMsg <- paste0("The length of the list of initial values should equal ",
                      "the number of chains (n.chain, default is 4).")
     stop(errMsg)
@@ -626,7 +629,7 @@ initial_values_checks_trad <- function(initial_values,data,n.chain){
         stop(errMsg)
       }
       ## check mu length
-      if(length(initial_values[[i]]$mu)!=dim(data$count)[1]){
+      if(length(initial_values[[i]]$mu) != dim(data$count)[1]){
         errMsg <- paste0("The length of initial values for 'mu' should ",
                          "equal the number of sites.")
         stop(errMsg)
@@ -642,7 +645,7 @@ initial_values_checks_trad <- function(initial_values,data,n.chain){
         stop(errMsg)
       }
       ## check q length
-      if(length(initial_values[[i]]$q)!=(length(table(data$count.type))-1)){
+      if(length(initial_values[[i]]$q) != (length(table(data$count.type))-1)){
         errMsg <- paste0("The length of initial values for 'q' should equal: ",
                          "# unique gear types - 1 (i.e., q for reference ",
                          "type = 1).")

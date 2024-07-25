@@ -47,16 +47,16 @@
 #' data(gobyData)
 #'
 #' # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-#' fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-#'                      family="poisson", p10priors=c(1,20), q=FALSE,
-#'                      multicore=FALSE)
+#' fit.cov <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'),
+#'                       family = "poisson", p10priors = c(1,20), q = FALSE,
+#'                       multicore = FALSE)
 #'
 #' # Calculate mu_critical at the mean covariate values (covariates are
-#' # standardized, so mean=0)
-#' muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)
+#' # standardized, so mean = 0)
+#' muCritical(fit.cov$model, cov.val = c(0,0), ci = 0.9)
 #'
 #' # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-#' muCritical(fit.cov$model, cov.val=c(0,0.5), ci = 0.9)
+#' muCritical(fit.cov$model, cov.val = c(0,0.5), ci = 0.9)
 #'
 #' # Ex. 2: Calculating mu_critical with multiple traditional gear types
 #'
@@ -64,11 +64,11 @@
 #' data(greencrabData)
 #'
 #' # Fit a model with no site-level covariates
-#' fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-#'                    p10priors=c(1,20), q=TRUE, multicore=FALSE)
+#' fit.q <- jointModel(data = greencrabData, cov = NULL, family = "negbin",
+#'                     p10priors = c(1,20), q = TRUE, multicore = FALSE)
 #'
 #' # Calculate mu_critical
-#' muCritical(fit.q$model, cov.val=NULL, ci = 0.9)
+#' muCritical(fit.q$model, cov.val = NULL, ci = 0.9)
 #' }
 #'
 
@@ -87,13 +87,13 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
   #' @srrstats {BS4.5} Warning message if the input model fit has divergence
   #'   transitions
   if(sum(lapply(rstan::get_sampler_params(modelfit,
-                                          inc_warmup=FALSE),
+                                          inc_warmup = FALSE),
                 div_check)[[1]]) > 0){
 
-    sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup=FALSE),
+    sum <- sum(lapply(rstan::get_sampler_params(modelfit, inc_warmup = FALSE),
                       div_check)[[1]])
 
-    warning <- paste0('Warning: There are ',sum,
+    warning <- paste0('Warning: There are ', sum,
                       ' divergent transitions in your model fit. ')
     print(warning)
 
@@ -110,7 +110,7 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
     ##alpha
     posterior_alpha <- rstan::extract(modelfit, pars = "alpha")$alpha
     ##beta
-    posterior_beta <- posterior_alpha %*% c(1,cov.val)
+    posterior_beta <- posterior_alpha %*% c(1, cov.val)
     #p10
     posterior_p10 <- unlist(rstan::extract(modelfit, pars = "p10"))
   }
@@ -120,12 +120,12 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
     posterior_q <- rstan::extract(modelfit, pars = "q")$q
 
     #create empty dataframe
-    out <- as.data.frame(matrix(NA,nrow=3,ncol=modelfit@par_dims$q+1))
+    out <- as.data.frame(matrix(NA, nrow = 3, ncol = modelfit@par_dims$q+1))
     rownames(out) <- c('median','lower_ci','upper_ci')
     for(i in 1:modelfit@par_dims$q){
-      gear_names <- paste('gear_',i+1,sep='')
+      gear_names <- paste('gear_', i+1, sep = '')
     }
-    colnames(out) <- c('gear_1',gear_names)
+    colnames(out) <- c('gear_1', gear_names)
 
     #calculate mu_critical -- gear type 1
     critical_mu_1 <- rep(NA, length(posterior_beta))
@@ -158,10 +158,10 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
       )
     }
 
-    out <- list(median=stats::median(critical_mu),
-                lower_ci=bayestestR::ci(critical_mu, method = 'HDI',
+    out <- list(median = stats::median(critical_mu),
+                lower_ci = bayestestR::ci(critical_mu, method = 'HDI',
                                         ci = ci)[2],
-                upper_ci=bayestestR::ci(critical_mu, method = 'HDI',
+                upper_ci = bayestestR::ci(critical_mu, method = 'HDI',
                                         ci = ci)[3])
 
   }
@@ -191,7 +191,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   ## #2. make sure ci is valid
   #' @srrstats {G2.0,G2.2} Assertion on length of input, prohibit multivariate
   #'   input to parameters expected to be univariate
-  if(!is.numeric(ci)|ci<=0|ci>=1|length(ci)>1) {
+  if(!is.numeric(ci) | ci <= 0 | ci >= 1 | length(ci) > 1) {
     errMsg <- "ci must be a numeric value >0 and <1."
     stop(errMsg)
   }
@@ -226,7 +226,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
 
   ## #7. Input cov.val is the same length as the number of estimated covariates.
   #' @srrstats {G2.0} Assertion on length of input
-  if(all(!is.null(cov.val)) && length(cov.val)!=(modelfit@par_dims$alpha-1)) {
+  if(all(!is.null(cov.val)) && length(cov.val) != (modelfit@par_dims$alpha-1)) {
     errMsg <- paste0("cov.val must be of the same length as the number of ",
                      "non-intercept site-level coefficients in the model.")
     stop(errMsg)

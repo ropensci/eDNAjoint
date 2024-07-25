@@ -2,14 +2,14 @@ test_that("detectionCalculate input checks work", {
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving
   #'   as expected.
   # run joint model to do tests with
-  model1 <- suppressWarnings({jointModel(data=gobyData,
-                                         cov=c('Filter_time','Salinity'),
-                                         n.chain=1,n.iter.burn = 25,
-                                         n.iter.sample = 75,multicore=FALSE)})
+  model1 <- suppressWarnings({jointModel(data = gobyData,
+                                         cov = c('Filter_time','Salinity'),
+                                         n.chain = 1,n.iter.burn = 25,
+                                         n.iter.sample = 75,multicore = FALSE)})
 
-  model2 <- suppressWarnings({jointModel(data=greencrabData,family='negbin',
-                                         n.chain=1,n.iter.burn = 25,
-                                         n.iter.sample = 75,multicore=FALSE)})
+  model2 <- suppressWarnings({jointModel(data = greencrabData,family = 'negbin',
+                                         n.chain = 1,n.iter.burn = 25,
+                                         n.iter.sample = 75,multicore = FALSE)})
 
   #1. make sure model fit is of class stanfit
   expect_error(detectionCalculate(as.matrix(model1$model), mu = c(0.1, 0.5),
