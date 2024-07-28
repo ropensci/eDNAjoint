@@ -55,16 +55,16 @@ If any of these checks fail, the function returns an error message.
 data(gobyData)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family="poisson", p10priors=c(1,20), q=FALSE,
-                     multicore=FALSE)
+fit.cov <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'),
+                      family = "poisson", p10priors = c(1,20), q = FALSE,
+                      multicore = FALSE)
 
 # Calculate mu_critical at the mean covariate values (covariates are
-# standardized, so mean=0)
-muCritical(fit.cov$model, cov.val=c(0,0), ci = 0.9)
+# standardized, so mean = 0)
+muCritical(fit.cov$model, cov.val = c(0,0), ci = 0.9)
 
 # Calculate mu_critical at habitat size 0.5 z-scores greater than the mean
-muCritical(fit.cov$model, cov.val=c(0,0.5), ci = 0.9)
+muCritical(fit.cov$model, cov.val = c(0,0.5), ci = 0.9)
 
 # Ex. 2: Calculating mu_critical with multiple traditional gear types
 
@@ -72,11 +72,11 @@ muCritical(fit.cov$model, cov.val=c(0,0.5), ci = 0.9)
 data(greencrabData)
 
 # Fit a model with no site-level covariates
-fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-                   p10priors=c(1,20), q=TRUE, multicore=FALSE)
+fit.q <- jointModel(data = greencrabData, cov = NULL, family = "negbin",
+                    p10priors = c(1,20), q = TRUE, multicore = FALSE)
 
 # Calculate mu_critical
-muCritical(fit.q$model, cov.val=NULL, ci = 0.9)
+muCritical(fit.q$model, cov.val = NULL, ci = 0.9)
 }
 
 }

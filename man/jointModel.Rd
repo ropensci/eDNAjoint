@@ -139,7 +139,7 @@ If any of these checks fail, the function returns an error message.
 }
 \examples{
 \donttest{
-# Ex. 1: Implementing the joint model with site-level covariates
+# Ex. 1: Implementing the joint model
 
 # Load data
 data(gobyData)
@@ -151,16 +151,24 @@ names(gobyData)
 dim(gobyData$qPCR.N)[1]
 dim(gobyData$count)[1]
 
-# Fit a model including 'Filter_time' and 'Salinity' site-level covariates
+# Fit a basic model with paired eDNA and traditional survey data.
+# Count data is modeled using a poisson distribution.
+fit <- jointModel(data = gobyData, family = "poisson", p10priors = c(1,20),
+                  multicore = FALSE)
+
+# Ex. 2: Implementing the joint model with site-level covariates
+
+# With the same data, fit a model including 'Filter_time' and 'Salinity'
+# site-level covariates
 # These covariates will scale the sensitivity of eDNA sampling relative to
 # traditional surveys
 # Count data is modeled using a poisson distribution.
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family="poisson", p10priors=c(1,20), q=FALSE,
-                     phipriors=NULL, multicore=FALSE, verbose=TRUE)
+fit.cov <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'),
+                      family = "poisson", p10priors = c(1,20),
+                      multicore = FALSE)
 
 
-# Ex. 2: Implementing the joint model with multiple traditional gear types
+# Ex. 3: Implementing the joint model with multiple traditional gear types
 
 # Load data
 data(greencrabData)
@@ -177,12 +185,12 @@ dim(greencrabData$count)[1]
 # This model does not assume all traditional survey methods have the same
 # catchability.
 # Count data is modeled using a negative binomial distribution.
-fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-                   p10priors=c(1,20), q=TRUE, phipriors=c(0.25,0.25),
-                   multicore=FALSE, initial_values=NULL,
-                   n.chain=4, n.iter.burn=500,
-                   n.iter.sample=2500, thin=1, adapt_delta=0.9,
-                   verbose=TRUE, seed=123)
+fit.q <- jointModel(data = greencrabData, cov = NULL, family = "negbin",
+                    p10priors = c(1,20), q = TRUE, phipriors = c(0.25,0.25),
+                    multicore = FALSE, initial_values = NULL,
+                    n.chain = 4, n.iter.burn = 500,
+                    n.iter.sample = 2500, thin = 1, adapt_delta = 0.9,
+                    verbose = TRUE, seed = 123)
 }
 
 }

@@ -120,29 +120,29 @@ isCov <- function(pars){
 
 # function to get vector of all param names
 get_all_params <- function(pars){
-  pars <- c('mu')
+  params <- c('mu')
 
   # catchability
   if(isCatch(pars)){
-    pars <- c(pars,'q')
+    params <- c(params,'q')
   }
 
   # joint
   if(isJoint(pars)){
-    pars <- c(pars,'p10','beta')
+    params <- c(params,'p10','beta')
   }
 
   # covariates
   if(isCov(pars)){
-    pars <- c(pars,'alpha')
+    params <- c(params,'alpha')
   }
 
   # negbin
   if(isNegbin(pars)){
-    pars <- c(pars,'phi')
+    params <- c(params,'phi')
   }
 
-  return(pars)
+  return(params)
 }
 
 # function to check for divergent transitions

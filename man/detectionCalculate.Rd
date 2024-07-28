@@ -61,17 +61,17 @@ If any of these checks fail, the function returns an error message.
 data(gobyData)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family="poisson", p10priors=c(1,20), q=FALSE,
-                     multicore=FALSE)
+fit.cov <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'),
+                      family = "poisson", p10priors = c(1,20), q = FALSE,
+                      multicore = FALSE)
 
 # Calculate at the mean covariate values
-# (covariates are standardized, so mean=0)
-detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1),
+# (covariates are standardized, so mean = 0)
+detectionCalculate(fit.cov$model, mu = seq(from = 0.1, to = 1, by = 0.1),
                    cov.val = c(0,0), qPCR.N = 3)
 
 # Calculate mu_critical at salinity 0.5 z-scores greater than the mean
-detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1),
+detectionCalculate(fit.cov$model, mu = seq(from = 0.1, to = 1, by = 0.1),
                    cov.val = c(0,0.5), qPCR.N = 3)
 
 # Ex. 2: Calculating necessary effort for detection with multiple traditional
@@ -81,11 +81,11 @@ detectionCalculate(fit.cov$model, mu = seq(from=0.1,to=1,by=0.1),
 data(greencrabData)
 
 # Fit a model with no site-level covariates
-fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-                   p10priors=c(1,20), q=TRUE, multicore=FALSE)
+fit.q <- jointModel(data = greencrabData, cov = NULL, family = "negbin",
+                    p10priors = c(1,20), q = TRUE, multicore = FALSE)
 
 # Calculate
-detectionCalculate(fit.q$model, mu = seq(from=0.1,to=1,by=0.1),
+detectionCalculate(fit.q$model, mu = seq(from = 0.1, to = 1, by = 0.1),
                    cov.val = NULL, qPCR.N = 3)
 
 # Change probability of detecting presence to 0.95

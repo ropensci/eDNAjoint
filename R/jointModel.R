@@ -262,7 +262,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     tidyr::drop_na()
 
   # if q == TRUE, add count type data to count df
-  if(isCatch(q)){
+  if(isCatch_type(q)){
     q_ref <- 1
     #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular
     #'   form (i.e., matrix, etc.)
@@ -321,7 +321,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
   )
 
   # append data if q == TRUE
-  if(isCatch(q)){
+  if(isCatch_type(q)){
     data <- rlist::list.append(
       data,
       nparams = length(q_names),
@@ -329,14 +329,14 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     )
   }
   # append data if family == negbin
-  if(isNegbin(family)){
+  if(isNegbin_type(family)){
     data <- rlist::list.append(
       data,
       phipriors = phipriors
     )
   }
   # append data if cov != NULL
-  if(isCov(cov)){
+  if(isCov_type(cov)){
     data <- rlist::list.append(
       data,
       nsitecov = length(cov)+1,
@@ -355,10 +355,10 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
                  sample.int(.Machine$integer.max, 1))
 
   # get stan model
-  model_name <- get_stan_model(q, family, cov)
+  model_index <- get_stan_model(q, family, cov)
 
   # get initial values
-  if(isCatch(q)){
+  if(isCatch_type(q)){
     inits <- get_inits(n.chain,count_all,initial_values,cov,q_names)
   } else {
     inits <- get_inits(n.chain,count_all,initial_values,cov)
@@ -366,7 +366,18 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # run model
   out <- rstan::sampling(
-    model_name,
+    c(stanmodels$joint_binary_cov_catchability_pois,
+      stanmodels$joint_binary_cov_catchability_negbin,
+      stanmodels$joint_binary_cov_catchability_gamma,
+      stanmodels$joint_binary_catchability_pois,
+      stanmodels$joint_binary_catchability_negbin,
+      stanmodels$joint_binary_catchability_gamma,
+      stanmodels$joint_binary_cov_pois,
+      stanmodels$joint_binary_cov_negbin,
+      stanmodels$joint_binary_cov_gamma,
+      stanmodels$joint_binary_pois,
+      stanmodels$joint_binary_negbin,
+      stanmodels$joint_binary_gamma)[model_index][[1]],
     data = data,
     cores = cores,
     seed = SEED,
@@ -402,15 +413,15 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 # helper functions: get model type #
 ####################################
 
-isCatch <- function(q){
+isCatch_type <- function(q){
   out <- ifelse(q == TRUE,TRUE,FALSE)
   return(out)
 }
-isCov <- function(cov){
+isCov_type <- function(cov){
   out <- ifelse(all(!is.null(cov)),TRUE,FALSE)
   return(out)
 }
-isNegbin <- function(family){
+isNegbin_type <- function(family){
   out <- ifelse(family == 'negbin',TRUE,FALSE)
   return(out)
 }
@@ -431,36 +442,22 @@ get_family_index <- function(family){
 
 get_stan_model <- function(q, family, cov){
 
-  models_cov_catch <- c(stanmodels$joint_binary_cov_catchability_pois,
-                        stanmodels$joint_binary_cov_catchability_negbin,
-                        stanmodels$joint_binary_cov_catchability_gamma)
-  models_cov <- c(stanmodels$joint_binary_cov_pois,
-                  stanmodels$joint_binary_cov_negbin,
-                  stanmodels$joint_binary_cov_gamma)
-  models_catch <- c(stanmodels$joint_binary_catchability_pois,
-                    stanmodels$joint_binary_catchability_negbin,
-                    stanmodels$joint_binary_catchability_gamma)
-  models <- c(stanmodels$joint_binary_pois,
-              stanmodels$joint_binary_negbin,
-              stanmodels$joint_binary_gamma)
-
   index <- get_family_index(family)
 
-
-  if(isCatch(q)){
-    if(isCov(cov)){
-      model <- models_cov_catch[index]
+  if(isCatch_type(q)){
+    if(isCov_type(cov)){
+      final_index <- index
     } else {
-      model <- models_catch[index]
+      final_index <- index + 3
     }
   } else {
-    if(isCov(cov)){
-      model <- models_cov[index]
+    if(isCov_type(cov)){
+      final_index <- index + 6
     } else {
-      model <- models[index]
+      final_index <- index + 9
     }
   }
-  return(model)
+  return(final_index)
 }
 
 

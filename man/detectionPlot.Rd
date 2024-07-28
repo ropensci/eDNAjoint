@@ -73,9 +73,9 @@ If any of these checks fail, the function returns an error message.
 data(gobyData)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
-fit.cov = jointModel(data=gobyData, cov=c('Filter_time','Salinity'),
-                     family="poisson", p10priors=c(1,20), q=FALSE,
-                     multicore=FALSE)
+fit.cov <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'),
+                      family = "poisson", p10priors = c(1,20), q = FALSE,
+                      multicore = FALSE)
 
 # Plot at the mean covariate values (covariates are standardized, so mean=0)
 detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1,
@@ -92,9 +92,9 @@ detectionPlot(fit.cov$model, mu.min = 0.1, mu.max = 1, cov.val = c(0,0.5),
 data(greencrabData)
 
 # Fit a model with no site-level covariates
-fit.q = jointModel(data=greencrabData, cov=NULL, family="negbin",
-                   p10priors=c(1,20), q=TRUE,
-                   multicore=FALSE)
+fit.q <- jointModel(data = greencrabData, cov = NULL, family = "negbin",
+                    p10priors = c(1,20), q = TRUE,
+                    multicore = FALSE)
 
 # Calculate
 detectionPlot(fit.q$model, mu.min = 0.1, mu.max = 1,

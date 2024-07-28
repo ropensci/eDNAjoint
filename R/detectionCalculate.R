@@ -113,9 +113,9 @@ detectionCalculate <- function(modelfit, mu, cov.val = NULL, probability = 0.9,
 
   # get n traditional samples
   if(isCatch(modelfit@model_pars)){
-    ntrad_out <- get_ntrad_q(modelfit@model_pars, modelfit, mu)
+    ntrad_out <- get_ntrad_q(modelfit@model_pars, modelfit, mu, probability)
   } else {
-    ntrad_out <- get_ntrad(modelfit@model_pars, modelfit, mu)
+    ntrad_out <- get_ntrad(modelfit@model_pars, modelfit, mu, probability)
   }
 
   # get n dna samples
@@ -177,7 +177,7 @@ isCov <- function(pars){
 }
 
 # function to get n traditional samples
-get_ntrad <- function(pars, modelfit, mu){
+get_ntrad <- function(pars, modelfit, mu, probability){
 
   # number of traditional survey effort
   ntrad_out <- vector(length = length(mu))
@@ -189,9 +189,9 @@ get_ntrad <- function(pars, modelfit, mu){
     # P(X = 0 | mu) in one traditional survey trial
     if(isNegbin(pars)){
       phi <- stats::median(unlist(rstan::extract(modelfit, pars = 'phi')))
-      pr <- stats::pnbinom(q = 0, mu = q_list[j]*mu[i], size = phi)
+      pr <- stats::pnbinom(q = 0, mu = mu[i], size = phi)
     } else {
-      pr <- stats::ppois(q = 0, lambda = q_list[j]*mu[i])
+      pr <- stats::ppois(q = 0, lambda = mu[i])
     }
 
     # dnbinom: x = failed events; size = successful events
@@ -206,7 +206,7 @@ get_ntrad <- function(pars, modelfit, mu){
 }
 
 # function to get n traditional samples -- catchability coefficient
-get_ntrad_q <- function(pars, modelfit, mu){
+get_ntrad_q <- function(pars, modelfit, mu, probability){
 
   # get catch coefficients
   # create empty q list
