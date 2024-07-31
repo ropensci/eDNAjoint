@@ -261,6 +261,38 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     #' expects it if the number of observations across sites is unequal
     tidyr::drop_na()
 
+  # subset count data to remove sites without traditional samples
+  sub_count <- as.data.frame(data$count) %>% tidyr::drop_na()
+
+  # add site index to count data
+  index_match <- as.data.frame(cbind(unique(count_all$L),
+                                     1:dim(sub_count)[1]))
+  colnames(index_match) <- c('L','R')
+  count_all <- dplyr::left_join(count_all,index_match,by='L')
+
+  # get site indices with paired and unpaired dna samples
+  trad_ind <- index_match$L
+  dna_ind <- unique(qPCR_all$L)[!unique(qPCR_all$L)%in% trad_ind]
+
+  # subset qPCR data -- paired
+  qPCR_all_trad <- qPCR_all[qPCR_all$L %in% trad_ind,]
+  L_match_trad <- as.data.frame(cbind(unique(qPCR_all_trad$L),
+                                      1:length(unique(qPCR_all_trad$L))))
+  colnames(L_match_trad) <- c('L','L_unique')
+  qPCR_all_trad <- dplyr::left_join(qPCR_all_trad,L_match_trad,by='L')
+
+  # subset qPCR data -- unpaired
+  if(length(dna_ind)>0){
+    qPCR_all_dna <- qPCR_all[qPCR_all$L %in% dna_ind,]
+    L_match_dna <- as.data.frame(cbind(unique(qPCR_all_dna$L),
+                                       1:length(unique(qPCR_all_dna$L))))
+    colnames(L_match_dna) <- c('L','L_unique')
+    qPCR_all_dna <- dplyr::left_join(qPCR_all_dna,L_match_dna,by='L')
+  } else {
+    qPCR_all_dna <- as.data.frame(matrix(NA,nrow=0,ncol=4))
+    colnames(qPCR_all_dna) <- c('L','N','K','L_unique')
+  }
+
   # if q == TRUE, add count type data to count df
   if(isCatch_type(q)){
     q_ref <- 1
@@ -308,14 +340,21 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # create data that will be present in all model variations
   data <- list(
-    S = nrow(qPCR_all),
-    L = qPCR_all$L,
-    Nloc = length(unique(qPCR_all$L)),
-    N = qPCR_all$N,
-    K = qPCR_all$K,
+    S = nrow(qPCR_all_trad),
+    S_dna = nrow(qPCR_all_dna),
     C = nrow(count_all),
-    R = count_all$L,
+    L = qPCR_all_trad$L_unique,
+    L_dna = qPCR_all_dna$L_unique,
+    R = count_all$R,
+    Nloc_dna = length(unique(qPCR_all_dna$L)),
+    Nloc_trad = length(unique(qPCR_all_trad$L)),
+    trad_ind = trad_ind,
+    dna_ind = as.array(dna_ind),
     E = count_all$count,
+    N = qPCR_all_trad$N,
+    K = qPCR_all_trad$K,
+    N_dna = qPCR_all_dna$N,
+    K_dna = qPCR_all_dna$K,
     p10priors = c(mu_ln,sigma_ln),
     control = list(adapt_delta = adapt_delta)
   )
@@ -359,9 +398,9 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # get initial values
   if(isCatch_type(q)){
-    inits <- get_inits(n.chain,count_all,initial_values,cov,q_names)
+    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,q_names)
   } else {
-    inits <- get_inits(n.chain,count_all,initial_values,cov)
+    inits <- get_inits(n.chain,qPCR_all,initial_values,cov)
   }
 
   # run model
@@ -468,26 +507,26 @@ get_stan_model <- function(q, family, cov){
 #'   chain
 
 
-get_inits <- function(n.chain,count_all,initial_values,cov,q_names=NULL){
+get_inits <- function(n.chain,qPCR_all,initial_values,cov,q_names=NULL){
   if(!is.null(cov)){
     if(!is.null(q_names)){
-      inits <- init_joint_cov_catchability(n.chain,count_all,q_names,cov,
+      inits <- init_joint_cov_catchability(n.chain,qPCR_all,q_names,cov,
                                            initial_values)
     } else {
-      inits <- init_joint_cov(n.chain,count_all,cov,initial_values)
+      inits <- init_joint_cov(n.chain,qPCR_all,cov,initial_values)
     }
   } else {
     if(!is.null(q_names)){
-      inits <- init_joint_catchability(n.chain,count_all,q_names,
+      inits <- init_joint_catchability(n.chain,qPCR_all,q_names,
                                        initial_values)
     } else {
-      inits <- init_joint(n.chain,count_all,initial_values)
+      inits <- init_joint(n.chain,qPCR_all,initial_values)
     }
   }
   return(inits)
 }
 
-init_joint_cov <- function(n.chain,count_all,cov,initial_values){
+init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values){
   # helper function
   # joint model, catchability coefficient, site covariates
   A <- list()
@@ -497,7 +536,7 @@ init_joint_cov <- function(n.chain,count_all,cov,initial_values){
         if('mu' %in% names(initial_values[[i]])){
           mu <- initial_values[[i]]$mu
         } else {
-          mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
+          mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5)
         },
 
         if('p10' %in% names(initial_values[[i]])){
@@ -517,7 +556,7 @@ init_joint_cov <- function(n.chain,count_all,cov,initial_values){
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu <- stats::runif(length(unique(count_all$L)), 0.01, 5),
+        mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5),
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         alpha <- rep(0.1,length(cov)+1)
       )
@@ -528,7 +567,7 @@ init_joint_cov <- function(n.chain,count_all,cov,initial_values){
   return(A)
 }
 
-init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
+init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
                                         initial_values){
   # helper function
   # joint model, catchability coefficient, site covariates
@@ -539,7 +578,7 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
         if('mu' %in% names(initial_values[[i]])){
           mu <- initial_values[[i]]$mu
         } else {
-          mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
+          mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5)
         },
 
         if('q' %in% names(initial_values[[i]])){
@@ -565,7 +604,7 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu <- stats::runif(length(unique(count_all$L)), 0.01, 5),
+        mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5),
         q <- as.data.frame(stats::runif(length(q_names),0.01,1)),
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         alpha <- rep(0.1,length(cov)+1)
@@ -577,7 +616,7 @@ init_joint_cov_catchability <- function(n.chain,count_all,q_names,cov,
   return(A)
 }
 
-init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
+init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values){
   # helper function
   # joint model, catchability coefficient, no site covariates
   A <- list()
@@ -587,7 +626,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
         if('mu' %in% names(initial_values[[i]])){
           mu <- initial_values[[i]]$mu
         } else {
-          mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
+          mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5)
         },
 
         if('q' %in% names(initial_values[[i]])){
@@ -613,7 +652,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu <- stats::runif(length(unique(count_all$L)), 0.01, 5),
+        mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5),
         q <- as.data.frame(stats::runif(length(q_names),0.01,1)),
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         beta <- 0.5
@@ -625,7 +664,7 @@ init_joint_catchability <- function(n.chain,count_all,q_names,initial_values){
   return(A)
 }
 
-init_joint <- function(n.chain,count_all,initial_values){
+init_joint <- function(n.chain,qPCR_all,initial_values){
   # helper function
   # joint model, no catchability coefficient, no site covariates
   A <- list()
@@ -635,7 +674,7 @@ init_joint <- function(n.chain,count_all,initial_values){
         if('mu' %in% names(initial_values[[i]])){
           mu <- initial_values[[i]]$mu
         } else {
-          mu <- stats::runif(length(unique(count_all$L)), 0.01, 5)
+          mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5)
         },
 
         if('p10' %in% names(initial_values[[i]])){
@@ -655,7 +694,7 @@ init_joint <- function(n.chain,count_all,initial_values){
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu <- stats::runif(length(unique(count_all$L)), 0.01, 5),
+        mu <- stats::runif(length(unique(qPCR_all$L)), 0.01, 5),
         p10 <- stats::runif(1,log(0.0001),log(0.08)),
         beta <- 0.5
       )
