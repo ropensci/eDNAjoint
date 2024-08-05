@@ -3,7 +3,7 @@
 
 # eDNAjoint
 
-<img src="man/figures/logo.png" align="right" height="200" dpi="700" />
+<img src="man/figures/logo.png" align="right" height="200" dpi="700"/>
 
 <!-- badges: start -->
 
@@ -11,22 +11,27 @@
 [![codecov](https://codecov.io/gh/abigailkeller/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/abigailkeller/eDNAjoint)
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/642_status.svg)](https://github.com/ropensci/software-review/issues/642)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 <!-- badges: end -->
 
 The package *eDNAjoint* is useful for interpreting observations from
-paired environmental DNA (eDNA) and traditional surveys. The package
-runs a Bayesian model that integrates these two data streams to jointly
-estimate parameters like the false positive probability of eDNA
-detection and expected catch rate at a site. Optional model variations
-allow inclusion of site-level covariates that scale the sensitivity of
-eDNA sampling relative to traditional sampling, as well as estimation of
-catchability coefficients when multiple traditional gear types are used.
-Additional functions in the package facilitate interpretation of model
-fits.
+paired or semi-paired environmental DNA (eDNA) and traditional surveys.
+The package runs a Bayesian model that integrates these two data streams
+to jointly estimate parameters like the false positive probability of
+eDNA detection and expected catch rate at a site. Optional model
+variations allow inclusion of site-level covariates that scale the
+sensitivity of eDNA sampling relative to traditional sampling, as well
+as estimation of catchability coefficients when multiple traditional
+gear types are used. Additional functions in the package facilitate
+interpretation of model fits.
 
 ## Installation
 
-You can install the development version of eDNAjoint:
+You can install the development version of eDNAjoint. Note that
+installation time from source can be high, as unlike binary file formats
+provided by Cran, the program needs to compile during installation:
 
 ``` r
 library(devtools)
@@ -63,7 +68,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 15087.14    1
+#> p10 0.003       0 0.001 0.001 0.007 16465.27    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -86,6 +91,18 @@ detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1),
 You can find much more detailed examples of the functions in *eDNAjoint*
 and the model underlying the package in the [package
 vignette](https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
+
+## Citation
+
+Keller, A.G. (2024). *eDNAjoint: R package for interpreting paired and
+semi-paired environmental DNA and traditional surveys*.
+<https://github.com/abigailkeller/eDNAjoint>.
+
+## Code of Conduct
+
+Please note that eDNAjoint is released with a [Contributor Code of
+Conduct](https://ropensci.org/code-of-conduct/). By contributing to this
+project you agree to abide by its terms.
 
 ## References
 

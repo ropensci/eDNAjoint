@@ -27,5 +27,8 @@
 #' Stan Development Team (NA). RStan: the R interface to Stan.
 #'   https://mc-stan.org
 #'
+## usethis namespace: start
+#' @importFrom lifecycle deprecated
+## usethis namespace: end
 NULL
 

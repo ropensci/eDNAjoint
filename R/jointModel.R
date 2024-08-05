@@ -262,7 +262,8 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     tidyr::drop_na()
 
   # subset count data to remove sites without traditional samples
-  sub_count <- as.data.frame(data$count) %>% tidyr::drop_na()
+  count_df <- as.data.frame(data$count)
+  sub_count <- count_df[rowSums(is.na(count_df)) != ncol(count_df), ]
 
   # add site index to count data
   index_match <- as.data.frame(cbind(unique(count_all$L),
@@ -437,6 +438,9 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
   #'   valid (i.e., not NA)
   stopifnot(is.double(sum(colMeans(rstan::extract(out,
                                                   par = 'log_lik')$log_lik))))
+
+  # add chain names to init list
+  names(inits) <- paste0('chain',seq(1,n.chain,1))
 
   # Create a list to store the results
   #' @srrstats {BS5.0} function returns initial values used in computation
