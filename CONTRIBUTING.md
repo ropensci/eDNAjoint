@@ -1,4 +1,4 @@
-# Contributing to rgeeExtra
+# Contributing to eDNAjoint
 
 <!-- This CONTRIBUTING.md is adapted from https://gist.github.com/peterdesmet/e90a1b0dc17af6c12daf6e8b2f044e7c/ -->
 
@@ -29,7 +29,7 @@ Using **eDNAjoint** for a paper you are writing? Consider [citing it][citation].
 
 ### Ask a question ⁉️
 
-Using our_package and got stuck? Browse the [documentation][website] to see if you can find a solution. Still stuck? Post your question as an [issue on GitHub][new_issue]. I will try my best to address it, and your questions are useful, as questions often lead to better documentation or the discovery of bugs.
+Using our package and got stuck? Browse the [documentation][website] to see if you can find a solution. Still stuck? Post your question as an [issue on GitHub][new_issue]. I will try my best to address it, and your questions are useful, as questions often lead to better documentation or the discovery of bugs.
 
 Want to ask a question in private? Contact the package maintainer by [email][email].
 
