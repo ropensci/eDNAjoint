@@ -439,6 +439,23 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
   stopifnot(is.double(sum(colMeans(rstan::extract(out,
                                                   par = 'log_lik')$log_lik))))
 
+  # check for divergent transitions
+  div_trans <- sum(lapply(rstan::get_sampler_params(modelfit,
+                                                    inc_warmup = FALSE),
+                          div_check)[[1]])
+  # print either troubleshooting or visualization tips
+  if(div_trans>0){
+    url <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette/',
+                  'tips.html#visualization-tips')
+    message <- 'Refer to the eDNAjoint guide for troubleshooting tips: '
+    cat(message, url, "\n")
+  } else {
+    url <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette/',
+                  'tips.html#visualization-tips')
+    message <- 'Refer to the eDNAjoint guide for visualization tips: '
+    cat(message, url, "\n")
+  }
+
   # add chain names to init list
   names(inits) <- paste0('chain',seq(1,n.chain,1))
 
@@ -724,15 +741,23 @@ catchability_checks <- function(data,cov){
   #cov='None'
   if (all(is.null(cov)) && !all(c('qPCR.N', 'qPCR.K',
                                   'count','count.type') %in% names(data))){
-    errMsg <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
+    errMsg1 <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                      "'count', and 'count.type'.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   #q=TRUE and cov != 'None'
   if (all(!is.null(cov)) && !all(c('qPCR.N', 'qPCR.K', 'count',
                                    'count.type','site.cov') %in% names(data))){
-    errMsg <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
+    errMsg1 <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                      "'count', 'count.type', and 'site.cov'.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -740,14 +765,22 @@ catchability_checks <- function(data,cov){
   #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length
   #'   data
   if (dim(data$count.type)[1] == 0) {
-    errMsg <- "count.type contains zero-length data."
+    errMsg1 <- "count.type contains zero-length data."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   ## make sure no column is entirely NA in count.type
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
   #' all NA
   if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
-    errMsg <- "count.type contains a column with all NA."
+    errMsg1 <- "count.type contains a column with all NA."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -757,7 +790,11 @@ catchability_checks <- function(data,cov){
   #'   is dimensionally commensurate
   if(dim(data$count)[1] != dim(data$count.type)[1]|
      dim(data$count)[2] != dim(data$count.type)[2]) {
-    errMsg <- "Dimensions of count and count.type do not match."
+    errMsg1 <- "Dimensions of count and count.type do not match."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -768,7 +805,11 @@ catchability_checks <- function(data,cov){
      is.numeric(data$qPCR.N) == FALSE |
      is.numeric(data$count) == FALSE |
      is.numeric(data$count.type) == FALSE) {
-    errMsg <- "Data should be numeric."
+    errMsg1 <- "Data should be numeric."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   ## make sure locations of NAs in count data match locations of NAs in
@@ -776,15 +817,23 @@ catchability_checks <- function(data,cov){
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input
   #'   data is dimensionally commensurate
   if(any((which(is.na(data$count)) == which(is.na(data$count.type))) == FALSE)){
-    errMsg <- paste0("Empty data cells (NA) in count data should match ",
+    errMsg1 <- paste0("Empty data cells (NA) in count data should match ",
                      "empty data cells (NA) in count.type data.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   ## the smallest count.type is 1
   if(min(data$count.type, na.rm =  TRUE) != 1){
-    errMsg <- paste0("The first gear type should be referenced as 1 in ",
+    errMsg1 <- paste0("The first gear type should be referenced as 1 in ",
                      "count.type. Subsequent gear types should be referenced ",
                      "2, 3, 4, etc.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -792,7 +841,11 @@ catchability_checks <- function(data,cov){
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
   if(!all(data$count.type %% 1 %in% c(0,NA))){
-    errMsg <- "All values in count.type should be integers."
+    errMsg1 <- "All values in count.type should be integers."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase3.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 }
@@ -806,13 +859,21 @@ no_catchability_checks <- function(data,cov){
   #cov='None'
   if (all(is.null(cov)) &&
       !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
-    errMsg <- "Data should include 'qPCR.N', 'qPCR.K', and 'count'."
+    errMsg1 <- "Data should include 'qPCR.N', 'qPCR.K', and 'count'."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   #cov != 'None'
   if (all(!is.null(cov)) &&
       !all(c('qPCR.N', 'qPCR.K', 'count','site.cov') %in% names(data))){
-    errMsg <- "Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'."
+    errMsg1 <- "Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -822,7 +883,11 @@ no_catchability_checks <- function(data,cov){
   if(is.numeric(data$qPCR.K) == FALSE |
      is.numeric(data$qPCR.N) == FALSE |
      is.numeric(data$count) == FALSE ) {
-    errMsg <- "Data should be numeric."
+    errMsg1 <- "Data should be numeric."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 }
@@ -837,14 +902,22 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #'   zero-length data
   if (dim(data$qPCR.N)[1] == 0 | dim(data$qPCR.K)[1] == 0 |
       dim(data$count)[1] == 0) {
-    errMsg <- "Input data contains zero-length data."
+    errMsg1 <- "Input data contains zero-length data."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   ## make sure no column is entirely NA in qPCR.N
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column
   #'   with all NA
   if (any(apply(data$qPCR.N, 2, function(col) all(is.na(col))))) {
-    errMsg <- "qPCR.N contains a column with all NA."
+    errMsg1 <- "qPCR.N contains a column with all NA."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -852,7 +925,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
   #'   all NA
   if (any(apply(data$qPCR.K, 2, function(col) all(is.na(col))))) {
-    errMsg <- "qPCR.K contains a column with all NA."
+    errMsg1 <- "qPCR.K contains a column with all NA."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -860,7 +937,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
   #'   all NA
   if (any(apply(data$count, 2, function(col) all(is.na(col))))) {
-    errMsg <- "count contains a column with all NA."
+    errMsg1 <- "count contains a column with all NA."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -869,15 +950,23 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #'   is dimensionally commensurate
   if (dim(data$qPCR.N)[1] != dim(data$qPCR.K)[1]|
       dim(data$qPCR.N)[2] != dim(data$qPCR.K)[2]) {
-    errMsg <- "Dimensions of qPCR.N and qPCR.K do not match."
+    errMsg1 <- "Dimensions of qPCR.N and qPCR.K do not match."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   ## make sure number of rows in count = number of rows in qPCR.N and qPCR.K
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data
   #'   is dimensionally commensurate
   if (dim(data$qPCR.N)[1] != dim(data$count)[1]) {
-    errMsg <- paste0("Number of sites (rows) in qPCR data and traditional ",
+    errMsg1 <- paste0("Number of sites (rows) in qPCR data and traditional ",
                      "survey count data do not match.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -886,8 +975,12 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #' @srrstats {BS2.1,G2.13} Pre-processing routines to ensure all input data
   #'   is dimensionally commensurate
   if(any((which(is.na(data$qPCR.N)) == which(is.na(data$qPCR.K))) == FALSE)){
-    errMsg <- paste0("Empty data cells (NA) in qPCR.N data should match ",
+    errMsg1 <- paste0("Empty data cells (NA) in qPCR.N data should match ",
                      "empty data cells (NA) in qPCR.K data.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -926,7 +1019,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$count == Inf, na.rm =  TRUE) | any(data$count == -Inf,
                                                  na.rm =  TRUE)){
-    errMsg <- "count contains undefined values (i.e., Inf or -Inf)"
+    errMsg1 <- "count contains undefined values (i.e., Inf or -Inf)"
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -947,7 +1044,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$qPCR.N == Inf, na.rm = TRUE) | any(data$qPCR.N == -Inf,
                                                   na.rm =  TRUE)){
-    errMsg <- "qPCR.N contains undefined values (i.e., Inf or -Inf)"
+    errMsg1 <- "qPCR.N contains undefined values (i.e., Inf or -Inf)"
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -955,7 +1056,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$qPCR.K == Inf, na.rm =  TRUE) | any(data$qPCR.K == -Inf,
                                                   na.rm =  TRUE)){
-    errMsg <- "qPCR.K contains undefined values (i.e., Inf or -Inf)"
+    errMsg1 <- "qPCR.K contains undefined values (i.e., Inf or -Inf)"
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -965,7 +1070,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #'   integers), implemented prior to analytic routines
   if(!all(data$qPCR.N %% 1 %in% c(0,NA)) | any(data$qPCR.N < 0,
                                                na.rm =  TRUE)){
-    errMsg <- "All values in qPCR.N should be non-negative integers."
+    errMsg1 <- "All values in qPCR.N should be non-negative integers."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -975,7 +1084,11 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   #'   integers), implemented prior to analytic routines
   if(!all(data$qPCR.K %% 1 %in% c(0,NA)) | any(data$qPCR.K < 0,
                                                na.rm =  TRUE)){
-    errMsg <- "All values in qPCR.K should be non-negative integers."
+    errMsg1 <- "All values in qPCR.K should be non-negative integers."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -1020,9 +1133,13 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
 
   ## check that N >= K
   if(any(data$qPCR.K > data$qPCR.N, na.rm =  TRUE)){
-    errMsg <- paste0("N should be >= K in qPCR data. N is the number of qPCR ",
+    errMsg1 <- paste0("N should be >= K in qPCR data. N is the number of qPCR ",
                      "replicates per sample, and K is the number of positive ",
                      "detections among replicates.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase1.html#prepare-the-data')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -1038,14 +1155,22 @@ covariate_checks <- function(data,cov){
   #' @srrstats {G5.8,G5.8a} Pre-processing routines to check for zero-length
   #'   data
   if (dim(data$site.cov)[1] == 0) {
-    errMsg <- "site.cov contains zero-length data."
+    errMsg1 <- "site.cov contains zero-length data."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
   ## make sure no column is entirely NA in site.cov
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
   #'   all NA
   if (any(apply(data$site.cov, 2, function(col) all(is.na(col))))) {
-    errMsg <- "site.cov contains a column with all NA."
+    errMsg1 <- "site.cov contains a column with all NA."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -1053,21 +1178,33 @@ covariate_checks <- function(data,cov){
   #' @srrstats {G5.8,G5.8b} Pre-processing routines to check for data of
   #'   unsupported type
   if(!is.numeric(data$site.cov)){
-    errMsg <- "site.cov should be numeric."
+    errMsg1 <- "site.cov should be numeric."
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
   ## make sure no data are undefined
   #' @srrstats {G2.16} Pre-processing routines to check for undefined data
   if(any(data$site.cov == Inf) | any(data$site.cov == -Inf)){
-    errMsg <- "site.cov contains undefined values (i.e., Inf or -Inf)"
+    errMsg1 <- "site.cov contains undefined values (i.e., Inf or -Inf)"
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
   ## cov values match column names in site.cov
   if(!all(cov %in% colnames(data$site.cov))){
-    errMsg <- paste0("cov values should be listed in the column names of ",
+    errMsg1 <- paste0("cov values should be listed in the column names of ",
                      "site.cov in the data.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -1075,8 +1212,12 @@ covariate_checks <- function(data,cov){
   #' @srrstats {BS2.1} Pre-processing routines to ensure all input data is
   #'   dimensionally commensurate
   if(dim(data$qPCR.N)[1] != dim(data$site.cov)[1]){
-    errMsg <- paste0("The number of rows in site.cov matrix should match the ",
+    errMsg1 <- paste0("The number of rows in site.cov matrix should match the ",
                      "number of rows in all other matrices.")
+    errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+                      '/usecase2.html')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -1105,8 +1246,13 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
 
   ## length of initial values is equal to the number of chains
   if(length(initial_values) != n.chain){
-    errMsg <- paste0("The length of the list of initial values should equal ",
+    errMsg1 <- paste0("The length of the list of initial values should equal ",
                      "the number of chains (n.chain, default is 4).")
+    errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                      'initial values: ')
+    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                      'vignette/usecase1.html#initialvalues')
+    errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
 
@@ -1117,13 +1263,23 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
       ## if mu is numeric
       if(any(!is.numeric(initial_values[[i]]$mu)) |
          any(initial_values[[i]]$mu < 0)){
-        errMsg <- "Initial values for 'mu' should be numeric values > 0."
+        errMsg1 <- "Initial values for 'mu' should be numeric values > 0."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
       ## check mu length
       if(length(initial_values[[i]]$mu) != dim(data$count)[1]){
-        errMsg <- paste0("The length of initial values for 'mu' should equal ",
+        errMsg1 <- paste0("The length of initial values for 'mu' should equal ",
                          "the number of sites.")
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
     }
@@ -1132,12 +1288,22 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
     if('p10' %in% names(initial_values[[i]])){
       ## if p10 is numeric
       if(!is.numeric(initial_values[[i]]$p10)){
-        errMsg <- "Initial values for 'p10' should be numeric."
+        errMsg1 <- "Initial values for 'p10' should be numeric."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
       ## check p10 length
       if(length(initial_values[[i]]$p10) != 1){
-        errMsg <- "The length of initial values for 'p10' should equal 1."
+        errMsg1 <- "The length of initial values for 'p10' should equal 1."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
     }
@@ -1146,12 +1312,22 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
     if('beta' %in% names(initial_values[[i]])){
       ## if beta is numeric
       if(!is.numeric(initial_values[[i]]$beta)){
-        errMsg <- "Initial values for 'beta' should be numeric."
+        errMsg1 <- "Initial values for 'beta' should be numeric."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
       ## check beta length
       if(length(initial_values[[i]]$beta) != 1){
-        errMsg <- "The length of initial values for 'beta' should equal 1."
+        errMsg1 <- "The length of initial values for 'beta' should equal 1."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
     }
@@ -1160,13 +1336,23 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
     if('alpha' %in% names(initial_values[[i]])){
       ## if alpha is numeric
       if(any(!is.numeric(initial_values[[i]]$alpha))){
-        errMsg <- "Initial values for 'alpha' should be numeric."
+        errMsg1 <- "Initial values for 'alpha' should be numeric."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase2.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
       ## check alpha length
       if(length(initial_values[[i]]$alpha) != (length(cov)+1)){
-        errMsg <- paste0("The length of initial values for 'alpha' should ",
+        errMsg1 <- paste0("The length of initial values for 'alpha' should ",
                          "equal: # covariates + 1 (i.e., including intercept).")
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase2.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
     }
@@ -1176,14 +1362,24 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
       ## if q is numeric
       if(any(!is.numeric(initial_values[[i]]$q)) |
          any(initial_values[[i]]$q < 0)){
-        errMsg <- "Initial values for 'q' should be numeric."
+        errMsg1 <- "Initial values for 'q' should be numeric."
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
       ## check q length
       if(length(initial_values[[i]]$q) != (length(table(data$count.type))-1)){
-        errMsg <- paste0("The length of initial values for 'q' should equal:",
+        errMsg1 <- paste0("The length of initial values for 'q' should equal:",
                          " # unique gear types - 1 (i.e., q for reference ",
                          "type = 1).")
+        errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
+                          'initial values: ')
+        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                          'vignette/usecase1.html#initialvalues')
+        errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
     }

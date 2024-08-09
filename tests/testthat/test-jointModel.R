@@ -6,7 +6,11 @@ test_that("jointModel input checks work", {
                                       qPCR.n = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "Data should include 'qPCR.N', 'qPCR.K', and 'count'.")
+               paste("Data should include 'qPCR.N', 'qPCR.K', and 'count'.",
+                      'See the eDNAjoint guide for data formatting help: ',
+                      paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                             'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
   #2. input tags are valid, q = FALSE, cov = TRUE
   site.cov <- cbind(c(1,0),c(0.4,-0.4))
   colnames(site.cov) <- c('var_a','var_b')
@@ -16,8 +20,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),
                           multicore = FALSE),
-               paste0("Data should include 'qPCR.N', 'qPCR.K', ",
-                      "'count', and 'site.cov'."))
+               paste(paste0("Data should include 'qPCR.N', 'qPCR.K', ",
+                            "'count', and 'site.cov'."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html#prepare-the-data'),
+                     sep='\n'))
   #3. input tags are valid, q = TRUE, cov = FALSE
   expect_error(jointModel(data = list(qPCR.k = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.n = rbind(c(3,3,3),c(3,3,NA)),
@@ -25,8 +33,12 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1,2,1),c(1,2,NA))),
                           q = TRUE,
                           multicore = FALSE),
-               paste0("Data should include 'qPCR.N', 'qPCR.K', ",
-                      "'count', and 'count.type'."))
+               paste(paste0("Data should include 'qPCR.N', 'qPCR.K', ",
+                            "'count', and 'count.type'."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
   #4. input tags are valid, q = TRUE, cov = TRUE
   site.cov <- cbind(c(1,0),c(0.4,-0.4))
   colnames(site.cov) <- c('var_a','var_b')
@@ -37,8 +49,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),q = TRUE,
                           multicore = FALSE),
-               paste0("Data should include 'qPCR.N', 'qPCR.K', 'count', ",
-                      "'count.type', and 'site.cov'."))
+               paste(paste0("Data should include 'qPCR.N', 'qPCR.K', 'count', ",
+                            "'count.type', and 'site.cov'."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #5. make sure dimensions of qPCR.N and qPCR.K are equal
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
@@ -47,7 +63,11 @@ test_that("jointModel input checks work", {
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "Dimensions of qPCR.N and qPCR.K do not match.")
+               paste("Dimensions of qPCR.N and qPCR.K do not match.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #6. make sure dimensions of count and count.type are equal, if count.type is
   # present
@@ -59,7 +79,11 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1,2),c(1,2))),
                           q = TRUE,
                           multicore = FALSE),
-               "Dimensions of count and count.type do not match.")
+               paste("Dimensions of count and count.type do not match.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #7. make sure number of rows in count = number of rows in qPCR.N and qPCR.K
   #' @srrstats {BS2.1a} Test to ensure pre-processing routines to ensure all
@@ -69,8 +93,12 @@ test_that("jointModel input checks work", {
                                       count = rbind(c(4,1,1),c(1,1,NA),
                                                     c(4,1,1))),
                           multicore = FALSE),
-               paste0("Number of sites \\(rows\\) in qPCR data and ",
-                      "traditional survey count data do not match."))
+               paste(paste0("Number of sites \\(rows\\) in qPCR data and ",
+                            "traditional survey count data do not match."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #8. make sure all data is numeric -- if q == TRUE
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -79,14 +107,22 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c('NA',2,2),c(1,2,2))),
                           q = TRUE,
                           multicore = FALSE),
-               "Data should be numeric.")
+               paste("Data should be numeric.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #9. make sure all data is numeric -- if q == FALSE
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,'NA')),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "Data should be numeric.")
+               paste("Data should be numeric.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #10. make sure locations of NAs in count data match locations of NAs in
   # count.type data
@@ -96,8 +132,13 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(NA,2,2),c(1,2,2))),
                           q = TRUE,
                           multicore = FALSE),
-               paste0("Empty data cells \\(NA\\) in count data should match ",
-                      "empty data cells \\(NA\\) in count.type data."))
+               paste(paste0("Empty data cells \\(NA\\) in count data should ",
+                            "match ",
+                            "empty data cells \\(NA\\) in count.type data."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #11. make sure locations of NAs in qPCR.N data match locations of NAs in
   # qPCR.K data
@@ -105,8 +146,13 @@ test_that("jointModel input checks work", {
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               paste0("Empty data cells \\(NA\\) in qPCR.N data should match ",
-                      "empty data cells \\(NA\\) in qPCR.K data."))
+               paste(paste0("Empty data cells \\(NA\\) in qPCR.N data should ",
+                            "match ",
+                            "empty data cells \\(NA\\) in qPCR.K data."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #12. make sure family is either 'poisson', 'negbin', or 'gamma'
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -160,9 +206,13 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(0,1,2),c(1,2,NA))),
                           q = TRUE,
                           multicore = FALSE),
-               paste0("The first gear type should be referenced as 1 in ",
-                      "count.type. Subsequent gear types should be ",
-                      "referenced 2, 3, 4, etc."))
+               paste(paste0("The first gear type should be referenced as 1 in ",
+                            "count.type. Subsequent gear types should be ",
+                            "referenced 2, 3, 4, etc."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #18. count are integers
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -181,7 +231,11 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1,1,2),c(1,2,NA))),
                           q = TRUE,
                           multicore = FALSE),
-               "All values in qPCR.K should be non-negative integers.")
+               paste("All values in qPCR.K should be non-negative integers.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #20. qPCR.K are integers
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -190,7 +244,11 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1,1,2),c(1,2,NA))),
                           q = TRUE,
                           multicore = FALSE),
-               "All values in qPCR.N should be non-negative integers.")
+               paste("All values in qPCR.N should be non-negative integers.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #21. count.type are integers
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -199,7 +257,11 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1.1,1,2),c(1,2,NA))),
                           q = TRUE,
                           multicore = FALSE),
-               "All values in count.type should be integers.")
+               paste("All values in count.type should be integers.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #22. site.cov is numeric, if present
   site.cov <- cbind(c('high','low'),c(0.4,-0.4))
@@ -211,7 +273,11 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),q = TRUE,
                           multicore = FALSE),
-               "site.cov should be numeric.")
+               paste("site.cov should be numeric.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html'),
+                     sep='\n'))
 
   #23. cov values match column names in site.cov
   site.cov <- cbind(c(0,1),c(0.4,-0.4))
@@ -222,8 +288,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),q = TRUE,
                           multicore = FALSE),
-               paste0("cov values should be listed in the column names of ",
-                      "site.cov in the data."))
+               paste(paste0("cov values should be listed in the column names of ",
+                            "site.cov in the data."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html'),
+                     sep='\n'))
 
   #24. site.cov has same number of rows as qPCR.N and count, if present
   site.cov <- cbind(c(0,1,1),c(0.4,-0.4,1))
@@ -235,8 +305,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),q = TRUE,
                           multicore = FALSE),
-               paste0("The number of rows in site.cov matrix should match the ",
-                      "number of rows in all other matrices."))
+               paste(paste0("The number of rows in site.cov matrix should match ",
+                            "the number of rows in all other matrices."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html'),
+                     sep='\n'))
 
   #25. make sure count.type is not zero-length
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -246,7 +320,11 @@ test_that("jointModel input checks work", {
                                                           nrow = 0)),
                           q = TRUE,
                           multicore = FALSE),
-               "count.type contains zero-length data.")
+               paste("count.type contains zero-length data.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #26. make sure no column is entirely NA in count.type
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -255,49 +333,77 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(4,1,NA),c(1,1,NA))),
                           q = TRUE,
                           multicore = FALSE),
-               "count.type contains a column with all NA.")
+               paste("count.type contains a column with all NA.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase3.html#prepare-the-data'),
+                     sep='\n'))
 
   #27. make sure no column is entirely NA in qPCR.K
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,NA),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "qPCR.K contains a column with all NA.")
+               paste("qPCR.K contains a column with all NA.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #28. make sure no column is entirely NA in qPCR.N
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,NA),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "qPCR.N contains a column with all NA.")
+               paste("qPCR.N contains a column with all NA.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #29. make sure no column is entirely NA in count
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,NA),c(1,1,NA))),
                           multicore = FALSE),
-               "count contains a column with all NA.")
+               paste("count contains a column with all NA.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #30. make sure no data are undefined
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,Inf),c(1,1,NA))),
                           multicore = FALSE),
-               "count contains undefined values \\(i.e., Inf or -Inf\\)")
+               paste("count contains undefined values \\(i.e., Inf or -Inf\\)",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #31. make sure no data are undefined
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,Inf),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "qPCR.N contains undefined values \\(i.e., Inf or -Inf\\)")
+               paste("qPCR.N contains undefined values \\(i.e., Inf or -Inf\\)",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #32. make sure no data are undefined
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,Inf),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           multicore = FALSE),
-               "qPCR.K contains undefined values \\(i.e., Inf or -Inf\\)")
+               paste("qPCR.K contains undefined values \\(i.e., Inf or -Inf\\)",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n'))
 
   #33. make sure site.cov is not zero-length
   site.cov <- matrix(NA,ncol = 2,nrow = 0)
@@ -308,7 +414,11 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),
                           multicore = FALSE),
-               "site.cov contains zero-length data.")
+               paste("site.cov contains zero-length data.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html'),
+                     sep='\n'))
 
   #34. make sure no column is entirely NA in site.cov
   site.cov <- rbind(c(4,1,NA),c(1,1,NA))
@@ -319,7 +429,11 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),
                           multicore = FALSE),
-               "site.cov contains a column with all NA.")
+               paste("site.cov contains a column with all NA.",
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html'),
+                     sep='\n'))
 
   #35. make sure no data are undefined
   site.cov <- rbind(c(4,1,Inf),c(1,1,NA))
@@ -330,7 +444,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'),
                           multicore = FALSE),
-               "site.cov contains undefined values \\(i.e., Inf or -Inf\\)")
+               paste(paste0("site.cov contains undefined values \\(i.e., ",
+                            "Inf or -Inf\\)"),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html'),
+                     sep='\n'))
 
   #36. length of initial values is equal to the number of chains
   n.chain <- 4
@@ -351,8 +470,14 @@ test_that("jointModel input checks work", {
                           cov = c('var_a','var_b'), initial_values = inits,
                           n.chain = 5,
                           multicore = FALSE),
-               paste0("The length of the list of initial values should equal ",
-                      "the number of chains \\(n.chain, default is 4\\)."))
+               paste(paste0("The length of the list of initial values ",
+                            "should equal the number of chains \\(n.chain, ",
+                            "default is 4\\)."),
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #37. initial values check: if mu is numeric
   n.chain <- 4
@@ -373,7 +498,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'), initial_values = inits,
                           multicore = FALSE),
-               "Initial values for 'mu' should be numeric values > 0.")
+               paste("Initial values for 'mu' should be numeric values > 0.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #38. initial values check: mu length
   n.chain <- 4
@@ -394,8 +524,13 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'), initial_values = inits,
                           multicore = FALSE),
-               paste0("The length of initial values for 'mu' should ",
-                      "equal the number of sites."))
+               paste(paste0("The length of initial values for 'mu' should ",
+                            "equal the number of sites."),
+                      paste0('See the eDNAjoint guide for help formatting ',
+                             'initial values: '),
+                      paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                             'vignette/usecase1.html#initialvalues'),
+                      sep='\n'))
 
 
   #39. initial values check: p10 numeric
@@ -417,7 +552,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'), initial_values = inits,
                           multicore = FALSE),
-               "Initial values for 'p10' should be numeric.")
+               paste("Initial values for 'p10' should be numeric.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #40. initial values check: p10 length
   n.chain <- 4
@@ -438,7 +578,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'), initial_values = inits,
                           multicore = FALSE),
-               "The length of initial values for 'p10' should equal 1.")
+               paste("The length of initial values for 'p10' should equal 1.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #41. initial values check: beta numeric
   n.chain <- 4
@@ -456,7 +601,12 @@ test_that("jointModel input checks work", {
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           initial_values = inits,
                           multicore = FALSE),
-               "Initial values for 'beta' should be numeric.")
+               paste("Initial values for 'beta' should be numeric.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #42. initial values check: beta length
   n.chain <- 4
@@ -474,7 +624,12 @@ test_that("jointModel input checks work", {
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           initial_values = inits,
                           multicore = FALSE),
-               "The length of initial values for 'beta' should equal 1.")
+               paste("The length of initial values for 'beta' should equal 1.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #43. initial values check: alpha numeric
   n.chain <- 4
@@ -495,7 +650,12 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'), initial_values = inits,
                           multicore = FALSE),
-               paste0("Initial values for 'alpha' should be numeric."))
+               paste("Initial values for 'alpha' should be numeric.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html#initialvalues'),
+                     sep='\n'))
 
   #44. initial values check: alpha length
   n.chain <- 4
@@ -516,9 +676,14 @@ test_that("jointModel input checks work", {
                                       site.cov = site.cov),
                           cov = c('var_a','var_b'), initial_values = inits,
                           multicore = FALSE),
-               paste0("The length of initial values for 'alpha' should ",
-                      "equal\\: \\# covariates \\+ 1 \\(i.e., ",
-                      "including intercept\\)."))
+               paste(paste0("The length of initial values for 'alpha' should ",
+                            "equal\\: \\# covariates \\+ 1 \\(i.e., ",
+                            "including intercept\\)."),
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase2.html#initialvalues'),
+                     sep='\n'))
 
   #45. initial values check: q numeric
   n.chain <- 4
@@ -535,7 +700,12 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1,2,1),c(1,1,NA))),
                           initial_values = inits,
                           multicore = FALSE),
-               paste0("Initial values for 'q' should be numeric."))
+               paste("Initial values for 'q' should be numeric.",
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #46. initial values check: q length
   n.chain <- 4
@@ -552,9 +722,14 @@ test_that("jointModel input checks work", {
                                       count.type = rbind(c(1,2,1),c(1,1,NA))),
                           initial_values = inits,
                           multicore = FALSE),
-               paste0("The length of initial values for 'q' should equal: ",
-                      "\\# unique gear types \\- 1 \\(i.e., q for reference ",
-                      "type = 1\\)."))
+               paste(paste0("The length of initial values for 'q' should ",
+                            "equal: \\# unique gear types \\- 1 \\(i.e., q ",
+                            "for reference type = 1\\)."),
+                     paste0('See the eDNAjoint guide for help formatting ',
+                            'initial values: '),
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#initialvalues'),
+                     sep='\n'))
 
   #47. check length and range of n.chain
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
@@ -650,9 +825,13 @@ test_that("jointModel input checks work", {
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA)),
                           multicore = FALSE)),
-               paste0("N should be >= K in qPCR data. N is the number of qPCR ",
-                     "replicates per sample, and K is the number of positive ",
-                     "detections among replicates.")
+               paste(paste0("N should be >= K in qPCR data. N is the number ",
+                            "of qPCR replicates per sample, and K is the ",
+                            "number of positive detections among replicates."),
+                     'See the eDNAjoint guide for data formatting help: ',
+                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
+                            'vignette/usecase1.html#prepare-the-data'),
+                     sep='\n')
   )
 
 

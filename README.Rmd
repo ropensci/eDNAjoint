@@ -47,6 +47,10 @@ as estimation of catchability coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
+```{r, echo=FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics("man/figures/basic_diagram_final-01.png")
+```
+
 ## Installation
 
 You can install the development version of eDNAjoint. Note that
