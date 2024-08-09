@@ -47,9 +47,7 @@ as estimation of catchability coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
-```{r, echo=FALSE, out.width='50%', fig.align='center'}
-knitr::include_graphics("man/figures/basic_diagram_final-01.png")
-```
+<img src="man/figures/basic_diagram_final-01.png" style="display: block; margin: 0 auto;" height="400" dpi="700"/>
 
 ## Installation
 

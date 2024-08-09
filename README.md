@@ -27,7 +27,7 @@ as estimation of catchability coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
-<img src="man/figures/basic_diagram_final-01.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/basic_diagram_final-01.png" style="display: block; margin: 0 auto;" height="400" dpi="700"/>
 
 ## Installation
 
@@ -70,7 +70,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 16195.17    1
+#> p10 0.003       0 0.001 0.001 0.007 18521.46    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
