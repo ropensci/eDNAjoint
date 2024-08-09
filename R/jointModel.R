@@ -440,7 +440,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
                                                   par = 'log_lik')$log_lik))))
 
   # check for divergent transitions
-  div_trans <- sum(lapply(rstan::get_sampler_params(modelfit,
+  div_trans <- sum(lapply(rstan::get_sampler_params(out,
                                                     inc_warmup = FALSE),
                           div_check)[[1]])
   # print either troubleshooting or visualization tips
