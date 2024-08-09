@@ -47,7 +47,9 @@ as estimation of catchability coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
-<img src="man/figures/basic_diagram_final-01.png" style="display: block; margin: 0 auto;" height="400" dpi="700"/>
+<div style="text-align: center;">
+  <img src="man/figures/basic_diagram_final-01.png" height="400" dpi="700"/>
+</div>
 
 ## Installation
 
