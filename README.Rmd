@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/642_status.svg)](https://github.com/ropensci/software-review/issues/642)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 <!-- badges: end -->
 

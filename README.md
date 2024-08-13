@@ -12,7 +12,7 @@
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/642_status.svg)](https://github.com/ropensci/software-review/issues/642)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 <!-- badges: end -->
 
@@ -73,8 +73,8 @@ detection, $p_{10}$:
 ``` r
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
-#>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 17646.07    1
+#>      mean se_mean    sd  2.5% 97.5%   n_eff Rhat
+#> p10 0.003       0 0.001 0.001 0.007 15361.8    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
