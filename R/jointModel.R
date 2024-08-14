@@ -446,7 +446,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
   # print either troubleshooting or visualization tips
   if(div_trans>0){
     url <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette/',
-                  'tips.html#visualization-tips')
+                  'tips.html#troubleshooting-tips')
     message <- 'Refer to the eDNAjoint guide for troubleshooting tips: '
     cat(message, url, "\n")
   } else {
