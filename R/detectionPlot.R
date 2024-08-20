@@ -131,8 +131,6 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = NULL,
                        linewidth = 1)+
     ggplot2::labs(x = 'mu',y = '# survey units',
                   color = 'survey type')+
-    ggplot2::ggtitle('# survey units necessary to detect
-                     species presence, given mu')+
     ggplot2::theme_minimal()
 
   return(plot)
