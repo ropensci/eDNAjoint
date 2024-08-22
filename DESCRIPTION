@@ -29,7 +29,8 @@ Imports:
     rlist,
     rstan (>= 2.26.23),
     rstantools (>= 2.3.1.1),
-    tidyr
+    tidyr,
+    scales
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
