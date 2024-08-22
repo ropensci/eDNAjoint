@@ -122,15 +122,30 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = NULL,
   # get n samples df
   out <- detectionCalculate(modelfit, mu, cov.val, probability, qPCR.N)
 
+  # convert to long df
   '%>%' <- magrittr::`%>%`
   out_long <- as.data.frame(out) %>%
     tidyr::pivot_longer(cols =! mu, names_to = 'survey_type')
 
+  # get full names
+  if(length(unique(out_long$survey_type))==1){
+    names <- 'traditional'
+  } else if(length(unique(out_long$survey_type))==2){
+    names <- c('eDNA','traditional')
+  } else{
+    names <- 'eDNA'
+    for(i in 1:(length(unique(out_long$survey_type))-1)){
+      names <- c(names, paste0('traditional (gear type ',i,')'))
+    }
+  }
+
   plot <- ggplot2::ggplot(data = out_long)+
     ggplot2::geom_line(ggplot2::aes(x = mu, y = value, color = survey_type),
                        linewidth = 1)+
-    ggplot2::labs(x = 'mu',y = '# survey units',
+    ggplot2::labs(x = 'mu (expected catch rate)',y = '# survey units',
                   color = 'survey type')+
+    ggplot2::scale_color_manual(values = scales::hue_pal()(length(names)),
+                                labels = names)+
     ggplot2::theme_minimal()
 
   return(plot)
