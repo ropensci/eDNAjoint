@@ -39,8 +39,9 @@ A plot displaying survey efforts necessary to detect species
 presence, given mu, for each survey type.
 }
 \description{
-This function plots the median number of survey effort units to necessary
-detect species presence. Detecting species presence is defined as producing
+This function plots the number of survey effort units to necessary detect
+species presence, calculated using median estimated parameter values from
+jointModel(). Detecting species presence is defined as producing
 at least one true positive eDNA detection or catching at least one
 individual. See more examples in the
 \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package

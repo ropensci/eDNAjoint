@@ -1,8 +1,9 @@
 #' Calculate the survey effort necessary to detect species presence, given the
 #' species expected catch rate.
 #'
-#' This function calculates the median number of survey effort units to
-#' necessary detect species presence. Detecting species presence is defined
+#' This function calculates the number of survey effort units to necessary
+#' detect species presence using median estimated parameter values from
+#' jointModel(). Detecting species presence is defined
 #' as producing at least one true positive eDNA detection or catching at least
 #' one individual. See more examples in the
 #' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package

@@ -27,100 +27,142 @@ namespace model_joint_binary_catchability_gamma_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 78> locations_array__ =
+static constexpr std::array<const char*, 112> locations_array__ =
   {" (found before start of program)",
-  " (in 'string', line 15, column 4 to column 42)",
-  " (in 'string', line 16, column 4 to column 45)",
-  " (in 'string', line 17, column 4 to column 14)",
-  " (in 'string', line 18, column 4 to column 26)",
-  " (in 'string', line 19, column 4 to column 44)",
-  " (in 'string', line 22, column 2 to column 43)",
-  " (in 'string', line 23, column 2 to column 40)",
-  " (in 'string', line 24, column 2 to column 26)",
-  " (in 'string', line 25, column 2 to column 33)",
-  " (in 'string', line 26, column 2 to column 33)",
-  " (in 'string', line 53, column 2 to column 20)",
-  " (in 'string', line 54, column 2 to column 22)",
-  " (in 'string', line 55, column 2 to column 28)",
-  " (in 'string', line 56, column 2 to column 11)",
-  " (in 'string', line 28, column 4 to column 43)",
-  " (in 'string', line 29, column 4 to column 45)",
-  " (in 'string', line 30, column 4 to column 33)",
-  " (in 'string', line 27, column 19 to line 31, column 3)",
-  " (in 'string', line 27, column 2 to line 31, column 3)",
-  " (in 'string', line 33, column 6 to column 48)",
-  " (in 'string', line 32, column 15 to line 34, column 5)",
-  " (in 'string', line 32, column 2 to line 34, column 5)",
-  " (in 'string', line 36, column 6 to column 42)",
-  " (in 'string', line 35, column 17 to line 37, column 5)",
-  " (in 'string', line 35, column 4 to line 37, column 5)",
-  " (in 'string', line 57, column 2 to column 21)",
-  " (in 'string', line 58, column 2 to column 18)",
-  " (in 'string', line 59, column 2 to column 27)",
-  " (in 'string', line 61, column 4 to column 36)",
-  " (in 'string', line 60, column 21 to line 62, column 3)",
-  " (in 'string', line 60, column 2 to line 62, column 3)",
-  " (in 'string', line 64, column 10 to column 92)",
-  " (in 'string', line 63, column 17 to line 65, column 7)",
-  " (in 'string', line 63, column 4 to line 65, column 7)",
-  " (in 'string', line 67, column 10 to column 61)",
-  " (in 'string', line 66, column 19 to line 68, column 7)",
-  " (in 'string', line 66, column 6 to line 68, column 7)",
-  " (in 'string', line 41, column 8 to column 71)",
-  " (in 'string', line 40, column 18 to line 42, column 5)",
-  " (in 'string', line 40, column 4 to line 42, column 5)",
-  " (in 'string', line 44, column 8 to column 39)",
-  " (in 'string', line 43, column 18 to line 45, column 5)",
-  " (in 'string', line 43, column 4 to line 45, column 5)",
-  " (in 'string', line 47, column 2 to column 47)",
-  " (in 'string', line 48, column 2 to column 22)",
-  " (in 'string', line 49, column 2 to column 32)",
-  " (in 'string', line 50, column 2 to column 33)",
-  " (in 'string', line 2, column 4 to column 19)",
-  " (in 'string', line 3, column 4 to column 19)",
-  " (in 'string', line 4, column 10 to column 11)",
-  " (in 'string', line 4, column 4 to column 28)",
-  " (in 'string', line 5, column 10 to column 11)",
-  " (in 'string', line 5, column 4 to column 28)",
-  " (in 'string', line 6, column 4 to column 22)",
-  " (in 'string', line 7, column 10 to column 11)",
-  " (in 'string', line 7, column 4 to column 29)",
-  " (in 'string', line 8, column 10 to column 11)",
-  " (in 'string', line 8, column 4 to column 28)",
-  " (in 'string', line 9, column 10 to column 11)",
-  " (in 'string', line 9, column 4 to column 28)",
-  " (in 'string', line 10, column 4 to column 28)",
-  " (in 'string', line 11, column 4 to column 25)",
-  " (in 'string', line 12, column 11 to column 12)",
-  " (in 'string', line 12, column 13 to column 20)",
-  " (in 'string', line 12, column 4 to column 26)",
-  " (in 'string', line 15, column 10 to column 14)",
-  " (in 'string', line 16, column 10 to column 14)",
-  " (in 'string', line 19, column 27 to column 34)",
-  " (in 'string', line 22, column 8 to column 12)",
-  " (in 'string', line 23, column 8 to column 12)",
-  " (in 'string', line 24, column 18 to column 19)",
-  " (in 'string', line 25, column 8 to column 12)",
-  " (in 'string', line 26, column 8 to column 9)",
-  " (in 'string', line 53, column 9 to column 16)",
-  " (in 'string', line 54, column 9 to column 12)",
-  " (in 'string', line 55, column 9 to column 13)",
-  " (in 'string', line 55, column 14 to column 23)"};
+  " (in 'joint_binary_catchability_gamma', line 22, column 4 to column 23)",
+  " (in 'joint_binary_catchability_gamma', line 23, column 4 to column 26)",
+  " (in 'joint_binary_catchability_gamma', line 24, column 4 to column 51)",
+  " (in 'joint_binary_catchability_gamma', line 25, column 4 to column 44)",
+  " (in 'joint_binary_catchability_gamma', line 26, column 4 to column 47)",
+  " (in 'joint_binary_catchability_gamma', line 27, column 4 to column 50)",
+  " (in 'joint_binary_catchability_gamma', line 30, column 2 to column 43)",
+  " (in 'joint_binary_catchability_gamma', line 31, column 2 to column 53)",
+  " (in 'joint_binary_catchability_gamma', line 32, column 2 to column 51)",
+  " (in 'joint_binary_catchability_gamma', line 33, column 2 to column 33)",
+  " (in 'joint_binary_catchability_gamma', line 34, column 2 to column 26)",
+  " (in 'joint_binary_catchability_gamma', line 65, column 2 to column 20)",
+  " (in 'joint_binary_catchability_gamma', line 66, column 2 to column 28)",
+  " (in 'joint_binary_catchability_gamma', line 67, column 2 to column 11)",
+  " (in 'joint_binary_catchability_gamma', line 68, column 2 to column 42)",
+  " (in 'joint_binary_catchability_gamma', line 69, column 2 to column 51)",
+  " (in 'joint_binary_catchability_gamma', line 36, column 4 to column 48)",
+  " (in 'joint_binary_catchability_gamma', line 37, column 4 to column 60)",
+  " (in 'joint_binary_catchability_gamma', line 38, column 4 to column 43)",
+  " (in 'joint_binary_catchability_gamma', line 35, column 24 to line 39, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 35, column 2 to line 39, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 41, column 6 to column 48)",
+  " (in 'joint_binary_catchability_gamma', line 40, column 15 to line 42, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 40, column 2 to line 42, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 44, column 6 to column 42)",
+  " (in 'joint_binary_catchability_gamma', line 43, column 15 to line 45, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 43, column 2 to line 45, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 70, column 2 to column 21)",
+  " (in 'joint_binary_catchability_gamma', line 71, column 2 to column 18)",
+  " (in 'joint_binary_catchability_gamma', line 73, column 4 to column 37)",
+  " (in 'joint_binary_catchability_gamma', line 75, column 7 to column 47)",
+  " (in 'joint_binary_catchability_gamma', line 74, column 23 to line 76, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 74, column 4 to line 76, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 72, column 23 to line 77, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 72, column 2 to line 77, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 80, column 7 to column 35)",
+  " (in 'joint_binary_catchability_gamma', line 81, column 7 to column 62)",
+  " (in 'joint_binary_catchability_gamma', line 83, column 11 to column 54)",
+  " (in 'joint_binary_catchability_gamma', line 82, column 26 to line 84, column 9)",
+  " (in 'joint_binary_catchability_gamma', line 82, column 7 to line 84, column 9)",
+  " (in 'joint_binary_catchability_gamma', line 79, column 26 to line 85, column 6)",
+  " (in 'joint_binary_catchability_gamma', line 79, column 5 to line 85, column 6)",
+  " (in 'joint_binary_catchability_gamma', line 78, column 2 to line 85, column 6)",
+  " (in 'joint_binary_catchability_gamma', line 87, column 4 to column 86)",
+  " (in 'joint_binary_catchability_gamma', line 86, column 15 to line 88, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 86, column 2 to line 88, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 90, column 4 to column 60)",
+  " (in 'joint_binary_catchability_gamma', line 89, column 15 to line 91, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 89, column 2 to line 91, column 3)",
+  " (in 'joint_binary_catchability_gamma', line 94, column 7 to column 76)",
+  " (in 'joint_binary_catchability_gamma', line 93, column 22 to line 95, column 6)",
+  " (in 'joint_binary_catchability_gamma', line 93, column 5 to line 95, column 6)",
+  " (in 'joint_binary_catchability_gamma', line 92, column 2 to line 95, column 6)",
+  " (in 'joint_binary_catchability_gamma', line 49, column 6 to column 69)",
+  " (in 'joint_binary_catchability_gamma', line 48, column 17 to line 50, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 48, column 4 to line 50, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 52, column 8 to column 44)",
+  " (in 'joint_binary_catchability_gamma', line 51, column 18 to line 53, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 51, column 4 to line 53, column 5)",
+  " (in 'joint_binary_catchability_gamma', line 56, column 11 to column 58)",
+  " (in 'joint_binary_catchability_gamma', line 55, column 25 to line 57, column 8)",
+  " (in 'joint_binary_catchability_gamma', line 55, column 7 to line 57, column 8)",
+  " (in 'joint_binary_catchability_gamma', line 54, column 4 to line 57, column 8)",
+  " (in 'joint_binary_catchability_gamma', line 59, column 2 to column 47)",
+  " (in 'joint_binary_catchability_gamma', line 60, column 2 to column 22)",
+  " (in 'joint_binary_catchability_gamma', line 61, column 2 to column 32)",
+  " (in 'joint_binary_catchability_gamma', line 62, column 2 to column 33)",
+  " (in 'joint_binary_catchability_gamma', line 2, column 4 to column 19)",
+  " (in 'joint_binary_catchability_gamma', line 3, column 4 to column 23)",
+  " (in 'joint_binary_catchability_gamma', line 4, column 4 to column 19)",
+  " (in 'joint_binary_catchability_gamma', line 5, column 10 to column 11)",
+  " (in 'joint_binary_catchability_gamma', line 5, column 4 to column 28)",
+  " (in 'joint_binary_catchability_gamma', line 6, column 10 to column 15)",
+  " (in 'joint_binary_catchability_gamma', line 6, column 4 to column 36)",
+  " (in 'joint_binary_catchability_gamma', line 7, column 10 to column 11)",
+  " (in 'joint_binary_catchability_gamma', line 7, column 4 to column 28)",
+  " (in 'joint_binary_catchability_gamma', line 8, column 4 to column 26)",
+  " (in 'joint_binary_catchability_gamma', line 9, column 4 to column 27)",
+  " (in 'joint_binary_catchability_gamma', line 10, column 10 to column 19)",
+  " (in 'joint_binary_catchability_gamma', line 10, column 4 to column 43)",
+  " (in 'joint_binary_catchability_gamma', line 11, column 10 to column 18)",
+  " (in 'joint_binary_catchability_gamma', line 11, column 4 to column 41)",
+  " (in 'joint_binary_catchability_gamma', line 12, column 10 to column 11)",
+  " (in 'joint_binary_catchability_gamma', line 12, column 4 to column 29)",
+  " (in 'joint_binary_catchability_gamma', line 13, column 10 to column 11)",
+  " (in 'joint_binary_catchability_gamma', line 13, column 4 to column 28)",
+  " (in 'joint_binary_catchability_gamma', line 14, column 10 to column 11)",
+  " (in 'joint_binary_catchability_gamma', line 14, column 4 to column 28)",
+  " (in 'joint_binary_catchability_gamma', line 15, column 10 to column 15)",
+  " (in 'joint_binary_catchability_gamma', line 15, column 4 to column 36)",
+  " (in 'joint_binary_catchability_gamma', line 16, column 10 to column 15)",
+  " (in 'joint_binary_catchability_gamma', line 16, column 4 to column 36)",
+  " (in 'joint_binary_catchability_gamma', line 17, column 4 to column 28)",
+  " (in 'joint_binary_catchability_gamma', line 18, column 4 to column 25)",
+  " (in 'joint_binary_catchability_gamma', line 19, column 11 to column 12)",
+  " (in 'joint_binary_catchability_gamma', line 19, column 13 to column 20)",
+  " (in 'joint_binary_catchability_gamma', line 19, column 4 to column 26)",
+  " (in 'joint_binary_catchability_gamma', line 24, column 10 to column 18)",
+  " (in 'joint_binary_catchability_gamma', line 25, column 27 to column 34)",
+  " (in 'joint_binary_catchability_gamma', line 26, column 10 to column 19)",
+  " (in 'joint_binary_catchability_gamma', line 27, column 10 to column 19)",
+  " (in 'joint_binary_catchability_gamma', line 30, column 8 to column 17)",
+  " (in 'joint_binary_catchability_gamma', line 31, column 8 to column 17)",
+  " (in 'joint_binary_catchability_gamma', line 32, column 8 to column 17)",
+  " (in 'joint_binary_catchability_gamma', line 33, column 8 to column 9)",
+  " (in 'joint_binary_catchability_gamma', line 34, column 18 to column 19)",
+  " (in 'joint_binary_catchability_gamma', line 65, column 9 to column 16)",
+  " (in 'joint_binary_catchability_gamma', line 66, column 9 to column 18)",
+  " (in 'joint_binary_catchability_gamma', line 68, column 9 to column 27)",
+  " (in 'joint_binary_catchability_gamma', line 68, column 28 to column 37)",
+  " (in 'joint_binary_catchability_gamma', line 69, column 8 to column 16)"};
 #include <stan_meta_header.hpp>
 class model_joint_binary_catchability_gamma final : public model_base_crtp<model_joint_binary_catchability_gamma> {
 private:
   int S;
+  int S_dna;
   int C;
   std::vector<int> L;
+  std::vector<int> L_dna;
   std::vector<int> R;
-  int Nloc;
+  int Nloc_dna;
+  int Nloc_trad;
+  std::vector<int> trad_ind;
+  std::vector<int> dna_ind;
   std::vector<double> E;
   std::vector<int> N;
   std::vector<int> K;
+  std::vector<int> N_dna;
+  std::vector<int> K_dna;
   std::vector<double> p10priors;
   int nparams;
   Eigen::Matrix<double,-1,-1> mat_data__;
   int log_lik_1dim__;
+  int mu_1dim__;
   int mu_2dim__;
   Eigen::Map<Eigen::Matrix<double,-1,-1>> mat{nullptr, 0, 0};
 public:
@@ -145,100 +187,168 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 48;
+      current_statement__ = 68;
       context__.validate_dims("data initialization", "S", "int",
         std::vector<size_t>{});
       S = std::numeric_limits<int>::min();
-      current_statement__ = 48;
+      current_statement__ = 68;
       S = context__.vals_i("S")[(1 - 1)];
-      current_statement__ = 48;
+      current_statement__ = 68;
       stan::math::check_greater_or_equal(function__, "S", S, 1);
-      current_statement__ = 49;
+      current_statement__ = 69;
+      context__.validate_dims("data initialization", "S_dna", "int",
+        std::vector<size_t>{});
+      S_dna = std::numeric_limits<int>::min();
+      current_statement__ = 69;
+      S_dna = context__.vals_i("S_dna")[(1 - 1)];
+      current_statement__ = 69;
+      stan::math::check_greater_or_equal(function__, "S_dna", S_dna, 0);
+      current_statement__ = 70;
       context__.validate_dims("data initialization", "C", "int",
         std::vector<size_t>{});
       C = std::numeric_limits<int>::min();
-      current_statement__ = 49;
+      current_statement__ = 70;
       C = context__.vals_i("C")[(1 - 1)];
-      current_statement__ = 49;
+      current_statement__ = 70;
       stan::math::check_greater_or_equal(function__, "C", C, 1);
-      current_statement__ = 50;
+      current_statement__ = 71;
       stan::math::validate_non_negative_index("L", "S", S);
-      current_statement__ = 51;
+      current_statement__ = 72;
       context__.validate_dims("data initialization", "L", "int",
         std::vector<size_t>{static_cast<size_t>(S)});
       L = std::vector<int>(S, std::numeric_limits<int>::min());
-      current_statement__ = 51;
+      current_statement__ = 72;
       L = context__.vals_i("L");
-      current_statement__ = 51;
+      current_statement__ = 72;
       stan::math::check_greater_or_equal(function__, "L", L, 1);
-      current_statement__ = 52;
+      current_statement__ = 73;
+      stan::math::validate_non_negative_index("L_dna", "S_dna", S_dna);
+      current_statement__ = 74;
+      context__.validate_dims("data initialization", "L_dna", "int",
+        std::vector<size_t>{static_cast<size_t>(S_dna)});
+      L_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
+      current_statement__ = 74;
+      L_dna = context__.vals_i("L_dna");
+      current_statement__ = 74;
+      stan::math::check_greater_or_equal(function__, "L_dna", L_dna, 1);
+      current_statement__ = 75;
       stan::math::validate_non_negative_index("R", "C", C);
-      current_statement__ = 53;
+      current_statement__ = 76;
       context__.validate_dims("data initialization", "R", "int",
         std::vector<size_t>{static_cast<size_t>(C)});
       R = std::vector<int>(C, std::numeric_limits<int>::min());
-      current_statement__ = 53;
+      current_statement__ = 76;
       R = context__.vals_i("R");
-      current_statement__ = 53;
+      current_statement__ = 76;
       stan::math::check_greater_or_equal(function__, "R", R, 1);
-      current_statement__ = 54;
-      context__.validate_dims("data initialization", "Nloc", "int",
+      current_statement__ = 77;
+      context__.validate_dims("data initialization", "Nloc_dna", "int",
         std::vector<size_t>{});
-      Nloc = std::numeric_limits<int>::min();
-      current_statement__ = 54;
-      Nloc = context__.vals_i("Nloc")[(1 - 1)];
-      current_statement__ = 54;
-      stan::math::check_greater_or_equal(function__, "Nloc", Nloc, 1);
-      current_statement__ = 55;
+      Nloc_dna = std::numeric_limits<int>::min();
+      current_statement__ = 77;
+      Nloc_dna = context__.vals_i("Nloc_dna")[(1 - 1)];
+      current_statement__ = 77;
+      stan::math::check_greater_or_equal(function__, "Nloc_dna", Nloc_dna, 0);
+      current_statement__ = 78;
+      context__.validate_dims("data initialization", "Nloc_trad", "int",
+        std::vector<size_t>{});
+      Nloc_trad = std::numeric_limits<int>::min();
+      current_statement__ = 78;
+      Nloc_trad = context__.vals_i("Nloc_trad")[(1 - 1)];
+      current_statement__ = 78;
+      stan::math::check_greater_or_equal(function__, "Nloc_trad", Nloc_trad,
+        1);
+      current_statement__ = 79;
+      stan::math::validate_non_negative_index("trad_ind", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 80;
+      context__.validate_dims("data initialization", "trad_ind", "int",
+        std::vector<size_t>{static_cast<size_t>(Nloc_trad)});
+      trad_ind = std::vector<int>(Nloc_trad, std::numeric_limits<int>::min());
+      current_statement__ = 80;
+      trad_ind = context__.vals_i("trad_ind");
+      current_statement__ = 80;
+      stan::math::check_greater_or_equal(function__, "trad_ind", trad_ind, 0);
+      current_statement__ = 81;
+      stan::math::validate_non_negative_index("dna_ind", "Nloc_dna", Nloc_dna);
+      current_statement__ = 82;
+      context__.validate_dims("data initialization", "dna_ind", "int",
+        std::vector<size_t>{static_cast<size_t>(Nloc_dna)});
+      dna_ind = std::vector<int>(Nloc_dna, std::numeric_limits<int>::min());
+      current_statement__ = 82;
+      dna_ind = context__.vals_i("dna_ind");
+      current_statement__ = 82;
+      stan::math::check_greater_or_equal(function__, "dna_ind", dna_ind, 0);
+      current_statement__ = 83;
       stan::math::validate_non_negative_index("E", "C", C);
-      current_statement__ = 56;
+      current_statement__ = 84;
       context__.validate_dims("data initialization", "E", "double",
         std::vector<size_t>{static_cast<size_t>(C)});
       E = std::vector<double>(C, std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 56;
+      current_statement__ = 84;
       E = context__.vals_r("E");
-      current_statement__ = 56;
+      current_statement__ = 84;
       stan::math::check_greater_or_equal(function__, "E", E, 0);
-      current_statement__ = 57;
+      current_statement__ = 85;
       stan::math::validate_non_negative_index("N", "S", S);
-      current_statement__ = 58;
+      current_statement__ = 86;
       context__.validate_dims("data initialization", "N", "int",
         std::vector<size_t>{static_cast<size_t>(S)});
       N = std::vector<int>(S, std::numeric_limits<int>::min());
-      current_statement__ = 58;
+      current_statement__ = 86;
       N = context__.vals_i("N");
-      current_statement__ = 58;
+      current_statement__ = 86;
       stan::math::check_greater_or_equal(function__, "N", N, 1);
-      current_statement__ = 59;
+      current_statement__ = 87;
       stan::math::validate_non_negative_index("K", "S", S);
-      current_statement__ = 60;
+      current_statement__ = 88;
       context__.validate_dims("data initialization", "K", "int",
         std::vector<size_t>{static_cast<size_t>(S)});
       K = std::vector<int>(S, std::numeric_limits<int>::min());
-      current_statement__ = 60;
+      current_statement__ = 88;
       K = context__.vals_i("K");
-      current_statement__ = 60;
+      current_statement__ = 88;
       stan::math::check_greater_or_equal(function__, "K", K, 0);
-      current_statement__ = 61;
+      current_statement__ = 89;
+      stan::math::validate_non_negative_index("N_dna", "S_dna", S_dna);
+      current_statement__ = 90;
+      context__.validate_dims("data initialization", "N_dna", "int",
+        std::vector<size_t>{static_cast<size_t>(S_dna)});
+      N_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
+      current_statement__ = 90;
+      N_dna = context__.vals_i("N_dna");
+      current_statement__ = 90;
+      stan::math::check_greater_or_equal(function__, "N_dna", N_dna, 1);
+      current_statement__ = 91;
+      stan::math::validate_non_negative_index("K_dna", "S_dna", S_dna);
+      current_statement__ = 92;
+      context__.validate_dims("data initialization", "K_dna", "int",
+        std::vector<size_t>{static_cast<size_t>(S_dna)});
+      K_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
+      current_statement__ = 92;
+      K_dna = context__.vals_i("K_dna");
+      current_statement__ = 92;
+      stan::math::check_greater_or_equal(function__, "K_dna", K_dna, 0);
+      current_statement__ = 93;
       context__.validate_dims("data initialization", "p10priors", "double",
         std::vector<size_t>{static_cast<size_t>(2)});
       p10priors = std::vector<double>(2,
                     std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 61;
+      current_statement__ = 93;
       p10priors = context__.vals_r("p10priors");
-      current_statement__ = 62;
+      current_statement__ = 94;
       context__.validate_dims("data initialization", "nparams", "int",
         std::vector<size_t>{});
       nparams = std::numeric_limits<int>::min();
-      current_statement__ = 62;
+      current_statement__ = 94;
       nparams = context__.vals_i("nparams")[(1 - 1)];
-      current_statement__ = 62;
+      current_statement__ = 94;
       stan::math::check_greater_or_equal(function__, "nparams", nparams, 0);
-      current_statement__ = 63;
+      current_statement__ = 95;
       stan::math::validate_non_negative_index("mat", "C", C);
-      current_statement__ = 64;
+      current_statement__ = 96;
       stan::math::validate_non_negative_index("mat", "nparams", nparams);
-      current_statement__ = 65;
+      current_statement__ = 97;
       context__.validate_dims("data initialization", "mat", "double",
         std::vector<size_t>{static_cast<size_t>(C),
           static_cast<size_t>(nparams)});
@@ -248,60 +358,74 @@ public:
         C, nparams);
       {
         std::vector<local_scalar_t__> mat_flat__;
-        current_statement__ = 65;
+        current_statement__ = 97;
         mat_flat__ = context__.vals_r("mat");
-        current_statement__ = 65;
+        current_statement__ = 97;
         pos__ = 1;
-        current_statement__ = 65;
+        current_statement__ = 97;
         for (int sym1__ = 1; sym1__ <= nparams; ++sym1__) {
-          current_statement__ = 65;
+          current_statement__ = 97;
           for (int sym2__ = 1; sym2__ <= C; ++sym2__) {
-            current_statement__ = 65;
+            current_statement__ = 97;
             stan::model::assign(mat, mat_flat__[(pos__ - 1)],
               "assigning variable mat", stan::model::index_uni(sym2__),
               stan::model::index_uni(sym1__));
-            current_statement__ = 65;
+            current_statement__ = 97;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 66;
-      stan::math::validate_non_negative_index("alpha_gamma", "Nloc", Nloc);
-      current_statement__ = 67;
-      stan::math::validate_non_negative_index("beta_gamma", "Nloc", Nloc);
-      current_statement__ = 68;
+      current_statement__ = 98;
+      stan::math::validate_non_negative_index("p_dna", "Nloc_dna", Nloc_dna);
+      current_statement__ = 99;
       stan::math::validate_non_negative_index("q_trans", "nparams", nparams);
-      current_statement__ = 69;
-      stan::math::validate_non_negative_index("p11", "Nloc", Nloc);
-      current_statement__ = 70;
-      stan::math::validate_non_negative_index("p", "Nloc", Nloc);
-      current_statement__ = 71;
-      stan::math::validate_non_negative_index("coef", "C", C);
-      current_statement__ = 72;
-      stan::math::validate_non_negative_index("mu_1", "Nloc", Nloc);
-      current_statement__ = 73;
+      current_statement__ = 100;
+      stan::math::validate_non_negative_index("alpha_gamma", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 101;
+      stan::math::validate_non_negative_index("beta_gamma", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 102;
+      stan::math::validate_non_negative_index("mu_trad_1", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 103;
+      stan::math::validate_non_negative_index("p11_trad", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 104;
+      stan::math::validate_non_negative_index("p_trad", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 105;
       stan::math::validate_non_negative_index("E_trans", "C", C);
-      current_statement__ = 74;
+      current_statement__ = 106;
+      stan::math::validate_non_negative_index("coef", "C", C);
+      current_statement__ = 107;
       stan::math::validate_non_negative_index("q", "nparams", nparams);
-      current_statement__ = 75;
+      current_statement__ = 108;
       log_lik_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 75;
-      log_lik_1dim__ = (C + S);
-      current_statement__ = 75;
-      stan::math::validate_non_negative_index("log_lik", "C + S",
+      current_statement__ = 108;
+      log_lik_1dim__ = ((C + S) + S_dna);
+      current_statement__ = 108;
+      stan::math::validate_non_negative_index("log_lik", "C + S + S_dna",
         log_lik_1dim__);
-      current_statement__ = 76;
-      stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-      current_statement__ = 77;
+      current_statement__ = 109;
+      mu_1dim__ = std::numeric_limits<int>::min();
+      current_statement__ = 109;
+      mu_1dim__ = (Nloc_dna + Nloc_trad);
+      current_statement__ = 109;
+      stan::math::validate_non_negative_index("mu", "Nloc_dna + Nloc_trad",
+        mu_1dim__);
+      current_statement__ = 110;
       mu_2dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 77;
+      current_statement__ = 110;
       mu_2dim__ = (nparams + 1);
-      current_statement__ = 77;
+      current_statement__ = 110;
       stan::math::validate_non_negative_index("mu", "nparams + 1", mu_2dim__);
+      current_statement__ = 111;
+      stan::math::validate_non_negative_index("p11_dna", "Nloc_dna", Nloc_dna);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
-    num_params_r__ = Nloc + Nloc + 1 + 1 + nparams;
+    num_params_r__ = 1 + 1 + Nloc_dna + nparams + Nloc_trad + Nloc_trad;
   }
   inline std::string model_name() const final {
     return "model_joint_binary_catchability_gamma";
@@ -330,96 +454,104 @@ public:
     // suppress unused var warning
     (void) function__;
     try {
-      std::vector<local_scalar_t__> alpha_gamma =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 1;
-      alpha_gamma = in__.template read_constrain_lb<
-                      std::vector<local_scalar_t__>, jacobian__>(0, lp__,
-                      Nloc);
-      std::vector<local_scalar_t__> beta_gamma =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 2;
-      beta_gamma = in__.template read_constrain_lb<
-                     std::vector<local_scalar_t__>, jacobian__>(0.01, lp__,
-                     Nloc);
       local_scalar_t__ beta = DUMMY_VAR__;
-      current_statement__ = 3;
-      beta = in__.template read<local_scalar_t__>();
+      current_statement__ = 1;
+      beta = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
+               lp__);
       local_scalar_t__ log_p10 = DUMMY_VAR__;
-      current_statement__ = 4;
+      current_statement__ = 2;
       log_p10 = in__.template read_constrain_ub<local_scalar_t__,
                   jacobian__>(0, lp__);
+      std::vector<local_scalar_t__> p_dna =
+        std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
+      current_statement__ = 3;
+      p_dna = in__.template read_constrain_lub<std::vector<local_scalar_t__>,
+                jacobian__>(0, 1, lp__, Nloc_dna);
       Eigen::Matrix<local_scalar_t__,-1,1> q_trans =
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(nparams, DUMMY_VAR__);
-      current_statement__ = 5;
+      current_statement__ = 4;
       q_trans = in__.template read_constrain_lb<
                   Eigen::Matrix<local_scalar_t__,-1,1>, jacobian__>(-0.99999,
                   lp__, nparams);
-      std::vector<local_scalar_t__> p11 =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      std::vector<local_scalar_t__> p =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      Eigen::Matrix<local_scalar_t__,-1,1> coef =
-        Eigen::Matrix<local_scalar_t__,-1,1>::Constant(C, DUMMY_VAR__);
-      std::vector<local_scalar_t__> mu_1 =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
+      std::vector<local_scalar_t__> alpha_gamma =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 5;
+      alpha_gamma = in__.template read_constrain_lb<
+                      std::vector<local_scalar_t__>, jacobian__>(0, lp__,
+                      Nloc_trad);
+      std::vector<local_scalar_t__> beta_gamma =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 6;
+      beta_gamma = in__.template read_constrain_lb<
+                     std::vector<local_scalar_t__>, jacobian__>(0.01, lp__,
+                     Nloc_trad);
+      std::vector<local_scalar_t__> mu_trad_1 =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      std::vector<local_scalar_t__> p11_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      std::vector<local_scalar_t__> p_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
       std::vector<local_scalar_t__> E_trans =
         std::vector<local_scalar_t__>(C, DUMMY_VAR__);
-      current_statement__ = 19;
-      for (int i = 1; i <= Nloc; ++i) {
-        current_statement__ = 15;
-        stan::model::assign(mu_1,
+      Eigen::Matrix<local_scalar_t__,-1,1> coef =
+        Eigen::Matrix<local_scalar_t__,-1,1>::Constant(C, DUMMY_VAR__);
+      current_statement__ = 21;
+      for (int i = 1; i <= Nloc_trad; ++i) {
+        current_statement__ = 17;
+        stan::model::assign(mu_trad_1,
           (stan::model::rvalue(alpha_gamma, "alpha_gamma",
              stan::model::index_uni(i)) /
           stan::model::rvalue(beta_gamma, "beta_gamma",
-            stan::model::index_uni(i))), "assigning variable mu_1",
+            stan::model::index_uni(i))), "assigning variable mu_trad_1",
           stan::model::index_uni(i));
-        current_statement__ = 16;
-        stan::model::assign(p11,
-          (stan::model::rvalue(mu_1, "mu_1", stan::model::index_uni(i)) /
-          (stan::model::rvalue(mu_1, "mu_1", stan::model::index_uni(i)) +
-          stan::math::exp(beta))), "assigning variable p11",
-          stan::model::index_uni(i));
-        current_statement__ = 17;
-        stan::model::assign(p,
-          (stan::model::rvalue(p11, "p11", stan::model::index_uni(i)) +
-          stan::math::exp(log_p10)), "assigning variable p",
-          stan::model::index_uni(i));
+        current_statement__ = 18;
+        stan::model::assign(p11_trad,
+          (stan::model::rvalue(mu_trad_1, "mu_trad_1",
+             stan::model::index_uni(i)) /
+          (stan::model::rvalue(mu_trad_1, "mu_trad_1",
+             stan::model::index_uni(i)) + stan::math::exp(beta))),
+          "assigning variable p11_trad", stan::model::index_uni(i));
+        current_statement__ = 19;
+        stan::model::assign(p_trad,
+          (stan::model::rvalue(p11_trad, "p11_trad",
+             stan::model::index_uni(i)) + stan::math::exp(log_p10)),
+          "assigning variable p_trad", stan::model::index_uni(i));
       }
-      current_statement__ = 22;
+      current_statement__ = 24;
       for (int k = 1; k <= C; ++k) {
-        current_statement__ = 20;
+        current_statement__ = 22;
         stan::model::assign(coef, (1 +
           stan::math::dot_product(
             stan::model::rvalue(mat, "mat", stan::model::index_uni(k)),
             q_trans)), "assigning variable coef", stan::model::index_uni(k));
       }
-      current_statement__ = 25;
+      current_statement__ = 27;
       for (int j = 1; j <= C; ++j) {
-        current_statement__ = 23;
+        current_statement__ = 25;
         stan::model::assign(E_trans,
           (stan::model::rvalue(E, "E", stan::model::index_uni(j)) +
           0.0000000000001), "assigning variable E_trans",
           stan::model::index_uni(j));
       }
-      current_statement__ = 6;
-      stan::math::check_greater_or_equal(function__, "p11", p11, 0);
-      current_statement__ = 6;
-      stan::math::check_less_or_equal(function__, "p11", p11, 1);
       current_statement__ = 7;
-      stan::math::check_greater_or_equal(function__, "p", p, 0);
-      current_statement__ = 7;
-      stan::math::check_less_or_equal(function__, "p", p, 1);
+      stan::math::check_greater_or_equal(function__, "mu_trad_1", mu_trad_1,
+        0);
       current_statement__ = 8;
-      stan::math::check_greater_or_equal(function__, "coef", coef, 0);
+      stan::math::check_greater_or_equal(function__, "p11_trad", p11_trad, 0);
+      current_statement__ = 8;
+      stan::math::check_less_or_equal(function__, "p11_trad", p11_trad, 1);
       current_statement__ = 9;
-      stan::math::check_greater_or_equal(function__, "mu_1", mu_1, 0);
+      stan::math::check_greater_or_equal(function__, "p_trad", p_trad, 0);
+      current_statement__ = 9;
+      stan::math::check_less_or_equal(function__, "p_trad", p_trad, 1);
       current_statement__ = 10;
       stan::math::check_greater_or_equal(function__, "E_trans", E_trans, 0);
+      current_statement__ = 11;
+      stan::math::check_greater_or_equal(function__, "coef", coef, 0);
       {
-        current_statement__ = 40;
+        current_statement__ = 56;
         for (int j = 1; j <= C; ++j) {
-          current_statement__ = 38;
+          current_statement__ = 54;
           lp_accum__.add(stan::math::gamma_lpdf<propto__>(
                            stan::model::rvalue(E_trans, "E_trans",
                              stan::model::index_uni(j)),
@@ -434,31 +566,47 @@ public:
                                stan::model::rvalue(R, "R",
                                  stan::model::index_uni(j))))));
         }
-        current_statement__ = 43;
+        current_statement__ = 59;
         for (int i = 1; i <= S; ++i) {
-          current_statement__ = 41;
+          current_statement__ = 57;
           lp_accum__.add(stan::math::binomial_lpmf<propto__>(
                            stan::model::rvalue(K, "K",
                              stan::model::index_uni(i)),
                            stan::model::rvalue(N, "N",
                              stan::model::index_uni(i)),
-                           stan::model::rvalue(p, "p",
+                           stan::model::rvalue(p_trad, "p_trad",
                              stan::model::index_uni(
                                stan::model::rvalue(L, "L",
                                  stan::model::index_uni(i))))));
         }
-        current_statement__ = 44;
+        current_statement__ = 63;
+        if (stan::math::logical_gt(Nloc_dna, 0)) {
+          current_statement__ = 62;
+          for (int i = 1; i <= S_dna; ++i) {
+            current_statement__ = 60;
+            lp_accum__.add(stan::math::binomial_lpmf<propto__>(
+                             stan::model::rvalue(K_dna, "K_dna",
+                               stan::model::index_uni(i)),
+                             stan::model::rvalue(N_dna, "N_dna",
+                               stan::model::index_uni(i)),
+                             stan::model::rvalue(p_dna, "p_dna",
+                               stan::model::index_uni(
+                                 stan::model::rvalue(L_dna, "L_dna",
+                                   stan::model::index_uni(i))))));
+          }
+        }
+        current_statement__ = 64;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(log_p10,
                          stan::model::rvalue(p10priors, "p10priors",
                            stan::model::index_uni(1)),
                          stan::model::rvalue(p10priors, "p10priors",
                            stan::model::index_uni(2))));
-        current_statement__ = 45;
+        current_statement__ = 65;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(beta, 0, 10));
-        current_statement__ = 46;
+        current_statement__ = 66;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(beta_gamma, 0.25,
                          0.25));
-        current_statement__ = 47;
+        current_statement__ = 67;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(alpha_gamma, 0.01,
                          0.01));
       }
@@ -499,110 +647,125 @@ public:
     // suppress unused var warning
     (void) function__;
     try {
-      std::vector<double> alpha_gamma =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 1;
-      alpha_gamma = in__.template read_constrain_lb<
-                      std::vector<local_scalar_t__>, jacobian__>(0, lp__,
-                      Nloc);
-      std::vector<double> beta_gamma =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 2;
-      beta_gamma = in__.template read_constrain_lb<
-                     std::vector<local_scalar_t__>, jacobian__>(0.01, lp__,
-                     Nloc);
       double beta = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 3;
-      beta = in__.template read<local_scalar_t__>();
+      current_statement__ = 1;
+      beta = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
+               lp__);
       double log_p10 = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 4;
+      current_statement__ = 2;
       log_p10 = in__.template read_constrain_ub<local_scalar_t__,
                   jacobian__>(0, lp__);
+      std::vector<double> p_dna =
+        std::vector<double>(Nloc_dna,
+          std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 3;
+      p_dna = in__.template read_constrain_lub<std::vector<local_scalar_t__>,
+                jacobian__>(0, 1, lp__, Nloc_dna);
       Eigen::Matrix<double,-1,1> q_trans =
         Eigen::Matrix<double,-1,1>::Constant(nparams,
           std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 5;
+      current_statement__ = 4;
       q_trans = in__.template read_constrain_lb<
                   Eigen::Matrix<local_scalar_t__,-1,1>, jacobian__>(-0.99999,
                   lp__, nparams);
-      std::vector<double> p11 =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
-      std::vector<double> p =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> alpha_gamma =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 5;
+      alpha_gamma = in__.template read_constrain_lb<
+                      std::vector<local_scalar_t__>, jacobian__>(0, lp__,
+                      Nloc_trad);
+      std::vector<double> beta_gamma =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 6;
+      beta_gamma = in__.template read_constrain_lb<
+                     std::vector<local_scalar_t__>, jacobian__>(0.01, lp__,
+                     Nloc_trad);
+      std::vector<double> mu_trad_1 =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> p11_trad =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> p_trad =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> E_trans =
+        std::vector<double>(C, std::numeric_limits<double>::quiet_NaN());
       Eigen::Matrix<double,-1,1> coef =
         Eigen::Matrix<double,-1,1>::Constant(C,
           std::numeric_limits<double>::quiet_NaN());
-      std::vector<double> mu_1 =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
-      std::vector<double> E_trans =
-        std::vector<double>(C, std::numeric_limits<double>::quiet_NaN());
-      out__.write(alpha_gamma);
-      out__.write(beta_gamma);
       out__.write(beta);
       out__.write(log_p10);
+      out__.write(p_dna);
       out__.write(q_trans);
+      out__.write(alpha_gamma);
+      out__.write(beta_gamma);
       if (stan::math::logical_negation(
             (stan::math::primitive_value(emit_transformed_parameters__) ||
             stan::math::primitive_value(emit_generated_quantities__)))) {
         return ;
       }
-      current_statement__ = 19;
-      for (int i = 1; i <= Nloc; ++i) {
-        current_statement__ = 15;
-        stan::model::assign(mu_1,
+      current_statement__ = 21;
+      for (int i = 1; i <= Nloc_trad; ++i) {
+        current_statement__ = 17;
+        stan::model::assign(mu_trad_1,
           (stan::model::rvalue(alpha_gamma, "alpha_gamma",
              stan::model::index_uni(i)) /
           stan::model::rvalue(beta_gamma, "beta_gamma",
-            stan::model::index_uni(i))), "assigning variable mu_1",
+            stan::model::index_uni(i))), "assigning variable mu_trad_1",
           stan::model::index_uni(i));
-        current_statement__ = 16;
-        stan::model::assign(p11,
-          (stan::model::rvalue(mu_1, "mu_1", stan::model::index_uni(i)) /
-          (stan::model::rvalue(mu_1, "mu_1", stan::model::index_uni(i)) +
-          stan::math::exp(beta))), "assigning variable p11",
-          stan::model::index_uni(i));
-        current_statement__ = 17;
-        stan::model::assign(p,
-          (stan::model::rvalue(p11, "p11", stan::model::index_uni(i)) +
-          stan::math::exp(log_p10)), "assigning variable p",
-          stan::model::index_uni(i));
+        current_statement__ = 18;
+        stan::model::assign(p11_trad,
+          (stan::model::rvalue(mu_trad_1, "mu_trad_1",
+             stan::model::index_uni(i)) /
+          (stan::model::rvalue(mu_trad_1, "mu_trad_1",
+             stan::model::index_uni(i)) + stan::math::exp(beta))),
+          "assigning variable p11_trad", stan::model::index_uni(i));
+        current_statement__ = 19;
+        stan::model::assign(p_trad,
+          (stan::model::rvalue(p11_trad, "p11_trad",
+             stan::model::index_uni(i)) + stan::math::exp(log_p10)),
+          "assigning variable p_trad", stan::model::index_uni(i));
       }
-      current_statement__ = 22;
+      current_statement__ = 24;
       for (int k = 1; k <= C; ++k) {
-        current_statement__ = 20;
+        current_statement__ = 22;
         stan::model::assign(coef, (1 +
           stan::math::dot_product(
             stan::model::rvalue(mat, "mat", stan::model::index_uni(k)),
             q_trans)), "assigning variable coef", stan::model::index_uni(k));
       }
-      current_statement__ = 25;
+      current_statement__ = 27;
       for (int j = 1; j <= C; ++j) {
-        current_statement__ = 23;
+        current_statement__ = 25;
         stan::model::assign(E_trans,
           (stan::model::rvalue(E, "E", stan::model::index_uni(j)) +
           0.0000000000001), "assigning variable E_trans",
           stan::model::index_uni(j));
       }
-      current_statement__ = 6;
-      stan::math::check_greater_or_equal(function__, "p11", p11, 0);
-      current_statement__ = 6;
-      stan::math::check_less_or_equal(function__, "p11", p11, 1);
       current_statement__ = 7;
-      stan::math::check_greater_or_equal(function__, "p", p, 0);
-      current_statement__ = 7;
-      stan::math::check_less_or_equal(function__, "p", p, 1);
+      stan::math::check_greater_or_equal(function__, "mu_trad_1", mu_trad_1,
+        0);
       current_statement__ = 8;
-      stan::math::check_greater_or_equal(function__, "coef", coef, 0);
+      stan::math::check_greater_or_equal(function__, "p11_trad", p11_trad, 0);
+      current_statement__ = 8;
+      stan::math::check_less_or_equal(function__, "p11_trad", p11_trad, 1);
       current_statement__ = 9;
-      stan::math::check_greater_or_equal(function__, "mu_1", mu_1, 0);
+      stan::math::check_greater_or_equal(function__, "p_trad", p_trad, 0);
+      current_statement__ = 9;
+      stan::math::check_less_or_equal(function__, "p_trad", p_trad, 1);
       current_statement__ = 10;
       stan::math::check_greater_or_equal(function__, "E_trans", E_trans, 0);
+      current_statement__ = 11;
+      stan::math::check_greater_or_equal(function__, "coef", coef, 0);
       if (emit_transformed_parameters__) {
-        out__.write(p11);
-        out__.write(p);
-        out__.write(coef);
-        out__.write(mu_1);
+        out__.write(mu_trad_1);
+        out__.write(p11_trad);
+        out__.write(p_trad);
         out__.write(E_trans);
+        out__.write(coef);
       }
       if (stan::math::logical_negation(emit_generated_quantities__)) {
         return ;
@@ -613,31 +776,77 @@ public:
       Eigen::Matrix<double,-1,1> log_lik =
         Eigen::Matrix<double,-1,1>::Constant(log_lik_1dim__,
           std::numeric_limits<double>::quiet_NaN());
-      Eigen::Matrix<double,-1,-1> mu =
-        Eigen::Matrix<double,-1,-1>::Constant(Nloc, mu_2dim__,
-          std::numeric_limits<double>::quiet_NaN());
       double p10 = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 26;
+      Eigen::Matrix<double,-1,-1> mu =
+        Eigen::Matrix<double,-1,-1>::Constant(mu_1dim__, mu_2dim__,
+          std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> p11_dna =
+        std::vector<double>(Nloc_dna,
+          std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 28;
       p10 = stan::math::exp(log_p10);
-      current_statement__ = 27;
+      current_statement__ = 29;
       stan::model::assign(q, stan::math::add(q_trans, 1),
         "assigning variable q");
-      current_statement__ = 28;
-      stan::model::assign(mu, stan::math::to_vector(mu_1),
-        "assigning variable mu", stan::model::index_omni(),
-        stan::model::index_uni(1));
-      current_statement__ = 31;
-      for (int i = 1; i <= nparams; ++i) {
-        current_statement__ = 29;
+      current_statement__ = 35;
+      for (int i = 1; i <= Nloc_trad; ++i) {
+        current_statement__ = 30;
         stan::model::assign(mu,
-          stan::math::multiply(stan::math::to_vector(mu_1),
-            stan::model::rvalue(q, "q", stan::model::index_uni(i))),
-          "assigning variable mu", stan::model::index_omni(),
-          stan::model::index_uni((i + 1)));
+          stan::model::rvalue(mu_trad_1, "mu_trad_1",
+            stan::model::index_uni(i)), "assigning variable mu",
+          stan::model::index_uni(
+            stan::model::rvalue(trad_ind, "trad_ind",
+              stan::model::index_uni(i))), stan::model::index_uni(1));
+        current_statement__ = 33;
+        for (int j = 1; j <= nparams; ++j) {
+          current_statement__ = 31;
+          stan::model::assign(mu,
+            (stan::model::rvalue(mu_trad_1, "mu_trad_1",
+               stan::model::index_uni(i)) *
+            stan::model::rvalue(q, "q", stan::model::index_uni(j))),
+            "assigning variable mu",
+            stan::model::index_uni(
+              stan::model::rvalue(trad_ind, "trad_ind",
+                stan::model::index_uni(i))), stan::model::index_uni((j + 1)));
+        }
       }
-      current_statement__ = 34;
+      current_statement__ = 43;
+      if (stan::math::logical_gt(Nloc_dna, 0)) {
+        current_statement__ = 42;
+        for (int i = 1; i <= Nloc_dna; ++i) {
+          current_statement__ = 36;
+          stan::model::assign(p11_dna,
+            (stan::model::rvalue(p_dna, "p_dna", stan::model::index_uni(i)) -
+            p10), "assigning variable p11_dna", stan::model::index_uni(i));
+          current_statement__ = 37;
+          stan::model::assign(mu,
+            ((stan::model::rvalue(p11_dna, "p11_dna",
+                stan::model::index_uni(i)) * stan::math::exp(beta)) / (1 -
+            stan::model::rvalue(p11_dna, "p11_dna", stan::model::index_uni(i)))),
+            "assigning variable mu",
+            stan::model::index_uni(
+              stan::model::rvalue(dna_ind, "dna_ind",
+                stan::model::index_uni(i))), stan::model::index_uni(1));
+          current_statement__ = 40;
+          for (int j = 1; j <= nparams; ++j) {
+            current_statement__ = 38;
+            stan::model::assign(mu,
+              (stan::model::rvalue(mu, "mu",
+                 stan::model::index_uni(
+                   stan::model::rvalue(dna_ind, "dna_ind",
+                     stan::model::index_uni(i))), stan::model::index_uni(1))
+              * stan::model::rvalue(q, "q", stan::model::index_uni(j))),
+              "assigning variable mu",
+              stan::model::index_uni(
+                stan::model::rvalue(dna_ind, "dna_ind",
+                  stan::model::index_uni(i))),
+              stan::model::index_uni((j + 1)));
+          }
+        }
+      }
+      current_statement__ = 46;
       for (int j = 1; j <= C; ++j) {
-        current_statement__ = 32;
+        current_statement__ = 44;
         stan::model::assign(log_lik,
           stan::math::gamma_lpdf<false>(
             stan::model::rvalue(E_trans, "E_trans", stan::model::index_uni(j)),
@@ -650,22 +859,44 @@ public:
                 stan::model::rvalue(R, "R", stan::model::index_uni(j))))),
           "assigning variable log_lik", stan::model::index_uni(j));
       }
-      current_statement__ = 37;
+      current_statement__ = 49;
       for (int i = 1; i <= S; ++i) {
-        current_statement__ = 35;
+        current_statement__ = 47;
         stan::model::assign(log_lik,
           stan::math::binomial_lpmf<false>(
             stan::model::rvalue(K, "K", stan::model::index_uni(i)),
             stan::model::rvalue(N, "N", stan::model::index_uni(i)),
-            stan::model::rvalue(p, "p",
+            stan::model::rvalue(p_trad, "p_trad",
               stan::model::index_uni(
                 stan::model::rvalue(L, "L", stan::model::index_uni(i))))),
           "assigning variable log_lik", stan::model::index_uni((C + i)));
       }
+      current_statement__ = 53;
+      if (stan::math::logical_gt(Nloc_dna, 0)) {
+        current_statement__ = 52;
+        for (int i = 1; i <= S_dna; ++i) {
+          current_statement__ = 50;
+          stan::model::assign(log_lik,
+            stan::math::binomial_lpmf<false>(
+              stan::model::rvalue(K_dna, "K_dna", stan::model::index_uni(i)),
+              stan::model::rvalue(N_dna, "N_dna", stan::model::index_uni(i)),
+              stan::model::rvalue(p_dna, "p_dna",
+                stan::model::index_uni(
+                  stan::model::rvalue(L_dna, "L_dna",
+                    stan::model::index_uni(i))))),
+            "assigning variable log_lik",
+            stan::model::index_uni(((C + S) + i)));
+        }
+      }
+      current_statement__ = 16;
+      stan::math::check_greater_or_equal(function__, "p11_dna", p11_dna, 0);
+      current_statement__ = 16;
+      stan::math::check_less_or_equal(function__, "p11_dna", p11_dna, 1);
       out__.write(q);
       out__.write(log_lik);
-      out__.write(mu);
       out__.write(p10);
+      out__.write(mu);
+      out__.write(p11_dna);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -686,35 +917,42 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      std::vector<local_scalar_t__> alpha_gamma =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 1;
-      stan::model::assign(alpha_gamma,
-        in__.read<std::vector<local_scalar_t__>>(Nloc),
-        "assigning variable alpha_gamma");
-      out__.write_free_lb(0, alpha_gamma);
-      std::vector<local_scalar_t__> beta_gamma =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 2;
-      stan::model::assign(beta_gamma,
-        in__.read<std::vector<local_scalar_t__>>(Nloc),
-        "assigning variable beta_gamma");
-      out__.write_free_lb(0.01, beta_gamma);
       local_scalar_t__ beta = DUMMY_VAR__;
-      current_statement__ = 3;
+      current_statement__ = 1;
       beta = in__.read<local_scalar_t__>();
-      out__.write(beta);
+      out__.write_free_lb(0, beta);
       local_scalar_t__ log_p10 = DUMMY_VAR__;
-      current_statement__ = 4;
+      current_statement__ = 2;
       log_p10 = in__.read<local_scalar_t__>();
       out__.write_free_ub(0, log_p10);
+      std::vector<local_scalar_t__> p_dna =
+        std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
+      current_statement__ = 3;
+      stan::model::assign(p_dna,
+        in__.read<std::vector<local_scalar_t__>>(Nloc_dna),
+        "assigning variable p_dna");
+      out__.write_free_lub(0, 1, p_dna);
       Eigen::Matrix<local_scalar_t__,-1,1> q_trans =
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(nparams, DUMMY_VAR__);
-      current_statement__ = 5;
+      current_statement__ = 4;
       stan::model::assign(q_trans,
         in__.read<Eigen::Matrix<local_scalar_t__,-1,1>>(nparams),
         "assigning variable q_trans");
       out__.write_free_lb(-0.99999, q_trans);
+      std::vector<local_scalar_t__> alpha_gamma =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 5;
+      stan::model::assign(alpha_gamma,
+        in__.read<std::vector<local_scalar_t__>>(Nloc_trad),
+        "assigning variable alpha_gamma");
+      out__.write_free_lb(0, alpha_gamma);
+      std::vector<local_scalar_t__> beta_gamma =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 6;
+      stan::model::assign(beta_gamma,
+        in__.read<std::vector<local_scalar_t__>>(Nloc_trad),
+        "assigning variable beta_gamma");
+      out__.write_free_lb(0.01, beta_gamma);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -731,58 +969,66 @@ public:
     (void) DUMMY_VAR__;
     try {
       current_statement__ = 1;
-      context__.validate_dims("parameter initialization", "alpha_gamma",
-        "double", std::vector<size_t>{static_cast<size_t>(Nloc)});
-      current_statement__ = 2;
-      context__.validate_dims("parameter initialization", "beta_gamma",
-        "double", std::vector<size_t>{static_cast<size_t>(Nloc)});
-      current_statement__ = 3;
       context__.validate_dims("parameter initialization", "beta", "double",
         std::vector<size_t>{});
-      current_statement__ = 4;
+      current_statement__ = 2;
       context__.validate_dims("parameter initialization", "log_p10",
         "double", std::vector<size_t>{});
-      current_statement__ = 5;
+      current_statement__ = 3;
+      context__.validate_dims("parameter initialization", "p_dna", "double",
+        std::vector<size_t>{static_cast<size_t>(Nloc_dna)});
+      current_statement__ = 4;
       context__.validate_dims("parameter initialization", "q_trans",
         "double", std::vector<size_t>{static_cast<size_t>(nparams)});
+      current_statement__ = 5;
+      context__.validate_dims("parameter initialization", "alpha_gamma",
+        "double", std::vector<size_t>{static_cast<size_t>(Nloc_trad)});
+      current_statement__ = 6;
+      context__.validate_dims("parameter initialization", "beta_gamma",
+        "double", std::vector<size_t>{static_cast<size_t>(Nloc_trad)});
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      std::vector<local_scalar_t__> alpha_gamma =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 1;
-      alpha_gamma = context__.vals_r("alpha_gamma");
-      out__.write_free_lb(0, alpha_gamma);
-      std::vector<local_scalar_t__> beta_gamma =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 2;
-      beta_gamma = context__.vals_r("beta_gamma");
-      out__.write_free_lb(0.01, beta_gamma);
       local_scalar_t__ beta = DUMMY_VAR__;
-      current_statement__ = 3;
+      current_statement__ = 1;
       beta = context__.vals_r("beta")[(1 - 1)];
-      out__.write(beta);
+      out__.write_free_lb(0, beta);
       local_scalar_t__ log_p10 = DUMMY_VAR__;
-      current_statement__ = 4;
+      current_statement__ = 2;
       log_p10 = context__.vals_r("log_p10")[(1 - 1)];
       out__.write_free_ub(0, log_p10);
+      std::vector<local_scalar_t__> p_dna =
+        std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
+      current_statement__ = 3;
+      p_dna = context__.vals_r("p_dna");
+      out__.write_free_lub(0, 1, p_dna);
       Eigen::Matrix<local_scalar_t__,-1,1> q_trans =
         Eigen::Matrix<local_scalar_t__,-1,1>::Constant(nparams, DUMMY_VAR__);
       {
         std::vector<local_scalar_t__> q_trans_flat__;
-        current_statement__ = 5;
+        current_statement__ = 4;
         q_trans_flat__ = context__.vals_r("q_trans");
-        current_statement__ = 5;
+        current_statement__ = 4;
         pos__ = 1;
-        current_statement__ = 5;
+        current_statement__ = 4;
         for (int sym1__ = 1; sym1__ <= nparams; ++sym1__) {
-          current_statement__ = 5;
+          current_statement__ = 4;
           stan::model::assign(q_trans, q_trans_flat__[(pos__ - 1)],
             "assigning variable q_trans", stan::model::index_uni(sym1__));
-          current_statement__ = 5;
+          current_statement__ = 4;
           pos__ = (pos__ + 1);
         }
       }
       out__.write_free_lb(-0.99999, q_trans);
+      std::vector<local_scalar_t__> alpha_gamma =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 5;
+      alpha_gamma = context__.vals_r("alpha_gamma");
+      out__.write_free_lb(0, alpha_gamma);
+      std::vector<local_scalar_t__> beta_gamma =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 6;
+      beta_gamma = context__.vals_r("beta_gamma");
+      out__.write_free_lb(0.01, beta_gamma);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -791,15 +1037,16 @@ public:
   get_param_names(std::vector<std::string>& names__, const bool
                   emit_transformed_parameters__ = true, const bool
                   emit_generated_quantities__ = true) const {
-    names__ = std::vector<std::string>{"alpha_gamma", "beta_gamma", "beta",
-                "log_p10", "q_trans"};
+    names__ = std::vector<std::string>{"beta", "log_p10", "p_dna", "q_trans",
+                "alpha_gamma", "beta_gamma"};
     if (emit_transformed_parameters__) {
-      std::vector<std::string> temp{"p11", "p", "coef", "mu_1", "E_trans"};
+      std::vector<std::string>
+        temp{"mu_trad_1", "p11_trad", "p_trad", "E_trans", "coef"};
       names__.reserve(names__.size() + temp.size());
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
     if (emit_generated_quantities__) {
-      std::vector<std::string> temp{"q", "log_lik", "mu", "p10"};
+      std::vector<std::string> temp{"q", "log_lik", "p10", "mu", "p11_dna"};
       names__.reserve(names__.size() + temp.size());
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
@@ -808,18 +1055,18 @@ public:
   get_dims(std::vector<std::vector<size_t>>& dimss__, const bool
            emit_transformed_parameters__ = true, const bool
            emit_generated_quantities__ = true) const {
-    dimss__ = std::vector<std::vector<size_t>>{std::vector<size_t>{static_cast<
-                                                                    size_t>(
-                                                                    Nloc)},
-                std::vector<size_t>{static_cast<size_t>(Nloc)},
-                std::vector<size_t>{}, std::vector<size_t>{},
-                std::vector<size_t>{static_cast<size_t>(nparams)}};
+    dimss__ = std::vector<std::vector<size_t>>{std::vector<size_t>{},
+                std::vector<size_t>{},
+                std::vector<size_t>{static_cast<size_t>(Nloc_dna)},
+                std::vector<size_t>{static_cast<size_t>(nparams)},
+                std::vector<size_t>{static_cast<size_t>(Nloc_trad)},
+                std::vector<size_t>{static_cast<size_t>(Nloc_trad)}};
     if (emit_transformed_parameters__) {
       std::vector<std::vector<size_t>>
-        temp{std::vector<size_t>{static_cast<size_t>(Nloc)},
-             std::vector<size_t>{static_cast<size_t>(Nloc)},
+        temp{std::vector<size_t>{static_cast<size_t>(Nloc_trad)},
+             std::vector<size_t>{static_cast<size_t>(Nloc_trad)},
+             std::vector<size_t>{static_cast<size_t>(Nloc_trad)},
              std::vector<size_t>{static_cast<size_t>(C)},
-             std::vector<size_t>{static_cast<size_t>(Nloc)},
              std::vector<size_t>{static_cast<size_t>(C)}};
       dimss__.reserve(dimss__.size() + temp.size());
       dimss__.insert(dimss__.end(), temp.begin(), temp.end());
@@ -828,8 +1075,10 @@ public:
       std::vector<std::vector<size_t>>
         temp{std::vector<size_t>{static_cast<size_t>(nparams)},
              std::vector<size_t>{static_cast<size_t>(log_lik_1dim__)},
-             std::vector<size_t>{static_cast<size_t>(Nloc),
-               static_cast<size_t>(mu_2dim__)}, std::vector<size_t>{}};
+             std::vector<size_t>{},
+             std::vector<size_t>{static_cast<size_t>(mu_1dim__),
+               static_cast<size_t>(mu_2dim__)},
+             std::vector<size_t>{static_cast<size_t>(Nloc_dna)}};
       dimss__.reserve(dimss__.size() + temp.size());
       dimss__.insert(dimss__.end(), temp.begin(), temp.end());
     }
@@ -838,39 +1087,43 @@ public:
   constrained_param_names(std::vector<std::string>& param_names__, bool
                           emit_transformed_parameters__ = true, bool
                           emit_generated_quantities__ = true) const final {
-    for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-      param_names__.emplace_back(std::string() + "alpha_gamma" + '.' +
-        std::to_string(sym1__));
-    }
-    for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-      param_names__.emplace_back(std::string() + "beta_gamma" + '.' +
-        std::to_string(sym1__));
-    }
     param_names__.emplace_back(std::string() + "beta");
     param_names__.emplace_back(std::string() + "log_p10");
+    for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+      param_names__.emplace_back(std::string() + "p_dna" + '.' +
+        std::to_string(sym1__));
+    }
     for (int sym1__ = 1; sym1__ <= nparams; ++sym1__) {
       param_names__.emplace_back(std::string() + "q_trans" + '.' +
         std::to_string(sym1__));
     }
+    for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+      param_names__.emplace_back(std::string() + "alpha_gamma" + '.' +
+        std::to_string(sym1__));
+    }
+    for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+      param_names__.emplace_back(std::string() + "beta_gamma" + '.' +
+        std::to_string(sym1__));
+    }
     if (emit_transformed_parameters__) {
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p11" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "mu_trad_1" + '.' +
           std::to_string(sym1__));
       }
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_trad" + '.' +
           std::to_string(sym1__));
       }
-      for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
-        param_names__.emplace_back(std::string() + "coef" + '.' +
-          std::to_string(sym1__));
-      }
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "mu_1" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p_trad" + '.' +
           std::to_string(sym1__));
       }
       for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
         param_names__.emplace_back(std::string() + "E_trans" + '.' +
+          std::to_string(sym1__));
+      }
+      for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
+        param_names__.emplace_back(std::string() + "coef" + '.' +
           std::to_string(sym1__));
       }
     }
@@ -883,52 +1136,60 @@ public:
         param_names__.emplace_back(std::string() + "log_lik" + '.' +
           std::to_string(sym1__));
       }
+      param_names__.emplace_back(std::string() + "p10");
       for (int sym1__ = 1; sym1__ <= mu_2dim__; ++sym1__) {
-        for (int sym2__ = 1; sym2__ <= Nloc; ++sym2__) {
+        for (int sym2__ = 1; sym2__ <= mu_1dim__; ++sym2__) {
           param_names__.emplace_back(std::string() + "mu" + '.' +
             std::to_string(sym2__) + '.' + std::to_string(sym1__));
         }
       }
-      param_names__.emplace_back(std::string() + "p10");
+      for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_dna" + '.' +
+          std::to_string(sym1__));
+      }
     }
   }
   inline void
   unconstrained_param_names(std::vector<std::string>& param_names__, bool
                             emit_transformed_parameters__ = true, bool
                             emit_generated_quantities__ = true) const final {
-    for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-      param_names__.emplace_back(std::string() + "alpha_gamma" + '.' +
-        std::to_string(sym1__));
-    }
-    for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-      param_names__.emplace_back(std::string() + "beta_gamma" + '.' +
-        std::to_string(sym1__));
-    }
     param_names__.emplace_back(std::string() + "beta");
     param_names__.emplace_back(std::string() + "log_p10");
+    for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+      param_names__.emplace_back(std::string() + "p_dna" + '.' +
+        std::to_string(sym1__));
+    }
     for (int sym1__ = 1; sym1__ <= nparams; ++sym1__) {
       param_names__.emplace_back(std::string() + "q_trans" + '.' +
         std::to_string(sym1__));
     }
+    for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+      param_names__.emplace_back(std::string() + "alpha_gamma" + '.' +
+        std::to_string(sym1__));
+    }
+    for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+      param_names__.emplace_back(std::string() + "beta_gamma" + '.' +
+        std::to_string(sym1__));
+    }
     if (emit_transformed_parameters__) {
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p11" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "mu_trad_1" + '.' +
           std::to_string(sym1__));
       }
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_trad" + '.' +
           std::to_string(sym1__));
       }
-      for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
-        param_names__.emplace_back(std::string() + "coef" + '.' +
-          std::to_string(sym1__));
-      }
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "mu_1" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p_trad" + '.' +
           std::to_string(sym1__));
       }
       for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
         param_names__.emplace_back(std::string() + "E_trans" + '.' +
+          std::to_string(sym1__));
+      }
+      for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
+        param_names__.emplace_back(std::string() + "coef" + '.' +
           std::to_string(sym1__));
       }
     }
@@ -941,20 +1202,24 @@ public:
         param_names__.emplace_back(std::string() + "log_lik" + '.' +
           std::to_string(sym1__));
       }
+      param_names__.emplace_back(std::string() + "p10");
       for (int sym1__ = 1; sym1__ <= mu_2dim__; ++sym1__) {
-        for (int sym2__ = 1; sym2__ <= Nloc; ++sym2__) {
+        for (int sym2__ = 1; sym2__ <= mu_1dim__; ++sym2__) {
           param_names__.emplace_back(std::string() + "mu" + '.' +
             std::to_string(sym2__) + '.' + std::to_string(sym1__));
         }
       }
-      param_names__.emplace_back(std::string() + "p10");
+      for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_dna" + '.' +
+          std::to_string(sym1__));
+      }
     }
   }
   inline std::string get_constrained_sizedtypes() const {
-    return std::string("[{\"name\":\"alpha_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"q_trans\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"parameters\"},{\"name\":\"p11\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"coef\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(C) + "},\"block\":\"transformed_parameters\"},{\"name\":\"mu_1\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"E_trans\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(C) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"q\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"generated_quantities\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"mu\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(Nloc) + ",\"cols\":" + std::to_string(mu_2dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"q_trans\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"parameters\"},{\"name\":\"alpha_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"mu_trad_1\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p11_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"E_trans\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(C) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"coef\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(C) + "},\"block\":\"transformed_parameters\"},{\"name\":\"q\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"generated_quantities\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"mu\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(mu_1dim__) + ",\"cols\":" + std::to_string(mu_2dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p11_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"generated_quantities\"}]");
   }
   inline std::string get_unconstrained_sizedtypes() const {
-    return std::string("[{\"name\":\"alpha_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"q_trans\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"parameters\"},{\"name\":\"p11\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"coef\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(C) + "},\"block\":\"transformed_parameters\"},{\"name\":\"mu_1\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"E_trans\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(C) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"q\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"generated_quantities\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"mu\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(Nloc) + ",\"cols\":" + std::to_string(mu_2dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"q_trans\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"parameters\"},{\"name\":\"alpha_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta_gamma\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"mu_trad_1\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p11_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"E_trans\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(C) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"coef\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(C) + "},\"block\":\"transformed_parameters\"},{\"name\":\"q\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(nparams) + "},\"block\":\"generated_quantities\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"mu\",\"type\":{\"name\":\"matrix\",\"rows\":" + std::to_string(mu_1dim__) + ",\"cols\":" + std::to_string(mu_2dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p11_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"generated_quantities\"}]");
   }
   // Begin method overload boilerplate
   template <typename RNG> inline void
@@ -963,11 +1228,13 @@ public:
               emit_transformed_parameters = true, const bool
               emit_generated_quantities = true, std::ostream*
               pstream = nullptr) const {
-    const size_t num_params__ = ((((Nloc + Nloc) + 1) + 1) + nparams);
-    const size_t num_transformed = emit_transformed_parameters * (((((Nloc +
-      Nloc) + C) + Nloc) + C));
-    const size_t num_gen_quantities = emit_generated_quantities * ((((nparams
-      + log_lik_1dim__) + (Nloc * mu_2dim__)) + 1));
+    const size_t num_params__ = (((((1 + 1) + Nloc_dna) + nparams) +
+      Nloc_trad) + Nloc_trad);
+    const size_t num_transformed = emit_transformed_parameters *
+      (((((Nloc_trad + Nloc_trad) + Nloc_trad) + C) + C));
+    const size_t num_gen_quantities = emit_generated_quantities *
+      (((((nparams + log_lik_1dim__) + 1) + (mu_1dim__ * mu_2dim__)) +
+      Nloc_dna));
     const size_t num_to_write = num_params__ + num_transformed +
       num_gen_quantities;
     std::vector<int> params_i;
@@ -982,11 +1249,13 @@ public:
               emit_transformed_parameters = true, bool
               emit_generated_quantities = true, std::ostream*
               pstream = nullptr) const {
-    const size_t num_params__ = ((((Nloc + Nloc) + 1) + 1) + nparams);
-    const size_t num_transformed = emit_transformed_parameters * (((((Nloc +
-      Nloc) + C) + Nloc) + C));
-    const size_t num_gen_quantities = emit_generated_quantities * ((((nparams
-      + log_lik_1dim__) + (Nloc * mu_2dim__)) + 1));
+    const size_t num_params__ = (((((1 + 1) + Nloc_dna) + nparams) +
+      Nloc_trad) + Nloc_trad);
+    const size_t num_transformed = emit_transformed_parameters *
+      (((((Nloc_trad + Nloc_trad) + Nloc_trad) + C) + C));
+    const size_t num_gen_quantities = emit_generated_quantities *
+      (((((nparams + log_lik_1dim__) + 1) + (mu_1dim__ * mu_2dim__)) +
+      Nloc_dna));
     const size_t num_to_write = num_params__ + num_transformed +
       num_gen_quantities;
     vars = std::vector<double>(num_to_write,

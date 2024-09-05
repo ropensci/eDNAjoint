@@ -27,69 +27,111 @@ namespace model_joint_binary_negbin_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 48> locations_array__ =
+static constexpr std::array<const char*, 82> locations_array__ =
   {" (found before start of program)",
-  " (in 'string', line 14, column 4 to column 33)",
-  " (in 'string', line 15, column 4 to column 22)",
-  " (in 'string', line 16, column 4 to column 23)",
-  " (in 'string', line 17, column 4 to column 26)",
-  " (in 'string', line 20, column 2 to column 43)",
-  " (in 'string', line 21, column 2 to column 40)",
-  " (in 'string', line 40, column 2 to column 22)",
-  " (in 'string', line 41, column 2 to column 11)",
-  " (in 'string', line 23, column 4 to column 41)",
-  " (in 'string', line 24, column 4 to column 33)",
-  " (in 'string', line 22, column 19 to line 25, column 3)",
-  " (in 'string', line 22, column 2 to line 25, column 3)",
-  " (in 'string', line 42, column 2 to column 21)",
-  " (in 'string', line 44, column 10 to column 65)",
-  " (in 'string', line 43, column 17 to line 45, column 7)",
-  " (in 'string', line 43, column 4 to line 45, column 7)",
-  " (in 'string', line 47, column 10 to column 61)",
-  " (in 'string', line 46, column 19 to line 48, column 7)",
-  " (in 'string', line 46, column 6 to line 48, column 7)",
-  " (in 'string', line 29, column 8 to column 45)",
-  " (in 'string', line 28, column 18 to line 30, column 5)",
-  " (in 'string', line 28, column 4 to line 30, column 5)",
-  " (in 'string', line 32, column 8 to column 39)",
-  " (in 'string', line 31, column 18 to line 33, column 5)",
-  " (in 'string', line 31, column 4 to line 33, column 5)",
-  " (in 'string', line 35, column 2 to column 47)",
-  " (in 'string', line 36, column 2 to column 22)",
-  " (in 'string', line 37, column 2 to column 42)",
-  " (in 'string', line 2, column 4 to column 19)",
-  " (in 'string', line 3, column 4 to column 19)",
-  " (in 'string', line 4, column 10 to column 11)",
-  " (in 'string', line 4, column 4 to column 28)",
-  " (in 'string', line 5, column 10 to column 11)",
-  " (in 'string', line 5, column 4 to column 28)",
-  " (in 'string', line 6, column 4 to column 22)",
-  " (in 'string', line 7, column 10 to column 11)",
-  " (in 'string', line 7, column 4 to column 28)",
-  " (in 'string', line 8, column 10 to column 11)",
-  " (in 'string', line 8, column 4 to column 28)",
-  " (in 'string', line 9, column 10 to column 11)",
-  " (in 'string', line 9, column 4 to column 28)",
-  " (in 'string', line 10, column 4 to column 28)",
-  " (in 'string', line 11, column 4 to column 28)",
-  " (in 'string', line 14, column 10 to column 14)",
-  " (in 'string', line 20, column 8 to column 12)",
-  " (in 'string', line 21, column 8 to column 12)",
-  " (in 'string', line 40, column 9 to column 12)"};
+  " (in 'joint_binary_negbin', line 21, column 4 to column 43)",
+  " (in 'joint_binary_negbin', line 22, column 4 to column 23)",
+  " (in 'joint_binary_negbin', line 23, column 4 to column 26)",
+  " (in 'joint_binary_negbin', line 24, column 4 to column 51)",
+  " (in 'joint_binary_negbin', line 25, column 4 to column 22)",
+  " (in 'joint_binary_negbin', line 28, column 2 to column 53)",
+  " (in 'joint_binary_negbin', line 29, column 2 to column 51)",
+  " (in 'joint_binary_negbin', line 54, column 2 to column 28)",
+  " (in 'joint_binary_negbin', line 55, column 2 to column 11)",
+  " (in 'joint_binary_negbin', line 56, column 2 to column 45)",
+  " (in 'joint_binary_negbin', line 57, column 2 to column 51)",
+  " (in 'joint_binary_negbin', line 32, column 4 to column 56)",
+  " (in 'joint_binary_negbin', line 33, column 4 to column 43)",
+  " (in 'joint_binary_negbin', line 31, column 24 to line 34, column 3)",
+  " (in 'joint_binary_negbin', line 31, column 2 to line 34, column 3)",
+  " (in 'joint_binary_negbin', line 59, column 2 to column 21)",
+  " (in 'joint_binary_negbin', line 62, column 4 to column 33)",
+  " (in 'joint_binary_negbin', line 61, column 23 to line 63, column 3)",
+  " (in 'joint_binary_negbin', line 61, column 2 to line 63, column 3)",
+  " (in 'joint_binary_negbin', line 67, column 7 to column 35)",
+  " (in 'joint_binary_negbin', line 68, column 7 to column 60)",
+  " (in 'joint_binary_negbin', line 66, column 26 to line 69, column 6)",
+  " (in 'joint_binary_negbin', line 66, column 5 to line 69, column 6)",
+  " (in 'joint_binary_negbin', line 65, column 2 to line 69, column 6)",
+  " (in 'joint_binary_negbin', line 71, column 4 to column 64)",
+  " (in 'joint_binary_negbin', line 70, column 15 to line 72, column 3)",
+  " (in 'joint_binary_negbin', line 70, column 2 to line 72, column 3)",
+  " (in 'joint_binary_negbin', line 74, column 4 to column 60)",
+  " (in 'joint_binary_negbin', line 73, column 15 to line 75, column 3)",
+  " (in 'joint_binary_negbin', line 73, column 2 to line 75, column 3)",
+  " (in 'joint_binary_negbin', line 79, column 7 to column 76)",
+  " (in 'joint_binary_negbin', line 78, column 22 to line 80, column 6)",
+  " (in 'joint_binary_negbin', line 78, column 5 to line 80, column 6)",
+  " (in 'joint_binary_negbin', line 77, column 2 to line 80, column 6)",
+  " (in 'joint_binary_negbin', line 38, column 6 to column 48)",
+  " (in 'joint_binary_negbin', line 37, column 17 to line 39, column 5)",
+  " (in 'joint_binary_negbin', line 37, column 4 to line 39, column 5)",
+  " (in 'joint_binary_negbin', line 41, column 8 to column 44)",
+  " (in 'joint_binary_negbin', line 40, column 18 to line 42, column 5)",
+  " (in 'joint_binary_negbin', line 40, column 4 to line 42, column 5)",
+  " (in 'joint_binary_negbin', line 46, column 11 to column 58)",
+  " (in 'joint_binary_negbin', line 45, column 25 to line 47, column 8)",
+  " (in 'joint_binary_negbin', line 45, column 7 to line 47, column 8)",
+  " (in 'joint_binary_negbin', line 44, column 4 to line 47, column 8)",
+  " (in 'joint_binary_negbin', line 49, column 2 to column 47)",
+  " (in 'joint_binary_negbin', line 50, column 2 to column 22)",
+  " (in 'joint_binary_negbin', line 51, column 2 to column 42)",
+  " (in 'joint_binary_negbin', line 2, column 4 to column 19)",
+  " (in 'joint_binary_negbin', line 3, column 4 to column 23)",
+  " (in 'joint_binary_negbin', line 4, column 4 to column 19)",
+  " (in 'joint_binary_negbin', line 5, column 10 to column 11)",
+  " (in 'joint_binary_negbin', line 5, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 6, column 10 to column 15)",
+  " (in 'joint_binary_negbin', line 6, column 4 to column 36)",
+  " (in 'joint_binary_negbin', line 7, column 10 to column 11)",
+  " (in 'joint_binary_negbin', line 7, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 8, column 4 to column 26)",
+  " (in 'joint_binary_negbin', line 9, column 4 to column 27)",
+  " (in 'joint_binary_negbin', line 10, column 10 to column 19)",
+  " (in 'joint_binary_negbin', line 10, column 4 to column 43)",
+  " (in 'joint_binary_negbin', line 11, column 10 to column 18)",
+  " (in 'joint_binary_negbin', line 11, column 4 to column 41)",
+  " (in 'joint_binary_negbin', line 12, column 10 to column 11)",
+  " (in 'joint_binary_negbin', line 12, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 13, column 10 to column 11)",
+  " (in 'joint_binary_negbin', line 13, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 14, column 10 to column 11)",
+  " (in 'joint_binary_negbin', line 14, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 15, column 10 to column 15)",
+  " (in 'joint_binary_negbin', line 15, column 4 to column 36)",
+  " (in 'joint_binary_negbin', line 16, column 10 to column 15)",
+  " (in 'joint_binary_negbin', line 16, column 4 to column 36)",
+  " (in 'joint_binary_negbin', line 17, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 18, column 4 to column 28)",
+  " (in 'joint_binary_negbin', line 21, column 10 to column 19)",
+  " (in 'joint_binary_negbin', line 24, column 10 to column 18)",
+  " (in 'joint_binary_negbin', line 28, column 8 to column 17)",
+  " (in 'joint_binary_negbin', line 29, column 8 to column 17)",
+  " (in 'joint_binary_negbin', line 54, column 9 to column 18)",
+  " (in 'joint_binary_negbin', line 56, column 8 to column 26)",
+  " (in 'joint_binary_negbin', line 57, column 8 to column 16)"};
 #include <stan_meta_header.hpp>
 class model_joint_binary_negbin final : public model_base_crtp<model_joint_binary_negbin> {
 private:
   int S;
+  int S_dna;
   int C;
   std::vector<int> L;
+  std::vector<int> L_dna;
   std::vector<int> R;
-  int Nloc;
+  int Nloc_dna;
+  int Nloc_trad;
+  std::vector<int> trad_ind;
+  std::vector<int> dna_ind;
   std::vector<int> E;
   std::vector<int> N;
   std::vector<int> K;
+  std::vector<int> N_dna;
+  std::vector<int> K_dna;
   std::vector<double> p10priors;
   std::vector<double> phipriors;
   int log_lik_1dim__;
+  int mu_1dim__;
 public:
   ~model_joint_binary_negbin() {}
   model_joint_binary_negbin(stan::io::var_context& context__, unsigned int
@@ -111,111 +153,193 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 29;
+      current_statement__ = 48;
       context__.validate_dims("data initialization", "S", "int",
         std::vector<size_t>{});
       S = std::numeric_limits<int>::min();
-      current_statement__ = 29;
+      current_statement__ = 48;
       S = context__.vals_i("S")[(1 - 1)];
-      current_statement__ = 29;
+      current_statement__ = 48;
       stan::math::check_greater_or_equal(function__, "S", S, 1);
-      current_statement__ = 30;
+      current_statement__ = 49;
+      context__.validate_dims("data initialization", "S_dna", "int",
+        std::vector<size_t>{});
+      S_dna = std::numeric_limits<int>::min();
+      current_statement__ = 49;
+      S_dna = context__.vals_i("S_dna")[(1 - 1)];
+      current_statement__ = 49;
+      stan::math::check_greater_or_equal(function__, "S_dna", S_dna, 0);
+      current_statement__ = 50;
       context__.validate_dims("data initialization", "C", "int",
         std::vector<size_t>{});
       C = std::numeric_limits<int>::min();
-      current_statement__ = 30;
+      current_statement__ = 50;
       C = context__.vals_i("C")[(1 - 1)];
-      current_statement__ = 30;
+      current_statement__ = 50;
       stan::math::check_greater_or_equal(function__, "C", C, 1);
-      current_statement__ = 31;
+      current_statement__ = 51;
       stan::math::validate_non_negative_index("L", "S", S);
-      current_statement__ = 32;
+      current_statement__ = 52;
       context__.validate_dims("data initialization", "L", "int",
         std::vector<size_t>{static_cast<size_t>(S)});
       L = std::vector<int>(S, std::numeric_limits<int>::min());
-      current_statement__ = 32;
+      current_statement__ = 52;
       L = context__.vals_i("L");
-      current_statement__ = 32;
+      current_statement__ = 52;
       stan::math::check_greater_or_equal(function__, "L", L, 1);
-      current_statement__ = 33;
+      current_statement__ = 53;
+      stan::math::validate_non_negative_index("L_dna", "S_dna", S_dna);
+      current_statement__ = 54;
+      context__.validate_dims("data initialization", "L_dna", "int",
+        std::vector<size_t>{static_cast<size_t>(S_dna)});
+      L_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
+      current_statement__ = 54;
+      L_dna = context__.vals_i("L_dna");
+      current_statement__ = 54;
+      stan::math::check_greater_or_equal(function__, "L_dna", L_dna, 1);
+      current_statement__ = 55;
       stan::math::validate_non_negative_index("R", "C", C);
-      current_statement__ = 34;
+      current_statement__ = 56;
       context__.validate_dims("data initialization", "R", "int",
         std::vector<size_t>{static_cast<size_t>(C)});
       R = std::vector<int>(C, std::numeric_limits<int>::min());
-      current_statement__ = 34;
+      current_statement__ = 56;
       R = context__.vals_i("R");
-      current_statement__ = 34;
+      current_statement__ = 56;
       stan::math::check_greater_or_equal(function__, "R", R, 1);
-      current_statement__ = 35;
-      context__.validate_dims("data initialization", "Nloc", "int",
+      current_statement__ = 57;
+      context__.validate_dims("data initialization", "Nloc_dna", "int",
         std::vector<size_t>{});
-      Nloc = std::numeric_limits<int>::min();
-      current_statement__ = 35;
-      Nloc = context__.vals_i("Nloc")[(1 - 1)];
-      current_statement__ = 35;
-      stan::math::check_greater_or_equal(function__, "Nloc", Nloc, 1);
-      current_statement__ = 36;
+      Nloc_dna = std::numeric_limits<int>::min();
+      current_statement__ = 57;
+      Nloc_dna = context__.vals_i("Nloc_dna")[(1 - 1)];
+      current_statement__ = 57;
+      stan::math::check_greater_or_equal(function__, "Nloc_dna", Nloc_dna, 0);
+      current_statement__ = 58;
+      context__.validate_dims("data initialization", "Nloc_trad", "int",
+        std::vector<size_t>{});
+      Nloc_trad = std::numeric_limits<int>::min();
+      current_statement__ = 58;
+      Nloc_trad = context__.vals_i("Nloc_trad")[(1 - 1)];
+      current_statement__ = 58;
+      stan::math::check_greater_or_equal(function__, "Nloc_trad", Nloc_trad,
+        1);
+      current_statement__ = 59;
+      stan::math::validate_non_negative_index("trad_ind", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 60;
+      context__.validate_dims("data initialization", "trad_ind", "int",
+        std::vector<size_t>{static_cast<size_t>(Nloc_trad)});
+      trad_ind = std::vector<int>(Nloc_trad, std::numeric_limits<int>::min());
+      current_statement__ = 60;
+      trad_ind = context__.vals_i("trad_ind");
+      current_statement__ = 60;
+      stan::math::check_greater_or_equal(function__, "trad_ind", trad_ind, 0);
+      current_statement__ = 61;
+      stan::math::validate_non_negative_index("dna_ind", "Nloc_dna", Nloc_dna);
+      current_statement__ = 62;
+      context__.validate_dims("data initialization", "dna_ind", "int",
+        std::vector<size_t>{static_cast<size_t>(Nloc_dna)});
+      dna_ind = std::vector<int>(Nloc_dna, std::numeric_limits<int>::min());
+      current_statement__ = 62;
+      dna_ind = context__.vals_i("dna_ind");
+      current_statement__ = 62;
+      stan::math::check_greater_or_equal(function__, "dna_ind", dna_ind, 0);
+      current_statement__ = 63;
       stan::math::validate_non_negative_index("E", "C", C);
-      current_statement__ = 37;
+      current_statement__ = 64;
       context__.validate_dims("data initialization", "E", "int",
         std::vector<size_t>{static_cast<size_t>(C)});
       E = std::vector<int>(C, std::numeric_limits<int>::min());
-      current_statement__ = 37;
+      current_statement__ = 64;
       E = context__.vals_i("E");
-      current_statement__ = 37;
+      current_statement__ = 64;
       stan::math::check_greater_or_equal(function__, "E", E, 0);
-      current_statement__ = 38;
+      current_statement__ = 65;
       stan::math::validate_non_negative_index("N", "S", S);
-      current_statement__ = 39;
+      current_statement__ = 66;
       context__.validate_dims("data initialization", "N", "int",
         std::vector<size_t>{static_cast<size_t>(S)});
       N = std::vector<int>(S, std::numeric_limits<int>::min());
-      current_statement__ = 39;
+      current_statement__ = 66;
       N = context__.vals_i("N");
-      current_statement__ = 39;
+      current_statement__ = 66;
       stan::math::check_greater_or_equal(function__, "N", N, 1);
-      current_statement__ = 40;
+      current_statement__ = 67;
       stan::math::validate_non_negative_index("K", "S", S);
-      current_statement__ = 41;
+      current_statement__ = 68;
       context__.validate_dims("data initialization", "K", "int",
         std::vector<size_t>{static_cast<size_t>(S)});
       K = std::vector<int>(S, std::numeric_limits<int>::min());
-      current_statement__ = 41;
+      current_statement__ = 68;
       K = context__.vals_i("K");
-      current_statement__ = 41;
+      current_statement__ = 68;
       stan::math::check_greater_or_equal(function__, "K", K, 0);
-      current_statement__ = 42;
+      current_statement__ = 69;
+      stan::math::validate_non_negative_index("N_dna", "S_dna", S_dna);
+      current_statement__ = 70;
+      context__.validate_dims("data initialization", "N_dna", "int",
+        std::vector<size_t>{static_cast<size_t>(S_dna)});
+      N_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
+      current_statement__ = 70;
+      N_dna = context__.vals_i("N_dna");
+      current_statement__ = 70;
+      stan::math::check_greater_or_equal(function__, "N_dna", N_dna, 1);
+      current_statement__ = 71;
+      stan::math::validate_non_negative_index("K_dna", "S_dna", S_dna);
+      current_statement__ = 72;
+      context__.validate_dims("data initialization", "K_dna", "int",
+        std::vector<size_t>{static_cast<size_t>(S_dna)});
+      K_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
+      current_statement__ = 72;
+      K_dna = context__.vals_i("K_dna");
+      current_statement__ = 72;
+      stan::math::check_greater_or_equal(function__, "K_dna", K_dna, 0);
+      current_statement__ = 73;
       context__.validate_dims("data initialization", "p10priors", "double",
         std::vector<size_t>{static_cast<size_t>(2)});
       p10priors = std::vector<double>(2,
                     std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 42;
+      current_statement__ = 73;
       p10priors = context__.vals_r("p10priors");
-      current_statement__ = 43;
+      current_statement__ = 74;
       context__.validate_dims("data initialization", "phipriors", "double",
         std::vector<size_t>{static_cast<size_t>(2)});
       phipriors = std::vector<double>(2,
                     std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 43;
+      current_statement__ = 74;
       phipriors = context__.vals_r("phipriors");
-      current_statement__ = 44;
-      stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-      current_statement__ = 45;
-      stan::math::validate_non_negative_index("p11", "Nloc", Nloc);
-      current_statement__ = 46;
-      stan::math::validate_non_negative_index("p", "Nloc", Nloc);
-      current_statement__ = 47;
+      current_statement__ = 75;
+      stan::math::validate_non_negative_index("mu_trad", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 76;
+      stan::math::validate_non_negative_index("p_dna", "Nloc_dna", Nloc_dna);
+      current_statement__ = 77;
+      stan::math::validate_non_negative_index("p11_trad", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 78;
+      stan::math::validate_non_negative_index("p_trad", "Nloc_trad",
+        Nloc_trad);
+      current_statement__ = 79;
       log_lik_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 47;
-      log_lik_1dim__ = (C + S);
-      current_statement__ = 47;
-      stan::math::validate_non_negative_index("log_lik", "C + S",
+      current_statement__ = 79;
+      log_lik_1dim__ = ((C + S) + S_dna);
+      current_statement__ = 79;
+      stan::math::validate_non_negative_index("log_lik", "C + S + S_dna",
         log_lik_1dim__);
+      current_statement__ = 80;
+      mu_1dim__ = std::numeric_limits<int>::min();
+      current_statement__ = 80;
+      mu_1dim__ = (Nloc_dna + Nloc_trad);
+      current_statement__ = 80;
+      stan::math::validate_non_negative_index("mu", "Nloc_dna + Nloc_trad",
+        mu_1dim__);
+      current_statement__ = 81;
+      stan::math::validate_non_negative_index("p11_dna", "Nloc_dna", Nloc_dna);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
-    num_params_r__ = Nloc + 1 + 1 + 1;
+    num_params_r__ = Nloc_trad + 1 + 1 + Nloc_dna + 1;
   }
   inline std::string model_name() const final {
     return "model_joint_binary_negbin";
@@ -244,83 +368,106 @@ public:
     // suppress unused var warning
     (void) function__;
     try {
-      std::vector<local_scalar_t__> mu =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
+      std::vector<local_scalar_t__> mu_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
       current_statement__ = 1;
-      mu = in__.template read_constrain_lb<std::vector<local_scalar_t__>,
-             jacobian__>(0, lp__, Nloc);
-      local_scalar_t__ phi = DUMMY_VAR__;
-      current_statement__ = 2;
-      phi = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
-              lp__);
+      mu_trad = in__.template read_constrain_lb<
+                  std::vector<local_scalar_t__>, jacobian__>(0, lp__,
+                  Nloc_trad);
       local_scalar_t__ beta = DUMMY_VAR__;
-      current_statement__ = 3;
+      current_statement__ = 2;
       beta = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
                lp__);
       local_scalar_t__ log_p10 = DUMMY_VAR__;
-      current_statement__ = 4;
+      current_statement__ = 3;
       log_p10 = in__.template read_constrain_ub<local_scalar_t__,
                   jacobian__>(0, lp__);
-      std::vector<local_scalar_t__> p11 =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      std::vector<local_scalar_t__> p =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
-      current_statement__ = 12;
-      for (int i = 1; i <= Nloc; ++i) {
-        current_statement__ = 9;
-        stan::model::assign(p11,
-          (stan::model::rvalue(mu, "mu", stan::model::index_uni(i)) /
-          (stan::model::rvalue(mu, "mu", stan::model::index_uni(i)) +
-          stan::math::exp(beta))), "assigning variable p11",
+      std::vector<local_scalar_t__> p_dna =
+        std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
+      current_statement__ = 4;
+      p_dna = in__.template read_constrain_lub<std::vector<local_scalar_t__>,
+                jacobian__>(0, 1, lp__, Nloc_dna);
+      local_scalar_t__ phi = DUMMY_VAR__;
+      current_statement__ = 5;
+      phi = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
+              lp__);
+      std::vector<local_scalar_t__> p11_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      std::vector<local_scalar_t__> p_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
+      current_statement__ = 15;
+      for (int i = 1; i <= Nloc_trad; ++i) {
+        current_statement__ = 12;
+        stan::model::assign(p11_trad,
+          (stan::model::rvalue(mu_trad, "mu_trad", stan::model::index_uni(i))
+          /
+          (stan::model::rvalue(mu_trad, "mu_trad", stan::model::index_uni(i))
+          + stan::math::exp(beta))), "assigning variable p11_trad",
           stan::model::index_uni(i));
-        current_statement__ = 10;
-        stan::model::assign(p,
-          (stan::model::rvalue(p11, "p11", stan::model::index_uni(i)) +
-          stan::math::exp(log_p10)), "assigning variable p",
-          stan::model::index_uni(i));
+        current_statement__ = 13;
+        stan::model::assign(p_trad,
+          (stan::model::rvalue(p11_trad, "p11_trad",
+             stan::model::index_uni(i)) + stan::math::exp(log_p10)),
+          "assigning variable p_trad", stan::model::index_uni(i));
       }
-      current_statement__ = 5;
-      stan::math::check_greater_or_equal(function__, "p11", p11, 0);
-      current_statement__ = 5;
-      stan::math::check_less_or_equal(function__, "p11", p11, 1);
       current_statement__ = 6;
-      stan::math::check_greater_or_equal(function__, "p", p, 0);
+      stan::math::check_greater_or_equal(function__, "p11_trad", p11_trad, 0);
       current_statement__ = 6;
-      stan::math::check_less_or_equal(function__, "p", p, 1);
+      stan::math::check_less_or_equal(function__, "p11_trad", p11_trad, 1);
+      current_statement__ = 7;
+      stan::math::check_greater_or_equal(function__, "p_trad", p_trad, 0);
+      current_statement__ = 7;
+      stan::math::check_less_or_equal(function__, "p_trad", p_trad, 1);
       {
-        current_statement__ = 22;
+        current_statement__ = 37;
         for (int j = 1; j <= C; ++j) {
-          current_statement__ = 20;
+          current_statement__ = 35;
           lp_accum__.add(stan::math::neg_binomial_2_lpmf<propto__>(
                            stan::model::rvalue(E, "E",
                              stan::model::index_uni(j)),
-                           stan::model::rvalue(mu, "mu",
+                           stan::model::rvalue(mu_trad, "mu_trad",
                              stan::model::index_uni(
                                stan::model::rvalue(R, "R",
                                  stan::model::index_uni(j)))), phi));
         }
-        current_statement__ = 25;
+        current_statement__ = 40;
         for (int i = 1; i <= S; ++i) {
-          current_statement__ = 23;
+          current_statement__ = 38;
           lp_accum__.add(stan::math::binomial_lpmf<propto__>(
                            stan::model::rvalue(K, "K",
                              stan::model::index_uni(i)),
                            stan::model::rvalue(N, "N",
                              stan::model::index_uni(i)),
-                           stan::model::rvalue(p, "p",
+                           stan::model::rvalue(p_trad, "p_trad",
                              stan::model::index_uni(
                                stan::model::rvalue(L, "L",
                                  stan::model::index_uni(i))))));
         }
-        current_statement__ = 26;
+        current_statement__ = 44;
+        if (stan::math::logical_gt(Nloc_dna, 0)) {
+          current_statement__ = 43;
+          for (int i = 1; i <= S_dna; ++i) {
+            current_statement__ = 41;
+            lp_accum__.add(stan::math::binomial_lpmf<propto__>(
+                             stan::model::rvalue(K_dna, "K_dna",
+                               stan::model::index_uni(i)),
+                             stan::model::rvalue(N_dna, "N_dna",
+                               stan::model::index_uni(i)),
+                             stan::model::rvalue(p_dna, "p_dna",
+                               stan::model::index_uni(
+                                 stan::model::rvalue(L_dna, "L_dna",
+                                   stan::model::index_uni(i))))));
+          }
+        }
+        current_statement__ = 45;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(log_p10,
                          stan::model::rvalue(p10priors, "p10priors",
                            stan::model::index_uni(1)),
                          stan::model::rvalue(p10priors, "p10priors",
                            stan::model::index_uni(2))));
-        current_statement__ = 27;
+        current_statement__ = 46;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(beta, 0, 10));
-        current_statement__ = 28;
+        current_statement__ = 47;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(phi,
                          stan::model::rvalue(phipriors, "phipriors",
                            stan::model::index_uni(1)),
@@ -364,61 +511,73 @@ public:
     // suppress unused var warning
     (void) function__;
     try {
-      std::vector<double> mu =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> mu_trad =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
       current_statement__ = 1;
-      mu = in__.template read_constrain_lb<std::vector<local_scalar_t__>,
-             jacobian__>(0, lp__, Nloc);
-      double phi = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 2;
-      phi = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
-              lp__);
+      mu_trad = in__.template read_constrain_lb<
+                  std::vector<local_scalar_t__>, jacobian__>(0, lp__,
+                  Nloc_trad);
       double beta = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 3;
+      current_statement__ = 2;
       beta = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
                lp__);
       double log_p10 = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 4;
+      current_statement__ = 3;
       log_p10 = in__.template read_constrain_ub<local_scalar_t__,
                   jacobian__>(0, lp__);
-      std::vector<double> p11 =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
-      std::vector<double> p =
-        std::vector<double>(Nloc, std::numeric_limits<double>::quiet_NaN());
-      out__.write(mu);
-      out__.write(phi);
+      std::vector<double> p_dna =
+        std::vector<double>(Nloc_dna,
+          std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 4;
+      p_dna = in__.template read_constrain_lub<std::vector<local_scalar_t__>,
+                jacobian__>(0, 1, lp__, Nloc_dna);
+      double phi = std::numeric_limits<double>::quiet_NaN();
+      current_statement__ = 5;
+      phi = in__.template read_constrain_lb<local_scalar_t__, jacobian__>(0,
+              lp__);
+      std::vector<double> p11_trad =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> p_trad =
+        std::vector<double>(Nloc_trad,
+          std::numeric_limits<double>::quiet_NaN());
+      out__.write(mu_trad);
       out__.write(beta);
       out__.write(log_p10);
+      out__.write(p_dna);
+      out__.write(phi);
       if (stan::math::logical_negation(
             (stan::math::primitive_value(emit_transformed_parameters__) ||
             stan::math::primitive_value(emit_generated_quantities__)))) {
         return ;
       }
-      current_statement__ = 12;
-      for (int i = 1; i <= Nloc; ++i) {
-        current_statement__ = 9;
-        stan::model::assign(p11,
-          (stan::model::rvalue(mu, "mu", stan::model::index_uni(i)) /
-          (stan::model::rvalue(mu, "mu", stan::model::index_uni(i)) +
-          stan::math::exp(beta))), "assigning variable p11",
+      current_statement__ = 15;
+      for (int i = 1; i <= Nloc_trad; ++i) {
+        current_statement__ = 12;
+        stan::model::assign(p11_trad,
+          (stan::model::rvalue(mu_trad, "mu_trad", stan::model::index_uni(i))
+          /
+          (stan::model::rvalue(mu_trad, "mu_trad", stan::model::index_uni(i))
+          + stan::math::exp(beta))), "assigning variable p11_trad",
           stan::model::index_uni(i));
-        current_statement__ = 10;
-        stan::model::assign(p,
-          (stan::model::rvalue(p11, "p11", stan::model::index_uni(i)) +
-          stan::math::exp(log_p10)), "assigning variable p",
-          stan::model::index_uni(i));
+        current_statement__ = 13;
+        stan::model::assign(p_trad,
+          (stan::model::rvalue(p11_trad, "p11_trad",
+             stan::model::index_uni(i)) + stan::math::exp(log_p10)),
+          "assigning variable p_trad", stan::model::index_uni(i));
       }
-      current_statement__ = 5;
-      stan::math::check_greater_or_equal(function__, "p11", p11, 0);
-      current_statement__ = 5;
-      stan::math::check_less_or_equal(function__, "p11", p11, 1);
       current_statement__ = 6;
-      stan::math::check_greater_or_equal(function__, "p", p, 0);
+      stan::math::check_greater_or_equal(function__, "p11_trad", p11_trad, 0);
       current_statement__ = 6;
-      stan::math::check_less_or_equal(function__, "p", p, 1);
+      stan::math::check_less_or_equal(function__, "p11_trad", p11_trad, 1);
+      current_statement__ = 7;
+      stan::math::check_greater_or_equal(function__, "p_trad", p_trad, 0);
+      current_statement__ = 7;
+      stan::math::check_less_or_equal(function__, "p_trad", p_trad, 1);
       if (emit_transformed_parameters__) {
-        out__.write(p11);
-        out__.write(p);
+        out__.write(p11_trad);
+        out__.write(p_trad);
       }
       if (stan::math::logical_negation(emit_generated_quantities__)) {
         return ;
@@ -427,33 +586,93 @@ public:
         Eigen::Matrix<double,-1,1>::Constant(log_lik_1dim__,
           std::numeric_limits<double>::quiet_NaN());
       double p10 = std::numeric_limits<double>::quiet_NaN();
-      current_statement__ = 13;
-      p10 = stan::math::exp(log_p10);
+      std::vector<double> mu =
+        std::vector<double>(mu_1dim__,
+          std::numeric_limits<double>::quiet_NaN());
+      std::vector<double> p11_dna =
+        std::vector<double>(Nloc_dna,
+          std::numeric_limits<double>::quiet_NaN());
       current_statement__ = 16;
+      p10 = stan::math::exp(log_p10);
+      current_statement__ = 19;
+      for (int i = 1; i <= Nloc_trad; ++i) {
+        current_statement__ = 17;
+        stan::model::assign(mu,
+          stan::model::rvalue(mu_trad, "mu_trad", stan::model::index_uni(i)),
+          "assigning variable mu",
+          stan::model::index_uni(
+            stan::model::rvalue(trad_ind, "trad_ind",
+              stan::model::index_uni(i))));
+      }
+      current_statement__ = 24;
+      if (stan::math::logical_gt(Nloc_dna, 0)) {
+        current_statement__ = 23;
+        for (int i = 1; i <= Nloc_dna; ++i) {
+          current_statement__ = 20;
+          stan::model::assign(p11_dna,
+            (stan::model::rvalue(p_dna, "p_dna", stan::model::index_uni(i)) -
+            p10), "assigning variable p11_dna", stan::model::index_uni(i));
+          current_statement__ = 21;
+          stan::model::assign(mu,
+            ((stan::model::rvalue(p11_dna, "p11_dna",
+                stan::model::index_uni(i)) * stan::math::exp(beta)) / (1 -
+            stan::model::rvalue(p11_dna, "p11_dna", stan::model::index_uni(i)))),
+            "assigning variable mu",
+            stan::model::index_uni(
+              stan::model::rvalue(dna_ind, "dna_ind",
+                stan::model::index_uni(i))));
+        }
+      }
+      current_statement__ = 27;
       for (int j = 1; j <= C; ++j) {
-        current_statement__ = 14;
+        current_statement__ = 25;
         stan::model::assign(log_lik,
           stan::math::neg_binomial_2_lpmf<false>(
             stan::model::rvalue(E, "E", stan::model::index_uni(j)),
-            stan::model::rvalue(mu, "mu",
+            stan::model::rvalue(mu_trad, "mu_trad",
               stan::model::index_uni(
                 stan::model::rvalue(R, "R", stan::model::index_uni(j)))), phi),
           "assigning variable log_lik", stan::model::index_uni(j));
       }
-      current_statement__ = 19;
+      current_statement__ = 30;
       for (int i = 1; i <= S; ++i) {
-        current_statement__ = 17;
+        current_statement__ = 28;
         stan::model::assign(log_lik,
           stan::math::binomial_lpmf<false>(
             stan::model::rvalue(K, "K", stan::model::index_uni(i)),
             stan::model::rvalue(N, "N", stan::model::index_uni(i)),
-            stan::model::rvalue(p, "p",
+            stan::model::rvalue(p_trad, "p_trad",
               stan::model::index_uni(
                 stan::model::rvalue(L, "L", stan::model::index_uni(i))))),
           "assigning variable log_lik", stan::model::index_uni((C + i)));
       }
+      current_statement__ = 34;
+      if (stan::math::logical_gt(Nloc_dna, 0)) {
+        current_statement__ = 33;
+        for (int i = 1; i <= S_dna; ++i) {
+          current_statement__ = 31;
+          stan::model::assign(log_lik,
+            stan::math::binomial_lpmf<false>(
+              stan::model::rvalue(K_dna, "K_dna", stan::model::index_uni(i)),
+              stan::model::rvalue(N_dna, "N_dna", stan::model::index_uni(i)),
+              stan::model::rvalue(p_dna, "p_dna",
+                stan::model::index_uni(
+                  stan::model::rvalue(L_dna, "L_dna",
+                    stan::model::index_uni(i))))),
+            "assigning variable log_lik",
+            stan::model::index_uni(((C + S) + i)));
+        }
+      }
+      current_statement__ = 10;
+      stan::math::check_greater_or_equal(function__, "mu", mu, 0);
+      current_statement__ = 11;
+      stan::math::check_greater_or_equal(function__, "p11_dna", p11_dna, 0);
+      current_statement__ = 11;
+      stan::math::check_less_or_equal(function__, "p11_dna", p11_dna, 1);
       out__.write(log_lik);
       out__.write(p10);
+      out__.write(mu);
+      out__.write(p11_dna);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -474,24 +693,32 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      std::vector<local_scalar_t__> mu =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
+      std::vector<local_scalar_t__> mu_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
       current_statement__ = 1;
-      stan::model::assign(mu, in__.read<std::vector<local_scalar_t__>>(Nloc),
-        "assigning variable mu");
-      out__.write_free_lb(0, mu);
-      local_scalar_t__ phi = DUMMY_VAR__;
-      current_statement__ = 2;
-      phi = in__.read<local_scalar_t__>();
-      out__.write_free_lb(0, phi);
+      stan::model::assign(mu_trad,
+        in__.read<std::vector<local_scalar_t__>>(Nloc_trad),
+        "assigning variable mu_trad");
+      out__.write_free_lb(0, mu_trad);
       local_scalar_t__ beta = DUMMY_VAR__;
-      current_statement__ = 3;
+      current_statement__ = 2;
       beta = in__.read<local_scalar_t__>();
       out__.write_free_lb(0, beta);
       local_scalar_t__ log_p10 = DUMMY_VAR__;
-      current_statement__ = 4;
+      current_statement__ = 3;
       log_p10 = in__.read<local_scalar_t__>();
       out__.write_free_ub(0, log_p10);
+      std::vector<local_scalar_t__> p_dna =
+        std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
+      current_statement__ = 4;
+      stan::model::assign(p_dna,
+        in__.read<std::vector<local_scalar_t__>>(Nloc_dna),
+        "assigning variable p_dna");
+      out__.write_free_lub(0, 1, p_dna);
+      local_scalar_t__ phi = DUMMY_VAR__;
+      current_statement__ = 5;
+      phi = in__.read<local_scalar_t__>();
+      out__.write_free_lb(0, phi);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -508,36 +735,44 @@ public:
     (void) DUMMY_VAR__;
     try {
       current_statement__ = 1;
-      context__.validate_dims("parameter initialization", "mu", "double",
-        std::vector<size_t>{static_cast<size_t>(Nloc)});
+      context__.validate_dims("parameter initialization", "mu_trad",
+        "double", std::vector<size_t>{static_cast<size_t>(Nloc_trad)});
       current_statement__ = 2;
-      context__.validate_dims("parameter initialization", "phi", "double",
-        std::vector<size_t>{});
-      current_statement__ = 3;
       context__.validate_dims("parameter initialization", "beta", "double",
         std::vector<size_t>{});
-      current_statement__ = 4;
+      current_statement__ = 3;
       context__.validate_dims("parameter initialization", "log_p10",
         "double", std::vector<size_t>{});
+      current_statement__ = 4;
+      context__.validate_dims("parameter initialization", "p_dna", "double",
+        std::vector<size_t>{static_cast<size_t>(Nloc_dna)});
+      current_statement__ = 5;
+      context__.validate_dims("parameter initialization", "phi", "double",
+        std::vector<size_t>{});
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      std::vector<local_scalar_t__> mu =
-        std::vector<local_scalar_t__>(Nloc, DUMMY_VAR__);
+      std::vector<local_scalar_t__> mu_trad =
+        std::vector<local_scalar_t__>(Nloc_trad, DUMMY_VAR__);
       current_statement__ = 1;
-      mu = context__.vals_r("mu");
-      out__.write_free_lb(0, mu);
-      local_scalar_t__ phi = DUMMY_VAR__;
-      current_statement__ = 2;
-      phi = context__.vals_r("phi")[(1 - 1)];
-      out__.write_free_lb(0, phi);
+      mu_trad = context__.vals_r("mu_trad");
+      out__.write_free_lb(0, mu_trad);
       local_scalar_t__ beta = DUMMY_VAR__;
-      current_statement__ = 3;
+      current_statement__ = 2;
       beta = context__.vals_r("beta")[(1 - 1)];
       out__.write_free_lb(0, beta);
       local_scalar_t__ log_p10 = DUMMY_VAR__;
-      current_statement__ = 4;
+      current_statement__ = 3;
       log_p10 = context__.vals_r("log_p10")[(1 - 1)];
       out__.write_free_ub(0, log_p10);
+      std::vector<local_scalar_t__> p_dna =
+        std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
+      current_statement__ = 4;
+      p_dna = context__.vals_r("p_dna");
+      out__.write_free_lub(0, 1, p_dna);
+      local_scalar_t__ phi = DUMMY_VAR__;
+      current_statement__ = 5;
+      phi = context__.vals_r("phi")[(1 - 1)];
+      out__.write_free_lb(0, phi);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
     }
@@ -546,14 +781,15 @@ public:
   get_param_names(std::vector<std::string>& names__, const bool
                   emit_transformed_parameters__ = true, const bool
                   emit_generated_quantities__ = true) const {
-    names__ = std::vector<std::string>{"mu", "phi", "beta", "log_p10"};
+    names__ = std::vector<std::string>{"mu_trad", "beta", "log_p10", "p_dna",
+                "phi"};
     if (emit_transformed_parameters__) {
-      std::vector<std::string> temp{"p11", "p"};
+      std::vector<std::string> temp{"p11_trad", "p_trad"};
       names__.reserve(names__.size() + temp.size());
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
     if (emit_generated_quantities__) {
-      std::vector<std::string> temp{"log_lik", "p10"};
+      std::vector<std::string> temp{"log_lik", "p10", "mu", "p11_dna"};
       names__.reserve(names__.size() + temp.size());
       names__.insert(names__.end(), temp.begin(), temp.end());
     }
@@ -564,20 +800,23 @@ public:
            emit_generated_quantities__ = true) const {
     dimss__ = std::vector<std::vector<size_t>>{std::vector<size_t>{static_cast<
                                                                     size_t>(
-                                                                    Nloc)},
+                                                                    Nloc_trad)},
                 std::vector<size_t>{}, std::vector<size_t>{},
+                std::vector<size_t>{static_cast<size_t>(Nloc_dna)},
                 std::vector<size_t>{}};
     if (emit_transformed_parameters__) {
       std::vector<std::vector<size_t>>
-        temp{std::vector<size_t>{static_cast<size_t>(Nloc)},
-             std::vector<size_t>{static_cast<size_t>(Nloc)}};
+        temp{std::vector<size_t>{static_cast<size_t>(Nloc_trad)},
+             std::vector<size_t>{static_cast<size_t>(Nloc_trad)}};
       dimss__.reserve(dimss__.size() + temp.size());
       dimss__.insert(dimss__.end(), temp.begin(), temp.end());
     }
     if (emit_generated_quantities__) {
       std::vector<std::vector<size_t>>
         temp{std::vector<size_t>{static_cast<size_t>(log_lik_1dim__)},
-             std::vector<size_t>{}};
+             std::vector<size_t>{},
+             std::vector<size_t>{static_cast<size_t>(mu_1dim__)},
+             std::vector<size_t>{static_cast<size_t>(Nloc_dna)}};
       dimss__.reserve(dimss__.size() + temp.size());
       dimss__.insert(dimss__.end(), temp.begin(), temp.end());
     }
@@ -586,20 +825,24 @@ public:
   constrained_param_names(std::vector<std::string>& param_names__, bool
                           emit_transformed_parameters__ = true, bool
                           emit_generated_quantities__ = true) const final {
-    for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-      param_names__.emplace_back(std::string() + "mu" + '.' +
+    for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+      param_names__.emplace_back(std::string() + "mu_trad" + '.' +
+        std::to_string(sym1__));
+    }
+    param_names__.emplace_back(std::string() + "beta");
+    param_names__.emplace_back(std::string() + "log_p10");
+    for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+      param_names__.emplace_back(std::string() + "p_dna" + '.' +
         std::to_string(sym1__));
     }
     param_names__.emplace_back(std::string() + "phi");
-    param_names__.emplace_back(std::string() + "beta");
-    param_names__.emplace_back(std::string() + "log_p10");
     if (emit_transformed_parameters__) {
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p11" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_trad" + '.' +
           std::to_string(sym1__));
       }
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p_trad" + '.' +
           std::to_string(sym1__));
       }
     }
@@ -609,26 +852,38 @@ public:
           std::to_string(sym1__));
       }
       param_names__.emplace_back(std::string() + "p10");
+      for (int sym1__ = 1; sym1__ <= mu_1dim__; ++sym1__) {
+        param_names__.emplace_back(std::string() + "mu" + '.' +
+          std::to_string(sym1__));
+      }
+      for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_dna" + '.' +
+          std::to_string(sym1__));
+      }
     }
   }
   inline void
   unconstrained_param_names(std::vector<std::string>& param_names__, bool
                             emit_transformed_parameters__ = true, bool
                             emit_generated_quantities__ = true) const final {
-    for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-      param_names__.emplace_back(std::string() + "mu" + '.' +
+    for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+      param_names__.emplace_back(std::string() + "mu_trad" + '.' +
+        std::to_string(sym1__));
+    }
+    param_names__.emplace_back(std::string() + "beta");
+    param_names__.emplace_back(std::string() + "log_p10");
+    for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+      param_names__.emplace_back(std::string() + "p_dna" + '.' +
         std::to_string(sym1__));
     }
     param_names__.emplace_back(std::string() + "phi");
-    param_names__.emplace_back(std::string() + "beta");
-    param_names__.emplace_back(std::string() + "log_p10");
     if (emit_transformed_parameters__) {
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p11" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_trad" + '.' +
           std::to_string(sym1__));
       }
-      for (int sym1__ = 1; sym1__ <= Nloc; ++sym1__) {
-        param_names__.emplace_back(std::string() + "p" + '.' +
+      for (int sym1__ = 1; sym1__ <= Nloc_trad; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p_trad" + '.' +
           std::to_string(sym1__));
       }
     }
@@ -638,13 +893,21 @@ public:
           std::to_string(sym1__));
       }
       param_names__.emplace_back(std::string() + "p10");
+      for (int sym1__ = 1; sym1__ <= mu_1dim__; ++sym1__) {
+        param_names__.emplace_back(std::string() + "mu" + '.' +
+          std::to_string(sym1__));
+      }
+      for (int sym1__ = 1; sym1__ <= Nloc_dna; ++sym1__) {
+        param_names__.emplace_back(std::string() + "p11_dna" + '.' +
+          std::to_string(sym1__));
+      }
     }
   }
   inline std::string get_constrained_sizedtypes() const {
-    return std::string("[{\"name\":\"mu\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"phi\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p11\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"mu_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"phi\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p11_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"mu\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(mu_1dim__) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"generated_quantities\"},{\"name\":\"p11_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"generated_quantities\"}]");
   }
   inline std::string get_unconstrained_sizedtypes() const {
-    return std::string("[{\"name\":\"mu\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"phi\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p11\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"}]");
+    return std::string("[{\"name\":\"mu_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"beta\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"log_p10\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"parameters\"},{\"name\":\"phi\",\"type\":{\"name\":\"real\"},\"block\":\"parameters\"},{\"name\":\"p11_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"p_trad\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_trad) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"transformed_parameters\"},{\"name\":\"log_lik\",\"type\":{\"name\":\"vector\",\"length\":" + std::to_string(log_lik_1dim__) + "},\"block\":\"generated_quantities\"},{\"name\":\"p10\",\"type\":{\"name\":\"real\"},\"block\":\"generated_quantities\"},{\"name\":\"mu\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(mu_1dim__) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"generated_quantities\"},{\"name\":\"p11_dna\",\"type\":{\"name\":\"array\",\"length\":" + std::to_string(Nloc_dna) + ",\"element_type\":{\"name\":\"real\"}},\"block\":\"generated_quantities\"}]");
   }
   // Begin method overload boilerplate
   template <typename RNG> inline void
@@ -653,11 +916,11 @@ public:
               emit_transformed_parameters = true, const bool
               emit_generated_quantities = true, std::ostream*
               pstream = nullptr) const {
-    const size_t num_params__ = (((Nloc + 1) + 1) + 1);
-    const size_t num_transformed = emit_transformed_parameters * ((Nloc +
-      Nloc));
+    const size_t num_params__ = ((((Nloc_trad + 1) + 1) + Nloc_dna) + 1);
+    const size_t num_transformed = emit_transformed_parameters * ((Nloc_trad
+      + Nloc_trad));
     const size_t num_gen_quantities = emit_generated_quantities *
-      ((log_lik_1dim__ + 1));
+      ((((log_lik_1dim__ + 1) + mu_1dim__) + Nloc_dna));
     const size_t num_to_write = num_params__ + num_transformed +
       num_gen_quantities;
     std::vector<int> params_i;
@@ -672,11 +935,11 @@ public:
               emit_transformed_parameters = true, bool
               emit_generated_quantities = true, std::ostream*
               pstream = nullptr) const {
-    const size_t num_params__ = (((Nloc + 1) + 1) + 1);
-    const size_t num_transformed = emit_transformed_parameters * ((Nloc +
-      Nloc));
+    const size_t num_params__ = ((((Nloc_trad + 1) + 1) + Nloc_dna) + 1);
+    const size_t num_transformed = emit_transformed_parameters * ((Nloc_trad
+      + Nloc_trad));
     const size_t num_gen_quantities = emit_generated_quantities *
-      ((log_lik_1dim__ + 1));
+      ((((log_lik_1dim__ + 1) + mu_1dim__) + Nloc_dna));
     const size_t num_to_write = num_params__ + num_transformed +
       num_gen_quantities;
     vars = std::vector<double>(num_to_write,
