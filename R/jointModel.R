@@ -292,7 +292,6 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
   } else {
     qPCR_all_dna <- as.data.frame(matrix(NA,nrow=0,ncol=4))
     colnames(qPCR_all_dna) <- c('L','N','K','L_unique')
-  } else {
     L_match_dna <- as.data.frame(matrix(NA,nrow=0,ncol=4))
   }
 
