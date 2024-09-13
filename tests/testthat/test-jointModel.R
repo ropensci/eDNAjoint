@@ -457,7 +457,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(3, 0.01, 5),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       alpha <- rep(0.1,3)
     )
   }
@@ -485,7 +485,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(3, -1, 0),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       alpha <- rep(0.1,3)
     )
     names(inits[[i]]) <- c('mu','p10','alpha')
@@ -511,7 +511,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(4, 0.1, 1),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       alpha <- rep(0.1,3)
     )
     names(inits[[i]]) <- c('mu','p10','alpha')
@@ -565,7 +565,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
-      p10 <- stats::runif(2,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(2,log(0.0001),log(0.08))),
       alpha <- rep(0.1,3)
     )
     names(inits[[i]]) <- c('mu','p10','alpha')
@@ -591,7 +591,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       beta <- "1"
     )
     names(inits[[i]]) <- c('mu','p10','beta')
@@ -614,7 +614,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       beta <- c(1,0)
     )
     names(inits[[i]]) <- c('mu','p10','beta')
@@ -637,7 +637,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       alpha <- c("1","2")
     )
     names(inits[[i]]) <- c('mu','p10','alpha')
@@ -663,7 +663,7 @@ test_that("jointModel input checks work", {
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
-      p10 <- stats::runif(1,log(0.0001),log(0.08)),
+      p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
       alpha <- rep(0.1,2)
     )
     names(inits[[i]]) <- c('mu','p10','alpha')
@@ -1246,7 +1246,7 @@ test_that("semi-paired model works", {
   mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
-  q <- 2
+  q_true <- 2
   phi <- 1.2
   # traditional type
   count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
@@ -1259,7 +1259,7 @@ test_that("semi-paired model works", {
       if(count_type[i,j]==1){
         count[i,j] <- rnbinom(n = 1, mu = mu[i], size = phi)
       } else {
-        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q, size = phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q_true, size = phi)
       }
     }
   }
@@ -1298,7 +1298,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     phi = phi,
     q = q
@@ -1385,7 +1385,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     q = q
   )
@@ -1471,7 +1471,7 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     q = q
   )
@@ -1542,7 +1542,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     phi = phi
   )
@@ -1615,7 +1615,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta
   )
   names(inits[[1]]) <- c('mu','p10','beta')
@@ -1689,7 +1689,7 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta
   )
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
@@ -1782,7 +1782,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha,
     q = q,
     phi = phi
@@ -1877,7 +1877,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha
   )
   names(inits[[1]]) <- c('mu','p10','alpha'
@@ -1973,7 +1973,7 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha,
     q = q
   )
@@ -2057,7 +2057,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha,
     phi = phi
   )
@@ -2139,7 +2139,7 @@ test_that("semi-paired model works", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha
   )
   names(inits[[1]]) <- c('mu','p10','alpha'
@@ -2223,7 +2223,7 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha
   )
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha'

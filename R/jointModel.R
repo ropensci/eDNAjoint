@@ -399,9 +399,11 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # get initial values
   if(isCatch_type(q)){
-    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,data,q_names)
+    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,L_match_trad,
+                       L_match_dna,data,q_names)
   } else {
-    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,data)
+    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,L_match_trad,
+                       L_match_dna,data)
   }
 
   # run model
@@ -528,26 +530,41 @@ get_stan_model <- function(q, family, cov){
 #'   chain
 
 
-get_inits <- function(n.chain,qPCR_all,initial_values,cov,data,q_names=NULL){
+get_inits <- function(n.chain,qPCR_all,initial_values,cov,L_match_trad,
+                      L_match_dna,data,q_names=NULL){
   if(!is.null(cov)){
     if(!is.null(q_names)){
       inits <- init_joint_cov_catchability(n.chain,qPCR_all,q_names,cov,
-                                           initial_values,data)
+                                           initial_values,L_match_trad,
+                                           L_match_dna,data)
     } else {
-      inits <- init_joint_cov(n.chain,qPCR_all,cov,initial_values,data)
+      inits <- init_joint_cov(n.chain,qPCR_all,cov,initial_values,
+                              L_match_trad,L_match_dna,data)
     }
   } else {
     if(!is.null(q_names)){
       inits <- init_joint_catchability(n.chain,qPCR_all,q_names,
-                                       initial_values,data)
+                                       initial_values,L_match_trad,
+                                       L_match_dna,data)
     } else {
-      inits <- init_joint(n.chain,qPCR_all,initial_values,data)
+      inits <- init_joint(n.chain,qPCR_all,initial_values,L_match_trad,
+                          L_match_dna,data)
     }
   }
   return(inits)
 }
 
-init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,data){
+init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
+                           L_match_trad,L_match_dna,data){
+
+  # get mu means
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
+  mu_means_all[L_match_trad$L] <- mu_means_trad
+  if(dim(L_match_dna)[1]>0){
+    mu_means_all[L_match_dna$L] <- rep(mean(mu_means_trad),dim(L_match_dna)[1])
+  }
+
   # helper function
   # joint model, catchability coefficient, site covariates
   A <- list()
@@ -555,9 +572,15 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,data){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu_trad <- initial_values[[i]]$mu
+          mu_trad <- initial_values[[i]]$mu[L_match_trad$L]
         } else {
-          mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE)))
+          mu_trad <- mu_means_trad
+        },
+
+        if('mu' %in% names(initial_values[[i]])){
+          mu <- initial_values[[i]]$mu
+        } else {
+          mu <- mu_means_all
         },
 
         if('p10' %in% names(initial_values[[i]])){
@@ -572,16 +595,17 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,data){
           alpha <- rep(0.1,length(cov)+1)
         }
       )
-      names(A[[i]]) <- c('mu_trad','log_p10','alpha')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE))),
+        mu_trad <- mu_means_trad,
+        mu <- mu_means_all,
         log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
         alpha <- rep(0.1,length(cov)+1)
       )
-      names(A[[i]]) <- c('mu_trad','log_p10','alpha')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
     }
   }
 
@@ -589,7 +613,17 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,data){
 }
 
 init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
-                                        initial_values,data){
+                                        initial_values,L_match_trad,
+                                        L_match_dna,data){
+
+  # get mu means
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
+  mu_means_all[L_match_trad$L] <- mu_means_trad
+  if(dim(L_match_dna)[1]>0){
+    mu_means_all[L_match_dna$L] <- rep(mean(mu_means_trad),dim(L_match_dna)[1])
+  }
+
   # helper function
   # joint model, catchability coefficient, site covariates
   A <- list()
@@ -597,15 +631,21 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu_trad <- initial_values[[i]]$mu
+          mu_trad_1 <- initial_values[[i]]$mu[L_match_trad$L]
         } else {
-          mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE)))
+          mu_trad_1 <- mu_means_trad
+        },
+
+        if('mu' %in% names(initial_values[[i]])){
+          mu <- initial_values[[i]]$mu
+        } else {
+          mu <- mu_means_all
         },
 
         if('q' %in% names(initial_values[[i]])){
-          q <- as.data.frame(initial_values[[i]]$q)
+          q_trans <- as.data.frame(initial_values[[i]]$q)
         } else {
-          q <- as.data.frame(stats::runif(length(q_names),0.01,1))
+          q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
         },
 
         if('p10' %in% names(initial_values[[i]])){
@@ -620,17 +660,18 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
           alpha <- rep(0.1,length(cov)+1)
         }
       )
-      names(A[[i]]) <- c('mu','q','p10','alpha')
+      names(A[[i]]) <- c('mu_trad_1','mu','q_trans','log_p10','alpha')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE))),
-        q <- as.data.frame(stats::runif(length(q_names),0.01,1)),
+        mu_trad_1 <- mu_means_trad,
+        mu <- mu_means_all,
+        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1)),
         log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
         alpha <- rep(0.1,length(cov)+1)
       )
-      names(A[[i]]) <- c('mu_trad','q','log_p10','alpha')
+      names(A[[i]]) <- c('mu_trad_1','mu','q_trans','log_p10','alpha')
     }
   }
 
@@ -638,7 +679,16 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
 }
 
 init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
-                                    data){
+                                    L_match_trad,L_match_dna,data){
+
+  # get mu means
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
+  mu_means_all[L_match_trad$L] <- mu_means_trad
+  if(dim(L_match_dna)[1]>0){
+    mu_means_all[L_match_dna$L] <- rep(mean(mu_means_trad),dim(L_match_dna)[1])
+  }
+
   # helper function
   # joint model, catchability coefficient, no site covariates
   A <- list()
@@ -646,15 +696,21 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu_trad <- initial_values[[i]]$mu
+          mu_trad_1 <- initial_values[[i]]$mu[L_match_trad$L]
         } else {
-          mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE)))
+          mu_trad_1 <- mu_means_trad
+        },
+
+        if('mu' %in% names(initial_values[[i]])){
+          mu <- initial_values[[i]]$mu
+        } else {
+          mu <- mu_means_all
         },
 
         if('q' %in% names(initial_values[[i]])){
-          q <- as.data.frame(initial_values[[i]]$q)
+          q_trans <- as.data.frame(initial_values[[i]]$q)
         } else {
-          q <- as.data.frame(stats::runif(length(q_names),0.01,1))
+          q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
         },
 
         if('p10' %in% names(initial_values[[i]])){
@@ -669,24 +725,35 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
           beta <- 0.5
         }
       )
-      names(A[[i]]) <- c('mu_trad','q','log_p10','beta')
+      names(A[[i]]) <- c('mu_trad_1','mu','q_trans','log_p10','beta')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE))),
-        q <- as.data.frame(stats::runif(length(q_names),0.01,1)),
+        mu_trad_1 <- mu_means_trad,
+        mu <- mu_means_all,
+        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1)),
         log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
         beta <- 0.5
       )
-      names(A[[i]]) <- c('mu_trad','q','log_p10','beta')
+      names(A[[i]]) <- c('mu_trad_1','mu','q_trans','log_p10','beta')
     }
   }
 
   return(A)
 }
 
-init_joint <- function(n.chain,qPCR_all,initial_values,data){
+init_joint <- function(n.chain,qPCR_all,initial_values,
+                       L_match_trad,L_match_dna,data){
+
+  # get mu means
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
+  mu_means_all[L_match_trad$L] <- mu_means_trad
+  if(dim(L_match_dna)[1]>0){
+    mu_means_all[L_match_dna$L] <- rep(mean(mu_means_trad),dim(L_match_dna)[1])
+  }
+
   # helper function
   # joint model, no catchability coefficient, no site covariates
   A <- list()
@@ -694,9 +761,15 @@ init_joint <- function(n.chain,qPCR_all,initial_values,data){
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu_trad <- initial_values[[i]]$mu
+          mu_trad <- initial_values[[i]]$mu[L_match_trad$L]
         } else {
-          mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE)))
+          mu_trad <- mu_means_trad
+        },
+
+        if('mu' %in% names(initial_values[[i]])){
+          mu <- initial_values[[i]]$mu
+        } else {
+          mu <- mu_means_all
         },
 
         if('p10' %in% names(initial_values[[i]])){
@@ -711,16 +784,17 @@ init_joint <- function(n.chain,qPCR_all,initial_values,data){
           beta <- 0.5
         }
       )
-      names(A[[i]]) <- c('mu_trad','log_p10','beta')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu_trad <- as.numeric(na.omit(rowMeans(data$count,na.rm=TRUE))),
+        mu_trad <- mu_means_trad,
+        mu <- mu_means_all,
         log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
         beta <- 0.5
       )
-      names(A[[i]]) <- c('mu_trad','log_p10','beta')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
     }
   }
 

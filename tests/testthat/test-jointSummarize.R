@@ -92,7 +92,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
   mu = mu,
-  p10 = log_p10,
+  p10 = exp(log_p10),
   beta = beta,
   phi = phi,
   q = q
@@ -197,7 +197,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     q = q
   )
@@ -301,7 +301,7 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     q = q
   )
@@ -363,7 +363,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta,
     phi = phi
   )
@@ -453,7 +453,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta
   )
   names(inits[[1]]) <- c('mu','p10','beta')
@@ -544,7 +544,7 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     beta = beta
   )
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
@@ -627,7 +627,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha,
     q = q,
     phi = phi
@@ -742,7 +742,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha
   )
   names(inits[[1]]) <- c('mu','p10','alpha'
@@ -857,7 +857,7 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha,
     q = q
   )
@@ -932,7 +932,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha,
     phi = phi
   )
@@ -1032,7 +1032,7 @@ test_that("jointSummarize outputs work", {
   inits <- list()
   inits[[1]] <- list(
     mu = mu,
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha
   )
   names(inits[[1]]) <- c('mu','p10','alpha'
@@ -1134,7 +1134,7 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
-    p10 = log_p10,
+    p10 = exp(log_p10),
     alpha = alpha
   )
   names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha'
@@ -1219,11 +1219,11 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('mu','phi')
   # run model
-  fit <- suppressWarnings({traditionalModel(data = data, q = TRUE, 
+  fit <- suppressWarnings({traditionalModel(data = data, q = TRUE,
                                             family = 'negbin',
-                                            n.chain = 1, multicore = FALSE, 
+                                            n.chain = 1, multicore = FALSE,
                                             seed = 10,
-                                            initial_values = inits, 
+                                            initial_values = inits,
                                             n.iter.burn = 25,
                                             n.iter.sample = 75)})
 
@@ -1367,9 +1367,9 @@ test_that("jointSummarize outputs work", {
   # run model
   fit <- suppressWarnings({traditionalModel(data = data, q = TRUE,
                                             family = 'gamma',
-                                            n.chain = 1, multicore = FALSE, 
+                                            n.chain = 1, multicore = FALSE,
                                             seed = 10,
-                                            initial_values = inits, 
+                                            initial_values = inits,
                                             n.iter.burn = 25,
                                             n.iter.sample = 75)})
 
@@ -1437,9 +1437,9 @@ test_that("jointSummarize outputs work", {
   names(inits[[1]]) <- c('mu','phi')
   # run model
   fit <- suppressWarnings({traditionalModel(data = data,family = 'negbin',
-                                            n.chain = 1, multicore = FALSE, 
+                                            n.chain = 1, multicore = FALSE,
                                             seed = 10,
-                                            initial_values = inits, 
+                                            initial_values = inits,
                                             n.iter.burn = 25,
                                             n.iter.sample = 75)})
 
@@ -1504,7 +1504,7 @@ test_that("jointSummarize outputs work", {
   # run model
   fit <- suppressWarnings({traditionalModel(data = data,n.chain = 1,
                                             multicore = FALSE, seed = 10,
-                                            initial_values = inits, 
+                                            initial_values = inits,
                                             n.iter.burn = 25,
                                             n.iter.sample = 75)})
 
@@ -1568,11 +1568,11 @@ test_that("jointSummarize outputs work", {
   )
   names(inits[[1]]) <- c('alpha','beta')
   # run model
-  fit <- suppressWarnings({traditionalModel(data = data, n.chain = 1, 
+  fit <- suppressWarnings({traditionalModel(data = data, n.chain = 1,
                                             family = 'gamma',
                                             multicore = FALSE, seed = 10,
                                             n.iter.burn = 25,
-                                            n.iter.sample = 75, 
+                                            n.iter.sample = 75,
                                             initial_values = inits)})
 
   # get output params
