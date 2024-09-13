@@ -559,7 +559,7 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
                            L_match_trad,L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
@@ -618,7 +618,7 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
                                         L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
@@ -683,7 +683,7 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
                                     L_match_trad,L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
@@ -748,7 +748,7 @@ init_joint <- function(n.chain,qPCR_all,initial_values,
                        L_match_trad,L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)))
+  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
