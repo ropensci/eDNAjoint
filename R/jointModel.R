@@ -399,7 +399,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # get initial values
   if(isCatch_type(q)){
-    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,q_names,data)
+    inits <- get_inits(n.chain,qPCR_all,initial_values,cov,data,q_names)
   } else {
     inits <- get_inits(n.chain,qPCR_all,initial_values,cov,data)
   }
