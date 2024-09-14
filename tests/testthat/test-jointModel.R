@@ -1246,7 +1246,7 @@ test_that("semi-paired model works", {
   mu <- rlnorm(nsite, meanlog = log(1), sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
-  q_true <- 2
+  q <- 2
   phi <- 1.2
   # traditional type
   count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count/2),
@@ -1259,7 +1259,7 @@ test_that("semi-paired model works", {
       if(count_type[i,j]==1){
         count[i,j] <- rnbinom(n = 1, mu = mu[i], size = phi)
       } else {
-        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q_true, size = phi)
+        count[i,j] <- rnbinom(n = 1, mu = mu[i]*q, size = phi)
       }
     }
   }
