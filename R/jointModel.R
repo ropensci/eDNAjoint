@@ -592,22 +592,21 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
 
         if('alpha' %in% names(initial_values[[i]])){
           alpha <- initial_values[[i]]$alpha
+        } else {
+          alpha <- rep(0.1,length(cov)+1)
         }
       )
-      if('alpha' %in% names(initial_values[[i]])){
-        names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
-      } else {
-        names(A[[i]]) <- c('mu_trad','mu','log_p10')
-      }
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
         mu_trad <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
+        alpha <- rep(0.1,length(cov)+1)
       )
-      names(A[[i]]) <- c('mu_trad','mu','log_p10')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
     }
   }
 
@@ -652,35 +651,29 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
 
         if('alpha' %in% names(initial_values[[i]])){
           alpha <- initial_values[[i]]$alpha
+        } else {
+          alpha <- rep(0.1,length(cov)+1)
         },
 
         if('q' %in% names(initial_values[[i]])){
           q_trans <- as.data.frame(initial_values[[i]]$q)
+        } else {
+          q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
         }
       )
-      if('q' %in% names(initial_values[[i]])){
-        if('alpha' %in% names(initial_values[[i]])){
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans')
-        }
-        else {
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10','q_trans')
-        }
-      } else {
-        if('alpha' %in% names(initial_values[[i]])){
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha')
-        } else {
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10')
-        }
-      }
+      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans')
+
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
         mu_trad_1 <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
+        alpha <- rep(0.1,length(cov)+1),
+        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
       )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10')
+      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans')
     }
   }
 
@@ -724,34 +717,28 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
 
         if('beta' %in% names(initial_values[[i]])){
           beta <- initial_values[[i]]$beta
+        } else {
+          beta <- 0.5
         },
 
         if('q' %in% names(initial_values[[i]])){
           q_trans <- as.data.frame(initial_values[[i]]$q)
+        } else {
+          q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
         }
       )
-      if('beta' %in% names(initial_values[[i]])){
-        if('q' %in% names(initial_values[[i]])){
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta','q_trans')
-        } else {
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta')
-        }
-      } else {
-        if('q' %in% names(initial_values[[i]])){
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10','q_trans')
-        } else {
-          names(A[[i]]) <- c('mu_trad_1','mu','log_p10')
-        }
-      }
+      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta','q_trans')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
         mu_trad_1 <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
+        beta <- 0.5,
+        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
       )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10')
+      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta','q_trans')
     }
   }
 
@@ -795,22 +782,21 @@ init_joint <- function(n.chain,qPCR_all,initial_values,
 
         if('beta' %in% names(initial_values[[i]])){
           beta <- initial_values[[i]]$beta
+        } else {
+          beta <- 0.5
         }
       )
-      if('beta' %in% names(initial_values[[i]])){
-        names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
-      } else {
-        names(A[[i]]) <- c('mu_trad','mu','log_p10')
-      }
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
         mu_trad <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
+        beta <- 0.5
       )
-      names(A[[i]]) <- c('mu_trad','mu','log_p10')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
     }
   }
 
