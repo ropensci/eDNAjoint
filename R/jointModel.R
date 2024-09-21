@@ -587,13 +587,13 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
         if('p10' %in% names(initial_values[[i]])){
           log_p10 <- log(initial_values[[i]]$p10)
         } else {
-          log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+          log_p10 <- stats::runif(1,log(0.0001),log(0.01))
         },
 
         if('alpha' %in% names(initial_values[[i]])){
           alpha <- initial_values[[i]]$alpha
         } else {
-          alpha <- c(0.5,rep(0,length(cov)))
+          alpha <- c(3.5,rep(0,length(cov)))
         }
       )
       names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
@@ -603,8 +603,8 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
       A[[i]] <- list(
         mu_trad <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
-        alpha <- c(0.5,rep(0,length(cov)))
+        log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
+        alpha <- c(3.5,rep(0,length(cov)))
       )
       names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
     }
@@ -646,13 +646,13 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
         if('p10' %in% names(initial_values[[i]])){
           log_p10 <- log(initial_values[[i]]$p10)
         } else {
-          log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+          log_p10 <- stats::runif(1,log(0.0001),log(0.01))
         },
 
         if('alpha' %in% names(initial_values[[i]])){
           alpha <- initial_values[[i]]$alpha
         } else {
-          alpha <- c(0.5,rep(0,length(cov)))
+          alpha <- c(3.5,rep(0,length(cov)))
         },
 
         if('q' %in% names(initial_values[[i]])){
@@ -669,8 +669,8 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
       A[[i]] <- list(
         mu_trad_1 <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
-        alpha <- c(0.5,rep(0,length(cov))),
+        log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
+        alpha <- c(3.5,rep(0,length(cov))),
         q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
       )
       names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans')
@@ -712,13 +712,13 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
         if('p10' %in% names(initial_values[[i]])){
           log_p10 <- log(initial_values[[i]]$p10)
         } else {
-          log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+          log_p10 <- stats::runif(1,log(0.0001),log(0.01))
         },
 
         if('beta' %in% names(initial_values[[i]])){
           beta <- initial_values[[i]]$beta
         } else {
-          beta <- 0.5
+          beta <- 3.5
         },
 
         if('q' %in% names(initial_values[[i]])){
@@ -734,8 +734,8 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
       A[[i]] <- list(
         mu_trad_1 <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
-        beta <- 0.5,
+        log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
+        beta <- 3.5,
         q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
       )
       names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta','q_trans')
@@ -777,13 +777,13 @@ init_joint <- function(n.chain,qPCR_all,initial_values,
         if('p10' %in% names(initial_values[[i]])){
           log_p10 <- log(initial_values[[i]]$p10)
         } else {
-          log_p10 <- stats::runif(1,log(0.0001),log(0.08))
+          log_p10 <- stats::runif(1,log(0.0001),log(0.01))
         },
 
         if('beta' %in% names(initial_values[[i]])){
           beta <- initial_values[[i]]$beta
         } else {
-          beta <- 0.5
+          beta <- 3.5
         }
       )
       names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
@@ -793,8 +793,8 @@ init_joint <- function(n.chain,qPCR_all,initial_values,
       A[[i]] <- list(
         mu_trad <- mu_means_trad,
         mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.08)),
-        beta <- 0.5
+        log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
+        beta <- 3.5
       )
       names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
     }
