@@ -101,7 +101,7 @@ vignette](https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
 
 Keller, A.G. (2024). *eDNAjoint: R package for interpreting paired and
 semi-paired environmental DNA and traditional surveys*.
-<https://github.com/abigailkeller/eDNAjoint>.
+<https://github.com/ropensci/eDNAjoint>.
 
 ## Code of Conduct
 
