@@ -26,8 +26,8 @@ https://mc-stan.org
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/abigailkeller/eDNAjoint}
-  \item Report bugs at \url{https://github.com/abigailkeller/eDNAjoint/issues}
+  \item \url{https://github.com/ropensci/eDNAjoint}
+  \item Report bugs at \url{https://github.com/ropensci/eDNAjoint/issues}
 }
 
 }
