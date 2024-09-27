@@ -40,8 +40,7 @@ installation time from source can be high, as unlike binary file formats
 provided by Cran, the program needs to compile during installation:
 
 ``` r
-library(devtools)
-install_github('ropensci/eDNAjoint')
+install.packages("eDNAjoint", repos = "https://ropensci.r-universe.dev")
 ```
 
 ## Example
