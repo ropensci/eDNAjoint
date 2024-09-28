@@ -4,6 +4,7 @@
 -   Improved programming (i.e., reduced cyclomatic complexity, spacing, etc.)
 -   Added functionality to accommodate semi-paired data (i.e., traditional samples not collected at all surveyed sites).
 -   Improved integration of package print statements with user guide.
+-   Updated default calculation of initial values for MCMC.
 
 # eDNAjoint 0.1
 

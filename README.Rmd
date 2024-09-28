@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ropensci/eDNAjoint/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ropensci/eDNAjoint/actions/workflows/R-CMD-check.yaml)
-[![codecov](https://codecov.io/gh/abigailkeller/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/abigailkeller/eDNAjoint)
+[![codecov](https://codecov.io/gh/ropensci/eDNAjoint/graph/badge.svg?token=AEVR9NSQ9Z)](https://codecov.io/gh/ropensci/eDNAjoint)
 [![Status at rOpenSci Software Peer
 Review](https://badges.ropensci.org/642_status.svg)](https://github.com/ropensci/software-review/issues/642)
 [![Lifecycle:
