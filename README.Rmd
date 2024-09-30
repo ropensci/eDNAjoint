@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 # eDNAjoint
 
-<img src="man/figures/logo.png" style="float:right; height:200px;" dpi="700"/>
+<img src="man/figures/logo.png" align="right" height="200" style="float:right; height:200px;" dpi="700"/>
 
 <!-- badges: start -->
 

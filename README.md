@@ -3,7 +3,7 @@
 
 # eDNAjoint
 
-<img src="man/figures/logo.png" style="float:right; height:200px;" dpi="700"/>
+<img src="man/figures/logo.png" align="right" height="200" style="float:right; height:200px;" dpi="700"/>
 
 <!-- badges: start -->
 
@@ -73,7 +73,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 16032.74    1
+#> p10 0.003       0 0.001 0.001 0.007 17337.43    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
