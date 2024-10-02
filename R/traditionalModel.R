@@ -3,7 +3,7 @@
 #' This function implements a Bayesian model that estimates expected species
 #' catch rate using count data from traditional, non eDNA surveys. When
 #' multiple traditional gear types are used, an optional variation allows
-#' estimation of catchability coefficients, which scale the catchability of
+#' estimation of gear scaling coefficients, which scale the catchability of
 #' gear types relative to the expected catch rate of a reference gear type.
 #' Model is implemented using Bayesian inference using the `rstan` package,
 #' which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
@@ -32,10 +32,10 @@
 #' @param family The distribution class used to model traditional survey count
 #'   data. Options include poisson ('poisson'), negative binomial ('negbin'),
 #'   and gamma ('gamma'). Default value is 'poisson'.
-#' @param q A logical value indicating whether to estimate a catchability
-#'   coefficient, q, for traditional survey gear types (TRUE) or to not estimate
-#'   a catchability coefficient, q, for traditional survey gear types (FALSE).
-#'   Default value is FALSE.
+#' @param q A logical value indicating whether to estimate gear scaling
+#'   coefficients, q, for traditional survey gear types (TRUE) or to not
+#'   estimate gear scaling coefficients, q, for traditional survey gear types
+#'   (FALSE). Default value is FALSE.
 #' @srrstats {BS1.0,G2.1a,BS1.2} Description of hyperparameters and how to
 #'   specify prior distributions, explicit documentation of vector input types
 #' @param phipriors A numeric vector indicating gamma distribution
@@ -102,25 +102,25 @@
 #' dim(greencrabData$count)[1]
 #' dim(greencrabData$count.type)[1]
 #'
-#' # Fit a model without estimating a catchability coefficient for traditional
+#' # Fit a model without estimating a gear scaling coefficient for traditional
 #' # survey gear types.
 #' # This model assumes all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a poisson distribution.
-#' fit.no.q <- traditionalModel(data = greencrabData, family = "poisson", 
-#'                              q = FALSE, phipriors = NULL, multicore = FALSE, 
+#' fit.no.q <- traditionalModel(data = greencrabData, family = "poisson",
+#'                              q = FALSE, phipriors = NULL, multicore = FALSE,
 #'                              verbose = TRUE)
 #'
 #'
-#' # Fit a model estimating a catchability coefficient for traditional survey
+#' # Fit a model estimating a gear scaling coefficient for traditional survey
 #' # gear types.
 #' # This model does not assume all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a negative binomial distribution.
 #' fit.q <- traditionalModel(data = greencrabData, family = "negbin", q = TRUE,
 #'                           phipriors = c(0.25,0.25), multicore = FALSE,
-#'                           initial_values = NULL, n.chain = 4, 
-#'                           n.iter.burn = 500, n.iter.sample = 2500, thin = 1, 
+#'                           initial_values = NULL, n.chain = 4,
+#'                           n.iter.burn = 500, n.iter.sample = 2500, thin = 1,
 #'                           adapt_delta = 0.9, verbose = TRUE, seed = 123)
 #' }
 #'

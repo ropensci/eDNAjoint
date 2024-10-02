@@ -53,9 +53,7 @@ interpretation of model fits.
 
 ## Installation
 
-You can install the development version of eDNAjoint. Note that
-installation time from source can be high, as unlike binary file formats
-provided by Cran, the program needs to compile during installation:
+You can install the development version of eDNAjoint from ROpenSci:
 
 ```{r,eval=FALSE}
 install.packages("eDNAjoint", repos = "https://ropensci.r-universe.dev")

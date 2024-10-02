@@ -3,14 +3,15 @@
 #'
 #' This function implements a Bayesian model that integrates data from paired
 #' eDNA and traditional surveys, as described in Keller et al. (2022)
-#' <https://doi.org/10.1002/eap.2561>. The model estimates parameters including
+#' <doi.org/10.1002/eap.2561>. The model estimates parameters including
 #' the expected species catch rate and the probability of false positive eDNA
 #' detection. This function allows for optional model variations, like inclusion
 #' of site-level covariates that scale the sensitivity of eDNA sampling relative
-#' to traditional sampling, as well as estimation of catchability coefficients
-#' when multiple traditional gear types are used. Model is implemented using
-#' Bayesian inference using the `rstan` package, which uses Hamiltonian Monte
-#' Carlo to simulate the posterior distributions. See more examples in the
+#' to traditional sampling, as well as estimation of gear scaling coefficients
+#' that scales the relative catchability of multiple traditional gear types.
+#' Model is implemented using Bayesian inference using the `rstan` package,
+#' which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+#' See more examples in the
 #' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
 #' Vignette}.
 #'
@@ -55,9 +56,9 @@
 #' @param p10priors A numeric vector indicating beta distribution
 #'   hyperparameters (alpha, beta) used as the prior distribution for the eDNA
 #'   false positive probability (p10). Default vector is c(1,20).
-#' @param q A logical value indicating whether to estimate a catchability
-#'   coefficient, q, for traditional survey gear types (TRUE) or to not
-#'   estimate a catchability coefficient, q, for traditional survey gear types
+#' @param q A logical value indicating whether to estimate gear scaling
+#'   coefficients, q, for traditional survey gear types (TRUE) or to not
+#'   estimate gear scaling coefficients, q, for traditional survey gear types
 #'   (FALSE). Default value is FALSE.
 #' @srrstats {BS1.0,G2.1a,BS1.2} Description of hyperparameters and how to
 #'   specify prior distributions, explicit documentation of vector input types
@@ -162,7 +163,7 @@
 #' dim(greencrabData$qPCR.N)[1]
 #' dim(greencrabData$count)[1]
 #'
-#' # Fit a model estimating a catchability coefficient for traditional survey
+#' # Fit a model estimating a gear scaling coefficient for traditional survey
 #' # gear types.
 #' # This model does not assume all traditional survey methods have the same
 #' # catchability.
@@ -447,7 +448,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
                                                     inc_warmup = FALSE),
                           div_check)[[1]])
   # print either troubleshooting or visualization tips
-  if(div_trans>0){
+  if(div_trans>0 & verbose){
     url <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette/',
                   'tips.html#troubleshooting-tips')
     message <- 'Refer to the eDNAjoint guide for troubleshooting tips: '
@@ -559,7 +560,8 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
                            L_match_trad,L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
+  mu_means_trad <- as.vector(stats::na.omit(rowMeans(data$count,
+                                                     na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
@@ -618,7 +620,8 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
                                         L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
+  mu_means_trad <- as.vector(stats::na.omit(rowMeans(data$count,
+                                                     na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
@@ -684,7 +687,8 @@ init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
                                     L_match_trad,L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
+  mu_means_trad <- as.vector(stats::na.omit(rowMeans(data$count,
+                                                     na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){
@@ -749,7 +753,8 @@ init_joint <- function(n.chain,qPCR_all,initial_values,
                        L_match_trad,L_match_dna,data){
 
   # get mu means
-  mu_means_trad <- as.vector(na.omit(rowMeans(data$count,na.rm=TRUE)+0.01))
+  mu_means_trad <- as.vector(stats::na.omit(rowMeans(data$count,
+                                                     na.rm=TRUE)+0.01))
   mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
   mu_means_all[L_match_trad$L] <- mu_means_trad
   if(dim(L_match_dna)[1]>0){

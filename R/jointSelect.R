@@ -29,7 +29,7 @@
 #' \donttest{
 #' data(greencrabData)
 #'
-#' # Fit a model without estimating a catchability coefficient for traditional
+#' # Fit a model without estimating a gear scaling coefficient for traditional
 #' # survey gear types.
 #' # This model assumes all traditional survey methods have the same
 #' # catchability.
@@ -38,7 +38,7 @@
 #'                        p10priors = c(1,20), q = FALSE, multicore = FALSE)
 #'
 #'
-#' # Fit a model estimating a catchability coefficient for traditional
+#' # Fit a model estimating a gear scaling coefficient for traditional
 #' # survey gear types.
 #' # This model does not assume all traditional survey methods have the
 #' # same catchability.

@@ -75,9 +75,9 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
                                                 inc_warmup = FALSE),
                       div_check)[[1]])
 
-    warning <- paste0('Warning: There are ',sum,
-                      ' divergent transitions in your model fit. ')
-    print(warning)
+    warning_msg <- paste0('Warning: There are ',sum,
+                          ' divergent transitions in your model fit. ')
+    warning(warning_msg)
 
   }
 

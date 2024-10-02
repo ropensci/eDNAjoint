@@ -56,9 +56,9 @@ and gamma ('gamma'). Default value is 'poisson'.}
 hyperparameters (alpha, beta) used as the prior distribution for the eDNA
 false positive probability (p10). Default vector is c(1,20).}
 
-\item{q}{A logical value indicating whether to estimate a catchability
-coefficient, q, for traditional survey gear types (TRUE) or to not
-estimate a catchability coefficient, q, for traditional survey gear types
+\item{q}{A logical value indicating whether to estimate gear scaling
+coefficients, q, for traditional survey gear types (TRUE) or to not
+estimate gear scaling coefficients, q, for traditional survey gear types
 (FALSE). Default value is FALSE.}
 
 \item{phipriors}{A numeric vector indicating gamma distribution
@@ -105,14 +105,15 @@ A list of:
 \description{
 This function implements a Bayesian model that integrates data from paired
 eDNA and traditional surveys, as described in Keller et al. (2022)
-\url{https://doi.org/10.1002/eap.2561}. The model estimates parameters including
+<doi.org/10.1002/eap.2561>. The model estimates parameters including
 the expected species catch rate and the probability of false positive eDNA
 detection. This function allows for optional model variations, like inclusion
 of site-level covariates that scale the sensitivity of eDNA sampling relative
-to traditional sampling, as well as estimation of catchability coefficients
-when multiple traditional gear types are used. Model is implemented using
-Bayesian inference using the \code{rstan} package, which uses Hamiltonian Monte
-Carlo to simulate the posterior distributions. See more examples in the
+to traditional sampling, as well as estimation of gear scaling coefficients
+that scales the relative catchability of multiple traditional gear types.
+Model is implemented using Bayesian inference using the \code{rstan} package,
+which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
+See more examples in the
 \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
 Vignette}.
 }
@@ -180,7 +181,7 @@ names(greencrabData)
 dim(greencrabData$qPCR.N)[1]
 dim(greencrabData$count)[1]
 
-# Fit a model estimating a catchability coefficient for traditional survey
+# Fit a model estimating a gear scaling coefficient for traditional survey
 # gear types.
 # This model does not assume all traditional survey methods have the same
 # catchability.

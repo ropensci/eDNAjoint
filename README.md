@@ -35,9 +35,7 @@ interpretation of model fits.
 
 ## Installation
 
-You can install the development version of eDNAjoint. Note that
-installation time from source can be high, as unlike binary file formats
-provided by Cran, the program needs to compile during installation:
+You can install the development version of eDNAjoint from ROpenSci:
 
 ``` r
 install.packages("eDNAjoint", repos = "https://ropensci.r-universe.dev")
@@ -73,7 +71,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 17337.43    1
+#> p10 0.003       0 0.001 0.001 0.007 15280.37    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples

@@ -111,9 +111,9 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = NULL,
     sum <- sum(lapply(rstan::get_sampler_params(modelfit,inc_warmup = FALSE),
                       div_check)[[1]])
 
-    warning <- paste0('Warning: There are ',sum,
+    warning_msg <- paste0('Warning: There are ',sum,
                       ' divergent transitions in your model fit. ')
-    print(warning)
+    warning(warning_msg)
 
   }
 

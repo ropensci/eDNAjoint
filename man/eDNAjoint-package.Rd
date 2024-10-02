@@ -27,6 +27,7 @@ https://mc-stan.org
 Useful links:
 \itemize{
   \item \url{https://github.com/ropensci/eDNAjoint}
+  \item \url{https://docs.ropensci.org/eDNAjoint/}
   \item Report bugs at \url{https://github.com/ropensci/eDNAjoint/issues}
 }
 
@@ -37,6 +38,8 @@ Useful links:
 Other contributors:
 \itemize{
   \item Ryan P. Kelly \email{rpkelly@uw.edu} [contributor]
+  \item Chitra M. Saraswati [reviewer]
+  \item Saras M. Windecker [reviewer]
 }
 
 }

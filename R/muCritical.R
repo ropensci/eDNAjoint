@@ -93,9 +93,9 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
     sum <- sum(lapply(rstan::get_sampler_params(modelfit, inc_warmup = FALSE),
                       div_check)[[1]])
 
-    warning <- paste0('Warning: There are ', sum,
-                      ' divergent transitions in your model fit. ')
-    print(warning)
+    warning_msg <- paste0('Warning: There are ', sum,
+                          ' divergent transitions in your model fit. ')
+    warning(warning_msg)
 
   }
 
