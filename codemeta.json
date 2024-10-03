@@ -3,7 +3,7 @@
   "@type": "SoftwareSourceCode",
   "identifier": "eDNAjoint",
   "description": "Models integrate environmental DNA (eDNA) detection data and traditional survey data to jointly estimate species catch rate (see package vignette: <https://bookdown.org/abigailkeller/eDNAjoint_vignette/>). Models can be used with count data via traditional survey methods (i.e., trapping, electrofishing, visual) and replicated eDNA detection/nondetection data via polymerase chain reaction (i.e., PCR or qPCR) from multiple survey locations. Estimated parameters include probability of a false positive eDNA detection, a site-level covariates that scale the sensitivity of eDNA surveys relative to traditional surveys, and catchability coefficients for traditional gear types. Models are implemented with a Bayesian framework (Markov chain Monte Carlo) using the 'Stan' probabilistic programming language.",
-  "name": "eDNAjoint: Joint Modeling of Traditional and Environmental DNA Survey Data",
+  "name": "eDNAjoint: Joint Modeling of Traditional and Environmental DNA Survey Data in a Bayesian Framework",
   "relatedLink": "https://docs.ropensci.org/eDNAjoint/",
   "codeRepository": "https://github.com/ropensci/eDNAjoint",
   "issueTracker": "https://github.com/ropensci/eDNAjoint/issues",
@@ -264,7 +264,7 @@
     },
     "SystemRequirements": "GNU make"
   },
-  "fileSize": "1430978.287KB",
+  "fileSize": "1430978.178KB",
   "releaseNotes": "https://github.com/ropensci/eDNAjoint/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/eDNAjoint/blob/master/README.md",
   "contIntegration": ["https://github.com/ropensci/eDNAjoint/actions/workflows/R-CMD-check.yaml", "https://codecov.io/gh/ropensci/eDNAjoint"],

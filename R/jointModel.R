@@ -68,7 +68,7 @@
 #'   gear data. Used when family = 'negbin.' If family = 'negbin', then
 #'   default vector is c(0.25,0.25), otherwise, default is NULL.
 #' @param multicore A logical value indicating whether to parallelize chains
-#'   with multiple cores. Default is TRUE.
+#'   with multiple cores. Default is FALSE.
 #' @srrstats {BS2.7,BS2.11} Option for user to provide initial values for each
 #'   chain
 #' @param initial_values A list of lists of initial values to use in MCMC. The
@@ -179,7 +179,7 @@
 
 jointModel <- function(data, cov = NULL, family = 'poisson',
                        p10priors = c(1,20),
-                       q = FALSE, phipriors = NULL, multicore = TRUE,
+                       q = FALSE, phipriors = NULL, multicore = FALSE,
                        initial_values = NULL, n.chain = 4, n.iter.burn = 500,
                        n.iter.sample = 2500, thin = 1, adapt_delta = 0.9,
                        verbose = TRUE, seed = NULL) {

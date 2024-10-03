@@ -9,7 +9,7 @@ traditionalModel(
   family = "poisson",
   q = FALSE,
   phipriors = NULL,
-  multicore = TRUE,
+  multicore = FALSE,
   initial_values = NULL,
   n.chain = 4,
   n.iter.burn = 500,
@@ -50,7 +50,7 @@ gear data. Used when family = 'negbin.' If family = 'negbin', then
 default vector is c(0.25,0.25), otherwise, default is NULL.}
 
 \item{multicore}{A logical value indicating whether to parallelize chains
-with multiple cores. Default is TRUE.}
+with multiple cores. Default is FALSE.}
 
 \item{initial_values}{A list of lists of initial values to use in MCMC. The
 length should equal the number of MCMC chains. Initial values can be
