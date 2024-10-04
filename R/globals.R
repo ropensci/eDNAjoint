@@ -1,1 +1,1 @@
-utils::globalVariables(c("L","median","survey_type","inits"))
+utils::globalVariables(c("L","median","survey_type","inits","value"))

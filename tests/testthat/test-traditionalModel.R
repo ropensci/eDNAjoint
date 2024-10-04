@@ -1,4 +1,5 @@
 test_that("traditionalModel input checks work", {
+  testthat::skip_on_cran()
   #' @srrstats {G5.2,G5.2b,BS2.15} Tests the assure function input checks are
   #'   behaving as expected.
   #1. input tags are valid, q = TRUE

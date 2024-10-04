@@ -1,4 +1,5 @@
 test_that("jointSummarize input checks work", {
+  testthat::skip_on_cran()
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are
   #'   behaving as expected.
 
@@ -33,6 +34,7 @@ test_that("jointSummarize input checks work", {
 })
 
 test_that("jointSummarize outputs work", {
+  testthat::skip_on_cran()
 
   ## 1.
   # model includes 'p10','q','phi','beta'

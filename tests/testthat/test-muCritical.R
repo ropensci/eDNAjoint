@@ -1,4 +1,5 @@
 test_that("muCritical input checks work", {
+  testthat::skip_on_cran()
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are
   #'   behaving as expected.
 
@@ -54,13 +55,14 @@ test_that("muCritical input checks work", {
 })
 
 test_that("muCritical output check", {
+  testthat::skip_on_cran()
 
   # fit two models
   fit.cov <- suppressWarnings({jointModel(data = gobyData,
                                          cov = c('Filter_time','Salinity'),
-                                         family = "poisson", 
+                                         family = "poisson",
                                          p10priors = c(1,20),
-                                         q = FALSE, multicore = FALSE, 
+                                         q = FALSE, multicore = FALSE,
                                          n.chain = 1,
                                          n.iter.burn = 25,
                                          n.iter.sample = 75)})

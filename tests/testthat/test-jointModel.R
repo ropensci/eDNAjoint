@@ -1,4 +1,5 @@
 test_that("jointModel input checks work", {
+  testthat::skip_on_cran()
   #' @srrstats {G5.2,G5.2b,BS2.15} Tests the assure function input checks are
   #'   behaving as expected.
   #1. input tags are valid, q = FALSE, cov = FALSE
@@ -849,6 +850,7 @@ test_that("jointModel input checks work", {
 #'   values are within the 95% credibility interval of the parameters'
 #'   posteriors in the function output.
 test_that("jointModel parameter recovery tests work",{
+  testthat::skip_on_cran()
 
   ################################
   # model run 1: smaller dataset #
@@ -1146,6 +1148,7 @@ test_that("jointModel parameter recovery tests work",{
 
 
 test_that("jointModel probability distribution tests work",{
+  testthat::skip_on_cran()
 
   #' @srrstats {PD4.2} This package fits models with fixed distributions to
   #'   data. Users can choose the distribution used to represent the
@@ -1234,6 +1237,7 @@ test_that("jointModel probability distribution tests work",{
 })
 
 test_that("semi-paired model works", {
+  testthat::skip_on_cran()
 
   ## 1.
   # model includes 'p10','q','phi','beta'

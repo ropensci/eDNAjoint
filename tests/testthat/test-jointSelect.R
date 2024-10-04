@@ -1,4 +1,5 @@
 test_that("jointSelect input checks work", {
+  testthat::skip_on_cran()
   #' @srrstats {G5.2,G5.2b} Tests the assure function input checks are behaving
   #'   as expected.
 
@@ -9,7 +10,7 @@ test_that("jointSelect input checks work", {
                                                family = 'negbin',
                              multicore = FALSE, n.chain = 1,n.iter.burn = 25,
                              n.iter.sample = 75)})
-  model2 <- suppressWarnings({jointModel(data = greencrabData, 
+  model2 <- suppressWarnings({jointModel(data = greencrabData,
                                          family = 'negbin',
                                          multicore = FALSE,n.chain = 1,
                                          n.iter.burn = 25,
@@ -32,6 +33,7 @@ test_that("jointSelect input checks work", {
 })
 
 test_that("jointSelect output check", {
+  testthat::skip_on_cran()
   # fit models
   fit.q1 <- jointModel(data = greencrabData, family = "negbin",
                        p10priors = c(1,20), q = TRUE, multicore = FALSE,
