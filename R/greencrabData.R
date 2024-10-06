@@ -29,7 +29,7 @@
 #'     maximum of 420 trap replicates. NA indicates that fewer trap samples
 #'     were collected than the maximum at a site.}
 #'}
-#' @source \url{https://doi.org/10.6084/m9.figshare.15117102.v2}
+#' @source \doi{10.6084/m9.figshare.15117102.v2}
 #' @references Keller, A.G., Grason, E.W., McDonald, P.S., Ramon-Laca, A.,
 #'   Kelly, R.P. (2022). Tracking an invasion front with environmental DNA.
 #'   Ecological Applications. 32(4): e2561. https://doi.org/10.1002/eap.2561
