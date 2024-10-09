@@ -53,7 +53,13 @@ interpretation of model fits.
 
 ## Installation
 
-You can install the development version of eDNAjoint from ROpenSci:
+The most stable version of *eDNAjoint* can be found on Cran:
+
+```{r,eval=FALSE}
+install.packages("eDNAjoint")
+```
+
+You can also install the development version of *eDNAjoint* from ROpenSci:
 
 ```{r,eval=FALSE}
 install.packages("eDNAjoint", repos = "https://ropensci.r-universe.dev")
