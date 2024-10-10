@@ -111,13 +111,7 @@ detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1),
 
 You can find much more detailed examples of the functions in *eDNAjoint*
 and the model underlying the package in the [package
-vignette](https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
-
-## Citation
-
-Keller, A.G. (2024). *eDNAjoint: R package for interpreting paired and
-semi-paired environmental DNA and traditional surveys*.
-<https://github.com/ropensci/eDNAjoint>.
+vignette](https://ednajoint.netlify.app/).
 
 ## Code of Conduct
 

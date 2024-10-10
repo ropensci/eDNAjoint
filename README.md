@@ -78,7 +78,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 jointSummarize(goby.fit$model, par = 'p10')
 #>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 17744.13    1
+#> p10 0.003       0 0.001 0.001 0.007 10934.87    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -100,13 +100,7 @@ detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1),
 
 You can find much more detailed examples of the functions in *eDNAjoint*
 and the model underlying the package in the [package
-vignette](https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
-
-## Citation
-
-Keller, A.G. (2024). *eDNAjoint: R package for interpreting paired and
-semi-paired environmental DNA and traditional surveys*.
-<https://github.com/ropensci/eDNAjoint>.
+vignette](https://ednajoint.netlify.app/).
 
 ## Code of Conduct
 
