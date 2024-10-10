@@ -699,7 +699,7 @@ test_that("jointModel input checks work", {
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
                      paste0('https://ednajoint.netlify.app',
-                            '/usecase1.html#initialvalues'),
+                            '/usecase2.html#initialvalues'),
                      sep='\n'))
 
   #46. initial values check: q length
@@ -723,7 +723,7 @@ test_that("jointModel input checks work", {
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
                      paste0('https://ednajoint.netlify.app',
-                            '/usecase1.html#initialvalues'),
+                            '/usecase2.html#initialvalues'),
                      sep='\n'))
 
   #47. check length and range of n.chain

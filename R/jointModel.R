@@ -1330,8 +1330,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
                       "the number of chains (n.chain, default is 4).")
     errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                       'initial values: ')
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                      'vignette/usecase1.html#initialvalues')
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
+                      '/usecase1.html#initialvalues')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
   }
@@ -1346,8 +1346,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "Initial values for 'mu' should be numeric values > 0."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase1.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1357,8 +1357,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
                           "the number of sites.")
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase1.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1371,8 +1371,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "Initial values for 'p10' should be numeric."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase1.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1381,8 +1381,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "The length of initial values for 'p10' should equal 1."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase1.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1395,8 +1395,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "Initial values for 'beta' should be numeric."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase1.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1405,8 +1405,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "The length of initial values for 'beta' should equal 1."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase1.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1419,8 +1419,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "Initial values for 'alpha' should be numeric."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase2.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase2.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1430,8 +1430,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
                           "equal: # covariates + 1 (i.e., including intercept).")
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase2.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase2.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1445,8 +1445,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg1 <- "Initial values for 'q' should be numeric."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase2.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
@@ -1457,8 +1457,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
                           "type = 1).")
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
-        errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                          'vignette/usecase1.html#initialvalues')
+        errMsg3 <- paste0('https://ednajoint.netlify.app',
+                          '/usecase2.html#initialvalues')
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
