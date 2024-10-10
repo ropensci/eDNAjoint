@@ -8,7 +8,7 @@
 #' Model is implemented using Bayesian inference using the `rstan` package,
 #' which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #' See more examples in the
-#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' \href{https://ednajoint.netlify.app}{Package
 #' Vignette}.
 #'
 #' @srrstats {G1.4,G1.3} Roxygen function documentation begins here, with

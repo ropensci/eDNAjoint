@@ -12,7 +12,7 @@
 #' Model is implemented using Bayesian inference using the `rstan` package,
 #' which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 #' See more examples in the
-#' \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+#' \href{https://ednajoint.netlify.app/}{Package
 #' Vignette}.
 #'
 #' @srrstats {G1.0,G1.1} This software makes available a novel algorithm/model
@@ -449,13 +449,11 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
                           div_check)[[1]])
   # print either troubleshooting or visualization tips
   if(div_trans>0 & verbose){
-    url <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette/',
-                  'tips.html#troubleshooting-tips')
+    url <- 'https://ednajoint.netlify.app/tips#troubleshooting-tips'
     message <- 'Refer to the eDNAjoint guide for troubleshooting tips: '
     cat(message, url, "\n")
   } else {
-    url <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette/',
-                  'tips.html#visualization-tips')
+    url <- 'https://ednajoint.netlify.app/tips#visualization-tips'
     message <- 'Refer to the eDNAjoint guide for visualization tips: '
     cat(message, url, "\n")
   }
@@ -826,7 +824,7 @@ catchability_checks <- function(data,cov){
     errMsg1 <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                       "'count', and 'count.type'.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -837,7 +835,7 @@ catchability_checks <- function(data,cov){
     errMsg1 <- paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                       "'count', 'count.type', and 'site.cov'.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -849,7 +847,7 @@ catchability_checks <- function(data,cov){
   if (dim(data$count.type)[1] == 0) {
     errMsg1 <- "count.type contains zero-length data."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -860,7 +858,7 @@ catchability_checks <- function(data,cov){
   if (any(apply(data$count.type, 2, function(col) all(is.na(col))))) {
     errMsg1 <- "count.type contains a column with all NA."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -874,7 +872,7 @@ catchability_checks <- function(data,cov){
      dim(data$count)[2] != dim(data$count.type)[2]) {
     errMsg1 <- "Dimensions of count and count.type do not match."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -889,7 +887,7 @@ catchability_checks <- function(data,cov){
      is.numeric(data$count.type) == FALSE) {
     errMsg1 <- "Data should be numeric."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -902,7 +900,7 @@ catchability_checks <- function(data,cov){
     errMsg1 <- paste0("Empty data cells (NA) in count data should match ",
                       "empty data cells (NA) in count.type data.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -913,7 +911,7 @@ catchability_checks <- function(data,cov){
                       "count.type. Subsequent gear types should be referenced ",
                       "2, 3, 4, etc.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -925,7 +923,7 @@ catchability_checks <- function(data,cov){
   if(!all(data$count.type %% 1 %in% c(0,NA))){
     errMsg1 <- "All values in count.type should be integers."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase3.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -943,7 +941,7 @@ no_catchability_checks <- function(data,cov){
       !all(c('qPCR.N', 'qPCR.K', 'count') %in% names(data))){
     errMsg1 <- "Data should include 'qPCR.N', 'qPCR.K', and 'count'."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -953,7 +951,7 @@ no_catchability_checks <- function(data,cov){
       !all(c('qPCR.N', 'qPCR.K', 'count','site.cov') %in% names(data))){
     errMsg1 <- "Data should include 'qPCR.N', 'qPCR.K', 'count', and 'site.cov'."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -967,7 +965,7 @@ no_catchability_checks <- function(data,cov){
      is.numeric(data$count) == FALSE ) {
     errMsg1 <- "Data should be numeric."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -986,7 +984,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
       dim(data$count)[1] == 0) {
     errMsg1 <- "Input data contains zero-length data."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -997,7 +995,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   if (any(apply(data$qPCR.N, 2, function(col) all(is.na(col))))) {
     errMsg1 <- "qPCR.N contains a column with all NA."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1009,7 +1007,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   if (any(apply(data$qPCR.K, 2, function(col) all(is.na(col))))) {
     errMsg1 <- "qPCR.K contains a column with all NA."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1021,7 +1019,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
   if (any(apply(data$count, 2, function(col) all(is.na(col))))) {
     errMsg1 <- "count contains a column with all NA."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1034,7 +1032,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
       dim(data$qPCR.N)[2] != dim(data$qPCR.K)[2]) {
     errMsg1 <- "Dimensions of qPCR.N and qPCR.K do not match."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1046,7 +1044,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
     errMsg1 <- paste0("Number of sites (rows) in qPCR data and traditional ",
                       "survey count data do not match.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1060,7 +1058,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
     errMsg1 <- paste0("Empty data cells (NA) in qPCR.N data should match ",
                       "empty data cells (NA) in qPCR.K data.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1103,7 +1101,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
                                                  na.rm =  TRUE)){
     errMsg1 <- "count contains undefined values (i.e., Inf or -Inf)"
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1128,7 +1126,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
                                                  na.rm =  TRUE)){
     errMsg1 <- "qPCR.N contains undefined values (i.e., Inf or -Inf)"
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1140,7 +1138,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
                                                   na.rm =  TRUE)){
     errMsg1 <- "qPCR.K contains undefined values (i.e., Inf or -Inf)"
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1154,7 +1152,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
                                                na.rm =  TRUE)){
     errMsg1 <- "All values in qPCR.N should be non-negative integers."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1168,7 +1166,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
                                                na.rm =  TRUE)){
     errMsg1 <- "All values in qPCR.K should be non-negative integers."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1219,7 +1217,7 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
                       "replicates per sample, and K is the number of positive ",
                       "detections among replicates.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase1.html#prepare-the-data')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1239,7 +1237,7 @@ covariate_checks <- function(data,cov){
   if (dim(data$site.cov)[1] == 0) {
     errMsg1 <- "site.cov contains zero-length data."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1250,7 +1248,7 @@ covariate_checks <- function(data,cov){
   if (any(apply(data$site.cov, 2, function(col) all(is.na(col))))) {
     errMsg1 <- "site.cov contains a column with all NA."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1262,7 +1260,7 @@ covariate_checks <- function(data,cov){
   if(!is.numeric(data$site.cov)){
     errMsg1 <- "site.cov should be numeric."
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1273,7 +1271,7 @@ covariate_checks <- function(data,cov){
   if(any(data$site.cov == Inf) | any(data$site.cov == -Inf)){
     errMsg1 <- "site.cov contains undefined values (i.e., Inf or -Inf)"
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1284,7 +1282,7 @@ covariate_checks <- function(data,cov){
     errMsg1 <- paste0("cov values should be listed in the column names of ",
                       "site.cov in the data.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)
@@ -1297,7 +1295,7 @@ covariate_checks <- function(data,cov){
     errMsg1 <- paste0("The number of rows in site.cov matrix should match the ",
                       "number of rows in all other matrices.")
     errMsg2 <- 'See the eDNAjoint guide for data formatting help: '
-    errMsg3 <- paste0('https://bookdown.org/abigailkeller/eDNAjoint_vignette',
+    errMsg3 <- paste0('https://ednajoint.netlify.app',
                       '/usecase2.html')
     errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
     stop(errMsg)

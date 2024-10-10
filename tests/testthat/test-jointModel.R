@@ -9,8 +9,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("Data should include 'qPCR.N', 'qPCR.K', and 'count'.",
                       'See the eDNAjoint guide for data formatting help: ',
-                      paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                             'vignette/usecase1.html#prepare-the-data'),
+                      paste0('https://ednajoint.netlify.app',
+                             '/usecase1.html#prepare-the-data'),
                      sep='\n'))
   #2. input tags are valid, q = FALSE, cov = TRUE
   site.cov <- cbind(c(1,0),c(0.4,-0.4))
@@ -24,8 +24,8 @@ test_that("jointModel input checks work", {
                paste(paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                             "'count', and 'site.cov'."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase2.html#prepare-the-data'),
                      sep='\n'))
   #3. input tags are valid, q = TRUE, cov = FALSE
   expect_error(jointModel(data = list(qPCR.k = rbind(c(1,1,1),c(1,1,NA)),
@@ -37,8 +37,8 @@ test_that("jointModel input checks work", {
                paste(paste0("Data should include 'qPCR.N', 'qPCR.K', ",
                             "'count', and 'count.type'."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
   #4. input tags are valid, q = TRUE, cov = TRUE
   site.cov <- cbind(c(1,0),c(0.4,-0.4))
@@ -53,8 +53,8 @@ test_that("jointModel input checks work", {
                paste(paste0("Data should include 'qPCR.N', 'qPCR.K', 'count', ",
                             "'count.type', and 'site.cov'."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #5. make sure dimensions of qPCR.N and qPCR.K are equal
@@ -66,8 +66,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("Dimensions of qPCR.N and qPCR.K do not match.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #6. make sure dimensions of count and count.type are equal, if count.type is
@@ -82,8 +82,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("Dimensions of count and count.type do not match.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #7. make sure number of rows in count = number of rows in qPCR.N and qPCR.K
@@ -97,8 +97,8 @@ test_that("jointModel input checks work", {
                paste(paste0("Number of sites \\(rows\\) in qPCR data and ",
                             "traditional survey count data do not match."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #8. make sure all data is numeric -- if q == TRUE
@@ -110,8 +110,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("Data should be numeric.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #9. make sure all data is numeric -- if q == FALSE
@@ -121,8 +121,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("Data should be numeric.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #10. make sure locations of NAs in count data match locations of NAs in
@@ -137,8 +137,8 @@ test_that("jointModel input checks work", {
                             "match ",
                             "empty data cells \\(NA\\) in count.type data."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #11. make sure locations of NAs in qPCR.N data match locations of NAs in
@@ -151,8 +151,8 @@ test_that("jointModel input checks work", {
                             "match ",
                             "empty data cells \\(NA\\) in qPCR.K data."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #12. make sure family is either 'poisson', 'negbin', or 'gamma'
@@ -211,8 +211,8 @@ test_that("jointModel input checks work", {
                             "count.type. Subsequent gear types should be ",
                             "referenced 2, 3, 4, etc."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #18. count are integers
@@ -234,8 +234,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("All values in qPCR.K should be non-negative integers.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #20. qPCR.K are integers
@@ -247,8 +247,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("All values in qPCR.N should be non-negative integers.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #21. count.type are integers
@@ -260,8 +260,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("All values in count.type should be integers.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #22. site.cov is numeric, if present
@@ -276,8 +276,7 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("site.cov should be numeric.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html'),
+                     paste0('https://ednajoint.netlify.app','/usecase2.html'),
                      sep='\n'))
 
   #23. cov values match column names in site.cov
@@ -292,8 +291,7 @@ test_that("jointModel input checks work", {
                paste(paste0("cov values should be listed in the column names of ",
                             "site.cov in the data."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html'),
+                     paste0('https://ednajoint.netlify.app','/usecase2.html'),
                      sep='\n'))
 
   #24. site.cov has same number of rows as qPCR.N and count, if present
@@ -309,8 +307,7 @@ test_that("jointModel input checks work", {
                paste(paste0("The number of rows in site.cov matrix should match ",
                             "the number of rows in all other matrices."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html'),
+                     paste0('https://ednajoint.netlify.app','/usecase2.html'),
                      sep='\n'))
 
   #25. make sure count.type is not zero-length
@@ -323,8 +320,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("count.type contains zero-length data.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #26. make sure no column is entirely NA in count.type
@@ -336,8 +333,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("count.type contains a column with all NA.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase3.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase3.html#prepare-the-data'),
                      sep='\n'))
 
   #27. make sure no column is entirely NA in qPCR.K
@@ -347,8 +344,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("qPCR.K contains a column with all NA.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #28. make sure no column is entirely NA in qPCR.N
@@ -358,8 +355,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("qPCR.N contains a column with all NA.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #29. make sure no column is entirely NA in count
@@ -369,8 +366,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("count contains a column with all NA.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #30. make sure no data are undefined
@@ -380,8 +377,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("count contains undefined values \\(i.e., Inf or -Inf\\)",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #31. make sure no data are undefined
@@ -391,8 +388,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("qPCR.N contains undefined values \\(i.e., Inf or -Inf\\)",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #32. make sure no data are undefined
@@ -402,8 +399,8 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("qPCR.K contains undefined values \\(i.e., Inf or -Inf\\)",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n'))
 
   #33. make sure site.cov is not zero-length
@@ -417,8 +414,7 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("site.cov contains zero-length data.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html'),
+                     paste0('https://ednajoint.netlify.app','/usecase2.html'),
                      sep='\n'))
 
   #34. make sure no column is entirely NA in site.cov
@@ -432,8 +428,7 @@ test_that("jointModel input checks work", {
                           multicore = FALSE),
                paste("site.cov contains a column with all NA.",
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html'),
+                     paste0('https://ednajoint.netlify.app','/usecase2.html'),
                      sep='\n'))
 
   #35. make sure no data are undefined
@@ -448,8 +443,7 @@ test_that("jointModel input checks work", {
                paste(paste0("site.cov contains undefined values \\(i.e., ",
                             "Inf or -Inf\\)"),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html'),
+                     paste0('https://ednajoint.netlify.app','/usecase2.html'),
                      sep='\n'))
 
   #36. length of initial values is equal to the number of chains
@@ -476,8 +470,8 @@ test_that("jointModel input checks work", {
                             "default is 4\\)."),
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #37. initial values check: if mu is numeric
@@ -502,8 +496,8 @@ test_that("jointModel input checks work", {
                paste("Initial values for 'mu' should be numeric values > 0.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #38. initial values check: mu length
@@ -529,8 +523,8 @@ test_that("jointModel input checks work", {
                             "equal the number of sites."),
                       paste0('See the eDNAjoint guide for help formatting ',
                              'initial values: '),
-                      paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                             'vignette/usecase1.html#initialvalues'),
+                      paste0('https://ednajoint.netlify.app',
+                             '/usecase1.html#initialvalues'),
                       sep='\n'))
 
 
@@ -556,8 +550,8 @@ test_that("jointModel input checks work", {
                paste("Initial values for 'p10' should be numeric.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #40. initial values check: p10 length
@@ -582,8 +576,8 @@ test_that("jointModel input checks work", {
                paste("The length of initial values for 'p10' should equal 1.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #41. initial values check: beta numeric
@@ -605,8 +599,8 @@ test_that("jointModel input checks work", {
                paste("Initial values for 'beta' should be numeric.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #42. initial values check: beta length
@@ -628,8 +622,8 @@ test_that("jointModel input checks work", {
                paste("The length of initial values for 'beta' should equal 1.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #43. initial values check: alpha numeric
@@ -654,8 +648,8 @@ test_that("jointModel input checks work", {
                paste("Initial values for 'alpha' should be numeric.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase2.html#initialvalues'),
                      sep='\n'))
 
   #44. initial values check: alpha length
@@ -682,8 +676,8 @@ test_that("jointModel input checks work", {
                             "including intercept\\)."),
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase2.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase2.html#initialvalues'),
                      sep='\n'))
 
   #45. initial values check: q numeric
@@ -704,8 +698,8 @@ test_that("jointModel input checks work", {
                paste("Initial values for 'q' should be numeric.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #46. initial values check: q length
@@ -728,8 +722,8 @@ test_that("jointModel input checks work", {
                             "for reference type = 1\\)."),
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#initialvalues'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#initialvalues'),
                      sep='\n'))
 
   #47. check length and range of n.chain
@@ -830,8 +824,8 @@ test_that("jointModel input checks work", {
                             "of qPCR replicates per sample, and K is the ",
                             "number of positive detections among replicates."),
                      'See the eDNAjoint guide for data formatting help: ',
-                     paste0('https://bookdown.org/abigailkeller/eDNAjoint_',
-                            'vignette/usecase1.html#prepare-the-data'),
+                     paste0('https://ednajoint.netlify.app',
+                            '/usecase1.html#prepare-the-data'),
                      sep='\n')
   )
 
