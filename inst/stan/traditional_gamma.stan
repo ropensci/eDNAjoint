@@ -37,14 +37,19 @@ generated quantities{
   vector[C] log_lik;
   vector[Nloc] mu;
 
+  ////////////////////////////////////
+  // transform to interpretable params
 
   for(j in 1:Nloc){
     mu[j] = alpha[j]/beta[j];
   }
 
-    for(j in 1:C){
-          log_lik[j] = gamma_lpdf(E_trans[j] | alpha[R[j]], beta[R[j]]); //store log likelihood of traditional data given model
-      }
+  ////////////////////////////////
+  // get point-wise log likelihood
+
+  for(j in 1:C){
+      log_lik[j] = gamma_lpdf(E_trans[j] | alpha[R[j]], beta[R[j]]); //store log likelihood of traditional data given model
+  }
 
 }
 

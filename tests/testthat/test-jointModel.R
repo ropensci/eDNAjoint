@@ -580,46 +580,46 @@ test_that("jointModel input checks work", {
                             '/usecase1.html#initialvalues'),
                      sep='\n'))
 
-  #41. initial values check: beta numeric
+  #41. initial values check: alpha numeric
   n.chain <- 4
   inits <- list()
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
       p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
-      beta <- "1"
+      alpha <- "1"
     )
-    names(inits[[i]]) <- c('mu','p10','beta')
+    names(inits[[i]]) <- c('mu','p10','alpha')
   }
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           initial_values = inits,
                           multicore = FALSE),
-               paste("Initial values for 'beta' should be numeric.",
+               paste("Initial values for 'alpha' should be numeric.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
                      paste0('https://ednajoint.netlify.app',
                             '/usecase1.html#initialvalues'),
                      sep='\n'))
 
-  #42. initial values check: beta length
+  #42. initial values check: alpha length
   n.chain <- 4
   inits <- list()
   for(i in 1:n.chain){
     inits[[i]] <- list(
       mu <- stats::runif(2,0,1),
       p10 <- exp(stats::runif(1,log(0.0001),log(0.08))),
-      beta <- c(1,0)
+      alpha <- c(1,0)
     )
-    names(inits[[i]]) <- c('mu','p10','beta')
+    names(inits[[i]]) <- c('mu','p10','alpha')
   }
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA))),
                           initial_values = inits,
                           multicore = FALSE),
-               paste("The length of initial values for 'beta' should equal 1.",
+               paste("The length of initial values for 'alpha' should equal 1.",
                      paste0('See the eDNAjoint guide for help formatting ',
                             'initial values: '),
                      paste0('https://ednajoint.netlify.app',
@@ -908,38 +908,29 @@ test_that("jointModel parameter recovery tests work",{
 
   # set up empty vector to check if true values are in 95% interval of
   # posterior estimates
-  check <- rep(NA,length(mu)+length(alpha)+length(log_p10))
-  # check mu
-  for(i in 1:nsite){
-    par <- paste0('mu[',i,']')
-    if(mu[i] > summary1[par,'2.5%'] && mu[i] < summary1[par,'97.5%']){
+  check <- rep(NA,length(alpha)+length(log_p10))
+  # check alpha
+  for(i in seq_along(alpha)){
+    par <- paste0('alpha[',i,']')
+    if(alpha[i] > summary1[par,'2.5%'] && alpha[i] < summary1[par,'97.5%']){
       check[i] <- TRUE
     } else {
       check[i] <- FALSE
     }
   }
-  # check alpha
-  for(i in seq_along(alpha)){
-    par <- paste0('alpha[',i,']')
-    if(alpha[i] > summary1[par,'2.5%'] && alpha[i] < summary1[par,'97.5%']){
-      check[nsite+i] <- TRUE
-    } else {
-      check[nsite+i] <- FALSE
-    }
-  }
   # check p10
   if(log_p10 > summary1['log_p10','2.5%'] &&
      log_p10 < summary1['log_p10','97.5%']){
-    check[nsite+length(alpha)+1] <- TRUE
+    check[length(alpha)+1] <- TRUE
   } else {
-    check[nsite+length(alpha)+1] <- FALSE
+    check[length(alpha)+1] <- FALSE
   }
 
   #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for
   #'   equality, here the model is tested to determine if the true parameter
   #'   values are within the 95% quantiles of the posterior
   # all should be equal to true
-  expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
+  expect_equal(check,rep(TRUE,length(alpha)+length(log_p10)))
 
   # test that output values are on the same scale as the data
   mu_estimates <- rep(NA,nsite)
@@ -1020,38 +1011,29 @@ test_that("jointModel parameter recovery tests work",{
 
   # set up empty vector to check if true values are in 95% interval of
   # posterior estimates
-  check <- rep(NA,length(mu)+length(alpha)+length(log_p10))
-  # check mu
-  for(i in 1:nsite){
-    par <- paste0('mu[',i,']')
-    if(mu[i] > summary2[par,'2.5%'] && mu[i] < summary2[par,'97.5%']){
+  check <- rep(NA,length(alpha)+length(log_p10))
+  # check alpha
+  for(i in seq_along(alpha)){
+    par <- paste0('alpha[',i,']')
+    if(alpha[i] > summary2[par,'2.5%'] && alpha[i] < summary2[par,'97.5%']){
       check[i] <- TRUE
     } else {
       check[i] <- FALSE
     }
   }
-  # check alpha
-  for(i in seq_along(alpha)){
-    par <- paste0('alpha[',i,']')
-    if(alpha[i] > summary2[par,'2.5%'] && alpha[i] < summary2[par,'97.5%']){
-      check[nsite+i] <- TRUE
-    } else {
-      check[nsite+i] <- FALSE
-    }
-  }
   # check p10
   if(log_p10 > summary2['log_p10','2.5%'] &&
      log_p10 < summary2['log_p10','97.5%']){
-    check[nsite+length(alpha)+1] <- TRUE
+    check[length(alpha)+1] <- TRUE
   } else {
-    check[nsite+length(alpha)+1] <- FALSE
+    check[length(alpha)+1] <- FALSE
   }
 
   #' @srrstats {G3.0, G5.6a} Instead of comparing floating point values for
   #'   equality, here the model is tested to determine if the true parameter
   #'   values are within the 95% quantiles of the posterior
   # all should be equal to true
-  expect_equal(check,rep(TRUE,nsite+length(alpha)+length(log_p10)))
+  expect_equal(check,rep(TRUE,length(alpha)+length(log_p10)))
 
   ################################
   # model run 3: larger dataset #
@@ -1160,7 +1142,7 @@ test_that("jointModel probability distribution tests work",{
   nobs_count <- 200
   nobs_pcr <- 8
   # params
-  mu <- rlnorm(nsite,meanlog = log(1),sdlog = 1)
+  mu <- rlnorm(nsite, meanlog = log(1),sdlog = 1)
   beta <- 0.5
   log_p10 <- -4.5
   phi <- 0.1
@@ -1297,11 +1279,11 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta,
+    alpha = beta,
     phi = phi,
     q = q
   )
-  names(inits[[1]]) <- c('mu','p10','beta','phi','q')
+  names(inits[[1]]) <- c('mu','p10','alpha','phi','q')
 
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'negbin',
@@ -1314,7 +1296,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi','beta') %in% output_params))
+  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1384,10 +1366,10 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta,
-    q = q
+    alpha = beta,
+    q = 2
   )
-  names(inits[[1]]) <- c('mu','p10','beta','q')
+  names(inits[[1]]) <- c('mu','p10','alpha','q')
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE,
                                       n.chain = 1, multicore = FALSE, seed = 10,
@@ -1398,7 +1380,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','beta') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1470,10 +1452,10 @@ test_that("semi-paired model works", {
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
     p10 = exp(log_p10),
-    beta = beta,
+    alpha = beta,
     q = q
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta','q')
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha','q')
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
                                       n.chain = 1, multicore = FALSE, seed = 10,
@@ -1484,7 +1466,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','beta') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1541,10 +1523,10 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta,
+    alpha = beta,
     phi = phi
   )
-  names(inits[[1]]) <- c('mu','p10','beta','phi')
+  names(inits[[1]]) <- c('mu','p10','alpha','phi')
   # run model
   fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
                                       initial_values = inits,
@@ -1556,7 +1538,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi','beta') %in% output_params))
+  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1614,9 +1596,9 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta
+    alpha = beta
   )
-  names(inits[[1]]) <- c('mu','p10','beta')
+  names(inits[[1]]) <- c('mu','p10','alpha')
   # run model
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       n.chain = 1, multicore = FALSE, seed = 10,
@@ -1627,7 +1609,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','beta') %in% output_params))
+  expect_true(all(c('p10','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1688,9 +1670,9 @@ test_that("semi-paired model works", {
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
     p10 = exp(log_p10),
-    beta = beta
+    alpha = beta
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha')
   # run model
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       family = 'gamma',
@@ -1702,7 +1684,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','beta') %in% output_params))
+  expect_true(all(c('p10','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1799,7 +1781,8 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','phi','alpha[1]',
+                    'alpha[2]','alpha[3]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1891,7 +1874,8 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]',
+                    'alpha[2]','alpha[3]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -2153,7 +2137,8 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','alpha[1]',
+                    'alpha[2]','alpha[3]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -2221,10 +2206,11 @@ test_that("semi-paired model works", {
   inits[[1]] <- list(
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
+    mu = mu,
     p10 = exp(log_p10),
     alpha = alpha
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha'
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','mu','p10','alpha'
   )
   # run model
   fit <- suppressWarnings({jointModel(data = data,family = 'gamma',
@@ -2237,7 +2223,8 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','alpha[1]',
+                    'alpha[2]','alpha[3]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])

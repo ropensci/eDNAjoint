@@ -205,7 +205,8 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
   }
 
   ## #6. Only include input cov.val if covariates are included in model
-  if(all(!is.null(cov.val)) && !c('alpha') %in% modelfit@model_pars) {
+  if(all(!is.null(cov.val)) &&
+     modelfit@par_dims$alpha == 1) {
     errMsg <- paste0("cov.val must be NULL if the model does not contain ",
                      "site-level covariates.")
     stop(errMsg)
@@ -220,7 +221,8 @@ detectionPlot_input_checks <- function(modelfit, mu.min, mu.max, cov.val,
   }
 
   ## #8. If covariates are in model, cov.val must be provided
-  if(all(c('alpha','p10') %in% modelfit@model_pars) && all(is.null(cov.val))) {
+  if(modelfit@par_dims$alpha > 1 &&
+     'p10' %in% modelfit@model_pars && all(is.null(cov.val))) {
     errMsg <- paste0("cov.val must be provided if the model contains ",
                      "site-level covariates.")
     stop(errMsg)

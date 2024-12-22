@@ -100,38 +100,39 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
   }
 
   if(all(is.null(cov.val))){
-    #extract posteriors for beta and p10 parameters
-    ##beta
-    posterior_beta <- unlist(rstan::extract(modelfit, pars = "beta"))
+    # extract posteriors for alpha and p10 parameters
+    ##alpha
+    posterior_alpha <- unlist(rstan::extract(modelfit, pars = "alpha"))
     #p10
     posterior_p10 <- unlist(rstan::extract(modelfit, pars = "p10"))
   } else {
-    #extract posteriors for beta and p10 parameters
-    ##alpha
+    # extract posteriors for beta and p10 parameters
+    ## alpha
     posterior_alpha <- rstan::extract(modelfit, pars = "alpha")$alpha
-    ##beta
+    ## beta
     posterior_beta <- posterior_alpha %*% c(1, cov.val)
-    #p10
+    # p10
     posterior_p10 <- unlist(rstan::extract(modelfit, pars = "p10"))
   }
 
   if('q' %in% modelfit@model_pars){
-    #extract q values
+    # extract q values
     posterior_q <- rstan::extract(modelfit, pars = "q")$q
 
-    #create empty dataframe
+    # create empty dataframe
     out <- as.data.frame(matrix(NA, nrow = 3, ncol = modelfit@par_dims$q+1))
     rownames(out) <- c('median','lower_ci','upper_ci')
+    gear_names <- c()
     for(i in 1:modelfit@par_dims$q){
-      gear_names <- paste('gear_', i+1, sep = '')
+      gear_names <- c(gear_names,paste('gear_', i+1, sep = ''))
     }
     colnames(out) <- c('gear_1', gear_names)
 
-    #calculate mu_critical -- gear type 1
-    critical_mu_1 <- rep(NA, length(posterior_beta))
+    # calculate mu_critical -- gear type 1
+    critical_mu_1 <- rep(NA, length(posterior_alpha))
     for(i in seq_along(critical_mu_1)){
       critical_mu_1[i] <- (
-        posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
+        posterior_p10[i]*exp(posterior_alpha[i])/(1-posterior_p10[i])
       )
     }
     out[,1] <- c(stats::median(critical_mu_1),
@@ -140,7 +141,7 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
                  bayestestR::ci(critical_mu_1, method = 'HDI',
                                 ci = ci)[3]$CI_high)
 
-    #calculate mu_critical -- gear type 2+
+    # calculate mu_critical -- gear type 2+
     for(i in 1:modelfit@par_dims$q){
       out[,i+1] <- c(stats::median(critical_mu_1*posterior_q[,i]),
                      bayestestR::ci(critical_mu_1*posterior_q[,i],
@@ -150,11 +151,11 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
     }
 
   } else {
-    #calculate mu_critical
-    critical_mu <- rep(NA, length(posterior_beta))
+    # calculate mu_critical
+    critical_mu <- rep(NA, length(posterior_alpha))
     for(i in seq_along(critical_mu)){
       critical_mu[i] <- (
-        posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
+        posterior_p10[i]*exp(posterior_alpha[i])/(1-posterior_p10[i])
       )
     }
 
@@ -203,7 +204,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   }
 
   ## #4. if modelfit contains alpha, cov.val must be provided
-  if('alpha' %in% modelfit@model_pars && all(is.null(cov.val))) {
+  if(modelfit@par_dims$alpha > 1 && all(is.null(cov.val))) {
     errMsg <- paste0("If modelfit contains site-level covariates, values ",
                      "must be provided for cov.val")
     stop(errMsg)
@@ -218,7 +219,7 @@ muCritical_input_checks <- function(modelfit, cov.val, ci){
   }
 
   ## #6. Only include input cov.val if covariates are included in model
-  if(all(!is.null(cov.val)) && !c('alpha') %in% modelfit@model_pars) {
+  if(all(!is.null(cov.val)) && modelfit@par_dims$alpha == 1) {
     errMsg <- paste0("cov.val must be NULL if the model does not contain ",
                      "site-level covariates.")
     stop(errMsg)

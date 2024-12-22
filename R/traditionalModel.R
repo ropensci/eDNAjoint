@@ -196,11 +196,6 @@ traditionalModel <- function(data, family = 'poisson',
     #' @srrstats {G2.4,G2.4c} Explicit conversion to character
     q_names <- as.character(paste0('q_',names))
 
-    #add dummy variables for count type
-    for(i in seq_along(q_names)){
-      count_all[,q_names[i]] <- ifelse(count_all$count.type == names[i],1,0)
-    }
-
   }
 
   # set up core number
@@ -230,7 +225,7 @@ traditionalModel <- function(data, family = 'poisson',
         R = count_all$L,
         E = count_all$count,
         nparams = length(q_names),
-        mat = as.matrix(count_all[,q_names]),
+        mat = as.integer(count_all$count.type),
         control = list(adapt_delta = adapt_delta)
       ),
       cores = cores,
@@ -257,7 +252,7 @@ traditionalModel <- function(data, family = 'poisson',
                              R = count_all$L,
                              E = count_all$count,
                              nparams = length(q_names),
-                             mat = as.matrix(count_all[,q_names]),
+                             mat = as.integer(count_all$count.type),
                              phipriors = phipriors,
                              control = list(adapt_delta = adapt_delta)
                            ),

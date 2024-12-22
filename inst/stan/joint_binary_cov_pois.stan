@@ -21,20 +21,18 @@ data{/////////////////////////////////////////////////////////////////////
 }
 
 parameters{/////////////////////////////////////////////////////////////////////
-    array[Nloc_trad] real<lower=0> mu_trad;  // expected catch at each site for sites with traditional samples
+    vector<lower=0>[Nloc_trad] mu_trad;  // expected catch at each site for sites with traditional samples
     real<upper=0> log_p10;  // p10, false-positive rate.
     vector[nsitecov] alpha; // site-level beta covariates
     array[Nloc_dna] real<lower=0, upper = 1> p_dna;   // total detection probability
 }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
-  array[Nloc_trad] real<lower=0, upper = 1> p11_trad; // true-positive detection probability
-  array[Nloc_trad] real<lower=0, upper = 1> p_trad;   // total detection probability
-  
-  for (i in 1:Nloc_trad){
-    p11_trad[i] = mu_trad[i] / (mu_trad[i] + exp(dot_product(mat_site[trad_ind[i]],alpha))); // Eq. 1.2
-    p_trad[i] = p11_trad[i] + exp(log_p10); // Eq. 1.3
-  }
+  vector<lower=0, upper = 1>[Nloc_trad] p11_trad; // true-positive detection probability
+  vector<lower=0, upper = 1>[Nloc_trad] p_trad;   // total detection probability
+
+  p11_trad = mu_trad ./ (mu_trad + exp(mat_site[trad_ind, ] * alpha)); // Eq. 1.2
+  p_trad = p11_trad + exp(log_p10); // Eq. 1.3
 }
 
 model{/////////////////////////////////////////////////////////////////////
@@ -47,7 +45,7 @@ model{/////////////////////////////////////////////////////////////////////
     for (i in 1:S){
         K[i] ~ binomial(N[i], p_trad[L[i]]); // Eq. 1.4
     }
-    
+
     if(Nloc_dna > 0)
        for (i in 1:S_dna){
            K_dna[i] ~ binomial(N_dna[i], p_dna[L_dna[i]]); // Eq. 1.4
@@ -64,24 +62,27 @@ generated quantities{
   vector[C+S+S_dna] log_lik;
   real p10;
   vector[Nloc_trad] beta;
-  array[Nloc_dna+Nloc_trad] real<lower=0> mu;  // expected catch at each site
+  vector<lower=0>[Nloc_dna+Nloc_trad] mu;  // expected catch at each site
   array[Nloc_dna] real<lower=0, upper = 1> p11_dna; // true-positive detection probability
 
-  p10 = exp(log_p10);
-  
-  for(i in 1:Nloc_trad){
-    mu[trad_ind[i]] = mu_trad[i];
-  }
 
-  for (i in 1:Nloc_trad){
-    beta[i] = dot_product(mat_site[trad_ind[i]],alpha);
-  }
-  
+  ////////////////////////////////////
+  // transform to interpretable params
+  p10 = exp(log_p10);
+
+  mu[trad_ind] = mu_trad;
+
+  beta = mat_site[trad_ind] * alpha;
+
   if(Nloc_dna > 0)
      for (i in 1:Nloc_dna){
        p11_dna[i] = p_dna[i] - p10;
        mu[dna_ind[i]] = p11_dna[i]*exp(dot_product(mat_site[dna_ind[i]],alpha))/(1-p11_dna[i]);
      }
+
+
+  ////////////////////////////////
+  // get point-wise log likelihood
 
   for(j in 1:C){
     log_lik[j] = poisson_lpmf(E[j] | mu_trad[R[j]]); //store log likelihood of traditional data given model
@@ -90,7 +91,7 @@ generated quantities{
   for(i in 1:S){
     log_lik[C+i] = binomial_lpmf(K[i] | N[i], p_trad[L[i]]); //store log likelihood of eDNA data given model
   }
-  
+
   if(Nloc_dna > 0)
      for(i in 1:S_dna){
        log_lik[C+S+i] = binomial_lpmf(K_dna[i] | N_dna[i], p_dna[L_dna[i]]); //store log likelihood of eDNA data given model
