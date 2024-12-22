@@ -113,10 +113,6 @@ isNegbin <- function(pars){
   out <- ifelse('phi' %in% pars,TRUE,FALSE)
   return(out)
 }
-isCov <- function(pars){
-  out <- ifelse('alpha' %in% pars,TRUE,FALSE)
-  return(out)
-}
 
 # function to get vector of all param names
 get_all_params <- function(pars){
@@ -129,12 +125,7 @@ get_all_params <- function(pars){
 
   # joint
   if(isJoint(pars)){
-    params <- c(params,'p10','beta')
-  }
-
-  # covariates
-  if(isCov(pars)){
-    params <- c(params,'alpha')
+    params <- c(params,'p10','beta','alpha')
   }
 
   # negbin

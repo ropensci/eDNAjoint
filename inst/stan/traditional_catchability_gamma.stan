@@ -4,7 +4,7 @@ data{/////////////////////////////////////////////////////////////////////
     int<lower=1> Nloc;   // total number of locations
     array[C] real<lower=0> E;   // number of animals in sample C
     int<lower=0> nparams;  // number of gear types
-    matrix[C,nparams] mat;  // matrix of gear type integers
+    array[C] int<lower=1> mat;  // vector of gear type integers
 
 }
 
@@ -15,12 +15,10 @@ parameters{/////////////////////////////////////////////////////////////////////
     }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
-    vector<lower=0>[C] coef;
+    vector<lower=0>[nparams+1] coef;
     array[C] real<lower=0> E_trans;
 
-    for(i in 1:C){
-      coef[i] = 1 + dot_product(mat[i],q_trans);
-    }
+    coef = append_row(1, 1+q_trans);
 
     for(j in 1:C){
       E_trans[j] = E[j] + 0.0000000000001;
@@ -32,7 +30,7 @@ model{/////////////////////////////////////////////////////////////////////
 
     for(j in 1:C){
 
-      E_trans[j] ~ gamma(coef[j]*alpha[R[j]],beta[R[j]]); // Eq. 1.1
+      E_trans[j] ~ gamma(coef[mat[j]]*alpha[R[j]],beta[R[j]]); // Eq. 1.1
     }
 
     beta ~ gamma(0.25,0.25);
@@ -45,6 +43,8 @@ generated quantities{
   vector[C] log_lik;
   matrix[Nloc,nparams+1] mu;  // matrix of catch rates
 
+  ////////////////////////////////////
+  // transform to interpretable params
   q = q_trans + 1;
 
   for(j in 1:Nloc){
@@ -55,9 +55,12 @@ generated quantities{
     mu[,i+1] = to_vector(mu[,1])*q[i];
   }
 
-    for(j in 1:C){
-          log_lik[j] = gamma_lpdf(E_trans[j] | coef[j]*alpha[R[j]], beta[R[j]]); //store log likelihood of traditional data given model
-      }
+  ////////////////////////////////
+  // get point-wise log likelihood
+
+  for(j in 1:C){
+      log_lik[j] = gamma_lpdf(E_trans[j] | coef[mat[j]]*alpha[R[j]], beta[R[j]]); //store log likelihood of traditional data given model
+  }
 
 }
 

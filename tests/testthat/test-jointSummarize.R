@@ -95,11 +95,11 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
   mu = mu,
   p10 = exp(log_p10),
-  beta = beta,
+  alpha = beta,
   phi = phi,
   q = q
   )
-  names(inits[[1]]) <- c('mu','p10','beta','phi','q')
+  names(inits[[1]]) <- c('mu','p10','alpha','phi','q')
 
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'negbin',
@@ -112,7 +112,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi','beta') %in% output_params))
+  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -200,10 +200,10 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta,
+    alpha = beta,
     q = q
   )
-  names(inits[[1]]) <- c('mu','p10','beta','q')
+  names(inits[[1]]) <- c('mu','p10','alpha','q')
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE,
                     n.chain = 1, multicore = FALSE, seed = 10,
@@ -214,7 +214,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','beta') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -304,10 +304,10 @@ test_that("jointSummarize outputs work", {
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
     p10 = exp(log_p10),
-    beta = beta,
+    alpha = beta,
     q = q
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta','q')
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha','q')
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
                     n.chain = 1, multicore = FALSE, seed = 10,
@@ -318,7 +318,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','beta') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
 
   ## 4.
   # model includes 'p10','phi','beta'
@@ -366,10 +366,10 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta,
+    alpha = beta,
     phi = phi
   )
-  names(inits[[1]]) <- c('mu','p10','beta','phi')
+  names(inits[[1]]) <- c('mu','p10','alpha','phi')
   # run model
   fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
                                       initial_values = inits,
@@ -381,7 +381,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi','beta') %in% output_params))
+  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -456,9 +456,9 @@ test_that("jointSummarize outputs work", {
   inits[[1]] <- list(
     mu = mu,
     p10 = exp(log_p10),
-    beta = beta
+    alpha = beta
   )
-  names(inits[[1]]) <- c('mu','p10','beta')
+  names(inits[[1]]) <- c('mu','p10','alpha')
   # run model
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                     n.chain = 1, multicore = FALSE, seed = 10,
@@ -469,7 +469,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','beta') %in% output_params))
+  expect_true(all(c('p10','alpha[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -547,9 +547,9 @@ test_that("jointSummarize outputs work", {
     alpha_gamma = mu,
     beta_gamma = rep(1,length(mu)),
     p10 = exp(log_p10),
-    beta = beta
+    alpha = beta
   )
-  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','beta')
+  names(inits[[1]]) <- c('alpha_gamma','beta_gamma','p10','alpha')
   # run model
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       family = 'gamma',
@@ -561,7 +561,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','beta') %in% output_params))
+  expect_true(all(c('p10','alpha[1]') %in% output_params))
 
 
   ## 7.
@@ -648,7 +648,8 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','phi','alpha[1]',
+                    'alpha[2]','alpha[3]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -760,7 +761,8 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]','alpha[2]',
+                    'alpha[3]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -877,7 +879,8 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','alpha[1]','alpha[2]',
+                    'alpha[3]') %in% output_params))
 
 
   ## 10.
@@ -951,7 +954,8 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','phi','alpha[1]',
+                    'alpha[2]','alpha[3]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -1050,7 +1054,8 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','alpha[1]','alpha[2]',
+                    'alpha[3]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -1152,7 +1157,8 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','alpha[1]','alpha[2]',
+                    'alpha[3]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -1514,7 +1520,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(!c('p10','beta','q','phi') %in% output_params))
+  expect_true(all(!c('p10','alpha[1]','q','phi') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))

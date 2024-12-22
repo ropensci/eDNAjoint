@@ -32,9 +32,11 @@ model{/////////////////////////////////////////////////////////////////////
 generated quantities{
   vector[C] log_lik;
 
-    for(j in 1:C){
-          log_lik[j] = neg_binomial_2_lpmf(E[j] | mu[R[j]], phi); //store log likelihood of traditional data given model
-      }
+  ////////////////////////////////
+  // get point-wise log likelihood
+  for(j in 1:C){
+      log_lik[j] = neg_binomial_2_lpmf(E[j] | mu[R[j]], phi); //store log likelihood of traditional data given model
+  }
 
 }
 

@@ -131,8 +131,9 @@ detectionCalculate <- function(modelfit, mu, cov.val = NULL, probability = 0.9,
     if(isCatch(modelfit@model_pars)){
       out <- cbind(mu,ntrad_out,ndna_out)
       #rename columns
+      trad_names <- c()
       for(i in 1:modelfit@par_dims$q){
-        trad_names <- paste('n_traditional_',i+1,sep = '')
+        trad_names <- c(trad_names,paste('n_traditional_',i+1,sep = ''))
       }
       colnames(out) <- c('mu','n_traditional_1',trad_names,'n_eDNA')
     } else {
@@ -170,10 +171,6 @@ isCatch <- function(pars){
 }
 isNegbin <- function(pars){
   out <- ifelse('phi' %in% pars,TRUE,FALSE)
-  return(out)
-}
-isCov <- function(pars){
-  out <- ifelse('alpha' %in% pars,TRUE,FALSE)
   return(out)
 }
 
@@ -253,12 +250,8 @@ get_ntrad_q <- function(pars, modelfit, mu, probability){
 get_ndna <- function(pars, modelfit, mu, qPCR.N, probability, cov.val){
 
   # get beta
-  if(isCov(pars)){
-    alpha <- apply(rstan::extract(modelfit, pars = 'alpha')$alpha,2,'median')
-    beta <- alpha %*% c(1,cov.val)
-  } else {
-    beta <- stats::median(unlist(rstan::extract(modelfit, pars = 'beta')))
-  }
+  alpha <- apply(rstan::extract(modelfit, pars = 'alpha')$alpha,2,'median')
+  beta <- alpha %*% c(1,cov.val)
 
   # create output
   ndna_out <- vector(length = length(mu))
@@ -324,7 +317,8 @@ detectionCalculate_input_checks <- function(modelfit, mu, cov.val,
   }
 
   ## #5. Only include input cov.val if covariates are included in model
-  if(all(!is.null(cov.val)) && !c('alpha') %in% modelfit@model_pars) {
+  if(all(!is.null(cov.val)) &&
+     modelfit@par_dims$alpha == 1) {
     errMsg <- paste0("cov.val must be NULL if the model does not ",
                      "contain site-level covariates.")
     stop(errMsg)
@@ -340,7 +334,8 @@ detectionCalculate_input_checks <- function(modelfit, mu, cov.val,
   }
 
   ## #7. If covariates are in model, cov.val must be provided
-  if(all(c('alpha','p10') %in% modelfit@model_pars) && all(is.null(cov.val))) {
+  if(modelfit@par_dims$alpha > 1 &&
+     'p10' %in% modelfit@model_pars && all(is.null(cov.val))) {
     errMsg <- paste0("cov.val must be provided if the model contains ",
                      "site-level covariates.")
     stop(errMsg)

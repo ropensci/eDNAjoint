@@ -312,11 +312,6 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     names <- counttypes[!counttypes == q_ref]
     #' @srrstats {G2.4,G2.4c} Explicit conversion to character
     q_names <- as.character(paste0('q_',names))
-
-    #add dummy variables for count type
-    for(i in seq_along(q_names)){
-      count_all[,q_names[i]] <- ifelse(count_all$count.type == names[i],1,0)
-    }
   }
 
   # if present, prepare covariate data
@@ -327,6 +322,11 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     site_mat <- as.data.frame(as.data.frame(data$site.cov)[,cov])
     site_mat <- cbind(as.data.frame(rep(1,length(site_mat[,1]))),site_mat)
     colnames(site_mat) <- c('int',cov)
+  } else {
+    # data structures when there are no covariates
+    site_mat <- rep(1,
+                    length(unique(qPCR_all_trad$L))+
+                      length(unique(qPCR_all_dna$L)))
   }
 
   # convert p10 prior
@@ -358,31 +358,33 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     K = qPCR_all_trad$K,
     N_dna = qPCR_all_dna$N,
     K_dna = qPCR_all_dna$K,
+    nsitecov = length(cov)+1,
+    mat_site = as.matrix(site_mat),
     p10priors = c(mu_ln,sigma_ln),
     control = list(adapt_delta = adapt_delta)
   )
 
-  # append data if q == TRUE
+  # append data based on catchability
   if(isCatch_type(q)){
     model_data <- rlist::list.append(
       model_data,
       nparams = length(q_names),
-      mat = as.matrix(count_all[,q_names])
+      mat = as.integer(count_all$count.type)#, ###### CHANGED
+      #ctch = 1
     )
-  }
+  } #else {
+    #model_data <- rlist::list.append(
+     # model_data,
+    #  nparams = 0,
+    #  mat = matrix(NA,nrow=nrow(count_all),ncol=0)#,
+      #ctch = 0
+    #)
+  #}
   # append data if family == negbin
   if(isNegbin_type(family)){
     model_data <- rlist::list.append(
       model_data,
       phipriors = phipriors
-    )
-  }
-  # append data if cov != NULL
-  if(isCov_type(cov)){
-    model_data <- rlist::list.append(
-      model_data,
-      nsitecov = length(cov)+1,
-      mat_site = as.matrix(site_mat)
     )
   }
 
@@ -397,7 +399,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
                  sample.int(.Machine$integer.max, 1))
 
   # get stan model
-  model_index <- get_stan_model(q, family, cov)
+  model_index <- get_stan_model(q, family)
 
   # get initial values
   if(isCatch_type(q)){
@@ -413,15 +415,9 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     c(stanmodels$joint_binary_cov_catchability_pois,
       stanmodels$joint_binary_cov_catchability_negbin,
       stanmodels$joint_binary_cov_catchability_gamma,
-      stanmodels$joint_binary_catchability_pois,
-      stanmodels$joint_binary_catchability_negbin,
-      stanmodels$joint_binary_catchability_gamma,
       stanmodels$joint_binary_cov_pois,
       stanmodels$joint_binary_cov_negbin,
-      stanmodels$joint_binary_cov_gamma,
-      stanmodels$joint_binary_pois,
-      stanmodels$joint_binary_negbin,
-      stanmodels$joint_binary_gamma)[model_index][[1]],
+      stanmodels$joint_binary_cov_gamma)[model_index][[1]],
     data = model_data,
     cores = cores,
     seed = SEED,
@@ -502,23 +498,15 @@ get_family_index <- function(family){
 # helper functions: get stan model #
 ####################################
 
-get_stan_model <- function(q, family, cov){
+get_stan_model <- function(q, family){
 
   index <- get_family_index(family)
 
   if(isCatch_type(q)){
-    if(isCov_type(cov)){
       final_index <- index
     } else {
       final_index <- index + 3
     }
-  } else {
-    if(isCov_type(cov)){
-      final_index <- index + 6
-    } else {
-      final_index <- index + 9
-    }
-  }
   return(final_index)
 }
 
@@ -532,25 +520,15 @@ get_stan_model <- function(q, family, cov){
 
 get_inits <- function(n.chain,qPCR_all,initial_values,cov,L_match_trad,
                       L_match_dna,data,q_names=NULL){
-  if(!is.null(cov)){
-    if(!is.null(q_names)){
-      inits <- init_joint_cov_catchability(n.chain,qPCR_all,q_names,cov,
-                                           initial_values,L_match_trad,
-                                           L_match_dna,data)
+  if(!is.null(q_names)){
+    inits <- init_joint_cov_catchability(n.chain,qPCR_all,q_names,cov,
+                                         initial_values,L_match_trad,
+                                         L_match_dna,data)
     } else {
       inits <- init_joint_cov(n.chain,qPCR_all,cov,initial_values,
                               L_match_trad,L_match_dna,data)
     }
-  } else {
-    if(!is.null(q_names)){
-      inits <- init_joint_catchability(n.chain,qPCR_all,q_names,
-                                       initial_values,L_match_trad,
-                                       L_match_dna,data)
-    } else {
-      inits <- init_joint(n.chain,qPCR_all,initial_values,L_match_trad,
-                          L_match_dna,data)
-    }
-  }
+
   return(inits)
 }
 
@@ -591,12 +569,15 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
         },
 
         if('alpha' %in% names(initial_values[[i]])){
-          alpha <- initial_values[[i]]$alpha
+          alpha <- as.array(initial_values[[i]]$alpha)
         } else {
-          alpha <- c(3.5,rep(0,length(cov)))
-        }
+          alpha <- as.array(c(3.5,rep(0,length(cov))))
+        },
+
+        p_dna <- rep(0.4,dim(L_match_dna)[1]),
+        p11_dna <- rep(0.4,dim(L_match_dna)[1]) - 0.01
       )
-      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha','p_dna','p11_dna')
     }
   } else {
     for(i in 1:n.chain){
@@ -604,9 +585,11 @@ init_joint_cov <- function(n.chain,qPCR_all,cov,initial_values,
         mu_trad <- mu_means_trad,
         mu <- mu_means_all,
         log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
-        alpha <- c(3.5,rep(0,length(cov)))
+        alpha <- as.array(c(3.5,rep(0,length(cov)))),
+        p_dna <- rep(0.4,dim(L_match_dna)[1]),
+        p11_dna <- rep(0.4,dim(L_match_dna)[1]) - 0.01
       )
-      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha')
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha','p_dna','p11_dna')
     }
   }
 
@@ -651,18 +634,21 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
         },
 
         if('alpha' %in% names(initial_values[[i]])){
-          alpha <- initial_values[[i]]$alpha
+          alpha <- as.array(initial_values[[i]]$alpha)
         } else {
-          alpha <- c(3.5,rep(0,length(cov)))
+          alpha <- as.array(c(3.5,rep(0,length(cov))))
         },
 
         if('q' %in% names(initial_values[[i]])){
           q_trans <- as.data.frame(initial_values[[i]]$q)
         } else {
           q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
-        }
+        },
+        p_dna <- rep(0.4,dim(L_match_dna)[1]),
+        p11_dna <- rep(0.4,dim(L_match_dna)[1]) - 0.01
       )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans')
+      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans',
+                         'p_dna','p11_dna')
 
     }
   } else {
@@ -671,140 +657,20 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
         mu_trad_1 <- mu_means_trad,
         mu <- mu_means_all,
         log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
-        alpha <- c(3.5,rep(0,length(cov))),
-        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
+        alpha <- as.array(c(3.5,rep(0,length(cov)))),
+        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1)),
+        p_dna <- rep(0.4,dim(L_match_dna)[1]),
+        p11_dna <- rep(0.4,dim(L_match_dna)[1]) - 0.01
       )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans')
+      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans',
+                         'p_dna','p11_dna')
     }
   }
 
   return(A)
 }
 
-init_joint_catchability <- function(n.chain,qPCR_all,q_names,initial_values,
-                                    L_match_trad,L_match_dna,data){
 
-  # get mu means
-  mu_means_trad <- as.vector(stats::na.omit(rowMeans(data$count,
-                                                     na.rm=TRUE)+0.01))
-  mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
-  mu_means_all[L_match_trad$L] <- mu_means_trad
-  if(dim(L_match_dna)[1]>0){
-    mu_means_all[L_match_dna$L] <- rep(mean(mu_means_trad),dim(L_match_dna)[1])
-  }
-
-  # helper function
-  # joint model, catchability coefficient, no site covariates
-  A <- list()
-  if(all(!is.null(initial_values))){
-    for(i in 1:n.chain){
-      A[[i]] <- list(
-        if('mu' %in% names(initial_values[[i]])){
-          mu_trad_1 <- initial_values[[i]]$mu[L_match_trad$L]
-        } else {
-          mu_trad_1 <- mu_means_trad
-        },
-
-        if('mu' %in% names(initial_values[[i]])){
-          mu <- initial_values[[i]]$mu
-        } else {
-          mu <- mu_means_all
-        },
-
-        if('p10' %in% names(initial_values[[i]])){
-          log_p10 <- log(initial_values[[i]]$p10)
-        } else {
-          log_p10 <- stats::runif(1,log(0.0001),log(0.01))
-        },
-
-        if('beta' %in% names(initial_values[[i]])){
-          beta <- initial_values[[i]]$beta
-        } else {
-          beta <- 3.5
-        },
-
-        if('q' %in% names(initial_values[[i]])){
-          q_trans <- as.data.frame(initial_values[[i]]$q)
-        } else {
-          q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
-        }
-      )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta','q_trans')
-    }
-  } else {
-    for(i in 1:n.chain){
-      A[[i]] <- list(
-        mu_trad_1 <- mu_means_trad,
-        mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
-        beta <- 3.5,
-        q_trans <- as.data.frame(stats::runif(length(q_names),0.01,1))
-      )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','beta','q_trans')
-    }
-  }
-
-  return(A)
-}
-
-init_joint <- function(n.chain,qPCR_all,initial_values,
-                       L_match_trad,L_match_dna,data){
-
-  # get mu means
-  mu_means_trad <- as.vector(stats::na.omit(rowMeans(data$count,
-                                                     na.rm=TRUE)+0.01))
-  mu_means_all <- rep(NA,dim(L_match_dna)[1]+dim(L_match_trad)[1])
-  mu_means_all[L_match_trad$L] <- mu_means_trad
-  if(dim(L_match_dna)[1]>0){
-    mu_means_all[L_match_dna$L] <- rep(mean(mu_means_trad),dim(L_match_dna)[1])
-  }
-
-  # helper function
-  # joint model, no catchability coefficient, no site covariates
-  A <- list()
-  if(all(!is.null(initial_values))){
-    for(i in 1:n.chain){
-      A[[i]] <- list(
-        if('mu' %in% names(initial_values[[i]])){
-          mu_trad <- initial_values[[i]]$mu[L_match_trad$L]
-        } else {
-          mu_trad <- mu_means_trad
-        },
-
-        if('mu' %in% names(initial_values[[i]])){
-          mu <- initial_values[[i]]$mu
-        } else {
-          mu <- mu_means_all
-        },
-
-        if('p10' %in% names(initial_values[[i]])){
-          log_p10 <- log(initial_values[[i]]$p10)
-        } else {
-          log_p10 <- stats::runif(1,log(0.0001),log(0.01))
-        },
-
-        if('beta' %in% names(initial_values[[i]])){
-          beta <- initial_values[[i]]$beta
-        } else {
-          beta <- 3.5
-        }
-      )
-      names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
-    }
-  } else {
-    for(i in 1:n.chain){
-      A[[i]] <- list(
-        mu_trad <- mu_means_trad,
-        mu <- mu_means_all,
-        log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
-        beta <- 3.5
-      )
-      names(A[[i]]) <- c('mu_trad','mu','log_p10','beta')
-    }
-  }
-
-  return(A)
-}
 
 ################
 # input checks #
@@ -1388,11 +1254,11 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
       }
     }
 
-    ## check beta input
-    if('beta' %in% names(initial_values[[i]])){
-      ## if beta is numeric
-      if(!is.numeric(initial_values[[i]]$beta)){
-        errMsg1 <- "Initial values for 'beta' should be numeric."
+    ## check alpha input -- no covariates
+    if('alpha' %in% names(initial_values[[i]]) && is.null(cov)){
+      ## if alpha is numeric
+      if(!is.numeric(initial_values[[i]]$alpha)){
+        errMsg1 <- "Initial values for 'alpha' should be numeric."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
         errMsg3 <- paste0('https://ednajoint.netlify.app',
@@ -1400,9 +1266,9 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
         errMsg <- paste(errMsg1,errMsg2,errMsg3, sep = "\n")
         stop(errMsg)
       }
-      ## check beta length
-      if(length(initial_values[[i]]$beta) != 1){
-        errMsg1 <- "The length of initial values for 'beta' should equal 1."
+      ## check alpha length
+      if(length(initial_values[[i]]$alpha) != 1){
+        errMsg1 <- "The length of initial values for 'alpha' should equal 1."
         errMsg2 <- paste0('See the eDNAjoint guide for help formatting ',
                           'initial values: ')
         errMsg3 <- paste0('https://ednajoint.netlify.app',
@@ -1412,8 +1278,8 @@ initial_values_checks <- function(initial_values,data,cov,n.chain){
       }
     }
 
-    ## check alpha input
-    if('alpha' %in% names(initial_values[[i]])){
+    ## check alpha input -- covariates
+    if('alpha' %in% names(initial_values[[i]]) && !is.null(cov)){
       ## if alpha is numeric
       if(any(!is.numeric(initial_values[[i]]$alpha))){
         errMsg1 <- "Initial values for 'alpha' should be numeric."
