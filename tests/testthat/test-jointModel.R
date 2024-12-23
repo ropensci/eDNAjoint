@@ -935,7 +935,7 @@ test_that("jointModel parameter recovery tests work",{
   # test that output values are on the same scale as the data
   mu_estimates <- rep(NA,nsite)
   for(i in 1:nsite){
-    mu_estimates[i] <- summary1[paste0('mu[',i,']'),'mean']
+    mu_estimates[i] <- summary1[paste0('mu[',i,',1]'),'mean']
   }
 
   # get mean of input count data at each site

@@ -100,9 +100,9 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
   }
 
   if(all(is.null(cov.val))){
-    # extract posteriors for alpha and p10 parameters
-    ##alpha
-    posterior_alpha <- unlist(rstan::extract(modelfit, pars = "alpha"))
+    # extract posteriors for beta and p10 parameters
+    ##beta
+    posterior_beta <- unlist(rstan::extract(modelfit, pars = "alpha"))
     #p10
     posterior_p10 <- unlist(rstan::extract(modelfit, pars = "p10"))
   } else {
@@ -115,7 +115,7 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
     posterior_p10 <- unlist(rstan::extract(modelfit, pars = "p10"))
   }
 
-  if('q' %in% modelfit@model_pars){
+  if(modelfit@par_dims$q > 0){
     # extract q values
     posterior_q <- rstan::extract(modelfit, pars = "q")$q
 
@@ -129,10 +129,10 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
     colnames(out) <- c('gear_1', gear_names)
 
     # calculate mu_critical -- gear type 1
-    critical_mu_1 <- rep(NA, length(posterior_alpha))
+    critical_mu_1 <- rep(NA, length(posterior_beta))
     for(i in seq_along(critical_mu_1)){
       critical_mu_1[i] <- (
-        posterior_p10[i]*exp(posterior_alpha[i])/(1-posterior_p10[i])
+        posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
       )
     }
     out[,1] <- c(stats::median(critical_mu_1),
@@ -152,10 +152,10 @@ muCritical <- function(modelfit, cov.val = NULL, ci = 0.9) {
 
   } else {
     # calculate mu_critical
-    critical_mu <- rep(NA, length(posterior_alpha))
+    critical_mu <- rep(NA, length(posterior_beta))
     for(i in seq_along(critical_mu)){
       critical_mu[i] <- (
-        posterior_p10[i]*exp(posterior_alpha[i])/(1-posterior_p10[i])
+        posterior_p10[i]*exp(posterior_beta[i])/(1-posterior_p10[i])
       )
     }
 
