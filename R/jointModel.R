@@ -369,17 +369,17 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     model_data <- rlist::list.append(
       model_data,
       nparams = length(q_names),
-      mat = as.integer(count_all$count.type)#, ###### CHANGED
-      #ctch = 1
+      mat = as.integer(count_all$count.type),
+      ctch = 1
     )
-  } #else {
-    #model_data <- rlist::list.append(
-     # model_data,
-    #  nparams = 0,
-    #  mat = matrix(NA,nrow=nrow(count_all),ncol=0)#,
-      #ctch = 0
-    #)
-  #}
+  } else {
+    model_data <- rlist::list.append(
+      model_data,
+      nparams = 0,
+      mat = as.integer(rep(1,nrow(count_all))),
+      ctch = 0
+    )
+  }
   # append data if family == negbin
   if(get_family_index(family)==2){
     model_data <- rlist::list.append(
@@ -406,7 +406,7 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
                  sample.int(.Machine$integer.max, 1))
 
   # get stan model
-  model_index <- get_stan_model(q, family)
+  model_index <- get_stan_model(family)
 
   # get initial values
   if(isCatch_type(q)){
@@ -419,10 +419,8 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # run model
   out <- rstan::sampling(
-    c(stanmodels$joint_binary_cov_catchability_count,
-      stanmodels$joint_binary_cov_catchability_gamma,
-      stanmodels$joint_binary_cov_count,
-      stanmodels$joint_binary_cov_gamma)[model_index][[1]],
+    c(stanmodels$joint_count,
+      stanmodels$joint_continuous)[model_index][[1]],
     data = model_data,
     cores = cores,
     seed = SEED,
@@ -503,20 +501,11 @@ get_family_index <- function(family){
 # helper functions: get stan model #
 ####################################
 
-get_stan_model <- function(q, family){
+get_stan_model <- function(family){
 
-  index <- get_family_index(family)
+  index <- ifelse(family %in% c('poisson','negbin'),1,2)
 
-  if(isCatch_type(q) && index %in% c(1,2)){
-      final_index <- 1
-    } else if(isCatch_type(q) && index == 3){
-      final_index <- 2
-    } else if(!isCatch_type(q) && index %in% c(1,2)){
-      final_index <- 3
-    } else {
-      final_index <- 4
-    }
-  return(final_index)
+  return(index)
 }
 
 
@@ -625,9 +614,9 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
     for(i in 1:n.chain){
       A[[i]] <- list(
         if('mu' %in% names(initial_values[[i]])){
-          mu_trad_1 <- initial_values[[i]]$mu[L_match_trad$L]
+          mu_trad <- initial_values[[i]]$mu[L_match_trad$L]
         } else {
-          mu_trad_1 <- mu_means_trad
+          mu_trad <- mu_means_trad
         },
 
         if('mu' %in% names(initial_values[[i]])){
@@ -656,14 +645,14 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
         p_dna <- rep(0.4,dim(L_match_dna)[1]),
         p11_dna <- rep(0.4,dim(L_match_dna)[1]) - 0.01
       )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans',
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha','q_trans',
                          'p_dna','p11_dna')
 
     }
   } else {
     for(i in 1:n.chain){
       A[[i]] <- list(
-        mu_trad_1 <- mu_means_trad,
+        mu_trad <- mu_means_trad,
         mu <- mu_means_all,
         log_p10 <- stats::runif(1,log(0.0001),log(0.01)),
         alpha <- as.array(c(3.5,rep(0,length(cov)))),
@@ -671,7 +660,7 @@ init_joint_cov_catchability <- function(n.chain,qPCR_all,q_names,cov,
         p_dna <- rep(0.4,dim(L_match_dna)[1]),
         p11_dna <- rep(0.4,dim(L_match_dna)[1]) - 0.01
       )
-      names(A[[i]]) <- c('mu_trad_1','mu','log_p10','alpha','q_trans',
+      names(A[[i]]) <- c('mu_trad','mu','log_p10','alpha','q_trans',
                          'p_dna','p11_dna')
     }
   }

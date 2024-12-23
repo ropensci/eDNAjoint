@@ -205,130 +205,83 @@ traditionalModel <- function(data, family = 'poisson',
     cores <- 1
   }
 
+  # create data that will be present in all model variations
+  model_data <- list(
+    Nloc = length(unique(count_all$L)),
+    C = nrow(count_all),
+    R = count_all$L,
+    E = count_all$count,
+    control = list(adapt_delta = adapt_delta)
+  )
+
+  # append data based on catchability
+  if(q==TRUE){
+    model_data <- rlist::list.append(
+      model_data,
+      nparams = length(q_names),
+      mat = as.integer(count_all$count.type),
+      ctch = 1
+    )
+  } else {
+    model_data <- rlist::list.append(
+      model_data,
+      nparams = 0,
+      mat = as.integer(rep(1,nrow(count_all))),
+      ctch = 0
+    )
+  }
+
+  # append data if family == negbin
+  if(family=='negbin'){
+    model_data <- rlist::list.append(
+      model_data,
+      phipriors = phipriors,
+      negbin = 1
+    )
+  } else if(family=='poisson'){
+    model_data <- rlist::list.append(
+      model_data,
+      phipriors = c(1,1),
+      negbin = 0
+    )
+  }
+
+  # get stan model
+  model_index <- get_stan_model(family)
+
+  # get initial values
+  if(q == TRUE){
+    inits <- init_trad_catchability(n.chain, count_all, q_names,
+                                    initial_values)
+  } else {
+    inits <- init_trad(n.chain, count_all, initial_values)
+  }
+
   # get seed
   SEED <- ifelse(!is.null(seed),
                  as.integer(seed),
                  sample.int(.Machine$integer.max, 1))
 
-  ##run model, catchability, pois/gamma
-  if(q == TRUE && family != 'negbin'){
-    model_index <- dplyr::case_when(family == 'poisson'~ 1,
-                                    family == 'gamma' ~ 2)
-    inits <- init_trad_catchability(n.chain, count_all, q_names,
-                                    initial_values)
-    out <- rstan::sampling(c(
-      stanmodels$traditional_catchability_count,
-      stanmodels$traditional_catchability_gamma)[model_index][[1]],
-      data = list(
-        Nloc = length(unique(count_all$L)),
-        C = nrow(count_all),
-        R = count_all$L,
-        E = count_all$count,
-        nparams = length(q_names),
-        mat = as.integer(count_all$count.type),
-        phipriors = c(1,1),
-        negbin = 0,
-        control = list(adapt_delta = adapt_delta)
-      ),
-      cores = cores,
-      seed = SEED,
-      #' @srrstats {G2.4,G2.4a} explicit conversion to
-      #'   integers for sampling arguments
-      chains = as.integer(n.chain),
-      thin = as.integer(thin),
-      warmup = as.integer(n.iter.burn),
-      iter = (
-        as.integer(n.iter.burn) + as.integer(n.iter.sample)
-      ),
-      init = inits,
-      refresh = ifelse(verbose == TRUE,500,0)
-    )
-  } else if(q == TRUE && family == 'negbin'){
-    ##run model, catchability, negbin
-    inits <- init_trad_catchability(n.chain, count_all, q_names,
-                                    initial_values)
-    out <- rstan::sampling(stanmodels$traditional_catchability_count,
-                           data = list(
-                             Nloc = length(unique(count_all$L)),
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             nparams = length(q_names),
-                             mat = as.integer(count_all$count.type),
-                             phipriors = phipriors,
-                             negbin = 1,
-                             control = list(adapt_delta = adapt_delta)
-                           ),
-                           cores = cores,
-                           seed = SEED,
-                           #' @srrstats {G2.4,G2.4a} explicit conversion
-                           #'   to integers for sampling arguments
-                           chains = as.integer(n.chain),
-                           thin = as.integer(thin),
-                           warmup = as.integer(n.iter.burn),
-                           iter = (
-                             as.integer(n.iter.burn) + as.integer(n.iter.sample)
-                           ),
-                           init = inits,
-                           refresh = ifelse(verbose == TRUE,500,0)
-    )
-  } else if(q == FALSE && family != 'negbin'){
-    ##run model, no catchability, pois/gamma
-    model_index <- dplyr::case_when(family == 'poisson'~ 1,
-                                    family == 'gamma' ~ 2)
-    inits <- init_trad(n.chain, count_all, initial_values)
-    out <- rstan::sampling(c(stanmodels$traditional_count,
-                             stanmodels$traditional_gamma)[model_index][[1]],
-                           data = list(
-                             Nloc = length(unique(count_all$L)),
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             phipriors = c(1,1),
-                             negbin = 0,
-                             control = list(adapt_delta = adapt_delta,
-                                            stepsize = 0.5)
-                           ),
-                           cores = cores,
-                           seed = SEED,
-                           #' @srrstats {G2.4,G2.4a} explicit conversion to
-                           #'   integers for sampling arguments
-                           chains = as.integer(n.chain),
-                           thin = as.integer(thin),
-                           warmup = as.integer(n.iter.burn),
-                           iter = (
-                             as.integer(n.iter.burn) + as.integer(n.iter.sample)
-                           ),
-                           init = inits,
-                           refresh = ifelse(verbose == TRUE,500,0)
-    )
-  } else if(q == FALSE && family == 'negbin'){
-    ##run model, no catchability, negbin
-    inits <- init_trad(n.chain, count_all, initial_values)
-    out <- rstan::sampling(stanmodels$traditional_count,
-                           data = list(
-                             Nloc = length(unique(count_all$L)),
-                             C = nrow(count_all),
-                             R = count_all$L,
-                             E = count_all$count,
-                             phipriors = phipriors,
-                             negbin = 1,
-                             control = list(adapt_delta = adapt_delta)
-                           ),
-                           cores = cores,
-                           seed = SEED,
-                           #' @srrstats {G2.4,G2.4a} explicit conversion to
-                           #'   integers for sampling arguments
-                           chains = as.integer(n.chain),
-                           thin = as.integer(thin),
-                           warmup = as.integer(n.iter.burn),
-                           iter = (
-                             as.integer(n.iter.burn) + as.integer(n.iter.sample)
-                           ),
-                           init = inits,
-                           refresh = ifelse(verbose == TRUE,500,0)
-    )
-  }
+  # run model
+  out <- rstan::sampling(
+    c(stanmodels$traditional_count,
+      stanmodels$traditional_continuous)[model_index][[1]],
+    data = model_data,
+    cores = cores,
+    seed = SEED,
+    #' @srrstats {G2.4,G2.4a} explicit conversion to
+    #'   integers for sampling arguments
+    chains = as.integer(n.chain),
+    thin = as.integer(thin),
+    warmup = as.integer(n.iter.burn),
+    iter = (
+      as.integer(n.iter.burn) + as.integer(n.iter.sample)
+    ),
+    init = inits,
+    refresh = ifelse(verbose == TRUE,500,0)
+  )
+
+
 
   # assert that the log likelihood is a double
   #' @srrstats {G5.3} assert that model run worked and the log likelihood is

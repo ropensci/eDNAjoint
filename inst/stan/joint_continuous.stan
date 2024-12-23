@@ -19,6 +19,7 @@ data{/////////////////////////////////////////////////////////////////////
     array[C] int<lower=1> mat;  // vector of gear type integers
     int<lower=0> nsitecov;  // number of site-level covariates
     matrix[Nloc_trad+Nloc_dna,nsitecov] mat_site;  // matrix of site-level covariates
+    int<lower=0,upper=1> ctch; // binary indicator of presence of catchability coefficient
 
 }
 
@@ -34,15 +35,16 @@ parameters{/////////////////////////////////////////////////////////////////////
 transformed parameters{/////////////////////////////////////////////////////////////////////
   vector<lower=0, upper = 1>[Nloc_trad] p11_trad; // true-positive detection probability
   vector<lower=0, upper = 1>[Nloc_trad] p_trad;   // total detection probability
-  vector<lower=0>[nparams+1] coef;
-  vector<lower=0>[Nloc_trad] mu_trad_1;  // expected catch at each site for sites with traditional samples
+  real<lower=0> coef[(ctch == 1) ? nparams+1 :  0];
+  vector<lower=0>[Nloc_trad] mu_trad;  // expected catch at each site for sites with traditional samples
   array[C] real<lower=0> E_trans;
 
-  mu_trad_1 = alpha_gamma ./ beta_gamma;
-  p11_trad = mu_trad_1 ./ (mu_trad_1 + exp(mat_site[trad_ind, ] * alpha)); // Eq. 1.2
+  mu_trad = alpha_gamma ./ beta_gamma;
+  p11_trad = mu_trad ./ (mu_trad + exp(mat_site[trad_ind, ] * alpha)); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
 
-  coef = append_row(1, 1+q_trans);
+  if(ctch == 1)
+    coef = to_array_1d(append_row(1, 1+q_trans));
 
   for(j in 1:C){
       E_trans[j] = E[j] + 0.0000000000001;
@@ -52,17 +54,18 @@ transformed parameters{/////////////////////////////////////////////////////////
 model{/////////////////////////////////////////////////////////////////////
 
 
-    for(j in 1:C){
-      E_trans[j] ~ gamma(coef[mat[j]]*alpha_gamma[R[j]],beta_gamma[R[j]]); // Eq. 1.1
+    for (j in 1:C) {
+      real lambda = (ctch == 1) ? coef[mat[j]]*alpha_gamma[R[j]] : alpha_gamma[R[j]];
+      E_trans[j] ~ gamma(lambda, beta_gamma[R[j]]);  // Eq. 1.1
     }
 
     for (i in 1:S){
-        K[i] ~ binomial(N[i], p_trad[L[i]]); // Eq. 1.4
+      K[i] ~ binomial(N[i], p_trad[L[i]]); // Eq. 1.4
     }
 
     if(Nloc_dna > 0)
        for (i in 1:S_dna){
-           K_dna[i] ~ binomial(N_dna[i], p_dna[L_dna[i]]); // Eq. 1.4
+         K_dna[i] ~ binomial(N_dna[i], p_dna[L_dna[i]]); // Eq. 1.4
        }
 
 
@@ -86,35 +89,42 @@ generated quantities{
   // transform to interpretable params
   p10 = exp(log_p10);
 
-  q = q_trans + 1;
+  mu[trad_ind, 1] = mu_trad;
+  if(ctch == 1)
+    q = q_trans + 1;
+    mu[trad_ind, 2:(nparams + 1)] = mu_trad * q';
 
   beta = mat_site[trad_ind] * alpha;
 
-  mu[trad_ind, 1] = mu_trad_1;
-  mu[trad_ind, 2:(nparams + 1)] = mu_trad_1 * q';
 
   if(Nloc_dna > 0)
      for (i in 1:Nloc_dna){
        p11_dna[i] = p_dna[i] - p10;
        mu[dna_ind[i],1] = p11_dna[i]*exp(dot_product(mat_site[dna_ind[i]],alpha))/(1-p11_dna[i]);
-       mu[dna_ind[i], 2:(nparams + 1)] = mu[dna_ind[i], 1] * q';
      }
-
+     if(ctch == 1)
+       for (i in 1:Nloc_dna){
+         mu[dna_ind[i], 2:(nparams + 1)] = mu[dna_ind[i], 1] * q';
+       }
 
   ////////////////////////////////
   // get point-wise log likelihood
 
-  for(j in 1:C){
-    log_lik[j] = gamma_lpdf(E_trans[j] | coef[mat[j]]*alpha_gamma[R[j]], beta_gamma[R[j]]); //store log likelihood of traditional data given model
+  //store log likelihood of traditional data given model
+  for (j in 1:C) {
+    real lambda = (ctch == 1) ? coef[mat[j]]*alpha_gamma[R[j]] : alpha_gamma[R[j]];
+    log_lik[j] = gamma_lpdf(E_trans[j] | lambda, beta_gamma[R[j]]);
   }
 
+  //store log likelihood of eDNA data given model
   for(i in 1:S){
-    log_lik[C+i] = binomial_lpmf(K[i] | N[i], p_trad[L[i]]); //store log likelihood of eDNA data given model
+    log_lik[C+i] = binomial_lpmf(K[i] | N[i], p_trad[L[i]]);
   }
 
+  //store log likelihood of eDNA data given model
   if(Nloc_dna > 0)
      for(i in 1:S_dna){
-       log_lik[C+S+i] = binomial_lpmf(K_dna[i] | N_dna[i], p_dna[L_dna[i]]); //store log likelihood of eDNA data given model
+       log_lik[C+S+i] = binomial_lpmf(K_dna[i] | N_dna[i], p_dna[L_dna[i]]);
      }
 
 }

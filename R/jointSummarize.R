@@ -96,6 +96,18 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
                                 use_cache = FALSE)$summary, as.integer(digits))
   }
 
+  # fix row name if phi present
+  if('phi[1]'%in% rownames(out)){
+    row_index <- which(rownames(out)=='phi[1]')
+    rownames(out)[row_index] <- 'phi'
+  }
+
+  # fix row names if q = FALSE
+  if(modelfit@par_dims$q == 0){
+    names <- rownames(out)
+    rownames(out) <- gsub("\\[([0-9]+),1\\]", "[\\1]", names)
+  }
+
   return(out)
 
 }
@@ -110,7 +122,11 @@ isCatch <- function(pars){
   return(out)
 }
 isNegbin <- function(modelfit){
-  out <- ifelse(modelfit@par_dims$phi == 1,TRUE,FALSE)
+  if('phi' %in% modelfit@model_pars){
+    out <- ifelse(modelfit@par_dims$phi == 1,TRUE,FALSE)
+  } else {
+    out <- FALSE
+  }
   return(out)
 }
 

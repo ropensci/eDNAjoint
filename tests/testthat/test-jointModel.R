@@ -1296,7 +1296,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi[1]','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1538,7 +1538,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi[1]','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
@@ -1781,7 +1781,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi[1]','alpha[1]',
+  expect_true(all(c('p10','q[1]','phi','alpha[1]',
                     'alpha[2]','alpha[3]') %in% output_params))
 
   # check length of of mu
@@ -2056,7 +2056,7 @@ test_that("semi-paired model works", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi[1]','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
 
   # check length of of mu
   mu_estimates <- as.vector(rstan::summary(fit$model,par='mu')$summary[,1])
