@@ -112,7 +112,10 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','q[1]','phi[1]','alpha[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 1)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -215,6 +218,9 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('p10','q[1]','alpha[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 0)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -381,7 +387,10 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi','alpha[1]') %in% output_params))
+  expect_true(all(c('p10','phi[1]','alpha[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 1)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -470,6 +479,9 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('p10','alpha[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 0)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -648,8 +660,11 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','q[1]','phi','alpha[1]',
+  expect_true(all(c('p10','q[1]','phi[1]','alpha[1]',
                     'alpha[2]','alpha[3]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 1)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -763,6 +778,9 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','q[1]','alpha[1]','alpha[2]',
                     'alpha[3]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 0)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -954,8 +972,11 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('p10','phi','alpha[1]',
+  expect_true(all(c('p10','phi[1]','alpha[1]',
                     'alpha[2]','alpha[3]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 1)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -1056,6 +1077,9 @@ test_that("jointSummarize outputs work", {
   # test expectation
   expect_true(all(c('p10','alpha[1]','alpha[2]',
                     'alpha[3]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 0)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1),
@@ -1239,7 +1263,10 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('q[1]','phi') %in% output_params))
+  expect_true(all(c('q[1]','phi[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 1)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -1316,6 +1343,9 @@ test_that("jointSummarize outputs work", {
 
   # test expectation
   expect_true(all(c('q[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 0)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -1455,7 +1485,10 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(c('phi') %in% output_params))
+  expect_true(all(c('phi[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 1)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -1520,7 +1553,10 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(!c('p10','alpha[1]','q','phi') %in% output_params))
+  expect_true(all(!c('p10','alpha[1]','q','phi[1]') %in% output_params))
+
+  # test expectation
+  expect_true(fit$model@par_dims$phi == 0)
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))
@@ -1587,7 +1623,7 @@ test_that("jointSummarize outputs work", {
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
 
   # test expectation
-  expect_true(all(!c('p10','q','phi') %in% output_params))
+  expect_true(all(!c('p10','q','phi[1]') %in% output_params))
 
   # detectionCalculate and detectionPlot
   out <- detectionCalculate(fit$model, mu = seq(from = 0.1, to = 1, by = 0.1))

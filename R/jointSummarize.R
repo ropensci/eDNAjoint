@@ -84,7 +84,7 @@ jointSummarize <- function(modelfit, par = 'all', probs = c(0.025,0.975),
   # get summary
   if(all(par == 'all')){
 
-    params <- get_all_params(modelfit@model_pars)
+    params <- get_all_params(modelfit@model_pars,modelfit)
     #' @srrstats {G2.4,G2.4a} explicit conversion to integers for sampling
     #'   arguments
     out <- round(rstan::summary(modelfit, pars = params, probs = probs,
@@ -109,13 +109,13 @@ isCatch <- function(pars){
   out <- ifelse('q' %in% pars,TRUE,FALSE)
   return(out)
 }
-isNegbin <- function(pars){
-  out <- ifelse('phi' %in% pars,TRUE,FALSE)
+isNegbin <- function(modelfit){
+  out <- ifelse(modelfit@par_dims$phi == 1,TRUE,FALSE)
   return(out)
 }
 
 # function to get vector of all param names
-get_all_params <- function(pars){
+get_all_params <- function(pars,modelfit){
   params <- c('mu')
 
   # catchability
@@ -129,8 +129,8 @@ get_all_params <- function(pars){
   }
 
   # negbin
-  if(isNegbin(pars)){
-    params <- c(params,'phi')
+  if(isNegbin(modelfit)){
+    params <- c(params,'phi[1]')
   }
 
   return(params)

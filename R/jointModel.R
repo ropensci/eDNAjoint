@@ -381,10 +381,17 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
     #)
   #}
   # append data if family == negbin
-  if(isNegbin_type(family)){
+  if(get_family_index(family)==2){
     model_data <- rlist::list.append(
       model_data,
-      phipriors = phipriors
+      phipriors = phipriors,
+      negbin = 1
+    )
+  } else if(get_family_index(family)==1){
+    model_data <- rlist::list.append(
+      model_data,
+      phipriors = c(1,1),
+      negbin = 0
     )
   }
 
@@ -412,11 +419,9 @@ jointModel <- function(data, cov = NULL, family = 'poisson',
 
   # run model
   out <- rstan::sampling(
-    c(stanmodels$joint_binary_cov_catchability_pois,
-      stanmodels$joint_binary_cov_catchability_negbin,
+    c(stanmodels$joint_binary_cov_catchability_count,
       stanmodels$joint_binary_cov_catchability_gamma,
-      stanmodels$joint_binary_cov_pois,
-      stanmodels$joint_binary_cov_negbin,
+      stanmodels$joint_binary_cov_count,
       stanmodels$joint_binary_cov_gamma)[model_index][[1]],
     data = model_data,
     cores = cores,
@@ -502,10 +507,14 @@ get_stan_model <- function(q, family){
 
   index <- get_family_index(family)
 
-  if(isCatch_type(q)){
-      final_index <- index
+  if(isCatch_type(q) && index %in% c(1,2)){
+      final_index <- 1
+    } else if(isCatch_type(q) && index == 3){
+      final_index <- 2
+    } else if(!isCatch_type(q) && index %in% c(1,2)){
+      final_index <- 3
     } else {
-      final_index <- index + 3
+      final_index <- 4
     }
   return(final_index)
 }

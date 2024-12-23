@@ -217,7 +217,7 @@ traditionalModel <- function(data, family = 'poisson',
     inits <- init_trad_catchability(n.chain, count_all, q_names,
                                     initial_values)
     out <- rstan::sampling(c(
-      stanmodels$traditional_catchability_pois,
+      stanmodels$traditional_catchability_count,
       stanmodels$traditional_catchability_gamma)[model_index][[1]],
       data = list(
         Nloc = length(unique(count_all$L)),
@@ -226,6 +226,8 @@ traditionalModel <- function(data, family = 'poisson',
         E = count_all$count,
         nparams = length(q_names),
         mat = as.integer(count_all$count.type),
+        phipriors = c(1,1),
+        negbin = 0,
         control = list(adapt_delta = adapt_delta)
       ),
       cores = cores,
@@ -245,7 +247,7 @@ traditionalModel <- function(data, family = 'poisson',
     ##run model, catchability, negbin
     inits <- init_trad_catchability(n.chain, count_all, q_names,
                                     initial_values)
-    out <- rstan::sampling(stanmodels$traditional_catchability_negbin,
+    out <- rstan::sampling(stanmodels$traditional_catchability_count,
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),
@@ -254,6 +256,7 @@ traditionalModel <- function(data, family = 'poisson',
                              nparams = length(q_names),
                              mat = as.integer(count_all$count.type),
                              phipriors = phipriors,
+                             negbin = 1,
                              control = list(adapt_delta = adapt_delta)
                            ),
                            cores = cores,
@@ -274,13 +277,15 @@ traditionalModel <- function(data, family = 'poisson',
     model_index <- dplyr::case_when(family == 'poisson'~ 1,
                                     family == 'gamma' ~ 2)
     inits <- init_trad(n.chain, count_all, initial_values)
-    out <- rstan::sampling(c(stanmodels$traditional_pois,
+    out <- rstan::sampling(c(stanmodels$traditional_count,
                              stanmodels$traditional_gamma)[model_index][[1]],
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),
                              R = count_all$L,
                              E = count_all$count,
+                             phipriors = c(1,1),
+                             negbin = 0,
                              control = list(adapt_delta = adapt_delta,
                                             stepsize = 0.5)
                            ),
@@ -300,13 +305,14 @@ traditionalModel <- function(data, family = 'poisson',
   } else if(q == FALSE && family == 'negbin'){
     ##run model, no catchability, negbin
     inits <- init_trad(n.chain, count_all, initial_values)
-    out <- rstan::sampling(stanmodels$traditional_negbin,
+    out <- rstan::sampling(stanmodels$traditional_count,
                            data = list(
                              Nloc = length(unique(count_all$L)),
                              C = nrow(count_all),
                              R = count_all$L,
                              E = count_all$count,
                              phipriors = phipriors,
+                             negbin = 1,
                              control = list(adapt_delta = adapt_delta)
                            ),
                            cores = cores,

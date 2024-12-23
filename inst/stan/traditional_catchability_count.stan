@@ -6,12 +6,13 @@ data{/////////////////////////////////////////////////////////////////////
     int<lower=0> nparams;  // number of gear types
     array[C] int<lower=1> mat;  // vector of gear type integers
     array[2] real phipriors; // priors for gamma distrib on phi
+    int<lower=0,upper=1> negbin; // binary indicator of negative binomial
 
 }
 
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> mu_1;  // expected density at each site
-    real<lower=0> phi;  // dispersion parameter
+    real<lower=0> phi[(negbin == 1) ? 1 :  0]; // dispersion parameter
     vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
     }
 
@@ -25,12 +26,17 @@ transformed parameters{/////////////////////////////////////////////////////////
 model{/////////////////////////////////////////////////////////////////////
 
 
-    for(j in 1:C){
+    if(negbin == 1)
+      for(j in 1:C){
+        E[j] ~ neg_binomial_2(coef[mat[j]]*mu_1[R[j]], phi); // Eq. 1.1
+      }
+    if(negbin == 0)
+      for(j in 1:C){
+        E[j] ~ poisson(coef[mat[j]]*mu_1[R[j]]); // Eq. 1.1
+      }
 
-      E[j] ~ neg_binomial_2(coef[mat[j]]*mu_1[R[j]],phi); // Eq. 1.1
-    }
-
-    phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
+    if(negbin == 1)
+      phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
 
 }
 
@@ -50,9 +56,14 @@ generated quantities{
   ////////////////////////////////
   // get point-wise log likelihood
 
-  for(j in 1:C){
+  if(negbin == 1)
+    for(j in 1:C){
       log_lik[j] = neg_binomial_2_lpmf(E[j] | coef[mat[j]]*mu_1[R[j]], phi); //store log likelihood of traditional data given model
-  }
+    }
+  if(negbin == 0)
+    for(j in 1:C){
+      log_lik[j] = poisson_lpmf(E[j] | coef[mat[j]]*mu_1[R[j]]); //store log likelihood of traditional data given model
+    }
 
 }
 

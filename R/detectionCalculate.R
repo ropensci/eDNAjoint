@@ -169,8 +169,9 @@ isCatch <- function(pars){
   out <- ifelse('q' %in% pars,TRUE,FALSE)
   return(out)
 }
-isNegbin <- function(pars){
-  out <- ifelse('phi' %in% pars,TRUE,FALSE)
+isNegbin <- function(modelfit){
+  out <- ifelse(modelfit@par_dims$phi == 1,
+                TRUE,FALSE)
   return(out)
 }
 
@@ -185,8 +186,8 @@ get_ntrad <- function(pars, modelfit, mu, probability){
     ntrad <- seq(from = 0, to = 50000, by = 1)
 
     # P(X = 0 | mu) in one traditional survey trial
-    if(isNegbin(pars)){
-      phi <- stats::median(unlist(rstan::extract(modelfit, pars = 'phi')))
+    if(isNegbin(modelfit)){
+      phi <- stats::median(unlist(rstan::extract(modelfit, pars = 'phi[1]')))
       pr <- stats::pnbinom(q = 0, mu = mu[i], size = phi)
     } else {
       pr <- stats::ppois(q = 0, lambda = mu[i])
@@ -227,8 +228,8 @@ get_ntrad_q <- function(pars, modelfit, mu, probability){
       ntrad <- seq(from = 0, to = 50000, by = 1)
 
       # P(X = 0 | mu) in one traditional survey trial
-      if(isNegbin(pars)){
-        phi <- stats::median(unlist(rstan::extract(modelfit, pars = 'phi')))
+      if(isNegbin(modelfit)){
+        phi <- stats::median(unlist(rstan::extract(modelfit, pars = 'phi[1]')))
         pr <- stats::pnbinom(q = 0, mu = q_list[j]*mu[i], size = phi)
       } else {
         pr <- stats::ppois(q = 0, lambda = q_list[j]*mu[i])

@@ -4,12 +4,13 @@ data{/////////////////////////////////////////////////////////////////////
     int<lower=1> Nloc;   // total number of locations
     array[C] int<lower=0> E;   // number of animals in sample C
     array[2] real phipriors; // priors for gamma distrib on phi
+    int<lower=0,upper=1> negbin; // binary indicator of negative binomial
 
 }
 
 parameters{/////////////////////////////////////////////////////////////////////
     array[Nloc] real<lower=0> mu;  // expected density at each site
-    real<lower=0> phi;  // dispersion parameter
+    real<lower=0> phi[(negbin == 1) ? 1 :  0]; // dispersion parameter
     }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
@@ -19,13 +20,18 @@ transformed parameters{/////////////////////////////////////////////////////////
 model{/////////////////////////////////////////////////////////////////////
 
 
-    for(j in 1:C){
+    if(negbin == 1)
+      for(j in 1:C){
+        E[j] ~ neg_binomial_2(mu[R[j]], phi); // Eq. 1.1
+      }
+    if(negbin == 0)
+      for(j in 1:C){
+        E[j] ~ poisson(mu[R[j]]); // Eq. 1.1
+      }
 
-      E[j] ~ neg_binomial_2(mu[R[j]],phi); // Eq. 1.1
-    }
 
-
-    phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
+    if(negbin == 1)
+      phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
 
 }
 
@@ -34,9 +40,15 @@ generated quantities{
 
   ////////////////////////////////
   // get point-wise log likelihood
-  for(j in 1:C){
+
+  if(negbin == 1)
+    for(j in 1:C){
       log_lik[j] = neg_binomial_2_lpmf(E[j] | mu[R[j]], phi); //store log likelihood of traditional data given model
-  }
+    }
+  if(negbin == 0)
+    for(j in 1:C){
+      log_lik[j] = poisson_lpmf(E[j] | mu[R[j]]); //store log likelihood of traditional data given model
+    }
 
 }
 

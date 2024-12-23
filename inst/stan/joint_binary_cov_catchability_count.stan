@@ -15,34 +15,46 @@ data{/////////////////////////////////////////////////////////////////////
     array[S_dna] int<lower=1> N_dna;   // number of qPCR replicates per site of unpaired samples
     array[S_dna] int<lower=0> K_dna; // number of qPCR detections among these replicates of unpaired samples
     array[2] real p10priors; // priors for normal distrib on p10
+    int<lower=0> nparams;  // number of gear types
+    array[C] int<lower=1> mat;  // vector of gear type integers
     int<lower=0> nsitecov;  // number of site-level covariates
     matrix[Nloc_trad+Nloc_dna,nsitecov] mat_site;  // matrix of site-level covariates
     array[2] real phipriors; // priors for gamma distrib on phi
+    int<lower=0,upper=1> negbin; // binary indicator of negative binomial
 
 }
 
 parameters{/////////////////////////////////////////////////////////////////////
-    vector<lower=0>[Nloc_trad] mu_trad;  // expected catch at each site for sites with traditional samples
+    vector<lower=0>[Nloc_trad] mu_trad_1;  // expected catch at each site for sites with traditional samples
     real<upper=0> log_p10;  // p10, false-positive rate.
-    vector[nsitecov] alpha; // site-level beta covariates
     array[Nloc_dna] real<lower=0, upper = 1> p_dna;   // total detection probability
-    real<lower=0> phi;  // dispersion parameter
+    vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
+    vector[nsitecov] alpha; // site-level beta covariates
+    real<lower=0> phi[(negbin == 1) ? 1 :  0]; // dispersion parameter
 }
 
 transformed parameters{/////////////////////////////////////////////////////////////////////
   vector<lower=0, upper = 1>[Nloc_trad] p11_trad; // true-positive detection probability
   vector<lower=0, upper = 1>[Nloc_trad] p_trad;   // total detection probability
+  vector<lower=0>[nparams+1] coef;
 
-  p11_trad = mu_trad ./ (mu_trad + exp(mat_site[trad_ind, ] * alpha)); // Eq. 1.2
+  p11_trad = mu_trad_1 ./ (mu_trad_1 + exp(mat_site[trad_ind, ] * alpha)); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
+
+  coef = append_row(1, 1+q_trans);
 }
 
 model{/////////////////////////////////////////////////////////////////////
 
 
-    for(j in 1:C){
-      E[j] ~ neg_binomial_2(mu_trad[R[j]], phi); // Eq. 1.1
-    }
+    if(negbin == 1)
+      for(j in 1:C){
+        E[j] ~ neg_binomial_2(coef[mat[j]]*mu_trad_1[R[j]], phi); // Eq. 1.1
+      }
+    if(negbin == 0)
+      for(j in 1:C){
+        E[j] ~ poisson(coef[mat[j]]*mu_trad_1[R[j]]); // Eq. 1.1
+      }
 
     for (i in 1:S){
         K[i] ~ binomial(N[i], p_trad[L[i]]); // Eq. 1.4
@@ -57,37 +69,49 @@ model{/////////////////////////////////////////////////////////////////////
   //priors
   log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
   alpha ~ normal(0,10); // sitecov shrinkage priors
-  phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
+  if(negbin == 1)
+    phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
 
 }
 
 generated quantities{
+  vector[nparams] q;
   vector[C+S+S_dna] log_lik;
   real p10;
-  vector[Nloc_trad] beta;
-  vector<lower=0>[Nloc_dna+Nloc_trad] mu;  // expected catch at each site
+  matrix[Nloc_dna+Nloc_trad,nparams+1] mu;  // matrix of catch rates
   array[Nloc_dna] real<lower=0, upper = 1> p11_dna; // true-positive detection probability
+  vector[Nloc_trad] beta;
 
   ////////////////////////////////////
   // transform to interpretable params
   p10 = exp(log_p10);
 
-  mu[trad_ind] = mu_trad;
+  q = q_trans + 1;
 
   beta = mat_site[trad_ind] * alpha;
+
+  mu[trad_ind, 1] = mu_trad_1;
+  mu[trad_ind, 2:(nparams + 1)] = mu_trad_1 * q';
 
   if(Nloc_dna > 0)
      for (i in 1:Nloc_dna){
        p11_dna[i] = p_dna[i] - p10;
-       mu[dna_ind[i]] = p11_dna[i]*exp(dot_product(mat_site[dna_ind[i]],alpha))/(1-p11_dna[i]);
+       mu[dna_ind[i],1] = p11_dna[i]*exp(dot_product(mat_site[dna_ind[i]],alpha))/(1-p11_dna[i]);
+       mu[dna_ind[i], 2:(nparams + 1)] = mu[dna_ind[i], 1] * q';
      }
+
 
   ////////////////////////////////
   // get point-wise log likelihood
 
-  for(j in 1:C){
-    log_lik[j] = neg_binomial_2_lpmf(E[j] | mu_trad[R[j]], phi); //store log likelihood of traditional data given model
-  }
+  if(negbin == 1)
+    for(j in 1:C){
+      log_lik[j] = neg_binomial_2_lpmf(E[j] | coef[mat[j]]*mu_trad_1[R[j]], phi); //store log likelihood of traditional data given model
+    }
+  if(negbin == 0)
+    for(j in 1:C){
+      log_lik[j] = poisson_lpmf(E[j] | coef[mat[j]]*mu_trad_1[R[j]]); //store log likelihood of traditional data given model
+    }
 
   for(i in 1:S){
     log_lik[C+i] = binomial_lpmf(K[i] | N[i], p_trad[L[i]]); //store log likelihood of eDNA data given model
