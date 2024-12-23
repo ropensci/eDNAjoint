@@ -113,7 +113,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = NULL, probability = 0.9,
   }
 
   # get n traditional samples
-  if(isCatch(modelfit@model_pars)){
+  if(isCatch(modelfit)){
     ntrad_out <- get_ntrad_q(modelfit@model_pars, modelfit, mu, probability)
   } else {
     ntrad_out <- get_ntrad(modelfit@model_pars, modelfit, mu, probability)
@@ -128,7 +128,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = NULL, probability = 0.9,
 
   # combine into one df - joint model
   if(isJoint(modelfit@model_pars)){
-    if(isCatch(modelfit@model_pars)){
+    if(isCatch(modelfit)){
       out <- cbind(mu,ntrad_out,ndna_out)
       #rename columns
       trad_names <- c()
@@ -144,7 +144,7 @@ detectionCalculate <- function(modelfit, mu, cov.val = NULL, probability = 0.9,
 
   # combine into one df - traditional model
   if(!isJoint(modelfit@model_pars)){
-    if(isCatch(modelfit@model_pars)){
+    if(isCatch(modelfit)){
       out <- cbind(mu,ntrad_out)
       #rename columns
       for(i in 1:modelfit@par_dims$q){
@@ -165,8 +165,8 @@ isJoint <- function(pars){
   out <- ifelse('p10' %in% pars,TRUE,FALSE)
   return(out)
 }
-isCatch <- function(pars){
-  out <- ifelse('q' %in% pars,TRUE,FALSE)
+isCatch <- function(modelfit){
+  out <- ifelse(modelfit@par_dims$q>0,TRUE,FALSE)
   return(out)
 }
 isNegbin <- function(modelfit){

@@ -117,8 +117,8 @@ isJoint <- function(pars){
   out <- ifelse('p10' %in% pars,TRUE,FALSE)
   return(out)
 }
-isCatch <- function(pars){
-  out <- ifelse('q' %in% pars,TRUE,FALSE)
+isCatch <- function(modelfit){
+  out <- ifelse(modelfit@par_dims$q>0,TRUE,FALSE)
   return(out)
 }
 isNegbin <- function(modelfit){
@@ -135,7 +135,7 @@ get_all_params <- function(pars,modelfit){
   params <- c('mu')
 
   # catchability
-  if(isCatch(pars)){
+  if(isCatch(modelfit)){
     params <- c(params,'q')
   }
 
