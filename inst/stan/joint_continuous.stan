@@ -1,3 +1,8 @@
+functions {
+  #include /functions/calc_loglik.stan
+}
+
+
 data{/////////////////////////////////////////////////////////////////////
     int<lower=1> S;    // number of paired qPCR samples
     int<lower=0> S_dna;    // number of unpaired qPCR samples
@@ -54,9 +59,12 @@ transformed parameters{/////////////////////////////////////////////////////////
 model{/////////////////////////////////////////////////////////////////////
 
 
+    // get lambda
+    real lambda[C];
+    lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R, C);
+
     for (j in 1:C) {
-      real lambda = (ctch == 1) ? coef[mat[j]]*alpha_gamma[R[j]] : alpha_gamma[R[j]];
-      E_trans[j] ~ gamma(lambda, beta_gamma[R[j]]);  // Eq. 1.1
+      E_trans[j] ~ gamma(lambda[j], beta_gamma[R[j]]);  // Eq. 1.1
     }
 
     for (i in 1:S){
@@ -110,22 +118,10 @@ generated quantities{
   ////////////////////////////////
   // get point-wise log likelihood
 
-  //store log likelihood of traditional data given model
-  for (j in 1:C) {
-    real lambda = (ctch == 1) ? coef[mat[j]]*alpha_gamma[R[j]] : alpha_gamma[R[j]];
-    log_lik[j] = gamma_lpdf(E_trans[j] | lambda, beta_gamma[R[j]]);
-  }
+  log_lik = calc_loglik_continuous(ctch, coef, mat, alpha_gamma, beta_gamma, R,
+                                   E_trans, K, N, p_trad, L, C, S, S_dna,
+                                   Nloc_dna, K_dna, N_dna, p_dna, L_dna);
 
-  //store log likelihood of eDNA data given model
-  for(i in 1:S){
-    log_lik[C+i] = binomial_lpmf(K[i] | N[i], p_trad[L[i]]);
-  }
-
-  //store log likelihood of eDNA data given model
-  if(Nloc_dna > 0)
-     for(i in 1:S_dna){
-       log_lik[C+S+i] = binomial_lpmf(K_dna[i] | N_dna[i], p_dna[L_dna[i]]);
-     }
 
 }
 

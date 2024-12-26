@@ -1,3 +1,7 @@
+functions {
+  #include /functions/calc_loglik.stan
+}
+
 data{/////////////////////////////////////////////////////////////////////
     int<lower=1> C;    // number of trap samples
     array[C] int<lower=1> R;   // index of locations for traditional samples
@@ -10,8 +14,8 @@ data{/////////////////////////////////////////////////////////////////////
 }
 
 parameters{/////////////////////////////////////////////////////////////////////
-    array[Nloc] real<lower=0> alpha;  // alpha param for gamma distribution
-    array[Nloc] real <lower=0.01> beta;  // beta param for gamma distribution
+    vector<lower=0>[Nloc] alpha;  // alpha param for gamma distribution
+    vector<lower=0.01>[Nloc] beta;  // beta param for gamma distribution
     vector<lower=-0.99999>[nparams] q_trans; // catchability coefficients
     }
 
@@ -30,9 +34,12 @@ transformed parameters{/////////////////////////////////////////////////////////
 model{/////////////////////////////////////////////////////////////////////
 
 
+    // get lambda
+    real lambda[C];
+    lambda = get_lambda_continuous(ctch, coef, mat, alpha, R, C);
+
     for (j in 1:C) {
-      real lambda = (ctch == 1) ? coef[mat[j]]*alpha[R[j]] : alpha[R[j]];
-      E_trans[j] ~ gamma(lambda, beta[R[j]]);  // Eq. 1.1
+      E_trans[j] ~ gamma(lambda[j], beta[R[j]]);  // Eq. 1.1
     }
 
     beta ~ gamma(0.25,0.25);
@@ -60,11 +67,10 @@ generated quantities{
   ////////////////////////////////
   // get point-wise log likelihood
 
-  //store log likelihood of traditional data given model
-  for (j in 1:C) {
-    real lambda = (ctch == 1) ? coef[mat[j]]*alpha[R[j]] : alpha[R[j]];
-    log_lik[j] = gamma_lpdf(E_trans[j] | lambda, beta[R[j]]);
-  }
+  // get lambda
+  real lambda[C];
+  lambda = get_lambda_continuous(ctch, coef, mat, alpha, R, C);
+  log_lik = calc_loglik_trad_continuous(lambda, beta, E_trans, R, C);
 
 }
 
