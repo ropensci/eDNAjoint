@@ -2,28 +2,28 @@
 
 // calculate log likelihood of eDNA data
 vector calc_loglik_dna(
-  int S,
+  int n_S,
   int S_dna,
   int Nloc_dna,
-  int[] K,
-  int[] N,
+  int[] n_K,
+  int[] n_N,
   vector p_trad,
-  int[] L,
+  int[] L_ind,
   int[] K_dna,
   int[] N_dna,
   real[] p_dna,
   int[] L_dna){
 
-    vector[S+S_dna] log_lik;
+    vector[n_S+S_dna] log_lik;
 
-    for(i in 1:S){
-      log_lik[i] = binomial_lpmf(K[i] | N[i], p_trad[L[i]]);
+    for(i in 1:n_S){
+      log_lik[i] = binomial_lpmf(n_K[i] | n_N[i], p_trad[L_ind[i]]);
       }
 
     if(Nloc_dna > 0)
        //store log likelihood of eDNA data given model
        for(i in 1:S_dna){
-         log_lik[S+i] = binomial_lpmf(K_dna[i] | N_dna[i], p_dna[L_dna[i]]);
+         log_lik[n_S+i] = binomial_lpmf(K_dna[i] | N_dna[i], p_dna[L_dna[i]]);
          }
 
     return log_lik;
@@ -34,19 +34,19 @@ vector calc_loglik_trad_count(
   real[] lambda,
   int negbin,
   real[] phi,
-  int[] E,
-  int C){
+  int[] n_E,
+  int n_C){
 
-    vector[C] log_lik;
+    vector[n_C] log_lik;
 
     //store log likelihood of traditional data given model
     if (negbin == 1) {
-      for (j in 1:C) {
-        log_lik[j] = neg_binomial_2_lpmf(E[j] | lambda[j], phi);
+      for (j in 1:n_C) {
+        log_lik[j] = neg_binomial_2_lpmf(n_E[j] | lambda[j], phi);
       }
     } else {
-      for (j in 1:C) {
-        log_lik[j] = poisson_lpmf(E[j] | lambda[j]);
+      for (j in 1:n_C) {
+        log_lik[j] = poisson_lpmf(n_E[j] | lambda[j]);
       }
     }
     return log_lik;
@@ -57,14 +57,14 @@ vector calc_loglik_trad_continuous(
   real[] lambda,
   vector beta_gamma,
   real[] E_trans,
-  int[] R,
-  int C){
+  int[] R_ind,
+  int n_C){
 
-    vector[C] log_lik;
+    vector[n_C] log_lik;
 
     //store log likelihood of traditional data given model
-    for (j in 1:C) {
-      log_lik[j] = gamma_lpdf(E_trans[j] | lambda, beta_gamma[R[j]]);
+    for (j in 1:n_C) {
+      log_lik[j] = gamma_lpdf(E_trans[j] | lambda, beta_gamma[R_ind[j]]);
     }
 
     return log_lik;
@@ -76,16 +76,16 @@ vector calc_loglik_count(
   real[] coef,
   int[] mat,
   vector mu_trad,
-  int[] R,
+  int[] R_ind,
   int negbin,
   real[] phi,
-  int[] E,
-  int[] K,
-  int[] N,
+  int[] n_E,
+  int[] n_K,
+  int[] n_N,
   vector p_trad,
-  int[] L,
-  int C,
-  int S,
+  int[] L_ind,
+  int n_C,
+  int n_S,
   int S_dna,
   int Nloc_dna,
   int[] K_dna,
@@ -93,19 +93,19 @@ vector calc_loglik_count(
   real[] p_dna,
   int[] L_dna){
 
-    vector[C+S+S_dna] log_lik;
+    vector[n_C+n_S+S_dna] log_lik;
 
     // get lambda
-    real lambda[C];
-    lambda = get_lambda_count(ctch, coef, mat, mu_trad, R, C);
+    real lambda[n_C];
+    lambda = get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C);
 
     // traditional data
-    log_lik[1:C] = calc_loglik_trad_count(lambda, negbin, phi, E, C);
+    log_lik[1:n_C] = calc_loglik_trad_count(lambda, negbin, phi, n_E, n_C);
 
     // eDNA data
-    log_lik[C+1:C+S+S_dna] = calc_loglik_dna(S, S_dna, Nloc_dna, K, N,
-                                             p_trad, L, K_dna, N_dna,
-                                             p_dna, L_dna);
+    log_lik[n_C+1:n_C+n_S+S_dna] = calc_loglik_dna(n_S, S_dna, Nloc_dna, n_K,
+                                                   n_N, p_trad, L_ind, K_dna,
+                                                   N_dna, p_dna, L_dna);
 
     return log_lik;
 
@@ -118,14 +118,14 @@ vector calc_loglik_continuous(
   int[] mat,
   vector alpha_gamma,
   vector beta_gamma,
-  int[] R,
+  int[] R_ind,
   real[] E_trans,
-  int[] K,
-  int[] N,
+  int[] n_K,
+  int[] n_N,
   vector p_trad,
-  int[] L,
-  int C,
-  int S,
+  int[] L_ind,
+  int n_C,
+  int n_S,
   int S_dna,
   int Nloc_dna,
   int[] K_dna,
@@ -133,19 +133,20 @@ vector calc_loglik_continuous(
   real[] p_dna,
   int[] L_dna){
 
-    vector[C+S+S_dna] log_lik;
+    vector[n_C+n_S+S_dna] log_lik;
 
     // get lambda
-    real lambda[C];
-    lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R, C);
+    real lambda[n_C];
+    lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C);
 
     // traditional data
-    log_lik[1:C] = calc_loglik_trad_continuous(lambda, beta_gamma, E_trans, R, C);
+    log_lik[1:n_C] = calc_loglik_trad_continuous(lambda, beta_gamma, E_trans,
+                                                 R_ind, n_C);
 
     // eDNA data
-    log_lik[C+1:C+S+S_dna] = calc_loglik_dna(S, S_dna, Nloc_dna, K, N,
-                                             p_trad, L, K_dna, N_dna,
-                                             p_dna, L_dna);
+    log_lik[n_C+1:n_C+n_S+S_dna] = calc_loglik_dna(n_S, S_dna, Nloc_dna, n_K,
+                                                   n_N, p_trad, L_ind, K_dna,
+                                                   N_dna, p_dna, L_dna);
 
     return log_lik;
 
@@ -157,13 +158,13 @@ real[] get_lambda_count(
   real[] coef,
   int[] mat,
   vector mu_trad,
-  int[] R,
-  int C){
+  int[] R_ind,
+  int n_C){
 
-    real lambda[C];
+    real lambda[n_C];
 
-    for (j in 1:C) {
-      lambda[j] = (ctch == 1) ? coef[mat[j]] * mu_trad[R[j]] : mu_trad[R[j]];
+    for (j in 1:n_C) {
+      lambda[j] = (ctch == 1) ? coef[mat[j]] * mu_trad[R_ind[j]] : mu_trad[R_ind[j]];
     }
 
     return lambda;
@@ -175,13 +176,13 @@ real[] get_lambda_continuous(
   real[] coef,
   int[] mat,
   vector alpha_gamma,
-  int[] R,
-  int C){
+  int[] R_ind,
+  int n_C){
 
-    real lambda[C];
+    real lambda[n_C];
 
-    for (j in 1:C) {
-      lambda[j] = (ctch == 1) ? coef[mat[j]]*alpha_gamma[R[j]] : alpha_gamma[R[j]];
+    for (j in 1:n_C) {
+      lambda[j] = (ctch == 1) ? coef[mat[j]]*alpha_gamma[R_ind[j]] : alpha_gamma[R_ind[j]];
     }
 
     return lambda;
@@ -191,22 +192,22 @@ real[] get_lambda_continuous(
 vector calc_loglik_tradmod_count(
   int negbin,
   real[] phi,
-  int[] E,
-  int C,
+  int[] n_E,
+  int n_C,
   int ctch,
   real[] coef,
   int[] mat,
   vector mu_1,
-  int[] R){
+  int[] R_ind){
 
-    vector[C] log_lik;
+    vector[n_C] log_lik;
 
     //get lambda
-    real lambda[C];
-    lambda = get_lambda_count(ctch, coef, mat, mu_1, R, C);
+    real lambda[n_C];
+    lambda = get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C);
 
     //store log likelihood of traditional data given model
-    log_lik = calc_loglik_trad_count(lambda, negbin, phi, E, C);
+    log_lik = calc_loglik_trad_count(lambda, negbin, phi, n_E, n_C);
 
     return log_lik;
   }
@@ -215,21 +216,21 @@ vector calc_loglik_tradmod_count(
 vector calc_loglik_tradmod_continuous(
   vector beta,
   real[] E_trans,
-  int[] R,
-  int C,
+  int[] R_ind,
+  int n_C,
   int ctch,
   real[] coef,
   int[] mat,
   vector alpha){
 
-    vector[C] log_lik;
+    vector[n_C] log_lik;
 
     //get lambda
-    real lambda[C];
-    lambda = get_lambda_continuous(ctch, coef, mat, alpha, R, C);
+    real lambda[n_C];
+    lambda = get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C);
 
     //store log likelihood of traditional data given model
-    log_lik = calc_loglik_trad_continuous(lambda, beta, E_trans, R, C);
+    log_lik = calc_loglik_trad_continuous(lambda, beta, E_trans, R_ind, n_C);
 
     return log_lik;
   }

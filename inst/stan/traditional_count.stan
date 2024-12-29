@@ -4,12 +4,12 @@ functions {
 }
 
 data{/////////////////////////////////////////////////////////////////////
-    int<lower=1> C;    // number of trap samples
-    array[C] int<lower=1> R;   // index of locations for traditional samples
+    int<lower=1> n_C;    // number of trap samples
+    array[n_C] int<lower=1> R_ind;   // index of locations for traditional samples
     int<lower=1> Nloc;   // total number of locations
-    array[C] int<lower=0> E;   // number of animals in sample C
+    array[n_C] int<lower=0> n_E;   // number of animals in sample C
     int<lower=0> nparams;  // number of gear types
-    array[C] int<lower=1> mat;  // vector of gear type integers
+    array[n_C] int<lower=1> mat;  // vector of gear type integers
     array[2] real phipriors; // priors for gamma distrib on phi
     int<lower=0,upper=1> negbin; // binary indicator of negative binomial
     int<lower=0,upper=1> ctch; // binary indicator of presence of catchability coefficient
@@ -34,16 +34,16 @@ model{/////////////////////////////////////////////////////////////////////
 
 
     // get lambda
-    real lambda[C];
-    lambda = get_lambda_count(ctch, coef, mat, mu_1, R, C);
+    real lambda[n_C];
+    lambda = get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C);
 
     if (negbin == 1) {
-      for (j in 1:C) {
-        E[j] ~ neg_binomial_2(lambda[j], phi);  // Eq. 1.1
+      for (j in 1:n_C) {
+        n_E[j] ~ neg_binomial_2(lambda[j], phi);  // Eq. 1.1
       }
     } else {
-      for (j in 1:C) {
-        E[j] ~ poisson(lambda[j]);  // Eq. 1.1
+      for (j in 1:n_C) {
+        n_E[j] ~ poisson(lambda[j]);  // Eq. 1.1
       }
     }
 
@@ -54,7 +54,7 @@ model{/////////////////////////////////////////////////////////////////////
 
 generated quantities{
   vector[nparams] q;
-  vector[C] log_lik;
+  vector[n_C] log_lik;
   matrix[Nloc,nparams+1] mu;  // matrix of catch rates
 
   ////////////////////////////////////
@@ -67,8 +67,8 @@ generated quantities{
 
   ////////////////////////////////
   // get point-wise log likelihood
-  log_lik = calc_loglik_tradmod_count(negbin, phi, E, C, ctch,
-                                      coef, mat, mu_1, R);
+  log_lik = calc_loglik_tradmod_count(negbin, phi, n_E, n_C, ctch,
+                                      coef, mat, mu_1, R_ind);
 
 }
 

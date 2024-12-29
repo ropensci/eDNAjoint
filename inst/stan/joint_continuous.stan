@@ -6,24 +6,24 @@ functions {
 
 
 data{/////////////////////////////////////////////////////////////////////
-    int<lower=1> S;    // number of paired qPCR samples
+    int<lower=1> n_S;    // number of paired qPCR samples
     int<lower=0> S_dna;    // number of unpaired qPCR samples
-    int<lower=1> C;    // number of traditional samples
-    array[S] int<lower=1> L;   // index of locations for qPCR samples w/traditional pair
+    int<lower=1> n_C;    // number of traditional samples
+    array[n_S] int<lower=1> L_ind;   // index of locations for qPCR samples w/traditional pair
     array[S_dna] int<lower=1> L_dna;   // index of locations for unpaired qPCR samples
-    array[C] int<lower=1> R;   // index of locations for traditional samples
+    array[n_C] int<lower=1> R_ind;   // index of locations for traditional samples
     int<lower=0> Nloc_dna;   // number of locations with unpaired dna samples
     int<lower=1> Nloc_trad;   // number of locations with paired samples
     array[Nloc_trad] int<lower=0> trad_ind;   // index of traditional samples
     array[Nloc_dna] int<lower=0> dna_ind;   // index of unpaired dna samples
-    array[C] real<lower=0> E;   // number of animals in sample C
-    array[S] int<lower=1> N;   // number of qPCR replicates per site
-    array[S] int<lower=0> K; // number of qPCR detections among these replicates
+    array[n_C] real<lower=0> n_E;   // number of animals in sample C
+    array[n_S] int<lower=1> n_N;   // number of qPCR replicates per site
+    array[n_S] int<lower=0> n_K; // number of qPCR detections among these replicates
     array[S_dna] int<lower=1> N_dna;   // number of qPCR replicates per site of unpaired samples
     array[S_dna] int<lower=0> K_dna; // number of qPCR detections among these replicates of unpaired samples
     array[2] real p10priors; // priors for normal distrib on p10
     int<lower=0> nparams;  // number of gear types
-    array[C] int<lower=1> mat;  // vector of gear type integers
+    array[n_C] int<lower=1> mat;  // vector of gear type integers
     int<lower=0> nsitecov;  // number of site-level covariates
     matrix[Nloc_trad+Nloc_dna,nsitecov] mat_site;  // matrix of site-level covariates
     int<lower=0,upper=1> ctch; // binary indicator of presence of catchability coefficient
@@ -44,7 +44,7 @@ transformed parameters{/////////////////////////////////////////////////////////
   vector<lower=0, upper = 1>[Nloc_trad] p_trad;   // total detection probability
   real<lower=0> coef[(ctch == 1) ? nparams+1 :  0];
   vector<lower=0>[Nloc_trad] mu_trad;  // expected catch at each site for sites with traditional samples
-  array[C] real<lower=0> E_trans;
+  array[n_C] real<lower=0> E_trans;
 
   mu_trad = alpha_gamma ./ beta_gamma;
   p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
@@ -53,8 +53,8 @@ transformed parameters{/////////////////////////////////////////////////////////
   if(ctch == 1)
     coef = to_array_1d(append_row(1, 1+q_trans));
 
-  for(j in 1:C){
-      E_trans[j] = E[j] + 0.0000000000001;
+  for(j in 1:n_C){
+      E_trans[j] = n_E[j] + 0.0000000000001;
     }
 }
 
@@ -62,15 +62,15 @@ model{/////////////////////////////////////////////////////////////////////
 
 
     // get lambda
-    real lambda[C];
-    lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R, C);
+    real lambda[n_C];
+    lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C);
 
-    for (j in 1:C) {
-      E_trans[j] ~ gamma(lambda[j], beta_gamma[R[j]]);  // Eq. 1.1
+    for (j in 1:n_C) {
+      E_trans[j] ~ gamma(lambda[j], beta_gamma[R_ind[j]]);  // Eq. 1.1
     }
 
-    for (i in 1:S){
-      K[i] ~ binomial(N[i], p_trad[L[i]]); // Eq. 1.4
+    for (i in 1:n_S){
+      n_K[i] ~ binomial(n_N[i], p_trad[L_ind[i]]); // Eq. 1.4
     }
 
     if(Nloc_dna > 0)
@@ -89,7 +89,7 @@ model{/////////////////////////////////////////////////////////////////////
 
 generated quantities{
   vector[nparams] q;
-  vector[C+S+S_dna] log_lik;
+  vector[n_C+n_S+S_dna] log_lik;
   real p10;
   matrix[Nloc_dna+Nloc_trad,nparams+1] mu;  // matrix of catch rates
   vector[Nloc_trad] beta;
@@ -110,9 +110,10 @@ generated quantities{
   ////////////////////////////////
   // get point-wise log likelihood
 
-  log_lik = calc_loglik_continuous(ctch, coef, mat, alpha_gamma, beta_gamma, R,
-                                   E_trans, K, N, p_trad, L, C, S, S_dna,
-                                   Nloc_dna, K_dna, N_dna, p_dna, L_dna);
+  log_lik = calc_loglik_continuous(ctch, coef, mat, alpha_gamma, beta_gamma,
+                                   R_ind, E_trans, n_K, n_N, p_trad, L_ind, n_C,
+                                   n_S, S_dna, Nloc_dna, K_dna, N_dna, p_dna,
+                                   L_dna);
 
 
 }
