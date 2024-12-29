@@ -1,5 +1,6 @@
 /* functions for calculating log likelihood */
 
+// calculate log likelihood of eDNA data
 vector calc_loglik_dna(
   int S,
   int S_dna,
@@ -28,6 +29,7 @@ vector calc_loglik_dna(
     return log_lik;
   }
 
+// calculate log likelihood of traditional count data
 vector calc_loglik_trad_count(
   real[] lambda,
   int negbin,
@@ -50,6 +52,7 @@ vector calc_loglik_trad_count(
     return log_lik;
   }
 
+// calculate log likelihood of traditional continuous data
 vector calc_loglik_trad_continuous(
   real[] lambda,
   vector beta_gamma,
@@ -67,7 +70,7 @@ vector calc_loglik_trad_continuous(
     return log_lik;
   }
 
-
+// calculate log likelihood of data in joint count model
 vector calc_loglik_count(
   int ctch,
   real[] coef,
@@ -108,6 +111,7 @@ vector calc_loglik_count(
 
   }
 
+// calculate log likelihood of data in joint continuous model
 vector calc_loglik_continuous(
   int ctch,
   real[] coef,
@@ -147,6 +151,7 @@ vector calc_loglik_continuous(
 
   }
 
+// calculate lambda for count data
 real[] get_lambda_count(
   int ctch,
   real[] coef,
@@ -164,6 +169,7 @@ real[] get_lambda_count(
     return lambda;
 }
 
+// calculate lambda for continuous data
 real[] get_lambda_continuous(
   int ctch,
   real[] coef,
@@ -180,4 +186,51 @@ real[] get_lambda_continuous(
 
     return lambda;
 }
+
+// calculate log likelihood of data in traditional count model
+vector calc_loglik_tradmod_count(
+  int negbin,
+  real[] phi,
+  int[] E,
+  int C,
+  int ctch,
+  real[] coef,
+  int[] mat,
+  vector mu_1,
+  int[] R){
+
+    vector[C] log_lik;
+
+    //get lambda
+    real lambda[C];
+    lambda = get_lambda_count(ctch, coef, mat, mu_1, R, C);
+
+    //store log likelihood of traditional data given model
+    log_lik = calc_loglik_trad_count(lambda, negbin, phi, E, C);
+
+    return log_lik;
+  }
+
+// calculate log likelihood of data in traditional continuous model
+vector calc_loglik_tradmod_continuous(
+  vector beta,
+  real[] E_trans,
+  int[] R,
+  int C,
+  int ctch,
+  real[] coef,
+  int[] mat,
+  vector alpha){
+
+    vector[C] log_lik;
+
+    //get lambda
+    real lambda[C];
+    lambda = get_lambda_continuous(ctch, coef, mat, alpha, R, C);
+
+    //store log likelihood of traditional data given model
+    log_lik = calc_loglik_trad_continuous(lambda, beta, E_trans, R, C);
+
+    return log_lik;
+  }
 

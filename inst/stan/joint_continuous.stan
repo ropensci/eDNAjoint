@@ -1,5 +1,7 @@
 functions {
   #include /functions/calc_loglik.stan
+  #include /functions/calc_mu.stan
+  #include /functions/calc_p11.stan
 }
 
 
@@ -45,7 +47,7 @@ transformed parameters{/////////////////////////////////////////////////////////
   array[C] real<lower=0> E_trans;
 
   mu_trad = alpha_gamma ./ beta_gamma;
-  p11_trad = mu_trad ./ (mu_trad + exp(mat_site[trad_ind, ] * alpha)); // Eq. 1.2
+  p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
 
   if(ctch == 1)
@@ -90,30 +92,20 @@ generated quantities{
   vector[C+S+S_dna] log_lik;
   real p10;
   matrix[Nloc_dna+Nloc_trad,nparams+1] mu;  // matrix of catch rates
-  array[Nloc_dna] real<lower=0, upper = 1> p11_dna; // true-positive detection probability
   vector[Nloc_trad] beta;
 
   ////////////////////////////////////
   // transform to interpretable params
   p10 = exp(log_p10);
 
-  mu[trad_ind, 1] = mu_trad;
   if(ctch == 1)
     q = q_trans + 1;
-    mu[trad_ind, 2:(nparams + 1)] = mu_trad * q';
 
   beta = mat_site[trad_ind] * alpha;
 
-
-  if(Nloc_dna > 0)
-     for (i in 1:Nloc_dna){
-       p11_dna[i] = p_dna[i] - p10;
-       mu[dna_ind[i],1] = p11_dna[i]*exp(dot_product(mat_site[dna_ind[i]],alpha))/(1-p11_dna[i]);
-     }
-     if(ctch == 1)
-       for (i in 1:Nloc_dna){
-         mu[dna_ind[i], 2:(nparams + 1)] = mu[dna_ind[i], 1] * q';
-       }
+  mu = calc_mu(trad_ind, dna_ind, mu_trad, ctch, nparams, q,
+               Nloc_dna, Nloc_trad, p_dna, p10,
+               mat_site, alpha);
 
   ////////////////////////////////
   // get point-wise log likelihood

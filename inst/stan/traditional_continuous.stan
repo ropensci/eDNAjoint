@@ -1,5 +1,6 @@
 functions {
   #include /functions/calc_loglik.stan
+  #include /functions/calc_mu.stan
 }
 
 data{/////////////////////////////////////////////////////////////////////
@@ -54,23 +55,17 @@ generated quantities{
 
   ////////////////////////////////////
   // transform to interpretable params
-  for(j in 1:Nloc){
-    mu[j,1] = alpha[j]/beta[j];
-  }
-
   if(ctch == 1)
     q = q_trans + 1;
-    for(i in 1:nparams){
-      mu[,i+1] = to_vector(mu[,1])*q[i];
-    }
+
+  mu = calc_mu_trad_continuous(Nloc, nparams, alpha, beta, q, ctch);
 
   ////////////////////////////////
   // get point-wise log likelihood
 
   // get lambda
-  real lambda[C];
-  lambda = get_lambda_continuous(ctch, coef, mat, alpha, R, C);
-  log_lik = calc_loglik_trad_continuous(lambda, beta, E_trans, R, C);
+  log_lik = calc_loglik_tradmod_continuous(beta, E_trans, R, C,
+                                           ctch, coef, mat, alpha);
 
 }
 
