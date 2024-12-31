@@ -124,8 +124,7 @@ detectionPlot <- function(modelfit, mu.min, mu.max, cov.val = NULL,
   out <- detectionCalculate(modelfit, mu, cov.val, probability, qPCR.N)
 
   # convert to long df
-  '%>%' <- magrittr::`%>%`
-  out_long <- as.data.frame(out) %>%
+  out_long <- as.data.frame(out) |>
     tidyr::pivot_longer(cols =! mu, names_to = 'survey_type')
 
   # get full names

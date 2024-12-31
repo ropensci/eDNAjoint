@@ -176,32 +176,32 @@ test_that("traditionalModel input checks work", {
                                 n.chain = 0, multicore = FALSE),
                paste0("n.chain should be an integer > 0 and of length 1."))
 
-  #19. check length and range of n.iter.sample
+  #19. check length and range of n.iter
   expect_error(traditionalModel(data = list(count = rbind(c(4,1,1),c(1,1,NA)),
                                             count.type = rbind(c(1,2,1),
                                                                c(1,1,NA))),
-                                n.iter.sample = c(1,1), multicore = FALSE),
-               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+                                n.iter = c(1,1), multicore = FALSE),
+               paste0("n.iter should be an integer > 0 and of length 1.")
                )
   expect_error(traditionalModel(data = list(count = rbind(c(4,1,1),c(1,1,NA)),
                                             count.type = rbind(c(1,2,1),
                                                                c(1,1,NA))),
-                                n.iter.sample = 0, multicore = FALSE),
-               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+                                n.iter = 0, multicore = FALSE),
+               paste0("n.iter should be an integer > 0 and of length 1.")
                )
 
-  #20. check length and range of n.iter.burn
+  #20. check length and range of n.warmup
   expect_error(traditionalModel(data = list(count = rbind(c(4,1,1),c(1,1,NA)),
                                             count.type = rbind(c(1,2,1),
                                                                c(1,1,NA))),
-                                n.iter.burn = c(1,1), multicore = FALSE),
-               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+                                n.warmup = c(1,1), multicore = FALSE),
+               paste0("n.warmup should be an integer > 0 and of length 1.")
   )
   expect_error(traditionalModel(data = list(count = rbind(c(4,1,1),c(1,1,NA)),
                                             count.type = rbind(c(1,2,1),
                                                                c(1,1,NA))),
-                                n.iter.burn = 0, multicore = FALSE),
-               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+                                n.warmup = 0, multicore = FALSE),
+               paste0("n.warmup should be an integer > 0 and of length 1.")
   )
 
   #21. check length and range of thin

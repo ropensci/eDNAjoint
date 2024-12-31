@@ -54,9 +54,10 @@
 #' @srrstats {BS1.3} Description of parameters used in the computational
 #'   process begins here
 #' @param n.chain Number of MCMC chains. Default value is 4.
-#' @param n.iter.burn Number of warm-up MCMC iterations. Default value is 500.
-#' @param n.iter.sample Number of sampling MCMC iterations. Default value is
-#'   2500.
+#' @param n.warmup A positive integer specifying the number of warm-up MCMC
+#'   iterations. Default value is 500.
+#' @param n.iter A positive integer specifying the number of iterations for each
+#'   chain (including warmup). Default value is 3000.
 #' @param thin A positive integer specifying the period for saving samples.
 #'   Default value is 1.
 #' @param adapt_delta Numeric value between 0 and 1 indicating target average
@@ -120,7 +121,7 @@
 #' fit.q <- traditionalModel(data = greencrabData, family = "negbin", q = TRUE,
 #'                           phipriors = c(0.25,0.25), multicore = FALSE,
 #'                           initial_values = NULL, n.chain = 4,
-#'                           n.iter.burn = 500, n.iter.sample = 2500, thin = 1,
+#'                           n.warmup = 500, n.iter = 3000, thin = 1,
 #'                           adapt_delta = 0.9, verbose = TRUE, seed = 123)
 #' }
 #'
@@ -128,8 +129,8 @@
 traditionalModel <- function(data, family = 'poisson',
                              q = FALSE, phipriors = NULL,
                              multicore = FALSE, initial_values = NULL,
-                             n.chain = 4, n.iter.burn = 500,
-                             n.iter.sample = 2500, thin = 1,
+                             n.chain = 4, n.warmup = 500,
+                             n.iter = 3000, thin = 1,
                              adapt_delta = 0.9, verbose = TRUE, seed = NULL) {
 
 
@@ -150,7 +151,7 @@ traditionalModel <- function(data, family = 'poisson',
   #' @srrstats {G2.1} Types of inputs are checked/asserted using this helper
   #'   function
   traditionalModel_input_checks(data, family, q, phipriors, n.chain,
-                                n.iter.burn, n.iter.sample,
+                                n.warmup, n.iter,
                                 thin, adapt_delta, seed)
 
   # initial value checks
@@ -163,15 +164,12 @@ traditionalModel <- function(data, family = 'poisson',
   }
 
   ###
-  #convert data to long format
-  '%>%' <- magrittr::`%>%`
-
   #convert count data to long format
   #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular
   #'   form (i.e., matrix, etc.)
-  count_all <- as.data.frame(data$count) %>%
-    dplyr::mutate(L_ind = 1:dim(data$count)[1]) %>%
-    tidyr::pivot_longer(cols=!L_ind,values_to = 'count') %>%
+  count_all <- as.data.frame(data$count) |>
+    dplyr::mutate(L_ind = 1:dim(data$count)[1]) |>
+    tidyr::pivot_longer(cols=!L_ind,values_to = 'count') |>
     #' @srrstats {G2.15} Software does not assume non-missingness and actually
     #'   expects it if the number of observations across sites is unequal
     tidyr::drop_na()
@@ -181,9 +179,9 @@ traditionalModel <- function(data, family = 'poisson',
     q_ref <- 1
     #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular
     #'   form (i.e., matrix, etc.)
-    count.type_df <- as.data.frame(data$count.type) %>%
-      dplyr::mutate(L_ind = 1:dim(data$count.type)[1]) %>%
-      tidyr::pivot_longer(cols=!L_ind,values_to = 'count.type') %>%
+    count.type_df <- as.data.frame(data$count.type) |>
+      dplyr::mutate(L_ind = 1:dim(data$count.type)[1]) |>
+      tidyr::pivot_longer(cols=!L_ind,values_to = 'count.type') |>
       #' @srrstats {G2.15} Software does not assume non-missingness and
       #'   actually expects it if the number of observations across sites is
       #'   unequal
@@ -244,6 +242,12 @@ traditionalModel <- function(data, family = 'poisson',
       phipriors = c(1,1),
       negbin = 0
     )
+  } else if(family == 'gamma'){
+    model_data <- rlist::list.append(
+      model_data,
+      betapriors = c(0.25,0.25),
+      alphapriors = c(0.01,0.01)
+    )
   }
 
   # get stan model
@@ -273,10 +277,8 @@ traditionalModel <- function(data, family = 'poisson',
     #'   integers for sampling arguments
     chains = as.integer(n.chain),
     thin = as.integer(thin),
-    warmup = as.integer(n.iter.burn),
-    iter = (
-      as.integer(n.iter.burn) + as.integer(n.iter.sample)
-    ),
+    warmup = as.integer(n.warmup),
+    iter = as.integer(n.iter),
     init = inits,
     refresh = ifelse(verbose == TRUE,500,0)
   )

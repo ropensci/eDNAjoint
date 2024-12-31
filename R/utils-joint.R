@@ -380,7 +380,7 @@ no_catchability_checks <- function(data,cov){
 #' @noRd
 # input checks for all variations
 all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
-                       n.iter.burn, n.iter.sample, thin, adapt_delta, seed){
+                       n.warmup, n.iter, thin, adapt_delta, seed){
 
 
   ## make sure count, qPCR.N, and qPCR.K are not zero-length
@@ -584,15 +584,15 @@ all_checks <- function(data, cov, family, p10priors, phipriors, n.chain,
     stop(errMsg)
   }
 
-  ## check length and range of n.iter.sample
-  if(any(length(as.integer(n.iter.sample)) > 1 | n.iter.sample < 1)){
-    errMsg <- "n.iter.sample should be an integer > 0 and of length 1."
+  ## check length and range of n.iter
+  if(any(length(as.integer(n.iter)) > 1 | n.iter < 1)){
+    errMsg <- "n.iter should be an integer > 0 and of length 1."
     stop(errMsg)
   }
 
-  ## check length and range of n.iter.burn
-  if(any(length(as.integer(n.iter.burn)) > 1 | n.iter.burn < 1)){
-    errMsg <- "n.iter.burn should be an integer > 0 and of length 1."
+  ## check length and range of n.warmup
+  if(any(length(as.integer(n.warmup)) > 1 | n.warmup < 1)){
+    errMsg <- "n.warmup should be an integer > 0 and of length 1."
     stop(errMsg)
   }
 

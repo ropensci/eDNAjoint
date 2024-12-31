@@ -21,6 +21,7 @@ data{/////////////////////////////////////////////////////////////////////
     array[S_dna] int<lower=1> N_dna;   // number of qPCR replicates per site of unpaired samples
     array[S_dna] int<lower=0> K_dna; // number of qPCR detections among these replicates of unpaired samples
     array[2] real p10priors; // priors for normal distrib on p10
+    array[2] real alphapriors; // priors for site covariate shrinkage params
     int<lower=0> nparams;  // number of gear types
     array[n_C] int<lower=1> mat;  // vector of gear type integers
     int<lower=0> nsitecov;  // number of site-level covariates
@@ -82,7 +83,7 @@ model{/////////////////////////////////////////////////////////////////////
 
   //priors
   log_p10 ~ normal(p10priors[1], p10priors[2]); // p10 prior
-  alpha ~ normal(0,10); // sitecov shrinkage priors
+  alpha ~ normal(alphapriors[1], alphapriors[2]); // sitecov shrinkage priors
   if(negbin == 1)
     phi ~ gamma(phipriors[1], phipriors[2]); // phi prior
 

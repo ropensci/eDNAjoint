@@ -8,13 +8,14 @@ test_that("jointSelect input checks work", {
 
   model1 <- suppressWarnings({traditionalModel(data = greencrabData,
                                                family = 'negbin',
-                             multicore = FALSE, n.chain = 1,n.iter.burn = 25,
-                             n.iter.sample = 75)})
+                                               multicore = FALSE, n.chain = 1,
+                                               n.warmup = 25,
+                                               n.iter = 100)})
   model2 <- suppressWarnings({jointModel(data = greencrabData,
                                          family = 'negbin',
-                                         multicore = FALSE,n.chain = 1,
-                                         n.iter.burn = 25,
-                                         n.iter.sample = 75)})
+                                         multicore = FALSE, n.chain = 1,
+                                         n.warmup = 25,
+                                         n.iter = 100)})
 
 
   # 1. Check that model inputs are a list
@@ -37,10 +38,10 @@ test_that("jointSelect output check", {
   # fit models
   fit.q1 <- jointModel(data = greencrabData, family = "negbin",
                        p10priors = c(1,20), q = TRUE, multicore = FALSE,
-                       n.chain = 1, n.iter.sample = 1000)
+                       n.chain = 1, n.iter = 1000)
   fit.q2 <- jointModel(data = greencrabData, family = "negbin",
                         p10priors = c(1,50), q = TRUE, multicore = FALSE,
-                        n.chain = 1, n.iter.sample = 1000)
+                        n.chain = 1, n.iter = 1000)
 
   # run select
   select <- jointSelect(modelfits = list(fit.q1$model, fit.q2$model))

@@ -740,36 +740,36 @@ test_that("jointModel input checks work", {
                           n.chain = 0,multicore = FALSE),
                paste0("n.chain should be an integer > 0 and of length 1."))
 
-  #48. check length and range of n.iter.sample
+  #48. check length and range of n.iter
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA)),
                                       count.type = rbind(c(1,2,1),c(1,1,NA))),
-                          n.iter.sample = c(1,1),multicore = FALSE),
-               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+                          n.iter = c(1,1), multicore = FALSE),
+               paste0("n.iter should be an integer > 0 and of length 1.")
                )
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA)),
                                       count.type = rbind(c(1,2,1),c(1,1,NA))),
-                          n.iter.sample = 0,multicore = FALSE),
-               paste0("n.iter.sample should be an integer > 0 and of length 1.")
+                          n.iter = 0,multicore = FALSE),
+               paste0("n.iter should be an integer > 0 and of length 1.")
                )
 
-  #49. check length and range of n.iter.burn
+  #49. check length and range of n.warmup
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA)),
                                       count.type = rbind(c(1,2,1),c(1,1,NA))),
-                          n.iter.burn = c(1,1),multicore = FALSE),
-               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+                          n.warmup = c(1,1), multicore = FALSE),
+               paste0("n.warmup should be an integer > 0 and of length 1.")
   )
   expect_error(jointModel(data = list(qPCR.K = rbind(c(1,1,1),c(1,1,NA)),
                                       qPCR.N = rbind(c(3,3,3),c(3,3,NA)),
                                       count = rbind(c(4,1,1),c(1,1,NA)),
                                       count.type = rbind(c(1,2,1),c(1,1,NA))),
-                          n.iter.burn = 0,multicore = FALSE),
-               paste0("n.iter.burn should be an integer > 0 and of length 1.")
+                          n.warmup = 0, multicore = FALSE),
+               paste0("n.warmup should be an integer > 0 and of length 1.")
   )
 
   #50. check length and range of thin
@@ -1287,8 +1287,8 @@ test_that("semi-paired model works", {
 
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'negbin',
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75,
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100,
                                       n.chain = 1, multicore = FALSE, seed = 10
   )})
 
@@ -1373,8 +1373,8 @@ test_that("semi-paired model works", {
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE,
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1459,8 +1459,8 @@ test_that("semi-paired model works", {
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1531,8 +1531,8 @@ test_that("semi-paired model works", {
   fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
                                       initial_values = inits,
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1602,8 +1602,8 @@ test_that("semi-paired model works", {
   # run model
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1677,8 +1677,8 @@ test_that("semi-paired model works", {
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       family = 'gamma',
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1774,8 +1774,8 @@ test_that("semi-paired model works", {
                                       cov = c('var_a','var_b'),
                                       n.chain = 1, multicore = FALSE, seed = 10,
                                       initial_values = inits, adapt_delta = 0.99,
-                                      n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1867,8 +1867,8 @@ test_that("semi-paired model works", {
   fit <- suppressWarnings({jointModel(data = data, q = TRUE,
                                       cov = c('var_a','var_b'),
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1965,8 +1965,8 @@ test_that("semi-paired model works", {
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
                                       cov = c('var_a','var_b'),
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100
   )})
 
   # get output params
@@ -2047,8 +2047,8 @@ test_that("semi-paired model works", {
                          'phi')
   # run model
   fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
-                                      cov = c('var_a','var_b'),n.iter.burn = 25,
-                                      n.iter.sample = 75,
+                                      cov = c('var_a','var_b'), n.warmup = 25,
+                                      n.iter = 100,
                                       n.chain = 1, multicore = FALSE, seed = 10,
                                       initial_values = inits)})
 
@@ -2130,8 +2130,8 @@ test_that("semi-paired model works", {
   fit <- suppressWarnings({jointModel(data = data,
                                       cov = c('var_a','var_b'),
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -2216,8 +2216,8 @@ test_that("semi-paired model works", {
   fit <- suppressWarnings({jointModel(data = data,family = 'gamma',
                                       cov = c('var_a','var_b'),
                                       n.chain = 1, multicore = FALSE, seed = 10,
-                                      initial_values = inits, n.iter.burn = 25,
-                                      n.iter.sample = 75)})
+                                      initial_values = inits, n.warmup = 25,
+                                      n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))

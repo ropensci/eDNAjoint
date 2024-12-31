@@ -5,14 +5,14 @@ test_that("detectionPlot input checks work", {
   # run joint model to do tests with
   model1 <- suppressWarnings({jointModel(data = gobyData,
                                          cov = c('Filter_time','Salinity'),
-                                         n.chain = 1,n.iter.burn = 25,
-                                         n.iter.sample = 75,
+                                         n.chain = 1,n.warmup = 25,
+                                         n.iter = 100,
                                          multicore = FALSE)})
 
   model2 <- suppressWarnings({jointModel(data = greencrabData,
                                          family = 'negbin',
-                                         n.chain = 1,n.iter.burn = 25,
-                                         n.iter.sample = 75,multicore = FALSE)})
+                                         n.chain = 1,n.warmup = 25,
+                                         n.iter = 100,multicore = FALSE)})
 
   #1. make sure model fit is of class stanfit
   expect_error(detectionPlot(as.matrix(model1$model), mu.min = 0.1,

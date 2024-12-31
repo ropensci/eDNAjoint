@@ -8,7 +8,7 @@ test_that("jointSummarize input checks work", {
 
   out <- traditionalModel(data = greencrabData, family = 'negbin',
                           multicore = FALSE,
-                          n.chain = 1, n.iter.sample = 1000)
+                          n.chain = 1, n.iter = 1000)
 
   #1. make sure model fit is of class stanfit
   data <- data.frame(y = c(1,2,3),x = c(1,2,3))
@@ -103,8 +103,8 @@ test_that("jointSummarize outputs work", {
 
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'negbin',
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75,
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100,
                     n.chain = 1, multicore = FALSE, seed = 10
                     )})
 
@@ -210,8 +210,8 @@ test_that("jointSummarize outputs work", {
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE,
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -317,8 +317,8 @@ test_that("jointSummarize outputs work", {
   # run model
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -380,8 +380,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
                                       initial_values = inits,
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -471,8 +471,8 @@ test_that("jointSummarize outputs work", {
   # run model
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -566,8 +566,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data = data, initial_values = inits,
                                       family = 'gamma',
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -653,8 +653,8 @@ test_that("jointSummarize outputs work", {
                     cov = c('var_a','var_b'),
                     n.chain = 1, multicore = FALSE, seed = 10,
                     initial_values = inits, adapt_delta = 0.99,
-                    n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -769,8 +769,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data = data, q = TRUE,
                     cov = c('var_a','var_b'),
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -889,8 +889,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data = data, q = TRUE, family = 'gamma',
                     cov = c('var_a','var_b'),
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100
                     )})
 
   # get output params
@@ -963,8 +963,8 @@ test_that("jointSummarize outputs work", {
                          'phi')
   # run model
   fit <- suppressWarnings({jointModel(data = data, family = 'negbin',
-                    cov = c('var_a','var_b'),n.iter.burn = 25,
-                    n.iter.sample = 75,
+                    cov = c('var_a','var_b'),n.warmup = 25,
+                    n.iter = 100,
                     n.chain = 1, multicore = FALSE, seed = 10,
                     initial_values = inits)})
 
@@ -1068,8 +1068,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data = data,
                     cov = c('var_a','var_b'),
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1174,8 +1174,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({jointModel(data = data,family = 'gamma',
                     cov = c('var_a','var_b'),
                     n.chain = 1, multicore = FALSE, seed = 10,
-                    initial_values = inits, n.iter.burn = 25,
-                    n.iter.sample = 75)})
+                    initial_values = inits, n.warmup = 25,
+                    n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1256,8 +1256,8 @@ test_that("jointSummarize outputs work", {
                                             n.chain = 1, multicore = FALSE,
                                             seed = 10,
                                             initial_values = inits,
-                                            n.iter.burn = 25,
-                                            n.iter.sample = 75)})
+                                            n.warmup = 25,
+                                            n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1335,8 +1335,8 @@ test_that("jointSummarize outputs work", {
   # run model
   fit <- suppressWarnings({traditionalModel(data = data, q = TRUE,
                           n.chain = 1, multicore = FALSE, seed = 10,
-                          initial_values = inits, n.iter.burn = 25,
-                          n.iter.sample = 75)})
+                          initial_values = inits, n.warmup = 25,
+                          n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1408,8 +1408,8 @@ test_that("jointSummarize outputs work", {
                                             n.chain = 1, multicore = FALSE,
                                             seed = 10,
                                             initial_values = inits,
-                                            n.iter.burn = 25,
-                                            n.iter.sample = 75)})
+                                            n.warmup = 25,
+                                            n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1478,8 +1478,8 @@ test_that("jointSummarize outputs work", {
                                             n.chain = 1, multicore = FALSE,
                                             seed = 10,
                                             initial_values = inits,
-                                            n.iter.burn = 25,
-                                            n.iter.sample = 75)})
+                                            n.warmup = 25,
+                                            n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1546,8 +1546,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({traditionalModel(data = data,n.chain = 1,
                                             multicore = FALSE, seed = 10,
                                             initial_values = inits,
-                                            n.iter.burn = 25,
-                                            n.iter.sample = 75)})
+                                            n.warmup = 25,
+                                            n.iter = 100)})
 
   # get output params
   output_params <- rownames(as.data.frame(jointSummarize(fit$model)))
@@ -1615,8 +1615,8 @@ test_that("jointSummarize outputs work", {
   fit <- suppressWarnings({traditionalModel(data = data, n.chain = 1,
                                             family = 'gamma',
                                             multicore = FALSE, seed = 10,
-                                            n.iter.burn = 25,
-                                            n.iter.sample = 75,
+                                            n.warmup = 25,
+                                            n.iter = 100,
                                             initial_values = inits)})
 
   # get output params

@@ -11,6 +11,9 @@ data{/////////////////////////////////////////////////////////////////////
     int<lower=0> nparams;  // number of gear types
     array[n_C] int<lower=1> mat;  // vector of gear type integers
     int<lower=0,upper=1> ctch; // binary indicator of presence of catchability coefficient
+    array[2] real betapriors; // priors for beta param in expected catch rate
+    array[2] real alphapriors; // priors for alpha param in expected catch rate
+
 
 }
 
@@ -43,8 +46,8 @@ model{/////////////////////////////////////////////////////////////////////
       E_trans[j] ~ gamma(lambda[j], beta[R_ind[j]]);  // Eq. 1.1
     }
 
-    beta ~ gamma(0.25,0.25);
-    alpha ~ gamma(0.01,0.01);
+    alpha ~ gamma(alphapriors[1], alphapriors[2]);
+    beta ~ gamma(betapriors[1], betapriors[2]);
 
 }
 
