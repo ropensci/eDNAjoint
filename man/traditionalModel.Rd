@@ -12,8 +12,8 @@ traditionalModel(
   multicore = FALSE,
   initial_values = NULL,
   n.chain = 4,
-  n.iter.burn = 500,
-  n.iter.sample = 2500,
+  n.warmup = 500,
+  n.iter = 3000,
   thin = 1,
   adapt_delta = 0.9,
   verbose = TRUE,
@@ -59,10 +59,11 @@ default random values are drawn.}
 
 \item{n.chain}{Number of MCMC chains. Default value is 4.}
 
-\item{n.iter.burn}{Number of warm-up MCMC iterations. Default value is 500.}
+\item{n.warmup}{A positive integer specifying the number of warm-up MCMC
+iterations. Default value is 500.}
 
-\item{n.iter.sample}{Number of sampling MCMC iterations. Default value is
-2500.}
+\item{n.iter}{A positive integer specifying the number of iterations for each
+chain (including warmup). Default value is 3000.}
 
 \item{thin}{A positive integer specifying the period for saving samples.
 Default value is 1.}
@@ -93,7 +94,7 @@ gear types relative to the expected catch rate of a reference gear type.
 Model is implemented using Bayesian inference using the \code{rstan} package,
 which uses Hamiltonian Monte Carlo to simulate the posterior distributions.
 See more examples in the
-\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+\href{https://ednajoint.netlify.app}{Package
 Vignette}.
 }
 \note{
@@ -142,7 +143,7 @@ fit.no.q <- traditionalModel(data = greencrabData, family = "poisson",
 fit.q <- traditionalModel(data = greencrabData, family = "negbin", q = TRUE,
                           phipriors = c(0.25,0.25), multicore = FALSE,
                           initial_values = NULL, n.chain = 4,
-                          n.iter.burn = 500, n.iter.sample = 2500, thin = 1,
+                          n.warmup = 500, n.iter = 3000, thin = 1,
                           adapt_delta = 0.9, verbose = TRUE, seed = 123)
 }
 

@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_joint_binary_cov_negbin.h"
+#include "stanExports_joint_count.h"
 
-RCPP_MODULE(stan_fit4joint_binary_cov_negbin_mod) {
+RCPP_MODULE(stan_fit4joint_count_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_joint_binary_cov_negbin")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_joint_count")
 
     .constructor<SEXP,SEXP,SEXP>()
 

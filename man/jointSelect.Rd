@@ -18,7 +18,7 @@ This function performs leave one out cross validation of a list of model
 fits using functions in the \code{loo} package, as described in Vehtari, Gelman,
 and Gabry (2017) \url{doi:10.1007/s11222-016-9696-4}. Compare models fit using
 \code{jointModel()} or models fits using \code{traditionalModel()}. See more examples
-in the \href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+in the \href{https://ednajoint.netlify.app}{Package
 Vignette}.
 }
 \note{

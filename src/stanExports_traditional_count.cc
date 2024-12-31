@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_traditional_catchability_gamma.h"
+#include "stanExports_traditional_count.h"
 
-RCPP_MODULE(stan_fit4traditional_catchability_gamma_mod) {
+RCPP_MODULE(stan_fit4traditional_count_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_traditional_catchability_gamma")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_traditional_count")
 
     .constructor<SEXP,SEXP,SEXP>()
 

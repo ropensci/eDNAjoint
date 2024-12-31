@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_joint_binary_cov_catchability_gamma.h"
+#include "stanExports_traditional_continuous.h"
 
-RCPP_MODULE(stan_fit4joint_binary_cov_catchability_gamma_mod) {
+RCPP_MODULE(stan_fit4traditional_continuous_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_joint_binary_cov_catchability_gamma")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_traditional_continuous")
 
     .constructor<SEXP,SEXP,SEXP>()
 

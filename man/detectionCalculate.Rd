@@ -33,7 +33,7 @@ detect species presence using median estimated parameter values from
 jointModel(). Detecting species presence is defined
 as producing at least one true positive eDNA detection or catching at least
 one individual. See more examples in the
-\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+\href{https://ednajoint.netlify.app/}{Package
 Vignette}.
 }
 \note{

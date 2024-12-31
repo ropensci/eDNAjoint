@@ -25,7 +25,7 @@ This function summarizes the posterior distributions of specified parameters
 from a model fit. Summary includes mean, sd, and specified quantiles, as
 well as effective sample size (n_eff) and Rhat for estimated parameters. See
 more examples in the
-\href{https://bookdown.org/abigailkeller/eDNAjoint_vignette/}{Package
+\href{https://ednajoint.netlify.app}{Package
 Vignette}.
 }
 \note{
