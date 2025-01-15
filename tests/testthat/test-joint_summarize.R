@@ -1420,9 +1420,24 @@ test_that("joint_summarize outputs work - gamma, q", {
   q <- 2
   beta_gamma <- 1
   alpha_gamma <- mu * beta_gamma
+
   # traditional type
   count_type <- cbind(matrix(1, nrow = nsite, ncol = nobs_count / 2),
                       matrix(2, nrow = nsite, ncol = nobs_count / 2))
+
+  # count
+  count <- matrix(NA, nrow = nsite, ncol = nobs_count)
+  for (i in 1:nsite) {
+    for (j in 1:nobs_count) {
+      if (count_type[i, j] == 1) {
+        count[i, j] <- rgamma(1, shape = alpha_gamma[i],
+                              rate = beta_gamma)
+      } else {
+        count[i, j] <- rgamma(1, shape = alpha_gamma[i] * q,
+                              rate = beta_gamma)
+      }
+    }
+  }
 
   # collect data
   data <- list(
