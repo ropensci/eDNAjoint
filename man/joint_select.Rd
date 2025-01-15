@@ -41,7 +41,7 @@ data(green_crab_data)
 # catchability.
 # Count data is modeled using a poisson distribution.
 fit_no_q <- joint_model(data = green_crab_data, family = "poisson",
-                        p10priors = c(1,20), q = FALSE, multicore = FALSE)
+                        p10_priors = c(1,20), q = FALSE, multicore = FALSE)
 
 
 # Fit a model estimating a gear scaling coefficient for traditional
@@ -51,7 +51,7 @@ fit_no_q <- joint_model(data = green_crab_data, family = "poisson",
 # Gear type 1 is used as the reference gear type.
 # Count data is modeled using a negative binomial distribution.
 fit_q <- joint_model(data = green_crab_data, family = "negbin",
-                     p10priors = c(1,20), q = TRUE, multicore = FALSE)
+                     p10_priors = c(1,20), q = TRUE, multicore = FALSE)
 
 # Perform model selection
 joint_select(model_fits = list(fit_no_q$model, fit_q$model))

@@ -75,7 +75,7 @@ data(goby_data)
 
 # Fit a model including 'Filter_time' and 'Salinity' site-level covariates
 fit_cov <- joint_model(data = goby_data, cov = c('Filter_time','Salinity'),
-                       family = "poisson", p10priors = c(1,20), q = FALSE,
+                       family = "poisson", p10_priors = c(1,20), q = FALSE,
                        multicore = FALSE)
 
 # Plot at the mean covariate values (covariates are standardized, so mean=0)
@@ -94,7 +94,7 @@ data(green_crab_data)
 
 # Fit a model with no site-level covariates
 fit_q <- joint_model(data = green_crab_data, cov = NULL, family = "negbin",
-                     p10priors = c(1,20), q = TRUE,
+                     p10_priors = c(1,20), q = TRUE,
                      multicore = FALSE)
 
 # Calculate
