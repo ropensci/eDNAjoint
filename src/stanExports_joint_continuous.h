@@ -27,231 +27,243 @@ namespace model_joint_continuous_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 224> locations_array__ =
+static constexpr std::array<const char*, 236> locations_array__ =
   {" (found before start of program)",
-  " (in 'joint_continuous', line 368, column 4 to column 26)",
-  " (in 'joint_continuous', line 369, column 4 to column 51)",
-  " (in 'joint_continuous', line 370, column 4 to column 44)",
-  " (in 'joint_continuous', line 371, column 4 to column 27)",
-  " (in 'joint_continuous', line 372, column 4 to column 43)",
-  " (in 'joint_continuous', line 373, column 4 to column 45)",
-  " (in 'joint_continuous', line 376, column 2 to column 49)",
-  " (in 'joint_continuous', line 377, column 2 to column 47)",
-  " (in 'joint_continuous', line 378, column 2 to column 51)",
-  " (in 'joint_continuous', line 379, column 2 to column 37)",
-  " (in 'joint_continuous', line 380, column 2 to column 35)",
-  " (in 'joint_continuous', line 411, column 2 to column 20)",
-  " (in 'joint_continuous', line 412, column 2 to column 32)",
-  " (in 'joint_continuous', line 413, column 2 to column 11)",
-  " (in 'joint_continuous', line 414, column 2 to column 42)",
+  " (in 'joint_continuous', line 409, column 2 to column 24)",
+  " (in 'joint_continuous', line 411, column 2 to column 49)",
+  " (in 'joint_continuous', line 413, column 2 to column 42)",
   " (in 'joint_continuous', line 415, column 2 to column 25)",
-  " (in 'joint_continuous', line 381, column 2 to column 38)",
-  " (in 'joint_continuous', line 382, column 2 to column 69)",
-  " (in 'joint_continuous', line 383, column 2 to column 35)",
-  " (in 'joint_continuous', line 385, column 4 to column 49)",
-  " (in 'joint_continuous', line 384, column 2 to line 385, column 49)",
-  " (in 'joint_continuous', line 387, column 6 to column 44)",
-  " (in 'joint_continuous', line 386, column 17 to line 388, column 5)",
-  " (in 'joint_continuous', line 386, column 2 to line 388, column 5)",
-  " (in 'joint_continuous', line 418, column 2 to column 21)",
-  " (in 'joint_continuous', line 420, column 4 to column 20)",
-  " (in 'joint_continuous', line 419, column 2 to line 420, column 20)",
-  " (in 'joint_continuous', line 421, column 2 to column 36)",
-  " (in 'joint_continuous', line 422, column 2 to line 424, column 32)",
-  " (in 'joint_continuous', line 427, column 2 to line 430, column 42)",
-  " (in 'joint_continuous', line 392, column 16 to column 19)",
-  " (in 'joint_continuous', line 392, column 4 to column 21)",
-  " (in 'joint_continuous', line 393, column 4 to column 77)",
-  " (in 'joint_continuous', line 395, column 6 to column 58)",
-  " (in 'joint_continuous', line 394, column 21 to line 396, column 5)",
-  " (in 'joint_continuous', line 394, column 4 to line 396, column 5)",
-  " (in 'joint_continuous', line 398, column 6 to column 50)",
-  " (in 'joint_continuous', line 397, column 20 to line 399, column 5)",
-  " (in 'joint_continuous', line 397, column 4 to line 399, column 5)",
-  " (in 'joint_continuous', line 402, column 9 to column 56)",
-  " (in 'joint_continuous', line 401, column 25 to line 403, column 8)",
-  " (in 'joint_continuous', line 401, column 7 to line 403, column 8)",
-  " (in 'joint_continuous', line 400, column 4 to line 403, column 8)",
-  " (in 'joint_continuous', line 405, column 2 to column 47)",
-  " (in 'joint_continuous', line 406, column 2 to column 49)",
-  " (in 'joint_continuous', line 407, column 2 to column 55)",
-  " (in 'joint_continuous', line 408, column 2 to column 56)",
-  " (in 'joint_continuous', line 342, column 4 to column 21)",
-  " (in 'joint_continuous', line 343, column 4 to column 23)",
-  " (in 'joint_continuous', line 344, column 4 to column 21)",
-  " (in 'joint_continuous', line 345, column 10 to column 13)",
-  " (in 'joint_continuous', line 345, column 4 to column 34)",
-  " (in 'joint_continuous', line 346, column 10 to column 15)",
-  " (in 'joint_continuous', line 346, column 4 to column 36)",
-  " (in 'joint_continuous', line 347, column 10 to column 13)",
-  " (in 'joint_continuous', line 347, column 4 to column 34)",
-  " (in 'joint_continuous', line 348, column 4 to column 26)",
-  " (in 'joint_continuous', line 349, column 4 to column 27)",
-  " (in 'joint_continuous', line 350, column 10 to column 19)",
-  " (in 'joint_continuous', line 350, column 4 to column 43)",
-  " (in 'joint_continuous', line 351, column 10 to column 18)",
-  " (in 'joint_continuous', line 351, column 4 to column 41)",
-  " (in 'joint_continuous', line 352, column 10 to column 13)",
-  " (in 'joint_continuous', line 352, column 4 to column 33)",
-  " (in 'joint_continuous', line 353, column 10 to column 13)",
-  " (in 'joint_continuous', line 353, column 4 to column 32)",
-  " (in 'joint_continuous', line 354, column 10 to column 13)",
-  " (in 'joint_continuous', line 354, column 4 to column 32)",
-  " (in 'joint_continuous', line 355, column 10 to column 15)",
-  " (in 'joint_continuous', line 355, column 4 to column 36)",
-  " (in 'joint_continuous', line 356, column 10 to column 15)",
-  " (in 'joint_continuous', line 356, column 4 to column 36)",
-  " (in 'joint_continuous', line 357, column 4 to column 28)",
-  " (in 'joint_continuous', line 358, column 4 to column 30)",
-  " (in 'joint_continuous', line 359, column 4 to column 31)",
-  " (in 'joint_continuous', line 360, column 4 to column 31)",
-  " (in 'joint_continuous', line 361, column 4 to column 25)",
-  " (in 'joint_continuous', line 362, column 10 to column 13)",
-  " (in 'joint_continuous', line 362, column 4 to column 32)",
-  " (in 'joint_continuous', line 363, column 4 to column 26)",
-  " (in 'joint_continuous', line 364, column 11 to column 29)",
-  " (in 'joint_continuous', line 364, column 30 to column 38)",
-  " (in 'joint_continuous', line 364, column 4 to column 49)",
-  " (in 'joint_continuous', line 365, column 4 to column 30)",
-  " (in 'joint_continuous', line 369, column 10 to column 18)",
-  " (in 'joint_continuous', line 370, column 27 to column 34)",
-  " (in 'joint_continuous', line 371, column 11 to column 19)",
-  " (in 'joint_continuous', line 372, column 20 to column 29)",
-  " (in 'joint_continuous', line 373, column 23 to column 32)",
-  " (in 'joint_continuous', line 376, column 29 to column 38)",
-  " (in 'joint_continuous', line 377, column 29 to column 38)",
-  " (in 'joint_continuous', line 378, column 21 to column 49)",
-  " (in 'joint_continuous', line 379, column 18 to column 27)",
-  " (in 'joint_continuous', line 380, column 8 to column 11)",
-  " (in 'joint_continuous', line 411, column 9 to column 16)",
-  " (in 'joint_continuous', line 412, column 9 to column 22)",
-  " (in 'joint_continuous', line 414, column 9 to column 27)",
-  " (in 'joint_continuous', line 414, column 28 to column 37)",
-  " (in 'joint_continuous', line 415, column 9 to column 18)",
-  " (in 'joint_continuous', line 19, column 11 to column 20)",
-  " (in 'joint_continuous', line 19, column 4 to column 30)",
+  " (in 'joint_continuous', line 417, column 2 to column 41)",
+  " (in 'joint_continuous', line 419, column 2 to column 43)",
+  " (in 'joint_continuous', line 423, column 2 to column 49)",
+  " (in 'joint_continuous', line 425, column 2 to column 47)",
+  " (in 'joint_continuous', line 427, column 2 to column 52)",
+  " (in 'joint_continuous', line 429, column 2 to column 37)",
+  " (in 'joint_continuous', line 431, column 2 to column 35)",
+  " (in 'joint_continuous', line 464, column 2 to column 20)",
+  " (in 'joint_continuous', line 465, column 2 to column 36)",
+  " (in 'joint_continuous', line 466, column 2 to column 11)",
+  " (in 'joint_continuous', line 467, column 2 to column 47)",
+  " (in 'joint_continuous', line 468, column 2 to column 25)",
+  " (in 'joint_continuous', line 432, column 2 to column 38)",
+  " (in 'joint_continuous', line 433, column 2 to column 69)",
+  " (in 'joint_continuous', line 434, column 2 to column 35)",
+  " (in 'joint_continuous', line 436, column 4 to column 51)",
+  " (in 'joint_continuous', line 435, column 17 to line 437, column 3)",
+  " (in 'joint_continuous', line 435, column 2 to line 437, column 3)",
+  " (in 'joint_continuous', line 439, column 4 to column 42)",
+  " (in 'joint_continuous', line 438, column 19 to line 440, column 3)",
+  " (in 'joint_continuous', line 438, column 2 to line 440, column 3)",
+  " (in 'joint_continuous', line 471, column 2 to column 21)",
+  " (in 'joint_continuous', line 473, column 4 to column 20)",
+  " (in 'joint_continuous', line 472, column 17 to line 474, column 3)",
+  " (in 'joint_continuous', line 472, column 2 to line 474, column 3)",
+  " (in 'joint_continuous', line 475, column 2 to column 36)",
+  " (in 'joint_continuous', line 476, column 2 to line 478, column 32)",
+  " (in 'joint_continuous', line 481, column 2 to line 484, column 42)",
+  " (in 'joint_continuous', line 444, column 14 to column 17)",
+  " (in 'joint_continuous', line 444, column 2 to column 19)",
+  " (in 'joint_continuous', line 445, column 2 to column 75)",
+  " (in 'joint_continuous', line 447, column 4 to column 56)",
+  " (in 'joint_continuous', line 446, column 19 to line 448, column 3)",
+  " (in 'joint_continuous', line 446, column 2 to line 448, column 3)",
+  " (in 'joint_continuous', line 450, column 4 to column 48)",
+  " (in 'joint_continuous', line 449, column 19 to line 451, column 3)",
+  " (in 'joint_continuous', line 449, column 2 to line 451, column 3)",
+  " (in 'joint_continuous', line 454, column 6 to column 53)",
+  " (in 'joint_continuous', line 453, column 22 to line 455, column 5)",
+  " (in 'joint_continuous', line 453, column 4 to line 455, column 5)",
+  " (in 'joint_continuous', line 452, column 20 to line 456, column 3)",
+  " (in 'joint_continuous', line 452, column 2 to line 456, column 3)",
+  " (in 'joint_continuous', line 458, column 2 to column 49)",
+  " (in 'joint_continuous', line 459, column 2 to column 49)",
+  " (in 'joint_continuous', line 460, column 2 to column 55)",
+  " (in 'joint_continuous', line 461, column 2 to column 56)",
+  " (in 'joint_continuous', line 359, column 2 to column 19)",
+  " (in 'joint_continuous', line 361, column 2 to column 21)",
+  " (in 'joint_continuous', line 363, column 2 to column 19)",
+  " (in 'joint_continuous', line 365, column 8 to column 11)",
+  " (in 'joint_continuous', line 365, column 2 to column 32)",
+  " (in 'joint_continuous', line 367, column 8 to column 13)",
+  " (in 'joint_continuous', line 367, column 2 to column 34)",
+  " (in 'joint_continuous', line 369, column 8 to column 11)",
+  " (in 'joint_continuous', line 369, column 2 to column 32)",
+  " (in 'joint_continuous', line 371, column 2 to column 24)",
+  " (in 'joint_continuous', line 373, column 2 to column 25)",
+  " (in 'joint_continuous', line 375, column 8 to column 17)",
+  " (in 'joint_continuous', line 375, column 2 to column 41)",
+  " (in 'joint_continuous', line 377, column 8 to column 16)",
+  " (in 'joint_continuous', line 377, column 2 to column 39)",
+  " (in 'joint_continuous', line 379, column 8 to column 11)",
+  " (in 'joint_continuous', line 379, column 2 to column 31)",
+  " (in 'joint_continuous', line 381, column 8 to column 11)",
+  " (in 'joint_continuous', line 381, column 2 to column 30)",
+  " (in 'joint_continuous', line 383, column 8 to column 11)",
+  " (in 'joint_continuous', line 383, column 2 to column 30)",
+  " (in 'joint_continuous', line 385, column 8 to column 13)",
+  " (in 'joint_continuous', line 385, column 2 to column 34)",
+  " (in 'joint_continuous', line 387, column 8 to column 13)",
+  " (in 'joint_continuous', line 387, column 2 to column 34)",
+  " (in 'joint_continuous', line 389, column 2 to column 27)",
+  " (in 'joint_continuous', line 391, column 2 to column 28)",
+  " (in 'joint_continuous', line 393, column 2 to column 29)",
+  " (in 'joint_continuous', line 395, column 2 to column 29)",
+  " (in 'joint_continuous', line 397, column 2 to column 23)",
+  " (in 'joint_continuous', line 399, column 8 to column 11)",
+  " (in 'joint_continuous', line 399, column 2 to column 30)",
+  " (in 'joint_continuous', line 401, column 2 to column 24)",
+  " (in 'joint_continuous', line 403, column 9 to column 29)",
+  " (in 'joint_continuous', line 403, column 31 to column 39)",
+  " (in 'joint_continuous', line 403, column 2 to column 50)",
+  " (in 'joint_continuous', line 405, column 2 to column 29)",
+  " (in 'joint_continuous', line 411, column 8 to column 16)",
+  " (in 'joint_continuous', line 413, column 25 to column 32)",
+  " (in 'joint_continuous', line 415, column 9 to column 17)",
+  " (in 'joint_continuous', line 417, column 18 to column 27)",
+  " (in 'joint_continuous', line 419, column 21 to column 30)",
+  " (in 'joint_continuous', line 423, column 29 to column 38)",
+  " (in 'joint_continuous', line 425, column 29 to column 38)",
+  " (in 'joint_continuous', line 427, column 21 to column 50)",
+  " (in 'joint_continuous', line 429, column 18 to column 27)",
+  " (in 'joint_continuous', line 431, column 8 to column 11)",
+  " (in 'joint_continuous', line 464, column 9 to column 16)",
+  " (in 'joint_continuous', line 465, column 9 to column 26)",
+  " (in 'joint_continuous', line 467, column 9 to column 29)",
+  " (in 'joint_continuous', line 467, column 31 to column 42)",
+  " (in 'joint_continuous', line 468, column 9 to column 18)",
+  " (in 'joint_continuous', line 19, column 11 to column 22)",
+  " (in 'joint_continuous', line 19, column 4 to column 32)",
   " (in 'joint_continuous', line 22, column 6 to column 68)",
-  " (in 'joint_continuous', line 21, column 19 to line 23, column 7)",
-  " (in 'joint_continuous', line 21, column 4 to line 23, column 7)",
-  " (in 'joint_continuous', line 28, column 9 to column 78)",
-  " (in 'joint_continuous', line 27, column 24 to line 29, column 10)",
-  " (in 'joint_continuous', line 27, column 7 to line 29, column 10)",
-  " (in 'joint_continuous', line 25, column 4 to line 29, column 10)",
-  " (in 'joint_continuous', line 31, column 4 to column 19)",
-  " (in 'joint_continuous', line 17, column 14 to line 32, column 3)",
-  " (in 'joint_continuous', line 42, column 11 to column 14)",
-  " (in 'joint_continuous', line 42, column 4 to column 24)",
-  " (in 'joint_continuous', line 51, column 8 to column 54)",
-  " (in 'joint_continuous', line 50, column 23 to line 52, column 7)",
-  " (in 'joint_continuous', line 50, column 6 to line 52, column 7)",
-  " (in 'joint_continuous', line 49, column 11 to line 53, column 5)",
-  " (in 'joint_continuous', line 47, column 8 to column 66)",
-  " (in 'joint_continuous', line 46, column 23 to line 48, column 7)",
-  " (in 'joint_continuous', line 46, column 6 to line 48, column 7)",
-  " (in 'joint_continuous', line 45, column 21 to line 49, column 5)",
-  " (in 'joint_continuous', line 45, column 4 to line 53, column 5)",
-  " (in 'joint_continuous', line 54, column 4 to column 19)",
-  " (in 'joint_continuous', line 40, column 10 to line 55, column 3)",
-  " (in 'joint_continuous', line 65, column 11 to column 14)",
-  " (in 'joint_continuous', line 65, column 4 to column 24)",
-  " (in 'joint_continuous', line 69, column 6 to column 73)",
-  " (in 'joint_continuous', line 68, column 21 to line 70, column 5)",
-  " (in 'joint_continuous', line 68, column 4 to line 70, column 5)",
-  " (in 'joint_continuous', line 72, column 4 to column 19)",
-  " (in 'joint_continuous', line 63, column 10 to line 73, column 3)",
-  " (in 'joint_continuous', line 98, column 11 to column 24)",
-  " (in 'joint_continuous', line 98, column 4 to column 34)",
-  " (in 'joint_continuous', line 101, column 16 to column 19)",
-  " (in 'joint_continuous', line 101, column 4 to column 21)",
-  " (in 'joint_continuous', line 102, column 4 to column 68)",
-  " (in 'joint_continuous', line 105, column 4 to column 75)",
-  " (in 'joint_continuous', line 108, column 4 to line 110, column 72)",
-  " (in 'joint_continuous', line 112, column 4 to column 19)",
-  " (in 'joint_continuous', line 96, column 14 to line 114, column 3)",
-  " (in 'joint_continuous', line 138, column 11 to column 24)",
-  " (in 'joint_continuous', line 138, column 4 to column 34)",
-  " (in 'joint_continuous', line 141, column 16 to column 19)",
-  " (in 'joint_continuous', line 141, column 4 to column 21)",
-  " (in 'joint_continuous', line 142, column 4 to column 77)",
-  " (in 'joint_continuous', line 145, column 4 to line 146, column 61)",
-  " (in 'joint_continuous', line 149, column 4 to line 151, column 72)",
-  " (in 'joint_continuous', line 153, column 4 to column 19)",
-  " (in 'joint_continuous', line 136, column 14 to line 155, column 3)",
-  " (in 'joint_continuous', line 166, column 16 to column 19)",
-  " (in 'joint_continuous', line 166, column 4 to column 21)",
-  " (in 'joint_continuous', line 169, column 6 to column 85)",
-  " (in 'joint_continuous', line 168, column 21 to line 170, column 5)",
-  " (in 'joint_continuous', line 168, column 4 to line 170, column 5)",
-  " (in 'joint_continuous', line 172, column 4 to column 18)",
-  " (in 'joint_continuous', line 164, column 10 to line 173, column 1)",
-  " (in 'joint_continuous', line 184, column 16 to column 19)",
-  " (in 'joint_continuous', line 184, column 4 to column 21)",
-  " (in 'joint_continuous', line 187, column 6 to column 91)",
-  " (in 'joint_continuous', line 186, column 21 to line 188, column 5)",
-  " (in 'joint_continuous', line 186, column 4 to line 188, column 5)",
-  " (in 'joint_continuous', line 190, column 4 to column 18)",
-  " (in 'joint_continuous', line 182, column 10 to line 191, column 1)",
-  " (in 'joint_continuous', line 205, column 11 to column 14)",
-  " (in 'joint_continuous', line 205, column 4 to column 24)",
-  " (in 'joint_continuous', line 208, column 16 to column 19)",
-  " (in 'joint_continuous', line 208, column 4 to column 21)",
-  " (in 'joint_continuous', line 209, column 4 to column 65)",
-  " (in 'joint_continuous', line 212, column 4 to column 68)",
-  " (in 'joint_continuous', line 214, column 4 to column 19)",
-  " (in 'joint_continuous', line 203, column 14 to line 215, column 3)",
-  " (in 'joint_continuous', line 228, column 11 to column 14)",
-  " (in 'joint_continuous', line 228, column 4 to column 24)",
-  " (in 'joint_continuous', line 231, column 16 to column 19)",
-  " (in 'joint_continuous', line 231, column 4 to column 21)",
-  " (in 'joint_continuous', line 232, column 4 to column 71)",
-  " (in 'joint_continuous', line 235, column 4 to column 77)",
-  " (in 'joint_continuous', line 237, column 4 to column 19)",
-  " (in 'joint_continuous', line 226, column 15 to line 238, column 3)",
-  " (in 'joint_continuous', line 258, column 11 to column 29)",
-  " (in 'joint_continuous', line 258, column 30 to column 39)",
-  " (in 'joint_continuous', line 258, column 4 to column 44)",
-  " (in 'joint_continuous', line 260, column 4 to column 30)",
-  " (in 'joint_continuous', line 262, column 6 to column 51)",
-  " (in 'joint_continuous', line 261, column 4 to line 262, column 51)",
-  " (in 'joint_continuous', line 266, column 20 to column 28)",
-  " (in 'joint_continuous', line 266, column 7 to column 30)",
-  " (in 'joint_continuous', line 267, column 7 to column 35)",
-  " (in 'joint_continuous', line 268, column 7 to column 108)",
-  " (in 'joint_continuous', line 265, column 26 to line 269, column 6)",
-  " (in 'joint_continuous', line 265, column 5 to line 269, column 6)",
-  " (in 'joint_continuous', line 264, column 4 to line 269, column 6)",
-  " (in 'joint_continuous', line 272, column 9 to column 66)",
-  " (in 'joint_continuous', line 271, column 28 to line 273, column 8)",
-  " (in 'joint_continuous', line 271, column 7 to line 273, column 8)",
-  " (in 'joint_continuous', line 270, column 5 to line 273, column 8)",
-  " (in 'joint_continuous', line 275, column 4 to column 14)",
-  " (in 'joint_continuous', line 256, column 15 to line 276, column 3)",
-  " (in 'joint_continuous', line 287, column 11 to column 15)",
-  " (in 'joint_continuous', line 287, column 16 to column 25)",
-  " (in 'joint_continuous', line 287, column 4 to column 30)",
-  " (in 'joint_continuous', line 289, column 4 to column 19)",
-  " (in 'joint_continuous', line 292, column 6 to column 40)",
-  " (in 'joint_continuous', line 291, column 17 to line 293, column 5)",
-  " (in 'joint_continuous', line 291, column 4 to line 293, column 5)",
-  " (in 'joint_continuous', line 295, column 4 to column 14)",
-  " (in 'joint_continuous', line 285, column 11 to line 296, column 3)",
-  " (in 'joint_continuous', line 307, column 11 to column 15)",
-  " (in 'joint_continuous', line 307, column 16 to column 25)",
-  " (in 'joint_continuous', line 307, column 4 to column 30)",
-  " (in 'joint_continuous', line 310, column 6 to column 33)",
-  " (in 'joint_continuous', line 309, column 20 to line 311, column 5)",
-  " (in 'joint_continuous', line 309, column 4 to line 311, column 5)",
-  " (in 'joint_continuous', line 315, column 8 to column 42)",
-  " (in 'joint_continuous', line 314, column 25 to line 316, column 7)",
-  " (in 'joint_continuous', line 314, column 6 to line 316, column 7)",
-  " (in 'joint_continuous', line 313, column 4 to line 316, column 7)",
-  " (in 'joint_continuous', line 318, column 4 to column 14)",
-  " (in 'joint_continuous', line 305, column 11 to line 319, column 3)",
-  " (in 'joint_continuous', line 332, column 11 to column 20)",
-  " (in 'joint_continuous', line 332, column 4 to column 31)",
-  " (in 'joint_continuous', line 334, column 4 to column 72)",
-  " (in 'joint_continuous', line 336, column 4 to column 20)",
-  " (in 'joint_continuous', line 330, column 15 to line 337, column 3)"};
+  " (in 'joint_continuous', line 21, column 21 to line 23, column 5)",
+  " (in 'joint_continuous', line 21, column 4 to line 23, column 5)",
+  " (in 'joint_continuous', line 28, column 8 to column 77)",
+  " (in 'joint_continuous', line 27, column 25 to line 29, column 7)",
+  " (in 'joint_continuous', line 27, column 6 to line 29, column 7)",
+  " (in 'joint_continuous', line 25, column 22 to line 30, column 5)",
+  " (in 'joint_continuous', line 25, column 4 to line 30, column 5)",
+  " (in 'joint_continuous', line 32, column 4 to column 19)",
+  " (in 'joint_continuous', line 17, column 14 to line 33, column 3)",
+  " (in 'joint_continuous', line 43, column 11 to column 14)",
+  " (in 'joint_continuous', line 43, column 4 to column 24)",
+  " (in 'joint_continuous', line 52, column 8 to column 54)",
+  " (in 'joint_continuous', line 51, column 23 to line 53, column 7)",
+  " (in 'joint_continuous', line 51, column 6 to line 53, column 7)",
+  " (in 'joint_continuous', line 50, column 11 to line 54, column 5)",
+  " (in 'joint_continuous', line 48, column 8 to column 66)",
+  " (in 'joint_continuous', line 47, column 23 to line 49, column 7)",
+  " (in 'joint_continuous', line 47, column 6 to line 49, column 7)",
+  " (in 'joint_continuous', line 46, column 21 to line 50, column 5)",
+  " (in 'joint_continuous', line 46, column 4 to line 54, column 5)",
+  " (in 'joint_continuous', line 55, column 4 to column 19)",
+  " (in 'joint_continuous', line 41, column 10 to line 56, column 3)",
+  " (in 'joint_continuous', line 66, column 11 to column 14)",
+  " (in 'joint_continuous', line 66, column 4 to column 24)",
+  " (in 'joint_continuous', line 70, column 6 to column 73)",
+  " (in 'joint_continuous', line 69, column 21 to line 71, column 5)",
+  " (in 'joint_continuous', line 69, column 4 to line 71, column 5)",
+  " (in 'joint_continuous', line 73, column 4 to column 19)",
+  " (in 'joint_continuous', line 64, column 10 to line 74, column 3)",
+  " (in 'joint_continuous', line 99, column 11 to column 28)",
+  " (in 'joint_continuous', line 99, column 4 to column 38)",
+  " (in 'joint_continuous', line 102, column 16 to column 19)",
+  " (in 'joint_continuous', line 102, column 4 to column 21)",
+  " (in 'joint_continuous', line 103, column 4 to column 68)",
+  " (in 'joint_continuous', line 106, column 4 to column 75)",
+  " (in 'joint_continuous', line 109, column 4 to column 12)",
+  " (in 'joint_continuous', line 110, column 4 to column 28)",
+  " (in 'joint_continuous', line 111, column 4 to line 113, column 64)",
+  " (in 'joint_continuous', line 115, column 4 to column 19)",
+  " (in 'joint_continuous', line 97, column 14 to line 117, column 3)",
+  " (in 'joint_continuous', line 141, column 11 to column 24)",
+  " (in 'joint_continuous', line 141, column 4 to column 34)",
+  " (in 'joint_continuous', line 144, column 16 to column 19)",
+  " (in 'joint_continuous', line 144, column 4 to column 21)",
+  " (in 'joint_continuous', line 145, column 4 to column 77)",
+  " (in 'joint_continuous', line 148, column 4 to line 149, column 61)",
+  " (in 'joint_continuous', line 152, column 4 to column 12)",
+  " (in 'joint_continuous', line 153, column 4 to column 28)",
+  " (in 'joint_continuous', line 154, column 4 to line 156, column 64)",
+  " (in 'joint_continuous', line 158, column 4 to column 19)",
+  " (in 'joint_continuous', line 139, column 14 to line 160, column 3)",
+  " (in 'joint_continuous', line 171, column 16 to column 19)",
+  " (in 'joint_continuous', line 171, column 4 to column 21)",
+  " (in 'joint_continuous', line 174, column 6 to line 176, column 8)",
+  " (in 'joint_continuous', line 173, column 21 to line 177, column 5)",
+  " (in 'joint_continuous', line 173, column 4 to line 177, column 5)",
+  " (in 'joint_continuous', line 179, column 4 to column 18)",
+  " (in 'joint_continuous', line 169, column 10 to line 180, column 1)",
+  " (in 'joint_continuous', line 191, column 16 to column 19)",
+  " (in 'joint_continuous', line 191, column 4 to column 21)",
+  " (in 'joint_continuous', line 194, column 6 to line 197, column 8)",
+  " (in 'joint_continuous', line 193, column 21 to line 198, column 5)",
+  " (in 'joint_continuous', line 193, column 4 to line 198, column 5)",
+  " (in 'joint_continuous', line 200, column 4 to column 18)",
+  " (in 'joint_continuous', line 189, column 10 to line 201, column 1)",
+  " (in 'joint_continuous', line 215, column 11 to column 14)",
+  " (in 'joint_continuous', line 215, column 4 to column 24)",
+  " (in 'joint_continuous', line 218, column 16 to column 19)",
+  " (in 'joint_continuous', line 218, column 4 to column 21)",
+  " (in 'joint_continuous', line 219, column 4 to column 65)",
+  " (in 'joint_continuous', line 222, column 4 to column 68)",
+  " (in 'joint_continuous', line 224, column 4 to column 19)",
+  " (in 'joint_continuous', line 213, column 14 to line 225, column 3)",
+  " (in 'joint_continuous', line 238, column 11 to column 14)",
+  " (in 'joint_continuous', line 238, column 4 to column 24)",
+  " (in 'joint_continuous', line 241, column 16 to column 19)",
+  " (in 'joint_continuous', line 241, column 4 to column 21)",
+  " (in 'joint_continuous', line 242, column 4 to column 71)",
+  " (in 'joint_continuous', line 245, column 4 to column 77)",
+  " (in 'joint_continuous', line 247, column 4 to column 19)",
+  " (in 'joint_continuous', line 236, column 15 to line 248, column 3)",
+  " (in 'joint_continuous', line 268, column 11 to column 31)",
+  " (in 'joint_continuous', line 268, column 33 to column 44)",
+  " (in 'joint_continuous', line 268, column 4 to column 49)",
+  " (in 'joint_continuous', line 270, column 4 to column 30)",
+  " (in 'joint_continuous', line 272, column 6 to column 51)",
+  " (in 'joint_continuous', line 271, column 19 to line 273, column 5)",
+  " (in 'joint_continuous', line 271, column 4 to line 273, column 5)",
+  " (in 'joint_continuous', line 277, column 21 to column 29)",
+  " (in 'joint_continuous', line 277, column 8 to column 31)",
+  " (in 'joint_continuous', line 278, column 8 to column 36)",
+  " (in 'joint_continuous', line 279, column 8 to line 282, column 12)",
+  " (in 'joint_continuous', line 276, column 28 to line 283, column 8)",
+  " (in 'joint_continuous', line 276, column 6 to line 283, column 8)",
+  " (in 'joint_continuous', line 286, column 10 to column 67)",
+  " (in 'joint_continuous', line 285, column 30 to line 287, column 9)",
+  " (in 'joint_continuous', line 285, column 8 to line 287, column 9)",
+  " (in 'joint_continuous', line 284, column 21 to line 288, column 7)",
+  " (in 'joint_continuous', line 284, column 6 to line 288, column 7)",
+  " (in 'joint_continuous', line 275, column 22 to line 289, column 5)",
+  " (in 'joint_continuous', line 275, column 4 to line 289, column 5)",
+  " (in 'joint_continuous', line 291, column 4 to column 14)",
+  " (in 'joint_continuous', line 266, column 15 to line 292, column 3)",
+  " (in 'joint_continuous', line 303, column 11 to column 15)",
+  " (in 'joint_continuous', line 303, column 17 to column 28)",
+  " (in 'joint_continuous', line 303, column 4 to column 33)",
+  " (in 'joint_continuous', line 305, column 4 to column 19)",
+  " (in 'joint_continuous', line 308, column 6 to column 40)",
+  " (in 'joint_continuous', line 307, column 19 to line 309, column 5)",
+  " (in 'joint_continuous', line 307, column 4 to line 309, column 5)",
+  " (in 'joint_continuous', line 311, column 4 to column 14)",
+  " (in 'joint_continuous', line 301, column 11 to line 312, column 3)",
+  " (in 'joint_continuous', line 323, column 11 to column 15)",
+  " (in 'joint_continuous', line 323, column 17 to column 28)",
+  " (in 'joint_continuous', line 323, column 4 to column 33)",
+  " (in 'joint_continuous', line 326, column 6 to column 36)",
+  " (in 'joint_continuous', line 325, column 22 to line 327, column 5)",
+  " (in 'joint_continuous', line 325, column 4 to line 327, column 5)",
+  " (in 'joint_continuous', line 331, column 8 to column 46)",
+  " (in 'joint_continuous', line 330, column 27 to line 332, column 7)",
+  " (in 'joint_continuous', line 330, column 6 to line 332, column 7)",
+  " (in 'joint_continuous', line 329, column 19 to line 333, column 5)",
+  " (in 'joint_continuous', line 329, column 4 to line 333, column 5)",
+  " (in 'joint_continuous', line 335, column 4 to column 14)",
+  " (in 'joint_continuous', line 321, column 11 to line 336, column 3)",
+  " (in 'joint_continuous', line 349, column 11 to column 20)",
+  " (in 'joint_continuous', line 349, column 4 to column 31)",
+  " (in 'joint_continuous', line 352, column 4 to column 72)",
+  " (in 'joint_continuous', line 354, column 4 to column 20)",
+  " (in 'joint_continuous', line 347, column 15 to line 355, column 3)"};
 template <typename T5__, typename T9__,
           stan::require_all_t<stan::is_col_vector<T5__>,
                               stan::is_vt_not_complex<T5__>,
@@ -450,15 +462,15 @@ calc_loglik_dna(const int& n_S, const int& S_dna, const int& Nloc_dna,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 100;
+    current_statement__ = 103;
     stan::math::validate_non_negative_index("log_lik", "n_S + S_dna", (n_S +
       S_dna));
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant((n_S + S_dna),
         DUMMY_VAR__);
-    current_statement__ = 104;
+    current_statement__ = 107;
     for (int i = 1; i <= n_S; ++i) {
-      current_statement__ = 102;
+      current_statement__ = 105;
       stan::model::assign(log_lik,
         stan::math::binomial_lpmf<false>(
           stan::model::rvalue(n_K, "n_K", stan::model::index_uni(i)),
@@ -468,11 +480,11 @@ calc_loglik_dna(const int& n_S, const int& S_dna, const int& Nloc_dna,
               stan::model::rvalue(L_ind, "L_ind", stan::model::index_uni(i))))),
         "assigning variable log_lik", stan::model::index_uni(i));
     }
-    current_statement__ = 108;
+    current_statement__ = 112;
     if (stan::math::logical_gt(Nloc_dna, 0)) {
-      current_statement__ = 107;
+      current_statement__ = 110;
       for (int i = 1; i <= S_dna; ++i) {
-        current_statement__ = 105;
+        current_statement__ = 108;
         stan::model::assign(log_lik,
           stan::math::binomial_lpmf<false>(
             stan::model::rvalue(K_dna, "K_dna", stan::model::index_uni(i)),
@@ -483,7 +495,7 @@ calc_loglik_dna(const int& n_S, const int& S_dna, const int& Nloc_dna,
           "assigning variable log_lik", stan::model::index_uni((n_S + i)));
       }
     }
-    current_statement__ = 109;
+    current_statement__ = 113;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -505,15 +517,15 @@ calc_loglik_trad_count(const std::vector<T0__>& lambda, const int& negbin,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 111;
+    current_statement__ = 115;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 121;
+    current_statement__ = 125;
     if (stan::math::logical_eq(negbin, 1)) {
-      current_statement__ = 119;
+      current_statement__ = 123;
       for (int j = 1; j <= n_C; ++j) {
-        current_statement__ = 117;
+        current_statement__ = 121;
         stan::model::assign(log_lik,
           stan::math::neg_binomial_2_lpmf<false>(
             stan::model::rvalue(n_E, "n_E", stan::model::index_uni(j)),
@@ -521,9 +533,9 @@ calc_loglik_trad_count(const std::vector<T0__>& lambda, const int& negbin,
             phi), "assigning variable log_lik", stan::model::index_uni(j));
       }
     } else {
-      current_statement__ = 115;
+      current_statement__ = 119;
       for (int j = 1; j <= n_C; ++j) {
-        current_statement__ = 113;
+        current_statement__ = 117;
         stan::model::assign(log_lik,
           stan::math::poisson_lpmf<false>(
             stan::model::rvalue(n_E, "n_E", stan::model::index_uni(j)),
@@ -531,7 +543,7 @@ calc_loglik_trad_count(const std::vector<T0__>& lambda, const int& negbin,
           "assigning variable log_lik", stan::model::index_uni(j));
       }
     }
-    current_statement__ = 122;
+    current_statement__ = 126;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -558,13 +570,13 @@ calc_loglik_trad_continuous(const std::vector<T0__>& lambda, const T1__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 124;
+    current_statement__ = 128;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 128;
+    current_statement__ = 132;
     for (int j = 1; j <= n_C; ++j) {
-      current_statement__ = 126;
+      current_statement__ = 130;
       stan::model::assign(log_lik,
         stan::math::gamma_lpdf<false>(
           stan::model::rvalue(E_trans, "E_trans", stan::model::index_uni(j)),
@@ -574,7 +586,7 @@ calc_loglik_trad_continuous(const std::vector<T0__>& lambda, const T1__&
               stan::model::rvalue(R_ind, "R_ind", stan::model::index_uni(j))))),
         "assigning variable log_lik", stan::model::index_uni(j));
     }
-    current_statement__ = 129;
+    current_statement__ = 133;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -615,30 +627,33 @@ calc_loglik_count(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 131;
+    current_statement__ = 135;
     stan::math::validate_non_negative_index("log_lik", "n_C + n_S + S_dna",
       ((n_C + n_S) + S_dna));
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(((n_C + n_S) + S_dna),
         DUMMY_VAR__);
-    current_statement__ = 133;
+    current_statement__ = 137;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 135;
+    current_statement__ = 139;
     stan::model::assign(lambda,
       get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C, pstream__),
       "assigning variable lambda");
-    current_statement__ = 136;
+    current_statement__ = 140;
     stan::model::assign(log_lik,
       calc_loglik_trad_count(lambda, negbin, phi, n_E, n_C, pstream__),
       "assigning variable log_lik", stan::model::index_min_max(1, n_C));
-    current_statement__ = 137;
+    int end = std::numeric_limits<int>::min();
+    current_statement__ = 142;
+    end = ((n_C + n_S) + S_dna);
+    current_statement__ = 143;
     stan::model::assign(log_lik,
       calc_loglik_dna(n_S, S_dna, Nloc_dna, n_K, n_N, p_trad, L_ind, K_dna,
         N_dna, p_dna, L_dna, pstream__), "assigning variable log_lik",
-      stan::model::index_min_max((n_C + 1), ((n_C + n_S) + S_dna)));
-    current_statement__ = 138;
+      stan::model::index_min_max((n_C + 1), end));
+    current_statement__ = 144;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -686,31 +701,34 @@ calc_loglik_continuous(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 140;
+    current_statement__ = 146;
     stan::math::validate_non_negative_index("log_lik", "n_C + n_S + S_dna",
       ((n_C + n_S) + S_dna));
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(((n_C + n_S) + S_dna),
         DUMMY_VAR__);
-    current_statement__ = 142;
+    current_statement__ = 148;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 144;
+    current_statement__ = 150;
     stan::model::assign(lambda,
       get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C,
         pstream__), "assigning variable lambda");
-    current_statement__ = 145;
+    current_statement__ = 151;
     stan::model::assign(log_lik,
       calc_loglik_trad_continuous(lambda, beta_gamma, E_trans, R_ind, n_C,
         pstream__), "assigning variable log_lik",
       stan::model::index_min_max(1, n_C));
-    current_statement__ = 146;
+    int end = std::numeric_limits<int>::min();
+    current_statement__ = 153;
+    end = ((n_C + n_S) + S_dna);
+    current_statement__ = 154;
     stan::model::assign(log_lik,
       calc_loglik_dna(n_S, S_dna, Nloc_dna, n_K, n_N, p_trad, L_ind, K_dna,
         N_dna, p_dna, L_dna, pstream__), "assigning variable log_lik",
-      stan::model::index_min_max((n_C + 1), ((n_C + n_S) + S_dna)));
-    current_statement__ = 147;
+      stan::model::index_min_max((n_C + 1), end));
+    current_statement__ = 155;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -736,13 +754,13 @@ get_lambda_count(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 149;
+    current_statement__ = 157;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 153;
+    current_statement__ = 161;
     for (int j = 1; j <= n_C; ++j) {
-      current_statement__ = 151;
+      current_statement__ = 159;
       stan::model::assign(lambda,
         (stan::math::logical_eq(ctch, 1) ? (stan::model::rvalue(coef, "coef",
                                               stan::model::index_uni(
@@ -758,7 +776,7 @@ get_lambda_count(const int& ctch, const std::vector<T1__>& coef,
             stan::model::rvalue(R_ind, "R_ind", stan::model::index_uni(j))))),
         "assigning variable lambda", stan::model::index_uni(j));
     }
-    current_statement__ = 154;
+    current_statement__ = 162;
     return lambda;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -784,13 +802,13 @@ get_lambda_continuous(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 156;
+    current_statement__ = 164;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 160;
+    current_statement__ = 168;
     for (int j = 1; j <= n_C; ++j) {
-      current_statement__ = 158;
+      current_statement__ = 166;
       stan::model::assign(lambda,
         (stan::math::logical_eq(ctch, 1) ? (stan::model::rvalue(coef, "coef",
                                               stan::model::index_uni(
@@ -806,7 +824,7 @@ get_lambda_continuous(const int& ctch, const std::vector<T1__>& coef,
             stan::model::rvalue(R_ind, "R_ind", stan::model::index_uni(j))))),
         "assigning variable lambda", stan::model::index_uni(j));
     }
-    current_statement__ = 161;
+    current_statement__ = 169;
     return lambda;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -835,23 +853,23 @@ calc_loglik_tradmod_count(const int& negbin, const std::vector<T1__>& phi,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 163;
+    current_statement__ = 171;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 165;
+    current_statement__ = 173;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 167;
+    current_statement__ = 175;
     stan::model::assign(lambda,
       get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C, pstream__),
       "assigning variable lambda");
-    current_statement__ = 168;
+    current_statement__ = 176;
     stan::model::assign(log_lik,
       calc_loglik_trad_count(lambda, negbin, phi, n_E, n_C, pstream__),
       "assigning variable log_lik");
-    current_statement__ = 169;
+    current_statement__ = 177;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -884,23 +902,23 @@ calc_loglik_tradmod_continuous(const T0__& beta_arg__,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 171;
+    current_statement__ = 179;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 173;
+    current_statement__ = 181;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 175;
+    current_statement__ = 183;
     stan::model::assign(lambda,
       get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C, pstream__),
       "assigning variable lambda");
-    current_statement__ = 176;
+    current_statement__ = 184;
     stan::model::assign(log_lik,
       calc_loglik_trad_continuous(lambda, beta, E_trans, R_ind, n_C,
         pstream__), "assigning variable log_lik");
-    current_statement__ = 177;
+    current_statement__ = 185;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -943,40 +961,40 @@ calc_mu(const std::vector<int>& trad_ind, const std::vector<int>& dna_ind,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 179;
+    current_statement__ = 187;
     stan::math::validate_non_negative_index("mu", "Nloc_dna + Nloc_trad",
       (Nloc_dna + Nloc_trad));
-    current_statement__ = 180;
+    current_statement__ = 188;
     stan::math::validate_non_negative_index("mu", "nparams + 1", (nparams +
       1));
     Eigen::Matrix<local_scalar_t__,-1,-1> mu =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant((Nloc_dna + Nloc_trad),
         (nparams + 1), DUMMY_VAR__);
-    current_statement__ = 182;
+    current_statement__ = 190;
     stan::model::assign(mu, mu_trad, "assigning variable mu",
       stan::model::index_multi(trad_ind), stan::model::index_uni(1));
-    current_statement__ = 184;
+    current_statement__ = 193;
     if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 183;
+      current_statement__ = 191;
       stan::model::assign(mu,
         stan::math::multiply(mu_trad, stan::math::transpose(q)),
         "assigning variable mu", stan::model::index_multi(trad_ind),
         stan::model::index_min_max(2, (nparams + 1)));
     }
-    current_statement__ = 191;
+    current_statement__ = 206;
     if (stan::math::logical_gt(Nloc_dna, 0)) {
-      current_statement__ = 190;
+      current_statement__ = 199;
       for (int i = 1; i <= Nloc_dna; ++i) {
-        current_statement__ = 185;
+        current_statement__ = 194;
         stan::math::validate_non_negative_index("p11_dna", "Nloc_dna",
           Nloc_dna);
         std::vector<local_scalar_t__> p11_dna =
           std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
-        current_statement__ = 187;
+        current_statement__ = 196;
         stan::model::assign(p11_dna,
           (stan::model::rvalue(p_dna, "p_dna", stan::model::index_uni(i)) -
           p10), "assigning variable p11_dna", stan::model::index_uni(i));
-        current_statement__ = 188;
+        current_statement__ = 197;
         stan::model::assign(mu,
           ((stan::model::rvalue(p11_dna, "p11_dna", stan::model::index_uni(i))
           *
@@ -993,25 +1011,26 @@ calc_mu(const std::vector<int>& trad_ind, const std::vector<int>& dna_ind,
             stan::model::rvalue(dna_ind, "dna_ind", stan::model::index_uni(i))),
           stan::model::index_uni(1));
       }
-    }
-    current_statement__ = 195;
-    if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 194;
-      for (int i = 1; i <= Nloc_dna; ++i) {
-        current_statement__ = 192;
-        stan::model::assign(mu,
-          stan::math::multiply(
-            stan::model::rvalue(mu, "mu",
-              stan::model::index_uni(
-                stan::model::rvalue(dna_ind, "dna_ind",
-                  stan::model::index_uni(i))), stan::model::index_uni(1)),
-            stan::math::transpose(q)), "assigning variable mu",
-          stan::model::index_uni(
-            stan::model::rvalue(dna_ind, "dna_ind", stan::model::index_uni(i))),
-          stan::model::index_min_max(2, (nparams + 1)));
+      current_statement__ = 204;
+      if (stan::math::logical_eq(ctch, 1)) {
+        current_statement__ = 202;
+        for (int i = 1; i <= Nloc_dna; ++i) {
+          current_statement__ = 200;
+          stan::model::assign(mu,
+            stan::math::multiply(
+              stan::model::rvalue(mu, "mu",
+                stan::model::index_uni(
+                  stan::model::rvalue(dna_ind, "dna_ind",
+                    stan::model::index_uni(i))), stan::model::index_uni(1)),
+              stan::math::transpose(q)), "assigning variable mu",
+            stan::model::index_uni(
+              stan::model::rvalue(dna_ind, "dna_ind",
+                stan::model::index_uni(i))),
+            stan::model::index_min_max(2, (nparams + 1)));
+        }
       }
     }
-    current_statement__ = 196;
+    current_statement__ = 207;
     return mu;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1039,26 +1058,26 @@ calc_mu_trad_count(const int& Nloc, const int& nparams, const T2__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 198;
+    current_statement__ = 209;
     stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-    current_statement__ = 199;
+    current_statement__ = 210;
     stan::math::validate_non_negative_index("mu", "nparams + 1", (nparams +
       1));
     Eigen::Matrix<local_scalar_t__,-1,-1> mu =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(Nloc, (nparams + 1),
         DUMMY_VAR__);
-    current_statement__ = 201;
+    current_statement__ = 212;
     stan::model::assign(mu, mu_1, "assigning variable mu",
       stan::model::index_omni(), stan::model::index_uni(1));
-    current_statement__ = 204;
+    current_statement__ = 215;
     if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 202;
+      current_statement__ = 213;
       stan::model::assign(mu,
         stan::math::multiply(mu_1, stan::math::transpose(q)),
         "assigning variable mu", stan::model::index_omni(),
         stan::model::index_min_max(2, (nparams + 1)));
     }
-    current_statement__ = 205;
+    current_statement__ = 216;
     return mu;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1090,28 +1109,28 @@ calc_mu_trad_continuous(const int& Nloc, const int& nparams, const T2__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 207;
+    current_statement__ = 218;
     stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-    current_statement__ = 208;
+    current_statement__ = 219;
     stan::math::validate_non_negative_index("mu", "nparams + 1", (nparams +
       1));
     Eigen::Matrix<local_scalar_t__,-1,-1> mu =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(Nloc, (nparams + 1),
         DUMMY_VAR__);
-    current_statement__ = 212;
+    current_statement__ = 223;
     for (int j = 1; j <= Nloc; ++j) {
-      current_statement__ = 210;
+      current_statement__ = 221;
       stan::model::assign(mu,
         (stan::model::rvalue(alpha, "alpha", stan::model::index_uni(j)) /
         stan::model::rvalue(beta, "beta", stan::model::index_uni(j))),
         "assigning variable mu", stan::model::index_uni(j),
         stan::model::index_uni(1));
     }
-    current_statement__ = 216;
+    current_statement__ = 228;
     if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 215;
+      current_statement__ = 226;
       for (int i = 1; i <= nparams; ++i) {
-        current_statement__ = 213;
+        current_statement__ = 224;
         stan::model::assign(mu,
           stan::math::multiply(
             stan::math::to_vector(
@@ -1123,7 +1142,7 @@ calc_mu_trad_continuous(const int& Nloc, const int& nparams, const T2__&
           stan::model::index_uni((i + 1)));
       }
     }
-    current_statement__ = 217;
+    current_statement__ = 229;
     return mu;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1155,12 +1174,12 @@ calc_p11(const int& Nloc_trad, const T1__& mu_trad_arg__, const T2__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 219;
+    current_statement__ = 231;
     stan::math::validate_non_negative_index("p11_trad", "Nloc_trad",
       Nloc_trad);
     Eigen::Matrix<local_scalar_t__,-1,1> p11_trad =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(Nloc_trad, DUMMY_VAR__);
-    current_statement__ = 221;
+    current_statement__ = 233;
     stan::model::assign(p11_trad,
       stan::math::elt_divide(mu_trad,
         stan::math::add(mu_trad,
@@ -1169,7 +1188,7 @@ calc_p11(const int& Nloc_trad, const T1__& mu_trad_arg__, const T2__&
               stan::model::rvalue(mat_site, "mat_site",
                 stan::model::index_multi(trad_ind), stan::model::index_omni()),
               alpha)))), "assigning variable p11_trad");
-    current_statement__ = 222;
+    current_statement__ = 234;
     return p11_trad;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1193,7 +1212,7 @@ private:
   std::vector<int> n_K;
   std::vector<int> N_dna;
   std::vector<int> K_dna;
-  std::vector<double> p10priors;
+  std::vector<double> p10_priors;
   std::vector<double> alphapriors;
   std::vector<double> bgammapriors;
   std::vector<double> agammapriors;
@@ -1228,210 +1247,210 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 48;
+      current_statement__ = 51;
       context__.validate_dims("data initialization", "n_S", "int",
         std::vector<size_t>{});
       n_S = std::numeric_limits<int>::min();
-      current_statement__ = 48;
+      current_statement__ = 51;
       n_S = context__.vals_i("n_S")[(1 - 1)];
-      current_statement__ = 48;
+      current_statement__ = 51;
       stan::math::check_greater_or_equal(function__, "n_S", n_S, 1);
-      current_statement__ = 49;
+      current_statement__ = 52;
       context__.validate_dims("data initialization", "S_dna", "int",
         std::vector<size_t>{});
       S_dna = std::numeric_limits<int>::min();
-      current_statement__ = 49;
+      current_statement__ = 52;
       S_dna = context__.vals_i("S_dna")[(1 - 1)];
-      current_statement__ = 49;
+      current_statement__ = 52;
       stan::math::check_greater_or_equal(function__, "S_dna", S_dna, 0);
-      current_statement__ = 50;
+      current_statement__ = 53;
       context__.validate_dims("data initialization", "n_C", "int",
         std::vector<size_t>{});
       n_C = std::numeric_limits<int>::min();
-      current_statement__ = 50;
+      current_statement__ = 53;
       n_C = context__.vals_i("n_C")[(1 - 1)];
-      current_statement__ = 50;
+      current_statement__ = 53;
       stan::math::check_greater_or_equal(function__, "n_C", n_C, 1);
-      current_statement__ = 51;
+      current_statement__ = 54;
       stan::math::validate_non_negative_index("L_ind", "n_S", n_S);
-      current_statement__ = 52;
+      current_statement__ = 55;
       context__.validate_dims("data initialization", "L_ind", "int",
         std::vector<size_t>{static_cast<size_t>(n_S)});
       L_ind = std::vector<int>(n_S, std::numeric_limits<int>::min());
-      current_statement__ = 52;
+      current_statement__ = 55;
       L_ind = context__.vals_i("L_ind");
-      current_statement__ = 52;
+      current_statement__ = 55;
       stan::math::check_greater_or_equal(function__, "L_ind", L_ind, 1);
-      current_statement__ = 53;
+      current_statement__ = 56;
       stan::math::validate_non_negative_index("L_dna", "S_dna", S_dna);
-      current_statement__ = 54;
+      current_statement__ = 57;
       context__.validate_dims("data initialization", "L_dna", "int",
         std::vector<size_t>{static_cast<size_t>(S_dna)});
       L_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
-      current_statement__ = 54;
+      current_statement__ = 57;
       L_dna = context__.vals_i("L_dna");
-      current_statement__ = 54;
+      current_statement__ = 57;
       stan::math::check_greater_or_equal(function__, "L_dna", L_dna, 1);
-      current_statement__ = 55;
+      current_statement__ = 58;
       stan::math::validate_non_negative_index("R_ind", "n_C", n_C);
-      current_statement__ = 56;
+      current_statement__ = 59;
       context__.validate_dims("data initialization", "R_ind", "int",
         std::vector<size_t>{static_cast<size_t>(n_C)});
       R_ind = std::vector<int>(n_C, std::numeric_limits<int>::min());
-      current_statement__ = 56;
+      current_statement__ = 59;
       R_ind = context__.vals_i("R_ind");
-      current_statement__ = 56;
+      current_statement__ = 59;
       stan::math::check_greater_or_equal(function__, "R_ind", R_ind, 1);
-      current_statement__ = 57;
+      current_statement__ = 60;
       context__.validate_dims("data initialization", "Nloc_dna", "int",
         std::vector<size_t>{});
       Nloc_dna = std::numeric_limits<int>::min();
-      current_statement__ = 57;
+      current_statement__ = 60;
       Nloc_dna = context__.vals_i("Nloc_dna")[(1 - 1)];
-      current_statement__ = 57;
+      current_statement__ = 60;
       stan::math::check_greater_or_equal(function__, "Nloc_dna", Nloc_dna, 0);
-      current_statement__ = 58;
+      current_statement__ = 61;
       context__.validate_dims("data initialization", "Nloc_trad", "int",
         std::vector<size_t>{});
       Nloc_trad = std::numeric_limits<int>::min();
-      current_statement__ = 58;
+      current_statement__ = 61;
       Nloc_trad = context__.vals_i("Nloc_trad")[(1 - 1)];
-      current_statement__ = 58;
+      current_statement__ = 61;
       stan::math::check_greater_or_equal(function__, "Nloc_trad", Nloc_trad,
         1);
-      current_statement__ = 59;
+      current_statement__ = 62;
       stan::math::validate_non_negative_index("trad_ind", "Nloc_trad",
         Nloc_trad);
-      current_statement__ = 60;
+      current_statement__ = 63;
       context__.validate_dims("data initialization", "trad_ind", "int",
         std::vector<size_t>{static_cast<size_t>(Nloc_trad)});
       trad_ind = std::vector<int>(Nloc_trad, std::numeric_limits<int>::min());
-      current_statement__ = 60;
+      current_statement__ = 63;
       trad_ind = context__.vals_i("trad_ind");
-      current_statement__ = 60;
+      current_statement__ = 63;
       stan::math::check_greater_or_equal(function__, "trad_ind", trad_ind, 0);
-      current_statement__ = 61;
+      current_statement__ = 64;
       stan::math::validate_non_negative_index("dna_ind", "Nloc_dna", Nloc_dna);
-      current_statement__ = 62;
+      current_statement__ = 65;
       context__.validate_dims("data initialization", "dna_ind", "int",
         std::vector<size_t>{static_cast<size_t>(Nloc_dna)});
       dna_ind = std::vector<int>(Nloc_dna, std::numeric_limits<int>::min());
-      current_statement__ = 62;
+      current_statement__ = 65;
       dna_ind = context__.vals_i("dna_ind");
-      current_statement__ = 62;
+      current_statement__ = 65;
       stan::math::check_greater_or_equal(function__, "dna_ind", dna_ind, 0);
-      current_statement__ = 63;
+      current_statement__ = 66;
       stan::math::validate_non_negative_index("n_E", "n_C", n_C);
-      current_statement__ = 64;
+      current_statement__ = 67;
       context__.validate_dims("data initialization", "n_E", "double",
         std::vector<size_t>{static_cast<size_t>(n_C)});
       n_E = std::vector<double>(n_C,
               std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 64;
+      current_statement__ = 67;
       n_E = context__.vals_r("n_E");
-      current_statement__ = 64;
+      current_statement__ = 67;
       stan::math::check_greater_or_equal(function__, "n_E", n_E, 0);
-      current_statement__ = 65;
+      current_statement__ = 68;
       stan::math::validate_non_negative_index("n_N", "n_S", n_S);
-      current_statement__ = 66;
+      current_statement__ = 69;
       context__.validate_dims("data initialization", "n_N", "int",
         std::vector<size_t>{static_cast<size_t>(n_S)});
       n_N = std::vector<int>(n_S, std::numeric_limits<int>::min());
-      current_statement__ = 66;
+      current_statement__ = 69;
       n_N = context__.vals_i("n_N");
-      current_statement__ = 66;
+      current_statement__ = 69;
       stan::math::check_greater_or_equal(function__, "n_N", n_N, 1);
-      current_statement__ = 67;
+      current_statement__ = 70;
       stan::math::validate_non_negative_index("n_K", "n_S", n_S);
-      current_statement__ = 68;
+      current_statement__ = 71;
       context__.validate_dims("data initialization", "n_K", "int",
         std::vector<size_t>{static_cast<size_t>(n_S)});
       n_K = std::vector<int>(n_S, std::numeric_limits<int>::min());
-      current_statement__ = 68;
+      current_statement__ = 71;
       n_K = context__.vals_i("n_K");
-      current_statement__ = 68;
+      current_statement__ = 71;
       stan::math::check_greater_or_equal(function__, "n_K", n_K, 0);
-      current_statement__ = 69;
+      current_statement__ = 72;
       stan::math::validate_non_negative_index("N_dna", "S_dna", S_dna);
-      current_statement__ = 70;
+      current_statement__ = 73;
       context__.validate_dims("data initialization", "N_dna", "int",
         std::vector<size_t>{static_cast<size_t>(S_dna)});
       N_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
-      current_statement__ = 70;
+      current_statement__ = 73;
       N_dna = context__.vals_i("N_dna");
-      current_statement__ = 70;
+      current_statement__ = 73;
       stan::math::check_greater_or_equal(function__, "N_dna", N_dna, 1);
-      current_statement__ = 71;
+      current_statement__ = 74;
       stan::math::validate_non_negative_index("K_dna", "S_dna", S_dna);
-      current_statement__ = 72;
+      current_statement__ = 75;
       context__.validate_dims("data initialization", "K_dna", "int",
         std::vector<size_t>{static_cast<size_t>(S_dna)});
       K_dna = std::vector<int>(S_dna, std::numeric_limits<int>::min());
-      current_statement__ = 72;
+      current_statement__ = 75;
       K_dna = context__.vals_i("K_dna");
-      current_statement__ = 72;
+      current_statement__ = 75;
       stan::math::check_greater_or_equal(function__, "K_dna", K_dna, 0);
-      current_statement__ = 73;
-      context__.validate_dims("data initialization", "p10priors", "double",
+      current_statement__ = 76;
+      context__.validate_dims("data initialization", "p10_priors", "double",
         std::vector<size_t>{static_cast<size_t>(2)});
-      p10priors = std::vector<double>(2,
-                    std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 73;
-      p10priors = context__.vals_r("p10priors");
-      current_statement__ = 74;
+      p10_priors = std::vector<double>(2,
+                     std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 76;
+      p10_priors = context__.vals_r("p10_priors");
+      current_statement__ = 77;
       context__.validate_dims("data initialization", "alphapriors", "double",
         std::vector<size_t>{static_cast<size_t>(2)});
       alphapriors = std::vector<double>(2,
                       std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 74;
+      current_statement__ = 77;
       alphapriors = context__.vals_r("alphapriors");
-      current_statement__ = 75;
+      current_statement__ = 78;
       context__.validate_dims("data initialization", "bgammapriors",
         "double", std::vector<size_t>{static_cast<size_t>(2)});
       bgammapriors = std::vector<double>(2,
                        std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 75;
+      current_statement__ = 78;
       bgammapriors = context__.vals_r("bgammapriors");
-      current_statement__ = 76;
+      current_statement__ = 79;
       context__.validate_dims("data initialization", "agammapriors",
         "double", std::vector<size_t>{static_cast<size_t>(2)});
       agammapriors = std::vector<double>(2,
                        std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 76;
+      current_statement__ = 79;
       agammapriors = context__.vals_r("agammapriors");
-      current_statement__ = 77;
+      current_statement__ = 80;
       context__.validate_dims("data initialization", "nparams", "int",
         std::vector<size_t>{});
       nparams = std::numeric_limits<int>::min();
-      current_statement__ = 77;
+      current_statement__ = 80;
       nparams = context__.vals_i("nparams")[(1 - 1)];
-      current_statement__ = 77;
+      current_statement__ = 80;
       stan::math::check_greater_or_equal(function__, "nparams", nparams, 0);
-      current_statement__ = 78;
+      current_statement__ = 81;
       stan::math::validate_non_negative_index("mat", "n_C", n_C);
-      current_statement__ = 79;
+      current_statement__ = 82;
       context__.validate_dims("data initialization", "mat", "int",
         std::vector<size_t>{static_cast<size_t>(n_C)});
       mat = std::vector<int>(n_C, std::numeric_limits<int>::min());
-      current_statement__ = 79;
+      current_statement__ = 82;
       mat = context__.vals_i("mat");
-      current_statement__ = 79;
+      current_statement__ = 82;
       stan::math::check_greater_or_equal(function__, "mat", mat, 1);
-      current_statement__ = 80;
+      current_statement__ = 83;
       context__.validate_dims("data initialization", "nsitecov", "int",
         std::vector<size_t>{});
       nsitecov = std::numeric_limits<int>::min();
-      current_statement__ = 80;
+      current_statement__ = 83;
       nsitecov = context__.vals_i("nsitecov")[(1 - 1)];
-      current_statement__ = 80;
+      current_statement__ = 83;
       stan::math::check_greater_or_equal(function__, "nsitecov", nsitecov, 0);
-      current_statement__ = 81;
+      current_statement__ = 84;
       stan::math::validate_non_negative_index("mat_site",
         "Nloc_trad + Nloc_dna", (Nloc_trad + Nloc_dna));
-      current_statement__ = 82;
+      current_statement__ = 85;
       stan::math::validate_non_negative_index("mat_site", "nsitecov",
         nsitecov);
-      current_statement__ = 83;
+      current_statement__ = 86;
       context__.validate_dims("data initialization", "mat_site", "double",
         std::vector<size_t>{static_cast<size_t>((Nloc_trad + Nloc_dna)),
           static_cast<size_t>(nsitecov)});
@@ -1443,86 +1462,86 @@ public:
         (Nloc_trad + Nloc_dna), nsitecov);
       {
         std::vector<local_scalar_t__> mat_site_flat__;
-        current_statement__ = 83;
+        current_statement__ = 86;
         mat_site_flat__ = context__.vals_r("mat_site");
-        current_statement__ = 83;
+        current_statement__ = 86;
         pos__ = 1;
-        current_statement__ = 83;
+        current_statement__ = 86;
         for (int sym1__ = 1; sym1__ <= nsitecov; ++sym1__) {
-          current_statement__ = 83;
+          current_statement__ = 86;
           for (int sym2__ = 1; sym2__ <= (Nloc_trad + Nloc_dna); ++sym2__) {
-            current_statement__ = 83;
+            current_statement__ = 86;
             stan::model::assign(mat_site, mat_site_flat__[(pos__ - 1)],
               "assigning variable mat_site", stan::model::index_uni(sym2__),
               stan::model::index_uni(sym1__));
-            current_statement__ = 83;
+            current_statement__ = 86;
             pos__ = (pos__ + 1);
           }
         }
       }
-      current_statement__ = 84;
+      current_statement__ = 87;
       context__.validate_dims("data initialization", "ctch", "int",
         std::vector<size_t>{});
       ctch = std::numeric_limits<int>::min();
-      current_statement__ = 84;
-      ctch = context__.vals_i("ctch")[(1 - 1)];
-      current_statement__ = 84;
-      stan::math::check_greater_or_equal(function__, "ctch", ctch, 0);
-      current_statement__ = 84;
-      stan::math::check_less_or_equal(function__, "ctch", ctch, 1);
-      current_statement__ = 85;
-      stan::math::validate_non_negative_index("p_dna", "Nloc_dna", Nloc_dna);
-      current_statement__ = 86;
-      stan::math::validate_non_negative_index("q_trans", "nparams", nparams);
       current_statement__ = 87;
-      stan::math::validate_non_negative_index("alpha", "nsitecov", nsitecov);
+      ctch = context__.vals_i("ctch")[(1 - 1)];
+      current_statement__ = 87;
+      stan::math::check_greater_or_equal(function__, "ctch", ctch, 0);
+      current_statement__ = 87;
+      stan::math::check_less_or_equal(function__, "ctch", ctch, 1);
       current_statement__ = 88;
+      stan::math::validate_non_negative_index("p_dna", "Nloc_dna", Nloc_dna);
+      current_statement__ = 89;
+      stan::math::validate_non_negative_index("q_trans", "nparams", nparams);
+      current_statement__ = 90;
+      stan::math::validate_non_negative_index("alpha", "nsitecov", nsitecov);
+      current_statement__ = 91;
       stan::math::validate_non_negative_index("alpha_gamma", "Nloc_trad",
         Nloc_trad);
-      current_statement__ = 89;
+      current_statement__ = 92;
       stan::math::validate_non_negative_index("beta_gamma", "Nloc_trad",
         Nloc_trad);
-      current_statement__ = 90;
+      current_statement__ = 93;
       stan::math::validate_non_negative_index("p11_trad", "Nloc_trad",
         Nloc_trad);
-      current_statement__ = 91;
+      current_statement__ = 94;
       stan::math::validate_non_negative_index("p_trad", "Nloc_trad",
         Nloc_trad);
-      current_statement__ = 92;
+      current_statement__ = 95;
       coef_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 92;
+      current_statement__ = 95;
       coef_1dim__ = (stan::math::logical_eq(ctch, 1) ? (nparams + 1) : 0);
-      current_statement__ = 92;
+      current_statement__ = 95;
       stan::math::validate_non_negative_index("coef",
         "(ctch == 1) ? nparams + 1 : 0", coef_1dim__);
-      current_statement__ = 93;
+      current_statement__ = 96;
       stan::math::validate_non_negative_index("mu_trad", "Nloc_trad",
         Nloc_trad);
-      current_statement__ = 94;
+      current_statement__ = 97;
       stan::math::validate_non_negative_index("E_trans", "n_C", n_C);
-      current_statement__ = 95;
+      current_statement__ = 98;
       stan::math::validate_non_negative_index("q", "nparams", nparams);
-      current_statement__ = 96;
+      current_statement__ = 99;
       log_lik_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 96;
+      current_statement__ = 99;
       log_lik_1dim__ = ((n_C + n_S) + S_dna);
-      current_statement__ = 96;
+      current_statement__ = 99;
       stan::math::validate_non_negative_index("log_lik", "n_C + n_S + S_dna",
         log_lik_1dim__);
-      current_statement__ = 97;
+      current_statement__ = 100;
       mu_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 97;
+      current_statement__ = 100;
       mu_1dim__ = (Nloc_dna + Nloc_trad);
-      current_statement__ = 97;
+      current_statement__ = 100;
       stan::math::validate_non_negative_index("mu", "Nloc_dna + Nloc_trad",
         mu_1dim__);
-      current_statement__ = 98;
+      current_statement__ = 101;
       mu_2dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 98;
+      current_statement__ = 101;
       mu_2dim__ = (nparams + 1);
-      current_statement__ = 98;
+      current_statement__ = 101;
       stan::math::validate_non_negative_index("mu", "nparams + 1", mu_2dim__);
-      current_statement__ = 99;
+      current_statement__ = 102;
       stan::math::validate_non_negative_index("beta", "Nloc_trad", Nloc_trad);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1616,7 +1635,7 @@ public:
       stan::model::assign(p_trad,
         stan::math::add(p11_trad, stan::math::exp(log_p10)),
         "assigning variable p_trad");
-      current_statement__ = 21;
+      current_statement__ = 22;
       if (stan::math::logical_eq(ctch, 1)) {
         current_statement__ = 20;
         stan::model::assign(coef,
@@ -1624,9 +1643,9 @@ public:
             stan::math::append_row(1, stan::math::add(1, q_trans))),
           "assigning variable coef");
       }
-      current_statement__ = 24;
+      current_statement__ = 25;
       for (int j = 1; j <= n_C; ++j) {
-        current_statement__ = 22;
+        current_statement__ = 23;
         stan::model::assign(E_trans,
           (stan::model::rvalue(n_E, "n_E", stan::model::index_uni(j)) +
           0.0000000000001), "assigning variable E_trans",
@@ -1647,17 +1666,17 @@ public:
       current_statement__ = 11;
       stan::math::check_greater_or_equal(function__, "E_trans", E_trans, 0);
       {
-        current_statement__ = 31;
+        current_statement__ = 33;
         stan::math::validate_non_negative_index("lambda", "n_C", n_C);
         std::vector<local_scalar_t__> lambda =
           std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-        current_statement__ = 33;
+        current_statement__ = 35;
         stan::model::assign(lambda,
           get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C,
             pstream__), "assigning variable lambda");
-        current_statement__ = 36;
+        current_statement__ = 38;
         for (int j = 1; j <= n_C; ++j) {
-          current_statement__ = 34;
+          current_statement__ = 36;
           lp_accum__.add(stan::math::gamma_lpdf<propto__>(
                            stan::model::rvalue(E_trans, "E_trans",
                              stan::model::index_uni(j)),
@@ -1668,9 +1687,9 @@ public:
                                stan::model::rvalue(R_ind, "R_ind",
                                  stan::model::index_uni(j))))));
         }
-        current_statement__ = 39;
+        current_statement__ = 41;
         for (int i = 1; i <= n_S; ++i) {
-          current_statement__ = 37;
+          current_statement__ = 39;
           lp_accum__.add(stan::math::binomial_lpmf<propto__>(
                            stan::model::rvalue(n_K, "n_K",
                              stan::model::index_uni(i)),
@@ -1681,11 +1700,11 @@ public:
                                stan::model::rvalue(L_ind, "L_ind",
                                  stan::model::index_uni(i))))));
         }
-        current_statement__ = 43;
+        current_statement__ = 46;
         if (stan::math::logical_gt(Nloc_dna, 0)) {
-          current_statement__ = 42;
+          current_statement__ = 44;
           for (int i = 1; i <= S_dna; ++i) {
-            current_statement__ = 40;
+            current_statement__ = 42;
             lp_accum__.add(stan::math::binomial_lpmf<propto__>(
                              stan::model::rvalue(K_dna, "K_dna",
                                stan::model::index_uni(i)),
@@ -1697,25 +1716,25 @@ public:
                                    stan::model::index_uni(i))))));
           }
         }
-        current_statement__ = 44;
+        current_statement__ = 47;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(log_p10,
-                         stan::model::rvalue(p10priors, "p10priors",
+                         stan::model::rvalue(p10_priors, "p10_priors",
                            stan::model::index_uni(1)),
-                         stan::model::rvalue(p10priors, "p10priors",
+                         stan::model::rvalue(p10_priors, "p10_priors",
                            stan::model::index_uni(2))));
-        current_statement__ = 45;
+        current_statement__ = 48;
         lp_accum__.add(stan::math::normal_lpdf<propto__>(alpha,
                          stan::model::rvalue(alphapriors, "alphapriors",
                            stan::model::index_uni(1)),
                          stan::model::rvalue(alphapriors, "alphapriors",
                            stan::model::index_uni(2))));
-        current_statement__ = 46;
+        current_statement__ = 49;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(beta_gamma,
                          stan::model::rvalue(bgammapriors, "bgammapriors",
                            stan::model::index_uni(1)),
                          stan::model::rvalue(bgammapriors, "bgammapriors",
                            stan::model::index_uni(2))));
-        current_statement__ = 47;
+        current_statement__ = 50;
         lp_accum__.add(stan::math::gamma_lpdf<propto__>(alpha_gamma,
                          stan::model::rvalue(agammapriors, "agammapriors",
                            stan::model::index_uni(1)),
@@ -1833,7 +1852,7 @@ public:
       stan::model::assign(p_trad,
         stan::math::add(p11_trad, stan::math::exp(log_p10)),
         "assigning variable p_trad");
-      current_statement__ = 21;
+      current_statement__ = 22;
       if (stan::math::logical_eq(ctch, 1)) {
         current_statement__ = 20;
         stan::model::assign(coef,
@@ -1841,9 +1860,9 @@ public:
             stan::math::append_row(1, stan::math::add(1, q_trans))),
           "assigning variable coef");
       }
-      current_statement__ = 24;
+      current_statement__ = 25;
       for (int j = 1; j <= n_C; ++j) {
-        current_statement__ = 22;
+        current_statement__ = 23;
         stan::model::assign(E_trans,
           (stan::model::rvalue(n_E, "n_E", stan::model::index_uni(j)) +
           0.0000000000001), "assigning variable E_trans",
@@ -1886,26 +1905,26 @@ public:
       Eigen::Matrix<double,-1,1> beta =
         Eigen::Matrix<double,-1,1>::Constant(Nloc_trad,
           std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 25;
+      current_statement__ = 26;
       p10 = stan::math::exp(log_p10);
-      current_statement__ = 27;
+      current_statement__ = 29;
       if (stan::math::logical_eq(ctch, 1)) {
-        current_statement__ = 26;
+        current_statement__ = 27;
         stan::model::assign(q, stan::math::add(q_trans, 1),
           "assigning variable q");
       }
-      current_statement__ = 28;
+      current_statement__ = 30;
       stan::model::assign(beta,
         stan::math::multiply(
           stan::model::rvalue(mat_site, "mat_site",
             stan::model::index_multi(trad_ind)), alpha),
         "assigning variable beta");
-      current_statement__ = 29;
+      current_statement__ = 31;
       stan::model::assign(mu,
         calc_mu(trad_ind, dna_ind, mu_trad, ctch, nparams, q, Nloc_dna,
           Nloc_trad, p_dna, p10, mat_site, alpha, pstream__),
         "assigning variable mu");
-      current_statement__ = 30;
+      current_statement__ = 32;
       stan::model::assign(log_lik,
         calc_loglik_continuous(ctch, coef, mat, alpha_gamma, beta_gamma,
           R_ind, E_trans, n_K, n_N, p_trad, L_ind, n_C, n_S, S_dna, Nloc_dna,

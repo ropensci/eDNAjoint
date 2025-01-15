@@ -50,9 +50,9 @@ install.packages("eDNAjoint", repos = "https://ropensci.r-universe.dev")
 
 ## Example
 
-The main functionality in *eDNAjoint* is the use of `jointModel()` that
-will fit the model to data. Further functions like `jointSummarize()`
-and `detectionCalculate()` can be used to help with model fit
+The main functionality in *eDNAjoint* is the use of `joint_model()` that
+will fit the model to data. Further functions like `joint_summarize()`
+and `detection_calculate()` can be used to help with model fit
 interpretation.
 
 This example fits the joint model to data from paired, replicated eDNA
@@ -64,10 +64,10 @@ traditional sampling.
 
 ``` r
 library(eDNAjoint)
-data(gobyData)
+data(goby_data)
 # run the joint model with two covariates
-goby.fit <- jointModel(data = gobyData, cov = c('Filter_time','Salinity'), 
-                       family = 'poisson', p10priors = c(1,20), q = FALSE)
+goby_fit <- joint_model(data = goby_data, cov = c("Filter_time", "Salinity"), 
+                        family = "poisson", p10_priors = c(1, 20), q = FALSE)
 ```
 
 And then this model fit can be accessed to do things like summarize the
@@ -76,9 +76,9 @@ detection, $p_{10}$:
 
 ``` r
 # summarize p10 posterior
-jointSummarize(goby.fit$model, par = 'p10')
-#>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 10934.87    1
+joint_summarize(goby_fit$model, par = "p10")
+#>      mean se_mean    sd  2.5% 97.5%  n_eff  Rhat
+#> p10 0.006   0.002 0.012 0.001  0.06 34.951 1.088
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -86,10 +86,11 @@ necessary to detect presence of the species at a given expected catch
 rate:
 
 ``` r
-# find the number of samples necessary to detect presence with 0.9 probability at the mean covariate values, 
-# if the expected catch rate (mu) is 0.1, 0.5, or 1 individuals/traditional survey unit.
-detectionCalculate(goby.fit$model, mu = c(0.1,0.5,1), 
-                   cov.val = c(0,0), probability = 0.9)
+# find the number of samples necessary to detect presence with 0.9 probability 
+# at the mean covariate values, if the expected catch rate (mu) is 0.1, 0.5, or 
+# 1 individuals/traditional survey unit.
+detection_calculate(goby_fit$model, mu = c(0.1, 0.5, 1), 
+                    cov_val = c(0, 0), probability = 0.9)
 #>       mu n_traditional n_eDNA
 #> [1,] 0.1            24     14
 #> [2,] 0.5             5      4

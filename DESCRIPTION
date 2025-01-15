@@ -16,7 +16,7 @@ Roxygen: list(markdown = TRUE, roclets = c ("namespace", "rd", "srr::srr_stats_r
 RoxygenNote: 7.3.2
 Biarch: true
 Depends: 
-    R (>= 3.4.0)
+    R (>= 3.5)
 Imports: 
     bayestestR,
     dplyr,

@@ -15,22 +15,28 @@ matrix calc_mu(
   matrix mat_site,
   vector alpha){
 
-    matrix[Nloc_dna+Nloc_trad,nparams+1] mu;
+    matrix[Nloc_dna + Nloc_trad, nparams + 1] mu;
 
     mu[trad_ind, 1] = mu_trad;
-    if(ctch == 1)
+    if (ctch == 1) {
       mu[trad_ind, 2:(nparams + 1)] = mu_trad * q';
+    }
 
-    if(Nloc_dna > 0)
-     for (i in 1:Nloc_dna){
-       real p11_dna[Nloc_dna];
-       p11_dna[i] = p_dna[i] - p10;
-       mu[dna_ind[i],1] = p11_dna[i]*exp(dot_product(to_vector(mat_site[dna_ind[i]]),alpha))/(1-p11_dna[i]);
-     }
-     if(ctch == 1)
-       for (i in 1:Nloc_dna){
-         mu[dna_ind[i], 2:(nparams + 1)] = mu[dna_ind[i], 1] * q';
+    if (Nloc_dna > 0) {
+      for (i in 1:Nloc_dna) {
+        real p11_dna[Nloc_dna];
+        p11_dna[i] = p_dna[i] - p10;
+        mu[dna_ind[i], 1] = (
+          p11_dna[i]*exp(dot_product(to_vector(mat_site[dna_ind[i]]), alpha)) /
+          (1 - p11_dna[i])
+          );
        }
+      if (ctch == 1) {
+        for (i in 1:Nloc_dna) {
+          mu[dna_ind[i], 2:(nparams + 1)] = mu[dna_ind[i], 1] * q';
+        }
+      }
+    }
 
     return mu;
   }
@@ -44,11 +50,11 @@ matrix calc_mu_trad_count(
   vector q,
   int ctch){
 
-    matrix[Nloc,nparams+1] mu;
+    matrix[Nloc, nparams + 1] mu;
 
     mu[, 1] = mu_1;
 
-    if(ctch == 1){
+    if (ctch == 1) {
       mu[, 2:(nparams + 1)] = mu_1 * q';
     }
 
@@ -64,16 +70,17 @@ matrix calc_mu_trad_continuous(
   vector q,
   int ctch){
 
-    matrix[Nloc,nparams+1] mu;
+    matrix[Nloc, nparams + 1] mu;
 
-    for(j in 1:Nloc){
-      mu[j,1] = alpha[j]/beta[j];
+    for (j in 1:Nloc) {
+      mu[j, 1] = alpha[j] / beta[j];
     }
 
-    if(ctch == 1)
-      for(i in 1:nparams){
-        mu[,i+1] = to_vector(mu[,1])*q[i];
+    if (ctch == 1) {
+      for (i in 1:nparams) {
+        mu[, i + 1] = to_vector(mu[, 1])*q[i];
       }
+    }
 
     return mu;
   }

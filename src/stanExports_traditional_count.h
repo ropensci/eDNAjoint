@@ -27,174 +27,186 @@ namespace model_traditional_count_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 167> locations_array__ =
+static constexpr std::array<const char*, 179> locations_array__ =
   {" (found before start of program)",
-  " (in 'traditional_count', line 334, column 4 to column 31)",
-  " (in 'traditional_count', line 335, column 4 to column 46)",
-  " (in 'traditional_count', line 336, column 4 to column 44)",
-  " (in 'traditional_count', line 339, column 4 to column 53)",
-  " (in 'traditional_count', line 360, column 2 to column 20)",
-  " (in 'traditional_count', line 361, column 2 to column 22)",
-  " (in 'traditional_count', line 362, column 2 to column 28)",
-  " (in 'traditional_count', line 341, column 6 to column 51)",
-  " (in 'traditional_count', line 340, column 4 to line 341, column 51)",
-  " (in 'traditional_count', line 366, column 4 to column 20)",
-  " (in 'traditional_count', line 365, column 2 to line 366, column 20)",
-  " (in 'traditional_count', line 367, column 2 to column 56)",
-  " (in 'traditional_count', line 370, column 2 to line 371, column 62)",
-  " (in 'traditional_count', line 345, column 16 to column 19)",
-  " (in 'traditional_count', line 345, column 4 to column 21)",
-  " (in 'traditional_count', line 346, column 4 to column 65)",
-  " (in 'traditional_count', line 353, column 8 to column 36)",
-  " (in 'traditional_count', line 352, column 23 to line 354, column 7)",
-  " (in 'traditional_count', line 352, column 6 to line 354, column 7)",
-  " (in 'traditional_count', line 351, column 11 to line 355, column 5)",
-  " (in 'traditional_count', line 349, column 8 to column 48)",
-  " (in 'traditional_count', line 348, column 23 to line 350, column 7)",
-  " (in 'traditional_count', line 348, column 6 to line 350, column 7)",
-  " (in 'traditional_count', line 347, column 21 to line 351, column 5)",
-  " (in 'traditional_count', line 347, column 4 to line 355, column 5)",
-  " (in 'traditional_count', line 357, column 6 to column 46)",
-  " (in 'traditional_count', line 356, column 4 to line 357, column 46)",
-  " (in 'traditional_count', line 323, column 4 to column 21)",
-  " (in 'traditional_count', line 324, column 10 to column 13)",
-  " (in 'traditional_count', line 324, column 4 to column 34)",
-  " (in 'traditional_count', line 325, column 4 to column 22)",
-  " (in 'traditional_count', line 326, column 10 to column 13)",
-  " (in 'traditional_count', line 326, column 4 to column 32)",
-  " (in 'traditional_count', line 327, column 4 to column 25)",
-  " (in 'traditional_count', line 328, column 10 to column 13)",
-  " (in 'traditional_count', line 328, column 4 to column 32)",
-  " (in 'traditional_count', line 329, column 4 to column 28)",
-  " (in 'traditional_count', line 330, column 4 to column 32)",
-  " (in 'traditional_count', line 331, column 4 to column 30)",
-  " (in 'traditional_count', line 334, column 20 to column 24)",
-  " (in 'traditional_count', line 335, column 22 to column 44)",
-  " (in 'traditional_count', line 336, column 27 to column 34)",
-  " (in 'traditional_count', line 339, column 23 to column 51)",
-  " (in 'traditional_count', line 360, column 9 to column 16)",
-  " (in 'traditional_count', line 361, column 9 to column 12)",
-  " (in 'traditional_count', line 362, column 9 to column 13)",
-  " (in 'traditional_count', line 362, column 14 to column 23)",
-  " (in 'traditional_count', line 19, column 11 to column 20)",
-  " (in 'traditional_count', line 19, column 4 to column 30)",
+  " (in 'traditional_count', line 361, column 2 to column 29)",
+  " (in 'traditional_count', line 363, column 2 to column 43)",
+  " (in 'traditional_count', line 365, column 2 to column 42)",
+  " (in 'traditional_count', line 368, column 2 to column 52)",
+  " (in 'traditional_count', line 391, column 2 to column 20)",
+  " (in 'traditional_count', line 392, column 2 to column 22)",
+  " (in 'traditional_count', line 393, column 2 to column 31)",
+  " (in 'traditional_count', line 370, column 4 to column 51)",
+  " (in 'traditional_count', line 369, column 17 to line 371, column 3)",
+  " (in 'traditional_count', line 369, column 2 to line 371, column 3)",
+  " (in 'traditional_count', line 397, column 4 to column 20)",
+  " (in 'traditional_count', line 396, column 17 to line 398, column 3)",
+  " (in 'traditional_count', line 396, column 2 to line 398, column 3)",
+  " (in 'traditional_count', line 399, column 2 to column 56)",
+  " (in 'traditional_count', line 402, column 2 to line 403, column 62)",
+  " (in 'traditional_count', line 375, column 14 to column 17)",
+  " (in 'traditional_count', line 375, column 2 to column 19)",
+  " (in 'traditional_count', line 376, column 2 to column 63)",
+  " (in 'traditional_count', line 383, column 6 to column 34)",
+  " (in 'traditional_count', line 382, column 21 to line 384, column 5)",
+  " (in 'traditional_count', line 382, column 4 to line 384, column 5)",
+  " (in 'traditional_count', line 381, column 9 to line 385, column 3)",
+  " (in 'traditional_count', line 379, column 6 to column 46)",
+  " (in 'traditional_count', line 378, column 21 to line 380, column 5)",
+  " (in 'traditional_count', line 378, column 4 to line 380, column 5)",
+  " (in 'traditional_count', line 377, column 19 to line 381, column 3)",
+  " (in 'traditional_count', line 377, column 2 to line 385, column 3)",
+  " (in 'traditional_count', line 387, column 4 to column 46)",
+  " (in 'traditional_count', line 386, column 19 to line 388, column 3)",
+  " (in 'traditional_count', line 386, column 2 to line 388, column 3)",
+  " (in 'traditional_count', line 341, column 2 to column 19)",
+  " (in 'traditional_count', line 343, column 8 to column 11)",
+  " (in 'traditional_count', line 343, column 2 to column 32)",
+  " (in 'traditional_count', line 345, column 2 to column 20)",
+  " (in 'traditional_count', line 347, column 8 to column 11)",
+  " (in 'traditional_count', line 347, column 2 to column 30)",
+  " (in 'traditional_count', line 349, column 2 to column 23)",
+  " (in 'traditional_count', line 351, column 8 to column 11)",
+  " (in 'traditional_count', line 351, column 2 to column 30)",
+  " (in 'traditional_count', line 353, column 2 to column 27)",
+  " (in 'traditional_count', line 355, column 2 to column 31)",
+  " (in 'traditional_count', line 357, column 2 to column 29)",
+  " (in 'traditional_count', line 361, column 18 to column 22)",
+  " (in 'traditional_count', line 363, column 20 to column 41)",
+  " (in 'traditional_count', line 365, column 25 to column 32)",
+  " (in 'traditional_count', line 368, column 21 to column 50)",
+  " (in 'traditional_count', line 391, column 9 to column 16)",
+  " (in 'traditional_count', line 392, column 9 to column 12)",
+  " (in 'traditional_count', line 393, column 9 to column 13)",
+  " (in 'traditional_count', line 393, column 15 to column 26)",
+  " (in 'traditional_count', line 19, column 11 to column 22)",
+  " (in 'traditional_count', line 19, column 4 to column 32)",
   " (in 'traditional_count', line 22, column 6 to column 68)",
-  " (in 'traditional_count', line 21, column 19 to line 23, column 7)",
-  " (in 'traditional_count', line 21, column 4 to line 23, column 7)",
-  " (in 'traditional_count', line 28, column 9 to column 78)",
-  " (in 'traditional_count', line 27, column 24 to line 29, column 10)",
-  " (in 'traditional_count', line 27, column 7 to line 29, column 10)",
-  " (in 'traditional_count', line 25, column 4 to line 29, column 10)",
-  " (in 'traditional_count', line 31, column 4 to column 19)",
-  " (in 'traditional_count', line 17, column 14 to line 32, column 3)",
-  " (in 'traditional_count', line 42, column 11 to column 14)",
-  " (in 'traditional_count', line 42, column 4 to column 24)",
-  " (in 'traditional_count', line 51, column 8 to column 54)",
-  " (in 'traditional_count', line 50, column 23 to line 52, column 7)",
-  " (in 'traditional_count', line 50, column 6 to line 52, column 7)",
-  " (in 'traditional_count', line 49, column 11 to line 53, column 5)",
-  " (in 'traditional_count', line 47, column 8 to column 66)",
-  " (in 'traditional_count', line 46, column 23 to line 48, column 7)",
-  " (in 'traditional_count', line 46, column 6 to line 48, column 7)",
-  " (in 'traditional_count', line 45, column 21 to line 49, column 5)",
-  " (in 'traditional_count', line 45, column 4 to line 53, column 5)",
-  " (in 'traditional_count', line 54, column 4 to column 19)",
-  " (in 'traditional_count', line 40, column 10 to line 55, column 3)",
-  " (in 'traditional_count', line 65, column 11 to column 14)",
-  " (in 'traditional_count', line 65, column 4 to column 24)",
-  " (in 'traditional_count', line 69, column 6 to column 73)",
-  " (in 'traditional_count', line 68, column 21 to line 70, column 5)",
-  " (in 'traditional_count', line 68, column 4 to line 70, column 5)",
-  " (in 'traditional_count', line 72, column 4 to column 19)",
-  " (in 'traditional_count', line 63, column 10 to line 73, column 3)",
-  " (in 'traditional_count', line 98, column 11 to column 24)",
-  " (in 'traditional_count', line 98, column 4 to column 34)",
-  " (in 'traditional_count', line 101, column 16 to column 19)",
-  " (in 'traditional_count', line 101, column 4 to column 21)",
-  " (in 'traditional_count', line 102, column 4 to column 68)",
-  " (in 'traditional_count', line 105, column 4 to column 75)",
-  " (in 'traditional_count', line 108, column 4 to line 110, column 72)",
-  " (in 'traditional_count', line 112, column 4 to column 19)",
-  " (in 'traditional_count', line 96, column 14 to line 114, column 3)",
-  " (in 'traditional_count', line 138, column 11 to column 24)",
-  " (in 'traditional_count', line 138, column 4 to column 34)",
-  " (in 'traditional_count', line 141, column 16 to column 19)",
-  " (in 'traditional_count', line 141, column 4 to column 21)",
-  " (in 'traditional_count', line 142, column 4 to column 77)",
-  " (in 'traditional_count', line 145, column 4 to line 146, column 61)",
-  " (in 'traditional_count', line 149, column 4 to line 151, column 72)",
-  " (in 'traditional_count', line 153, column 4 to column 19)",
-  " (in 'traditional_count', line 136, column 14 to line 155, column 3)",
-  " (in 'traditional_count', line 166, column 16 to column 19)",
-  " (in 'traditional_count', line 166, column 4 to column 21)",
-  " (in 'traditional_count', line 169, column 6 to column 85)",
-  " (in 'traditional_count', line 168, column 21 to line 170, column 5)",
-  " (in 'traditional_count', line 168, column 4 to line 170, column 5)",
-  " (in 'traditional_count', line 172, column 4 to column 18)",
-  " (in 'traditional_count', line 164, column 10 to line 173, column 1)",
-  " (in 'traditional_count', line 184, column 16 to column 19)",
-  " (in 'traditional_count', line 184, column 4 to column 21)",
-  " (in 'traditional_count', line 187, column 6 to column 91)",
-  " (in 'traditional_count', line 186, column 21 to line 188, column 5)",
-  " (in 'traditional_count', line 186, column 4 to line 188, column 5)",
-  " (in 'traditional_count', line 190, column 4 to column 18)",
-  " (in 'traditional_count', line 182, column 10 to line 191, column 1)",
-  " (in 'traditional_count', line 205, column 11 to column 14)",
-  " (in 'traditional_count', line 205, column 4 to column 24)",
-  " (in 'traditional_count', line 208, column 16 to column 19)",
-  " (in 'traditional_count', line 208, column 4 to column 21)",
-  " (in 'traditional_count', line 209, column 4 to column 65)",
-  " (in 'traditional_count', line 212, column 4 to column 68)",
-  " (in 'traditional_count', line 214, column 4 to column 19)",
-  " (in 'traditional_count', line 203, column 14 to line 215, column 3)",
-  " (in 'traditional_count', line 228, column 11 to column 14)",
-  " (in 'traditional_count', line 228, column 4 to column 24)",
-  " (in 'traditional_count', line 231, column 16 to column 19)",
-  " (in 'traditional_count', line 231, column 4 to column 21)",
-  " (in 'traditional_count', line 232, column 4 to column 71)",
-  " (in 'traditional_count', line 235, column 4 to column 77)",
-  " (in 'traditional_count', line 237, column 4 to column 19)",
-  " (in 'traditional_count', line 226, column 15 to line 238, column 3)",
-  " (in 'traditional_count', line 258, column 11 to column 29)",
-  " (in 'traditional_count', line 258, column 30 to column 39)",
-  " (in 'traditional_count', line 258, column 4 to column 44)",
-  " (in 'traditional_count', line 260, column 4 to column 30)",
-  " (in 'traditional_count', line 262, column 6 to column 51)",
-  " (in 'traditional_count', line 261, column 4 to line 262, column 51)",
-  " (in 'traditional_count', line 266, column 20 to column 28)",
-  " (in 'traditional_count', line 266, column 7 to column 30)",
-  " (in 'traditional_count', line 267, column 7 to column 35)",
-  " (in 'traditional_count', line 268, column 7 to column 108)",
-  " (in 'traditional_count', line 265, column 26 to line 269, column 6)",
-  " (in 'traditional_count', line 265, column 5 to line 269, column 6)",
-  " (in 'traditional_count', line 264, column 4 to line 269, column 6)",
-  " (in 'traditional_count', line 272, column 9 to column 66)",
-  " (in 'traditional_count', line 271, column 28 to line 273, column 8)",
-  " (in 'traditional_count', line 271, column 7 to line 273, column 8)",
-  " (in 'traditional_count', line 270, column 5 to line 273, column 8)",
-  " (in 'traditional_count', line 275, column 4 to column 14)",
-  " (in 'traditional_count', line 256, column 15 to line 276, column 3)",
-  " (in 'traditional_count', line 287, column 11 to column 15)",
-  " (in 'traditional_count', line 287, column 16 to column 25)",
-  " (in 'traditional_count', line 287, column 4 to column 30)",
-  " (in 'traditional_count', line 289, column 4 to column 19)",
-  " (in 'traditional_count', line 292, column 6 to column 40)",
-  " (in 'traditional_count', line 291, column 17 to line 293, column 5)",
-  " (in 'traditional_count', line 291, column 4 to line 293, column 5)",
-  " (in 'traditional_count', line 295, column 4 to column 14)",
-  " (in 'traditional_count', line 285, column 11 to line 296, column 3)",
-  " (in 'traditional_count', line 307, column 11 to column 15)",
-  " (in 'traditional_count', line 307, column 16 to column 25)",
-  " (in 'traditional_count', line 307, column 4 to column 30)",
-  " (in 'traditional_count', line 310, column 6 to column 33)",
-  " (in 'traditional_count', line 309, column 20 to line 311, column 5)",
-  " (in 'traditional_count', line 309, column 4 to line 311, column 5)",
-  " (in 'traditional_count', line 315, column 8 to column 42)",
-  " (in 'traditional_count', line 314, column 25 to line 316, column 7)",
-  " (in 'traditional_count', line 314, column 6 to line 316, column 7)",
-  " (in 'traditional_count', line 313, column 4 to line 316, column 7)",
-  " (in 'traditional_count', line 318, column 4 to column 14)",
-  " (in 'traditional_count', line 305, column 11 to line 319, column 3)"};
+  " (in 'traditional_count', line 21, column 21 to line 23, column 5)",
+  " (in 'traditional_count', line 21, column 4 to line 23, column 5)",
+  " (in 'traditional_count', line 28, column 8 to column 77)",
+  " (in 'traditional_count', line 27, column 25 to line 29, column 7)",
+  " (in 'traditional_count', line 27, column 6 to line 29, column 7)",
+  " (in 'traditional_count', line 25, column 22 to line 30, column 5)",
+  " (in 'traditional_count', line 25, column 4 to line 30, column 5)",
+  " (in 'traditional_count', line 32, column 4 to column 19)",
+  " (in 'traditional_count', line 17, column 14 to line 33, column 3)",
+  " (in 'traditional_count', line 43, column 11 to column 14)",
+  " (in 'traditional_count', line 43, column 4 to column 24)",
+  " (in 'traditional_count', line 52, column 8 to column 54)",
+  " (in 'traditional_count', line 51, column 23 to line 53, column 7)",
+  " (in 'traditional_count', line 51, column 6 to line 53, column 7)",
+  " (in 'traditional_count', line 50, column 11 to line 54, column 5)",
+  " (in 'traditional_count', line 48, column 8 to column 66)",
+  " (in 'traditional_count', line 47, column 23 to line 49, column 7)",
+  " (in 'traditional_count', line 47, column 6 to line 49, column 7)",
+  " (in 'traditional_count', line 46, column 21 to line 50, column 5)",
+  " (in 'traditional_count', line 46, column 4 to line 54, column 5)",
+  " (in 'traditional_count', line 55, column 4 to column 19)",
+  " (in 'traditional_count', line 41, column 10 to line 56, column 3)",
+  " (in 'traditional_count', line 66, column 11 to column 14)",
+  " (in 'traditional_count', line 66, column 4 to column 24)",
+  " (in 'traditional_count', line 70, column 6 to column 73)",
+  " (in 'traditional_count', line 69, column 21 to line 71, column 5)",
+  " (in 'traditional_count', line 69, column 4 to line 71, column 5)",
+  " (in 'traditional_count', line 73, column 4 to column 19)",
+  " (in 'traditional_count', line 64, column 10 to line 74, column 3)",
+  " (in 'traditional_count', line 99, column 11 to column 28)",
+  " (in 'traditional_count', line 99, column 4 to column 38)",
+  " (in 'traditional_count', line 102, column 16 to column 19)",
+  " (in 'traditional_count', line 102, column 4 to column 21)",
+  " (in 'traditional_count', line 103, column 4 to column 68)",
+  " (in 'traditional_count', line 106, column 4 to column 75)",
+  " (in 'traditional_count', line 109, column 4 to column 12)",
+  " (in 'traditional_count', line 110, column 4 to column 28)",
+  " (in 'traditional_count', line 111, column 4 to line 113, column 64)",
+  " (in 'traditional_count', line 115, column 4 to column 19)",
+  " (in 'traditional_count', line 97, column 14 to line 117, column 3)",
+  " (in 'traditional_count', line 141, column 11 to column 24)",
+  " (in 'traditional_count', line 141, column 4 to column 34)",
+  " (in 'traditional_count', line 144, column 16 to column 19)",
+  " (in 'traditional_count', line 144, column 4 to column 21)",
+  " (in 'traditional_count', line 145, column 4 to column 77)",
+  " (in 'traditional_count', line 148, column 4 to line 149, column 61)",
+  " (in 'traditional_count', line 152, column 4 to column 12)",
+  " (in 'traditional_count', line 153, column 4 to column 28)",
+  " (in 'traditional_count', line 154, column 4 to line 156, column 64)",
+  " (in 'traditional_count', line 158, column 4 to column 19)",
+  " (in 'traditional_count', line 139, column 14 to line 160, column 3)",
+  " (in 'traditional_count', line 171, column 16 to column 19)",
+  " (in 'traditional_count', line 171, column 4 to column 21)",
+  " (in 'traditional_count', line 174, column 6 to line 176, column 8)",
+  " (in 'traditional_count', line 173, column 21 to line 177, column 5)",
+  " (in 'traditional_count', line 173, column 4 to line 177, column 5)",
+  " (in 'traditional_count', line 179, column 4 to column 18)",
+  " (in 'traditional_count', line 169, column 10 to line 180, column 1)",
+  " (in 'traditional_count', line 191, column 16 to column 19)",
+  " (in 'traditional_count', line 191, column 4 to column 21)",
+  " (in 'traditional_count', line 194, column 6 to line 197, column 8)",
+  " (in 'traditional_count', line 193, column 21 to line 198, column 5)",
+  " (in 'traditional_count', line 193, column 4 to line 198, column 5)",
+  " (in 'traditional_count', line 200, column 4 to column 18)",
+  " (in 'traditional_count', line 189, column 10 to line 201, column 1)",
+  " (in 'traditional_count', line 215, column 11 to column 14)",
+  " (in 'traditional_count', line 215, column 4 to column 24)",
+  " (in 'traditional_count', line 218, column 16 to column 19)",
+  " (in 'traditional_count', line 218, column 4 to column 21)",
+  " (in 'traditional_count', line 219, column 4 to column 65)",
+  " (in 'traditional_count', line 222, column 4 to column 68)",
+  " (in 'traditional_count', line 224, column 4 to column 19)",
+  " (in 'traditional_count', line 213, column 14 to line 225, column 3)",
+  " (in 'traditional_count', line 238, column 11 to column 14)",
+  " (in 'traditional_count', line 238, column 4 to column 24)",
+  " (in 'traditional_count', line 241, column 16 to column 19)",
+  " (in 'traditional_count', line 241, column 4 to column 21)",
+  " (in 'traditional_count', line 242, column 4 to column 71)",
+  " (in 'traditional_count', line 245, column 4 to column 77)",
+  " (in 'traditional_count', line 247, column 4 to column 19)",
+  " (in 'traditional_count', line 236, column 15 to line 248, column 3)",
+  " (in 'traditional_count', line 268, column 11 to column 31)",
+  " (in 'traditional_count', line 268, column 33 to column 44)",
+  " (in 'traditional_count', line 268, column 4 to column 49)",
+  " (in 'traditional_count', line 270, column 4 to column 30)",
+  " (in 'traditional_count', line 272, column 6 to column 51)",
+  " (in 'traditional_count', line 271, column 19 to line 273, column 5)",
+  " (in 'traditional_count', line 271, column 4 to line 273, column 5)",
+  " (in 'traditional_count', line 277, column 21 to column 29)",
+  " (in 'traditional_count', line 277, column 8 to column 31)",
+  " (in 'traditional_count', line 278, column 8 to column 36)",
+  " (in 'traditional_count', line 279, column 8 to line 282, column 12)",
+  " (in 'traditional_count', line 276, column 28 to line 283, column 8)",
+  " (in 'traditional_count', line 276, column 6 to line 283, column 8)",
+  " (in 'traditional_count', line 286, column 10 to column 67)",
+  " (in 'traditional_count', line 285, column 30 to line 287, column 9)",
+  " (in 'traditional_count', line 285, column 8 to line 287, column 9)",
+  " (in 'traditional_count', line 284, column 21 to line 288, column 7)",
+  " (in 'traditional_count', line 284, column 6 to line 288, column 7)",
+  " (in 'traditional_count', line 275, column 22 to line 289, column 5)",
+  " (in 'traditional_count', line 275, column 4 to line 289, column 5)",
+  " (in 'traditional_count', line 291, column 4 to column 14)",
+  " (in 'traditional_count', line 266, column 15 to line 292, column 3)",
+  " (in 'traditional_count', line 303, column 11 to column 15)",
+  " (in 'traditional_count', line 303, column 17 to column 28)",
+  " (in 'traditional_count', line 303, column 4 to column 33)",
+  " (in 'traditional_count', line 305, column 4 to column 19)",
+  " (in 'traditional_count', line 308, column 6 to column 40)",
+  " (in 'traditional_count', line 307, column 19 to line 309, column 5)",
+  " (in 'traditional_count', line 307, column 4 to line 309, column 5)",
+  " (in 'traditional_count', line 311, column 4 to column 14)",
+  " (in 'traditional_count', line 301, column 11 to line 312, column 3)",
+  " (in 'traditional_count', line 323, column 11 to column 15)",
+  " (in 'traditional_count', line 323, column 17 to column 28)",
+  " (in 'traditional_count', line 323, column 4 to column 33)",
+  " (in 'traditional_count', line 326, column 6 to column 36)",
+  " (in 'traditional_count', line 325, column 22 to line 327, column 5)",
+  " (in 'traditional_count', line 325, column 4 to line 327, column 5)",
+  " (in 'traditional_count', line 331, column 8 to column 46)",
+  " (in 'traditional_count', line 330, column 27 to line 332, column 7)",
+  " (in 'traditional_count', line 330, column 6 to line 332, column 7)",
+  " (in 'traditional_count', line 329, column 19 to line 333, column 5)",
+  " (in 'traditional_count', line 329, column 4 to line 333, column 5)",
+  " (in 'traditional_count', line 335, column 4 to column 14)",
+  " (in 'traditional_count', line 321, column 11 to line 336, column 3)"};
 template <typename T5__, typename T9__,
           stan::require_all_t<stan::is_col_vector<T5__>,
                               stan::is_vt_not_complex<T5__>,
@@ -381,15 +393,15 @@ calc_loglik_dna(const int& n_S, const int& S_dna, const int& Nloc_dna,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 48;
+    current_statement__ = 51;
     stan::math::validate_non_negative_index("log_lik", "n_S + S_dna", (n_S +
       S_dna));
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant((n_S + S_dna),
         DUMMY_VAR__);
-    current_statement__ = 52;
+    current_statement__ = 55;
     for (int i = 1; i <= n_S; ++i) {
-      current_statement__ = 50;
+      current_statement__ = 53;
       stan::model::assign(log_lik,
         stan::math::binomial_lpmf<false>(
           stan::model::rvalue(n_K, "n_K", stan::model::index_uni(i)),
@@ -399,11 +411,11 @@ calc_loglik_dna(const int& n_S, const int& S_dna, const int& Nloc_dna,
               stan::model::rvalue(L_ind, "L_ind", stan::model::index_uni(i))))),
         "assigning variable log_lik", stan::model::index_uni(i));
     }
-    current_statement__ = 56;
+    current_statement__ = 60;
     if (stan::math::logical_gt(Nloc_dna, 0)) {
-      current_statement__ = 55;
+      current_statement__ = 58;
       for (int i = 1; i <= S_dna; ++i) {
-        current_statement__ = 53;
+        current_statement__ = 56;
         stan::model::assign(log_lik,
           stan::math::binomial_lpmf<false>(
             stan::model::rvalue(K_dna, "K_dna", stan::model::index_uni(i)),
@@ -414,7 +426,7 @@ calc_loglik_dna(const int& n_S, const int& S_dna, const int& Nloc_dna,
           "assigning variable log_lik", stan::model::index_uni((n_S + i)));
       }
     }
-    current_statement__ = 57;
+    current_statement__ = 61;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -436,15 +448,15 @@ calc_loglik_trad_count(const std::vector<T0__>& lambda, const int& negbin,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 59;
+    current_statement__ = 63;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 69;
+    current_statement__ = 73;
     if (stan::math::logical_eq(negbin, 1)) {
-      current_statement__ = 67;
+      current_statement__ = 71;
       for (int j = 1; j <= n_C; ++j) {
-        current_statement__ = 65;
+        current_statement__ = 69;
         stan::model::assign(log_lik,
           stan::math::neg_binomial_2_lpmf<false>(
             stan::model::rvalue(n_E, "n_E", stan::model::index_uni(j)),
@@ -452,9 +464,9 @@ calc_loglik_trad_count(const std::vector<T0__>& lambda, const int& negbin,
             phi), "assigning variable log_lik", stan::model::index_uni(j));
       }
     } else {
-      current_statement__ = 63;
+      current_statement__ = 67;
       for (int j = 1; j <= n_C; ++j) {
-        current_statement__ = 61;
+        current_statement__ = 65;
         stan::model::assign(log_lik,
           stan::math::poisson_lpmf<false>(
             stan::model::rvalue(n_E, "n_E", stan::model::index_uni(j)),
@@ -462,7 +474,7 @@ calc_loglik_trad_count(const std::vector<T0__>& lambda, const int& negbin,
           "assigning variable log_lik", stan::model::index_uni(j));
       }
     }
-    current_statement__ = 70;
+    current_statement__ = 74;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -489,13 +501,13 @@ calc_loglik_trad_continuous(const std::vector<T0__>& lambda, const T1__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 72;
+    current_statement__ = 76;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 76;
+    current_statement__ = 80;
     for (int j = 1; j <= n_C; ++j) {
-      current_statement__ = 74;
+      current_statement__ = 78;
       stan::model::assign(log_lik,
         stan::math::gamma_lpdf<false>(
           stan::model::rvalue(E_trans, "E_trans", stan::model::index_uni(j)),
@@ -505,7 +517,7 @@ calc_loglik_trad_continuous(const std::vector<T0__>& lambda, const T1__&
               stan::model::rvalue(R_ind, "R_ind", stan::model::index_uni(j))))),
         "assigning variable log_lik", stan::model::index_uni(j));
     }
-    current_statement__ = 77;
+    current_statement__ = 81;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -546,30 +558,33 @@ calc_loglik_count(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 79;
+    current_statement__ = 83;
     stan::math::validate_non_negative_index("log_lik", "n_C + n_S + S_dna",
       ((n_C + n_S) + S_dna));
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(((n_C + n_S) + S_dna),
         DUMMY_VAR__);
-    current_statement__ = 81;
+    current_statement__ = 85;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 83;
+    current_statement__ = 87;
     stan::model::assign(lambda,
       get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C, pstream__),
       "assigning variable lambda");
-    current_statement__ = 84;
+    current_statement__ = 88;
     stan::model::assign(log_lik,
       calc_loglik_trad_count(lambda, negbin, phi, n_E, n_C, pstream__),
       "assigning variable log_lik", stan::model::index_min_max(1, n_C));
-    current_statement__ = 85;
+    int end = std::numeric_limits<int>::min();
+    current_statement__ = 90;
+    end = ((n_C + n_S) + S_dna);
+    current_statement__ = 91;
     stan::model::assign(log_lik,
       calc_loglik_dna(n_S, S_dna, Nloc_dna, n_K, n_N, p_trad, L_ind, K_dna,
         N_dna, p_dna, L_dna, pstream__), "assigning variable log_lik",
-      stan::model::index_min_max((n_C + 1), ((n_C + n_S) + S_dna)));
-    current_statement__ = 86;
+      stan::model::index_min_max((n_C + 1), end));
+    current_statement__ = 92;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -617,31 +632,34 @@ calc_loglik_continuous(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 88;
+    current_statement__ = 94;
     stan::math::validate_non_negative_index("log_lik", "n_C + n_S + S_dna",
       ((n_C + n_S) + S_dna));
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(((n_C + n_S) + S_dna),
         DUMMY_VAR__);
-    current_statement__ = 90;
+    current_statement__ = 96;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 92;
+    current_statement__ = 98;
     stan::model::assign(lambda,
       get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C,
         pstream__), "assigning variable lambda");
-    current_statement__ = 93;
+    current_statement__ = 99;
     stan::model::assign(log_lik,
       calc_loglik_trad_continuous(lambda, beta_gamma, E_trans, R_ind, n_C,
         pstream__), "assigning variable log_lik",
       stan::model::index_min_max(1, n_C));
-    current_statement__ = 94;
+    int end = std::numeric_limits<int>::min();
+    current_statement__ = 101;
+    end = ((n_C + n_S) + S_dna);
+    current_statement__ = 102;
     stan::model::assign(log_lik,
       calc_loglik_dna(n_S, S_dna, Nloc_dna, n_K, n_N, p_trad, L_ind, K_dna,
         N_dna, p_dna, L_dna, pstream__), "assigning variable log_lik",
-      stan::model::index_min_max((n_C + 1), ((n_C + n_S) + S_dna)));
-    current_statement__ = 95;
+      stan::model::index_min_max((n_C + 1), end));
+    current_statement__ = 103;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -667,13 +685,13 @@ get_lambda_count(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 97;
+    current_statement__ = 105;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 101;
+    current_statement__ = 109;
     for (int j = 1; j <= n_C; ++j) {
-      current_statement__ = 99;
+      current_statement__ = 107;
       stan::model::assign(lambda,
         (stan::math::logical_eq(ctch, 1) ? (stan::model::rvalue(coef, "coef",
                                               stan::model::index_uni(
@@ -689,7 +707,7 @@ get_lambda_count(const int& ctch, const std::vector<T1__>& coef,
             stan::model::rvalue(R_ind, "R_ind", stan::model::index_uni(j))))),
         "assigning variable lambda", stan::model::index_uni(j));
     }
-    current_statement__ = 102;
+    current_statement__ = 110;
     return lambda;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -715,13 +733,13 @@ get_lambda_continuous(const int& ctch, const std::vector<T1__>& coef,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 104;
+    current_statement__ = 112;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 108;
+    current_statement__ = 116;
     for (int j = 1; j <= n_C; ++j) {
-      current_statement__ = 106;
+      current_statement__ = 114;
       stan::model::assign(lambda,
         (stan::math::logical_eq(ctch, 1) ? (stan::model::rvalue(coef, "coef",
                                               stan::model::index_uni(
@@ -737,7 +755,7 @@ get_lambda_continuous(const int& ctch, const std::vector<T1__>& coef,
             stan::model::rvalue(R_ind, "R_ind", stan::model::index_uni(j))))),
         "assigning variable lambda", stan::model::index_uni(j));
     }
-    current_statement__ = 109;
+    current_statement__ = 117;
     return lambda;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -766,23 +784,23 @@ calc_loglik_tradmod_count(const int& negbin, const std::vector<T1__>& phi,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 111;
+    current_statement__ = 119;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 113;
+    current_statement__ = 121;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 115;
+    current_statement__ = 123;
     stan::model::assign(lambda,
       get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C, pstream__),
       "assigning variable lambda");
-    current_statement__ = 116;
+    current_statement__ = 124;
     stan::model::assign(log_lik,
       calc_loglik_trad_count(lambda, negbin, phi, n_E, n_C, pstream__),
       "assigning variable log_lik");
-    current_statement__ = 117;
+    current_statement__ = 125;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -815,23 +833,23 @@ calc_loglik_tradmod_continuous(const T0__& beta_arg__,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 119;
+    current_statement__ = 127;
     stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
     Eigen::Matrix<local_scalar_t__,-1,1> log_lik =
       Eigen::Matrix<local_scalar_t__,-1,1>::Constant(n_C, DUMMY_VAR__);
-    current_statement__ = 121;
+    current_statement__ = 129;
     stan::math::validate_non_negative_index("lambda", "n_C", n_C);
     std::vector<local_scalar_t__> lambda =
       std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-    current_statement__ = 123;
+    current_statement__ = 131;
     stan::model::assign(lambda,
       get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C, pstream__),
       "assigning variable lambda");
-    current_statement__ = 124;
+    current_statement__ = 132;
     stan::model::assign(log_lik,
       calc_loglik_trad_continuous(lambda, beta, E_trans, R_ind, n_C,
         pstream__), "assigning variable log_lik");
-    current_statement__ = 125;
+    current_statement__ = 133;
     return log_lik;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -874,40 +892,40 @@ calc_mu(const std::vector<int>& trad_ind, const std::vector<int>& dna_ind,
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 127;
+    current_statement__ = 135;
     stan::math::validate_non_negative_index("mu", "Nloc_dna + Nloc_trad",
       (Nloc_dna + Nloc_trad));
-    current_statement__ = 128;
+    current_statement__ = 136;
     stan::math::validate_non_negative_index("mu", "nparams + 1", (nparams +
       1));
     Eigen::Matrix<local_scalar_t__,-1,-1> mu =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant((Nloc_dna + Nloc_trad),
         (nparams + 1), DUMMY_VAR__);
-    current_statement__ = 130;
+    current_statement__ = 138;
     stan::model::assign(mu, mu_trad, "assigning variable mu",
       stan::model::index_multi(trad_ind), stan::model::index_uni(1));
-    current_statement__ = 132;
+    current_statement__ = 141;
     if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 131;
+      current_statement__ = 139;
       stan::model::assign(mu,
         stan::math::multiply(mu_trad, stan::math::transpose(q)),
         "assigning variable mu", stan::model::index_multi(trad_ind),
         stan::model::index_min_max(2, (nparams + 1)));
     }
-    current_statement__ = 139;
+    current_statement__ = 154;
     if (stan::math::logical_gt(Nloc_dna, 0)) {
-      current_statement__ = 138;
+      current_statement__ = 147;
       for (int i = 1; i <= Nloc_dna; ++i) {
-        current_statement__ = 133;
+        current_statement__ = 142;
         stan::math::validate_non_negative_index("p11_dna", "Nloc_dna",
           Nloc_dna);
         std::vector<local_scalar_t__> p11_dna =
           std::vector<local_scalar_t__>(Nloc_dna, DUMMY_VAR__);
-        current_statement__ = 135;
+        current_statement__ = 144;
         stan::model::assign(p11_dna,
           (stan::model::rvalue(p_dna, "p_dna", stan::model::index_uni(i)) -
           p10), "assigning variable p11_dna", stan::model::index_uni(i));
-        current_statement__ = 136;
+        current_statement__ = 145;
         stan::model::assign(mu,
           ((stan::model::rvalue(p11_dna, "p11_dna", stan::model::index_uni(i))
           *
@@ -924,25 +942,26 @@ calc_mu(const std::vector<int>& trad_ind, const std::vector<int>& dna_ind,
             stan::model::rvalue(dna_ind, "dna_ind", stan::model::index_uni(i))),
           stan::model::index_uni(1));
       }
-    }
-    current_statement__ = 143;
-    if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 142;
-      for (int i = 1; i <= Nloc_dna; ++i) {
-        current_statement__ = 140;
-        stan::model::assign(mu,
-          stan::math::multiply(
-            stan::model::rvalue(mu, "mu",
-              stan::model::index_uni(
-                stan::model::rvalue(dna_ind, "dna_ind",
-                  stan::model::index_uni(i))), stan::model::index_uni(1)),
-            stan::math::transpose(q)), "assigning variable mu",
-          stan::model::index_uni(
-            stan::model::rvalue(dna_ind, "dna_ind", stan::model::index_uni(i))),
-          stan::model::index_min_max(2, (nparams + 1)));
+      current_statement__ = 152;
+      if (stan::math::logical_eq(ctch, 1)) {
+        current_statement__ = 150;
+        for (int i = 1; i <= Nloc_dna; ++i) {
+          current_statement__ = 148;
+          stan::model::assign(mu,
+            stan::math::multiply(
+              stan::model::rvalue(mu, "mu",
+                stan::model::index_uni(
+                  stan::model::rvalue(dna_ind, "dna_ind",
+                    stan::model::index_uni(i))), stan::model::index_uni(1)),
+              stan::math::transpose(q)), "assigning variable mu",
+            stan::model::index_uni(
+              stan::model::rvalue(dna_ind, "dna_ind",
+                stan::model::index_uni(i))),
+            stan::model::index_min_max(2, (nparams + 1)));
+        }
       }
     }
-    current_statement__ = 144;
+    current_statement__ = 155;
     return mu;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -970,26 +989,26 @@ calc_mu_trad_count(const int& Nloc, const int& nparams, const T2__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 146;
+    current_statement__ = 157;
     stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-    current_statement__ = 147;
+    current_statement__ = 158;
     stan::math::validate_non_negative_index("mu", "nparams + 1", (nparams +
       1));
     Eigen::Matrix<local_scalar_t__,-1,-1> mu =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(Nloc, (nparams + 1),
         DUMMY_VAR__);
-    current_statement__ = 149;
+    current_statement__ = 160;
     stan::model::assign(mu, mu_1, "assigning variable mu",
       stan::model::index_omni(), stan::model::index_uni(1));
-    current_statement__ = 152;
+    current_statement__ = 163;
     if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 150;
+      current_statement__ = 161;
       stan::model::assign(mu,
         stan::math::multiply(mu_1, stan::math::transpose(q)),
         "assigning variable mu", stan::model::index_omni(),
         stan::model::index_min_max(2, (nparams + 1)));
     }
-    current_statement__ = 153;
+    current_statement__ = 164;
     return mu;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1021,28 +1040,28 @@ calc_mu_trad_continuous(const int& Nloc, const int& nparams, const T2__&
   // suppress unused var warning
   (void) DUMMY_VAR__;
   try {
-    current_statement__ = 155;
+    current_statement__ = 166;
     stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-    current_statement__ = 156;
+    current_statement__ = 167;
     stan::math::validate_non_negative_index("mu", "nparams + 1", (nparams +
       1));
     Eigen::Matrix<local_scalar_t__,-1,-1> mu =
       Eigen::Matrix<local_scalar_t__,-1,-1>::Constant(Nloc, (nparams + 1),
         DUMMY_VAR__);
-    current_statement__ = 160;
+    current_statement__ = 171;
     for (int j = 1; j <= Nloc; ++j) {
-      current_statement__ = 158;
+      current_statement__ = 169;
       stan::model::assign(mu,
         (stan::model::rvalue(alpha, "alpha", stan::model::index_uni(j)) /
         stan::model::rvalue(beta, "beta", stan::model::index_uni(j))),
         "assigning variable mu", stan::model::index_uni(j),
         stan::model::index_uni(1));
     }
-    current_statement__ = 164;
+    current_statement__ = 176;
     if (stan::math::logical_eq(ctch, 1)) {
-      current_statement__ = 163;
+      current_statement__ = 174;
       for (int i = 1; i <= nparams; ++i) {
-        current_statement__ = 161;
+        current_statement__ = 172;
         stan::model::assign(mu,
           stan::math::multiply(
             stan::math::to_vector(
@@ -1054,7 +1073,7 @@ calc_mu_trad_continuous(const int& Nloc, const int& nparams, const T2__&
           stan::model::index_uni((i + 1)));
       }
     }
-    current_statement__ = 165;
+    current_statement__ = 177;
     return mu;
   } catch (const std::exception& e) {
     stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1069,7 +1088,7 @@ private:
   std::vector<int> n_E;
   int nparams;
   std::vector<int> mat;
-  std::vector<double> phipriors;
+  std::vector<double> phi_priors;
   int negbin;
   int ctch;
   int phi_1dim__;
@@ -1096,116 +1115,116 @@ public:
     try {
       int pos__ = std::numeric_limits<int>::min();
       pos__ = 1;
-      current_statement__ = 28;
+      current_statement__ = 31;
       context__.validate_dims("data initialization", "n_C", "int",
         std::vector<size_t>{});
       n_C = std::numeric_limits<int>::min();
-      current_statement__ = 28;
+      current_statement__ = 31;
       n_C = context__.vals_i("n_C")[(1 - 1)];
-      current_statement__ = 28;
+      current_statement__ = 31;
       stan::math::check_greater_or_equal(function__, "n_C", n_C, 1);
-      current_statement__ = 29;
+      current_statement__ = 32;
       stan::math::validate_non_negative_index("R_ind", "n_C", n_C);
-      current_statement__ = 30;
+      current_statement__ = 33;
       context__.validate_dims("data initialization", "R_ind", "int",
         std::vector<size_t>{static_cast<size_t>(n_C)});
       R_ind = std::vector<int>(n_C, std::numeric_limits<int>::min());
-      current_statement__ = 30;
+      current_statement__ = 33;
       R_ind = context__.vals_i("R_ind");
-      current_statement__ = 30;
+      current_statement__ = 33;
       stan::math::check_greater_or_equal(function__, "R_ind", R_ind, 1);
-      current_statement__ = 31;
+      current_statement__ = 34;
       context__.validate_dims("data initialization", "Nloc", "int",
         std::vector<size_t>{});
       Nloc = std::numeric_limits<int>::min();
-      current_statement__ = 31;
+      current_statement__ = 34;
       Nloc = context__.vals_i("Nloc")[(1 - 1)];
-      current_statement__ = 31;
+      current_statement__ = 34;
       stan::math::check_greater_or_equal(function__, "Nloc", Nloc, 1);
-      current_statement__ = 32;
+      current_statement__ = 35;
       stan::math::validate_non_negative_index("n_E", "n_C", n_C);
-      current_statement__ = 33;
+      current_statement__ = 36;
       context__.validate_dims("data initialization", "n_E", "int",
         std::vector<size_t>{static_cast<size_t>(n_C)});
       n_E = std::vector<int>(n_C, std::numeric_limits<int>::min());
-      current_statement__ = 33;
+      current_statement__ = 36;
       n_E = context__.vals_i("n_E");
-      current_statement__ = 33;
+      current_statement__ = 36;
       stan::math::check_greater_or_equal(function__, "n_E", n_E, 0);
-      current_statement__ = 34;
+      current_statement__ = 37;
       context__.validate_dims("data initialization", "nparams", "int",
         std::vector<size_t>{});
       nparams = std::numeric_limits<int>::min();
-      current_statement__ = 34;
+      current_statement__ = 37;
       nparams = context__.vals_i("nparams")[(1 - 1)];
-      current_statement__ = 34;
+      current_statement__ = 37;
       stan::math::check_greater_or_equal(function__, "nparams", nparams, 0);
-      current_statement__ = 35;
+      current_statement__ = 38;
       stan::math::validate_non_negative_index("mat", "n_C", n_C);
-      current_statement__ = 36;
+      current_statement__ = 39;
       context__.validate_dims("data initialization", "mat", "int",
         std::vector<size_t>{static_cast<size_t>(n_C)});
       mat = std::vector<int>(n_C, std::numeric_limits<int>::min());
-      current_statement__ = 36;
+      current_statement__ = 39;
       mat = context__.vals_i("mat");
-      current_statement__ = 36;
+      current_statement__ = 39;
       stan::math::check_greater_or_equal(function__, "mat", mat, 1);
-      current_statement__ = 37;
-      context__.validate_dims("data initialization", "phipriors", "double",
+      current_statement__ = 40;
+      context__.validate_dims("data initialization", "phi_priors", "double",
         std::vector<size_t>{static_cast<size_t>(2)});
-      phipriors = std::vector<double>(2,
-                    std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 37;
-      phipriors = context__.vals_r("phipriors");
-      current_statement__ = 38;
+      phi_priors = std::vector<double>(2,
+                     std::numeric_limits<double>::quiet_NaN());
+      current_statement__ = 40;
+      phi_priors = context__.vals_r("phi_priors");
+      current_statement__ = 41;
       context__.validate_dims("data initialization", "negbin", "int",
         std::vector<size_t>{});
       negbin = std::numeric_limits<int>::min();
-      current_statement__ = 38;
+      current_statement__ = 41;
       negbin = context__.vals_i("negbin")[(1 - 1)];
-      current_statement__ = 38;
+      current_statement__ = 41;
       stan::math::check_greater_or_equal(function__, "negbin", negbin, 0);
-      current_statement__ = 38;
+      current_statement__ = 41;
       stan::math::check_less_or_equal(function__, "negbin", negbin, 1);
-      current_statement__ = 39;
+      current_statement__ = 42;
       context__.validate_dims("data initialization", "ctch", "int",
         std::vector<size_t>{});
       ctch = std::numeric_limits<int>::min();
-      current_statement__ = 39;
+      current_statement__ = 42;
       ctch = context__.vals_i("ctch")[(1 - 1)];
-      current_statement__ = 39;
+      current_statement__ = 42;
       stan::math::check_greater_or_equal(function__, "ctch", ctch, 0);
-      current_statement__ = 39;
+      current_statement__ = 42;
       stan::math::check_less_or_equal(function__, "ctch", ctch, 1);
-      current_statement__ = 40;
+      current_statement__ = 43;
       stan::math::validate_non_negative_index("mu_1", "Nloc", Nloc);
-      current_statement__ = 41;
+      current_statement__ = 44;
       phi_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 41;
+      current_statement__ = 44;
       phi_1dim__ = (stan::math::logical_eq(negbin, 1) ? 1 : 0);
-      current_statement__ = 41;
+      current_statement__ = 44;
       stan::math::validate_non_negative_index("phi", "(negbin == 1) ? 1 : 0",
         phi_1dim__);
-      current_statement__ = 42;
+      current_statement__ = 45;
       stan::math::validate_non_negative_index("q_trans", "nparams", nparams);
-      current_statement__ = 43;
+      current_statement__ = 46;
       coef_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 43;
+      current_statement__ = 46;
       coef_1dim__ = (stan::math::logical_eq(ctch, 1) ? (nparams + 1) : 0);
-      current_statement__ = 43;
+      current_statement__ = 46;
       stan::math::validate_non_negative_index("coef",
         "(ctch == 1) ? nparams + 1 : 0", coef_1dim__);
-      current_statement__ = 44;
+      current_statement__ = 47;
       stan::math::validate_non_negative_index("q", "nparams", nparams);
-      current_statement__ = 45;
+      current_statement__ = 48;
       stan::math::validate_non_negative_index("log_lik", "n_C", n_C);
-      current_statement__ = 46;
+      current_statement__ = 49;
       stan::math::validate_non_negative_index("mu", "Nloc", Nloc);
-      current_statement__ = 47;
+      current_statement__ = 50;
       mu_2dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 47;
+      current_statement__ = 50;
       mu_2dim__ = (nparams + 1);
-      current_statement__ = 47;
+      current_statement__ = 50;
       stan::math::validate_non_negative_index("mu", "nparams + 1", mu_2dim__);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -1258,7 +1277,7 @@ public:
                   lp__, nparams);
       std::vector<local_scalar_t__> coef =
         std::vector<local_scalar_t__>(coef_1dim__, DUMMY_VAR__);
-      current_statement__ = 9;
+      current_statement__ = 10;
       if (stan::math::logical_eq(ctch, 1)) {
         current_statement__ = 8;
         stan::model::assign(coef,
@@ -1269,19 +1288,19 @@ public:
       current_statement__ = 4;
       stan::math::check_greater_or_equal(function__, "coef", coef, 0);
       {
-        current_statement__ = 14;
+        current_statement__ = 16;
         stan::math::validate_non_negative_index("lambda", "n_C", n_C);
         std::vector<local_scalar_t__> lambda =
           std::vector<local_scalar_t__>(n_C, DUMMY_VAR__);
-        current_statement__ = 16;
+        current_statement__ = 18;
         stan::model::assign(lambda,
           get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C, pstream__),
           "assigning variable lambda");
-        current_statement__ = 25;
+        current_statement__ = 27;
         if (stan::math::logical_eq(negbin, 1)) {
-          current_statement__ = 23;
+          current_statement__ = 25;
           for (int j = 1; j <= n_C; ++j) {
-            current_statement__ = 21;
+            current_statement__ = 23;
             lp_accum__.add(stan::math::neg_binomial_2_lpmf<propto__>(
                              stan::model::rvalue(n_E, "n_E",
                                stan::model::index_uni(j)),
@@ -1289,9 +1308,9 @@ public:
                                stan::model::index_uni(j)), phi));
           }
         } else {
-          current_statement__ = 19;
+          current_statement__ = 21;
           for (int j = 1; j <= n_C; ++j) {
-            current_statement__ = 17;
+            current_statement__ = 19;
             lp_accum__.add(stan::math::poisson_lpmf<propto__>(
                              stan::model::rvalue(n_E, "n_E",
                                stan::model::index_uni(j)),
@@ -1299,13 +1318,13 @@ public:
                                stan::model::index_uni(j))));
           }
         }
-        current_statement__ = 27;
+        current_statement__ = 30;
         if (stan::math::logical_eq(negbin, 1)) {
-          current_statement__ = 26;
+          current_statement__ = 28;
           lp_accum__.add(stan::math::gamma_lpdf<propto__>(phi,
-                           stan::model::rvalue(phipriors, "phipriors",
+                           stan::model::rvalue(phi_priors, "phi_priors",
                              stan::model::index_uni(1)),
-                           stan::model::rvalue(phipriors, "phipriors",
+                           stan::model::rvalue(phi_priors, "phi_priors",
                              stan::model::index_uni(2))));
         }
       }
@@ -1377,7 +1396,7 @@ public:
             stan::math::primitive_value(emit_generated_quantities__)))) {
         return ;
       }
-      current_statement__ = 9;
+      current_statement__ = 10;
       if (stan::math::logical_eq(ctch, 1)) {
         current_statement__ = 8;
         stan::model::assign(coef,
@@ -1402,17 +1421,17 @@ public:
       Eigen::Matrix<double,-1,-1> mu =
         Eigen::Matrix<double,-1,-1>::Constant(Nloc, mu_2dim__,
           std::numeric_limits<double>::quiet_NaN());
-      current_statement__ = 11;
+      current_statement__ = 13;
       if (stan::math::logical_eq(ctch, 1)) {
-        current_statement__ = 10;
+        current_statement__ = 11;
         stan::model::assign(q, stan::math::add(q_trans, 1),
           "assigning variable q");
       }
-      current_statement__ = 12;
+      current_statement__ = 14;
       stan::model::assign(mu,
         calc_mu_trad_count(Nloc, nparams, mu_1, q, ctch, pstream__),
         "assigning variable mu");
-      current_statement__ = 13;
+      current_statement__ = 15;
       stan::model::assign(log_lik,
         calc_loglik_tradmod_count(negbin, phi, n_E, n_C, ctch, coef, mat,
           mu_1, R_ind, pstream__), "assigning variable log_lik");
