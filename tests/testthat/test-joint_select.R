@@ -45,7 +45,7 @@ test_that("joint_select output check", {
                         n_chain = 1, n_iter = 1000)
 
   # run select
-  select <- joint_select(modelfits = list(fit_q1$model, fit_q2$model))
+  select <- joint_select(model_fits = list(fit_q1$model, fit_q2$model))
 
   # check dimensions
   expect_equal(dim(select)[1], 2)
