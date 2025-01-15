@@ -1,10 +1,8 @@
-# nolint start:
 functions {
   #include /functions/calc_loglik.stan
   #include /functions/calc_mu.stan
   #include /functions/calc_p11.stan
 }
-# nolint end
 
 data {
   // number of paired qPCR samples

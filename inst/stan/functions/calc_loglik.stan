@@ -1,6 +1,4 @@
-# nolint start:
 /* functions for calculating log likelihood */
-# nolint end
 
 // calculate log likelihood of eDNA data
 vector calc_loglik_dna(

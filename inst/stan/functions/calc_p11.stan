@@ -1,6 +1,4 @@
-# nolint start:
 /* function for calculating p11 */
-# nolint end
 
 // calculate p11 for joint models
 vector calc_p11(
