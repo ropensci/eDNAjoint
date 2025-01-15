@@ -193,7 +193,7 @@ joint_summarize_input_checks <- function(model_fit, par, probs) {
   }
 
   ## #5. make sure model fit contains all par input
-  if (all(!(par %in% model_fit@model_pars)) && par != "all") {
+  if (any(!(par %in% model_fit@model_pars)) && all(par != "all")) {
     err_msg <- paste("model_fit must contain all selected parameters:", par)
     stop(err_msg)
   }
