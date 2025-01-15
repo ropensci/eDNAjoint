@@ -92,23 +92,23 @@
 #' @examples
 #' \donttest{
 #' # Load data
-#' data(greencrabData)
+#' data(green_crab_data)
 #'
 #' # Examine data in list
 #' # This function uses only traditional survey count data and optionally
 #' # the count type data
-#' names(greencrabData)
+#' names(green_crab_data)
 #'
 #' # Note that the surveyed sites (rows) should match in the data
-#' dim(greencrabData$count)[1]
-#' dim(greencrabData$count_type)[1]
+#' dim(green_crab_data$count)[1]
+#' dim(green_crab_data$count_type)[1]
 #'
 #' # Fit a model without estimating a gear scaling coefficient for traditional
 #' # survey gear types.
 #' # This model assumes all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a poisson distribution.
-#' fit_no_q <- traditional_model(data = greencrabData, family = "poisson",
+#' fit_no_q <- traditional_model(data = green_crab_data, family = "poisson",
 #'                               q = FALSE, phi_priors = NULL,
 #'                               multicore = FALSE, verbose = TRUE)
 #'
@@ -118,11 +118,12 @@
 #' # This model does not assume all traditional survey methods have the same
 #' # catchability.
 #' # Count data is modeled using a negative binomial distribution.
-#' fit_q <- traditional_model(data = greencrabData, family = "negbin", q = TRUE,
-#'                            phi_priors = c(0.25,0.25), multicore = FALSE,
-#'                            initial_values = NULL, n_chain = 4,
-#'                            n_warmup = 500, n_iter = 3000, thin = 1,
-#'                            adapt_delta = 0.9, verbose = TRUE, seed = 123)
+#' fit_q <- traditional_model(data = green_crab_data, family = "negbin",
+#'                            q = TRUE, phi_priors = c(0.25,0.25),
+#'                            multicore = FALSE, initial_values = NULL,
+#'                            n_chain = 4, n_warmup = 500, n_iter = 3000,
+#'                            thin = 1, adapt_delta = 0.9, verbose = TRUE,
+#'                            seed = 123)
 #' }
 #'
 

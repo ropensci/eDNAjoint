@@ -62,7 +62,7 @@
 #'                     cov_val = c(0,0), pcr_n = 3)
 #'
 #' # Calculate mu_critical at salinity 0.5 z-scores greater than the mean
-#' detection_calculate(fit.cov$model, mu = seq(from = 0.1, to = 1, by = 0.1),
+#' detection_calculate(fit_cov$model, mu = seq(from = 0.1, to = 1, by = 0.1),
 #'                     cov_val = c(0,0.5), pcr_n = 3)
 #'
 #' # Ex. 2: Calculating necessary effort for detection with multiple traditional
