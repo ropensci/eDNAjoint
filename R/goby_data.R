@@ -38,4 +38,3 @@
 #'   regional-scale monitoring of an endangered aquatic species. Molecular
 #'   Ecology Resources. 16(4): 895-908.
 "goby_data"
-

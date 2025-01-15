@@ -78,7 +78,7 @@ detection, $p_{10}$:
 # summarize p10 posterior
 joint_summarize(goby_fit$model, par = "p10")
 #>      mean se_mean    sd  2.5% 97.5%  n_eff  Rhat
-#> p10 0.006   0.002 0.012 0.001  0.06 34.951 1.088
+#> p10 0.004   0.001 0.007 0.001 0.008 37.305 1.077
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -102,6 +102,11 @@ detection_calculate(goby_fit$model, mu = c(0.1, 0.5, 1),
 You can find much more detailed examples of the functions in *eDNAjoint*
 and the model underlying the package in the [package
 vignette](https://ednajoint.netlify.app/).
+
+## Contributing
+
+Interested in contributing to this package? See [some notes on
+contributing](https://github.com/ropensci/eDNAjoint/blob/master/CONTRIBUTING.md).
 
 ## Code of Conduct
 

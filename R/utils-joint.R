@@ -75,48 +75,40 @@ init_joint_cov <- function(n_chain, pcr_all, cov, initial_values,
   if (all(!is.null(initial_values))) {
     for (i in 1:n_chain) {
       inits_list[[i]] <- list(
-        if ("mu" %in% names(initial_values[[i]])) {
-          mu_trad <- initial_values[[i]]$mu[l_match_trad$L_ind]
+        mu_trad = if ("mu" %in% names(initial_values[[i]])) {
+          initial_values[[i]]$mu[l_match_trad$L_ind]
         } else {
-          mu_trad <- mu_means_trad
+          mu_means_trad
         },
-
-        if ("mu" %in% names(initial_values[[i]])) {
-          mu <- initial_values[[i]]$mu
+        mu = if ("mu" %in% names(initial_values[[i]])) {
+          initial_values[[i]]$mu
         } else {
-          mu <- mu_means_all
+          mu_means_all
         },
-
-        if ("p10" %in% names(initial_values[[i]])) {
-          log_p10 <- log(initial_values[[i]]$p10)
+        log_p10 = if ("p10" %in% names(initial_values[[i]])) {
+          log(initial_values[[i]]$p10)
         } else {
-          log_p10 <- stats::runif(1, log(0.0001), log(0.01))
+          stats::runif(1, log(0.0001), log(0.01))
         },
-
-        if ("alpha" %in% names(initial_values[[i]])) {
-          alpha <- as.array(initial_values[[i]]$alpha)
+        alpha = if ("alpha" %in% names(initial_values[[i]])) {
+          as.array(initial_values[[i]]$alpha)
         } else {
-          alpha <- as.array(c(3.5, rep(0, length(cov))))
+          as.array(c(3.5, rep(0, length(cov))))
         },
-
-        p_dna <- rep(0.4, dim(l_match_dna)[1]),
-        p11_dna <- rep(0.4, dim(l_match_dna)[1]) - 0.01
+        p_dna = rep(0.4, dim(l_match_dna)[1]),
+        p11_dna = rep(0.4, dim(l_match_dna)[1]) - 0.01
       )
-      names(inits_list[[i]]) <- c("mu_trad", "mu", "log_p10", "alpha", "p_dna",
-                                  "p11_dna")
     }
   } else {
     for (i in 1:n_chain) {
       inits_list[[i]] <- list(
-        mu_trad <- mu_means_trad,
-        mu <- mu_means_all,
-        log_p10 <- stats::runif(1, log(0.0001), log(0.01)),
-        alpha <- as.array(c(3.5, rep(0, length(cov)))),
-        p_dna <- rep(0.4, dim(l_match_dna)[1]),
-        p11_dna <- rep(0.4, dim(l_match_dna)[1]) - 0.01
+        mu_trad = mu_means_trad,
+        mu = mu_means_all,
+        log_p10 = stats::runif(1, log(0.0001), log(0.01)),
+        alpha = as.array(c(3.5, rep(0, length(cov)))),
+        p_dna = rep(0.4, dim(l_match_dna)[1]),
+        p11_dna = rep(0.4, dim(l_match_dna)[1]) - 0.01
       )
-      names(inits_list[[i]]) <- c("mu_trad", "mu", "log_p10", "alpha", "p_dna",
-                                  "p11_dna")
     }
   }
 
@@ -144,59 +136,51 @@ init_joint_cov_catchability <- function(n_chain, pcr_all, q_names, cov,
   if (all(!is.null(initial_values))) {
     for (i in 1:n_chain) {
       inits_list[[i]] <- list(
-        if ("mu" %in% names(initial_values[[i]])) {
-          mu_trad <- initial_values[[i]]$mu[l_match_trad$L_ind]
+        mu_trad = if ("mu" %in% names(initial_values[[i]])) {
+          initial_values[[i]]$mu[l_match_trad$L_ind]
         } else {
-          mu_trad <- mu_means_trad
+          mu_means_trad
         },
-
-        if ("mu" %in% names(initial_values[[i]])) {
-          mu <- initial_values[[i]]$mu
+        mu = if ("mu" %in% names(initial_values[[i]])) {
+          initial_values[[i]]$mu
         } else {
-          mu <- mu_means_all
+          mu_means_all
         },
-
-        if ("p10" %in% names(initial_values[[i]])) {
-          log_p10 <- log(initial_values[[i]]$p10)
+        log_p10 = if ("p10" %in% names(initial_values[[i]])) {
+          log(initial_values[[i]]$p10)
         } else {
-          log_p10 <- stats::runif(1, log(0.0001), log(0.01))
+          stats::runif(1, log(0.0001), log(0.01))
         },
-
-        if ("alpha" %in% names(initial_values[[i]])) {
-          alpha <- as.array(initial_values[[i]]$alpha)
+        alpha = if ("alpha" %in% names(initial_values[[i]])) {
+          as.array(initial_values[[i]]$alpha)
         } else {
-          alpha <- as.array(c(3.5, rep(0, length(cov))))
+          as.array(c(3.5, rep(0, length(cov))))
         },
-
-        if ("q" %in% names(initial_values[[i]])) {
-          q_trans <- as.data.frame(initial_values[[i]]$q)
+        q_trans = if ("q" %in% names(initial_values[[i]])) {
+          as.data.frame(initial_values[[i]]$q)
         } else {
-          q_trans <- as.data.frame(stats::runif(length(q_names), 0.01, 1))
+          as.data.frame(stats::runif(length(q_names), 0.01, 1))
         },
-        p_dna <- rep(0.4, dim(l_match_dna)[1]),
-        p11_dna <- rep(0.4, dim(l_match_dna)[1]) - 0.01
+        p_dna = rep(0.4, dim(l_match_dna)[1]),
+        p11_dna = rep(0.4, dim(l_match_dna)[1]) - 0.01
       )
-      names(inits_list[[i]]) <- c("mu_trad", "mu", "log_p10", "alpha",
-                                  "q_trans", "p_dna", "p11_dna")
-
     }
   } else {
     for (i in 1:n_chain) {
       inits_list[[i]] <- list(
-        mu_trad <- mu_means_trad,
-        mu <- mu_means_all,
-        log_p10 <- stats::runif(1, log(0.0001), log(0.01)),
-        alpha <- as.array(c(3.5, rep(0, length(cov)))),
-        q_trans <- as.data.frame(stats::runif(length(q_names), 0.01, 1)),
-        p_dna <- rep(0.4, dim(l_match_dna)[1]),
-        p11_dna <- rep(0.4, dim(l_match_dna)[1]) - 0.01
+        mu_trad = mu_means_trad,
+        mu = mu_means_all,
+        log_p10 = stats::runif(1, log(0.0001), log(0.01)),
+        alpha = as.array(c(3.5, rep(0, length(cov)))),
+        q_trans = as.data.frame(stats::runif(length(q_names), 0.01, 1)),
+        p_dna = rep(0.4, dim(l_match_dna)[1]),
+        p11_dna = rep(0.4, dim(l_match_dna)[1]) - 0.01
       )
-      names(inits_list[[i]]) <- c("mu_trad", "mu", "log_p10", "alpha",
-                                  "q_trans", "p_dna", "p11_dna")
     }
   }
 
   return(inits_list)
+
 }
 
 
@@ -710,7 +694,7 @@ covariate_checks <- function(data, cov) {
 
 #' @noRd
 # checks if initial values are provided
-initial_values_checks <- function(initial_values, data, cov, n_chain) {
+initial_values_checks_1 <- function(initial_values, data, cov, n_chain) {
 
   ## length of initial values is equal to the number of chains
   err_msg1 <- paste0("The length of the list of initial values should equal ",
@@ -720,8 +704,11 @@ initial_values_checks <- function(initial_values, data, cov, n_chain) {
   err_msg3 <- paste0("https://ednajoint.netlify.app",
                      "/usecase1.html#initialvalues")
   err_msg <- paste(err_msg1, err_msg2, err_msg3, sep = "\n")
-  validate_condition(length(initial_values) != n_chain,
+  validate_condition(!is.null(initial_values) &&
+                       length(initial_values) != n_chain,
                      err_msg)
+}
+initial_values_checks_2 <- function(initial_values, data, cov, n_chain) {
 
   for (i in 1:n_chain) {
 

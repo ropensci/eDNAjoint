@@ -14,27 +14,24 @@ init_trad_catchability <- function(n_chain, count_all, q_names,
   if (all(!is.null(initial_values))) {
     for (i in 1:n_chain) {
       init_list[[i]] <- list(
-        if ("mu" %in% names(initial_values[[i]])) {
-          mu <- initial_values[[i]]$mu
+        mu = if ("mu" %in% names(initial_values[[i]])) {
+          initial_values[[i]]$mu
         } else {
-          mu <- stats::runif(length(unique(count_all$L_ind)), 0.01, 5)
+          stats::runif(length(unique(count_all$L_ind)), 0.01, 5)
         },
-
-        if ("q" %in% names(initial_values[[i]])) {
-          q <- as.data.frame(initial_values[[i]]$q)
+        q = if ("q" %in% names(initial_values[[i]])) {
+          as.data.frame(initial_values[[i]]$q)
         } else {
-          q <- as.data.frame(stats::runif(length(q_names), 0.01, 1))
+          as.data.frame(stats::runif(length(q_names), 0.01, 1))
         }
       )
-      names(init_list[[i]]) <- c("mu", "q")
     }
   } else {
     for (i in 1:n_chain) {
       init_list[[i]] <- list(
-        mu <- stats::runif(length(unique(count_all$L_ind)), 0.01, 5),
-        q <- as.data.frame(stats::runif(length(q_names), 0.01, 1))
+        mu = stats::runif(length(unique(count_all$L_ind)), 0.01, 5),
+        q = as.data.frame(stats::runif(length(q_names), 0.01, 1))
       )
-      names(init_list[[i]]) <- c("mu", "q")
     }
   }
 
@@ -49,24 +46,23 @@ init_trad <- function(n_chain, count_all, initial_values) {
   if (all(!is.null(initial_values))) {
     for (i in 1:n_chain) {
       init_list[[i]] <- list(
-        if ("mu" %in% names(initial_values[[i]])) {
-          mu <- initial_values[[i]]$mu
+        mu = if ("mu" %in% names(initial_values[[i]])) {
+          initial_values[[i]]$mu
         } else {
-          mu <- stats::runif(length(unique(count_all$L_ind)), 0.01, 5)
+          stats::runif(length(unique(count_all$L_ind)), 0.01, 5)
         }
       )
-      names(init_list[[i]]) <- "mu"
     }
   } else {
     for (i in 1:n_chain) {
       init_list[[i]] <- list(
-        mu <- stats::runif(length(unique(count_all$L_ind)), 0.01, 5)
+        mu = stats::runif(length(unique(count_all$L_ind)), 0.01, 5)
       )
-      names(init_list[[i]]) <- "mu"
     }
   }
 
   return(init_list)
+
 }
 
 #' @noRd

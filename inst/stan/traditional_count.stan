@@ -1,40 +1,42 @@
+# nolint start:
 functions {
   #include /functions/calc_loglik.stan
   #include /functions/calc_mu.stan
 }
+# nolint end
 
 data {
   // number of trap samples
-  int<lower=1> n_C;
+  int<lower = 1> n_C;
   // index of locations for traditional samples
-  array[n_C] int<lower=1> R_ind;
+  array[n_C] int<lower = 1> R_ind;
   // total number of locations
-  int<lower=1> Nloc;
+  int<lower = 1> Nloc;
   // number of animals in sample C
-  array[n_C] int<lower=0> n_E;
+  array[n_C] int<lower = 0> n_E;
   // number of gear types
-  int<lower=0> nparams;
+  int<lower = 0> nparams;
   // vector of gear type integers
-  array[n_C] int<lower=1> mat;
+  array[n_C] int<lower = 1> mat;
   // priors for gamma distrib on phi
   array[2] real phi_priors;
   // binary indicator of negative binomial
-  int<lower=0, upper=1> negbin;
+  int<lower = 0, upper=1> negbin;
   // binary indicator of presence of catchability coefficient
-  int<lower=0, upper=1> ctch;
+  int<lower = 0, upper=1> ctch;
 }
 
 parameters {
   // expected density at each site
-  vector<lower=0>[Nloc] mu_1;
+  vector<lower = 0>[Nloc] mu_1;
   // dispersion parameter
-  real<lower=0> phi[(negbin == 1) ? 1 : 0];
+  real<lower = 0> phi[(negbin == 1) ? 1 : 0];
   // catchability coefficients
-  vector<lower=-0.99999>[nparams] q_trans;
+  vector<lower = -0.99999>[nparams] q_trans;
 }
 
 transformed parameters {
-  real<lower=0> coef[(ctch == 1) ? nparams + 1 : 0];
+  real<lower = 0> coef[(ctch == 1) ? nparams + 1 : 0];
 
   if (ctch == 1) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
@@ -80,8 +82,8 @@ generated quantities{
 
   ////////////////////////////////
   // get point-wise log likelihood
-  log_lik = calc_loglik_tradmod_count(negbin, phi, n_E, n_C, ctch,
-                                      coef, mat, mu_1, R_ind);
+  log_lik = calc_loglik_tradmod_count(
+    negbin, phi, n_E, n_C, ctch, coef, mat, mu_1, R_ind
+  );
 
 }
-

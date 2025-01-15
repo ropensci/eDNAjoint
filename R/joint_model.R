@@ -228,9 +228,8 @@ joint_model <- function(data, cov = NULL, family = "poisson",
                n_iter, thin, adapt_delta, seed)
 
   # initial value checks
-  if (all(!is.null(initial_values))) {
-    initial_values_checks(initial_values, data, cov, n_chain)
-  }
+  initial_values_checks_1(initial_values, data, cov, n_chain)
+  initial_values_checks_2(initial_values, data, cov, n_chain)
 
   ###
   #convert data to long format

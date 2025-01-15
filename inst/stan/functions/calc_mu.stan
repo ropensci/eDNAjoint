@@ -1,4 +1,6 @@
+# nolint start:
 /* functions for creating mu as a generated quantity */
+# nolint end
 
 // calculate mu for joint models
 matrix calc_mu(
@@ -84,4 +86,3 @@ matrix calc_mu_trad_continuous(
 
     return mu;
   }
-

@@ -1,23 +1,25 @@
+# nolint start:
 functions {
   #include /functions/calc_loglik.stan
   #include /functions/calc_mu.stan
 }
+# nolint end
 
 data {
   // number of trap samples
-  int<lower=1> n_C;
+  int<lower = 1> n_C;
   // index of locations for traditional samples
-  array[n_C] int<lower=1> R_ind;
+  array[n_C] int<lower = 1> R_ind;
   // total number of locations
-  int<lower=1> Nloc;
+  int<lower = 1> Nloc;
   // number of animals in sample C
-  array[n_C] real<lower=0> n_E;
+  array[n_C] real<lower = 0> n_E;
   // number of gear types
-  int<lower=0> nparams;
+  int<lower = 0> nparams;
   // vector of gear type integers
-  array[n_C] int<lower=1> mat;
+  array[n_C] int<lower = 1> mat;
   // binary indicator of presence of catchability coefficient
-  int<lower=0, upper=1> ctch;
+  int<lower = 0, upper = 1> ctch;
   // priors for beta param in expected catch rate
   array[2] real betapriors;
   // priors for alpha param in expected catch rate
@@ -26,18 +28,18 @@ data {
 
 parameters {
   // alpha param for gamma distribution
-  vector<lower=0>[Nloc] alpha;
+  vector<lower = 0>[Nloc] alpha;
   // beta param for gamma distribution
-  vector<lower=0.01>[Nloc] beta;
+  vector<lower = 0.01>[Nloc] beta;
   // catchability coefficients
-  vector<lower=-0.99999>[nparams] q_trans;
+  vector<lower = -0.99999>[nparams] q_trans;
 }
 
 transformed parameters {
   // traditional sample-specific catchability coefficient
-  real<lower=0> coef[(ctch == 1) ? nparams + 1 :  0];
+  real<lower = 0> coef[(ctch == 1) ? nparams + 1 :  0];
   // transformed traditional data so that E > 0
-  array[n_C] real<lower=0> E_trans;
+  array[n_C] real<lower = 0> E_trans;
 
   if (ctch == 1) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
@@ -80,7 +82,8 @@ generated quantities{
   // get point-wise log likelihood
 
   // get lambda
-  log_lik = calc_loglik_tradmod_continuous(beta, E_trans, R_ind, n_C,
-                                           ctch, coef, mat, alpha);
+  log_lik = calc_loglik_tradmod_continuous(
+    beta, E_trans, R_ind, n_C, ctch, coef, mat, alpha
+  );
 
 }

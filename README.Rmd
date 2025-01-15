@@ -47,9 +47,9 @@ as estimation of catchability coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
-<div style="text-align: center;">
-  <img src="man/figures/basic_diagram_final-01.png" style="height:400px;" dpi="700"/>
-</div>
+::: {style="text-align: center;"}
+<img src="man/figures/basic_diagram_final-01.png" style="height:400px;" dpi="700"/>
+:::
 
 ## Installation
 
@@ -59,7 +59,8 @@ The most stable version of *eDNAjoint* can be found on Cran:
 install.packages("eDNAjoint")
 ```
 
-You can also install the development version of *eDNAjoint* from ROpenSci:
+You can also install the development version of *eDNAjoint* from
+ROpenSci:
 
 ```{r, eval=FALSE}
 install.packages("eDNAjoint", repos = "https://ropensci.r-universe.dev")
@@ -113,6 +114,11 @@ detection_calculate(goby_fit$model, mu = c(0.1, 0.5, 1),
 You can find much more detailed examples of the functions in *eDNAjoint*
 and the model underlying the package in the [package
 vignette](https://ednajoint.netlify.app/).
+
+## Contributing
+
+Interested in contributing to this package? See [some notes on
+contributing](https://github.com/ropensci/eDNAjoint/blob/master/CONTRIBUTING.md).
 
 ## Code of Conduct
 

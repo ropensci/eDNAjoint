@@ -1,82 +1,84 @@
+# nolint start:
 functions {
   #include /functions/calc_loglik.stan
   #include /functions/calc_mu.stan
   #include /functions/calc_p11.stan
 }
+# nolint end
 
 data {
   // number of paired qPCR samples
-  int<lower=1> n_S;
+  int<lower = 1> n_S;
   // number of unpaired qPCR samples
-  int<lower=0> S_dna;
+  int<lower = 0> S_dna;
   // number of traditional samples
-  int<lower=1> n_C;
+  int<lower = 1> n_C;
   // index of locations for qPCR samples w/traditional pair
-  array[n_S] int<lower=1> L_ind;
+  array[n_S] int<lower = 1> L_ind;
   // index of locations for unpaired qPCR samples
-  array[S_dna] int<lower=1> L_dna;
+  array[S_dna] int<lower = 1> L_dna;
   // index of locations for traditional samples
-  array[n_C] int<lower=1> R_ind;
+  array[n_C] int<lower = 1> R_ind;
   // number of locations with unpaired dna samples
-  int<lower=0> Nloc_dna;
+  int<lower = 0> Nloc_dna;
   // number of locations with paired samples
-  int<lower=1> Nloc_trad;
+  int<lower = 1> Nloc_trad;
   // index of traditional samples
-  array[Nloc_trad] int<lower=0> trad_ind;
+  array[Nloc_trad] int<lower = 0> trad_ind;
   // index of unpaired dna samples
-  array[Nloc_dna] int<lower=0> dna_ind;
+  array[Nloc_dna] int<lower = 0> dna_ind;
   // number of animals in sample C
-  array[n_C] int<lower=0> n_E;
+  array[n_C] int<lower = 0> n_E;
   // number of qPCR replicates per site
-  array[n_S] int<lower=1> n_N;
+  array[n_S] int<lower = 1> n_N;
   // number of qPCR detections among these replicates
-  array[n_S] int<lower=0> n_K;
+  array[n_S] int<lower = 0> n_K;
   // number of qPCR replicates per site of unpaired samples
-  array[S_dna] int<lower=1> N_dna;
+  array[S_dna] int<lower = 1> N_dna;
   // number of qPCR detections among these replicates of unpaired samples
-  array[S_dna] int<lower=0> K_dna;
+  array[S_dna] int<lower = 0> K_dna;
   // priors for normal distrib on p10
   array[2] real p10_priors;
   // priors for site covariate shrinkage params
   array[2] real alphapriors;
   // number of gear types
-  int<lower=0> nparams;
+  int<lower = 0> nparams;
   // vector of gear type integers
-  array[n_C] int<lower=1> mat;
+  array[n_C] int<lower = 1> mat;
   // number of site-level covariates
-  int<lower=0> nsitecov;
+  int<lower = 0> nsitecov;
   // matrix of site-level covariates
   matrix[Nloc_trad + Nloc_dna, nsitecov] mat_site;
   // priors for gamma distrib on phi
   array[2] real phi_priors;
   // binary indicator of negative binomial
-  int<lower=0, upper=1> negbin;
+  int<lower = 0, upper = 1> negbin;
   // binary indicator of presence of catchability coefficient
-  int<lower=0, upper=1> ctch;
+  int<lower = 0, upper = 1> ctch;
 }
 
 parameters {
   // expected catch at each site for sites with traditional samples
-  vector<lower=0>[Nloc_trad] mu_trad;
+  vector<lower = 0>[Nloc_trad] mu_trad;
   // p10, false-positive rate
-  real<upper=0> log_p10;
+  real<upper = 0> log_p10;
   // total detection probability
-  array[Nloc_dna] real<lower=0, upper = 1> p_dna;
+  array[Nloc_dna] real<lower = 0, upper = 1> p_dna;
   // catchability coefficients
-  vector<lower=-0.99999>[nparams] q_trans;
+  vector<lower = -0.99999>[nparams] q_trans;
   // site-level beta covariates
   vector[nsitecov] alpha;
   // dispersion parameter
-  real<lower=0> phi[(negbin == 1) ? 1 :  0];
+  real<lower = 0> phi[(negbin == 1) ? 1 :  0];
 }
 
 transformed parameters {
   // true-positive detection probability
-  vector<lower=0, upper = 1>[Nloc_trad] p11_trad;
+  vector<lower = 0, upper = 1>[Nloc_trad] p11_trad;
   // total detection probability
-  vector<lower=0, upper = 1>[Nloc_trad] p_trad;
+  vector<lower = 0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
-  real<lower=0> coef[(ctch == 1) ? nparams + 1 : 0];
+  real<lower = 0> coef[(ctch == 1) ? nparams + 1 : 0];
 
   p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
@@ -139,16 +141,19 @@ generated quantities {
 
   beta = mat_site[trad_ind] * alpha;
 
-  mu = calc_mu(trad_ind, dna_ind, mu_trad, ctch, nparams, q,
-               Nloc_dna, Nloc_trad, p_dna, p10,
-               mat_site, alpha);
+  mu = calc_mu(
+    trad_ind, dna_ind, mu_trad, ctch, nparams, q,
+    Nloc_dna, Nloc_trad, p_dna, p10, mat_site, alpha
+  );
 
 
   ////////////////////////////////
   // get point-wise log likelihood
 
-  log_lik = calc_loglik_count(ctch, coef, mat, mu_trad, R_ind, negbin, phi,
-                              n_E, n_K, n_N, p_trad, L_ind, n_C, n_S, S_dna,
-                              Nloc_dna, K_dna, N_dna, p_dna, L_dna);
+  log_lik = calc_loglik_count(
+    ctch, coef, mat, mu_trad, R_ind, negbin, phi,
+    n_E, n_K, n_N, p_trad, L_ind, n_C, n_S, S_dna,
+    Nloc_dna, K_dna, N_dna, p_dna, L_dna
+  );
 
 }
