@@ -1,5 +1,5 @@
 #' Specify and fit joint model using count data from traditional surveys and
-#' eDNA qPCR data
+#' eDNA PCR data
 #'
 #' This function implements a Bayesian model that integrates data from paired
 #' eDNA and traditional surveys, as described in Keller et al. (2022)
@@ -30,8 +30,8 @@
 #'   `pcr_k` are matrices or data frames with first dimension equal to the
 #'   number of sites (i) and second dimension equal to the maximum number of
 #'   eDNA samples at a given site (m). `pcr_n` contains the total number of
-#'   qPCR replicates per site and eDNA sample, and `pcr_k` contains the total
-#'   number of positive qPCR detections per site and eDNA sample. `count` is a
+#'   PCR replicates per site and eDNA sample, and `pcr_k` contains the total
+#'   number of positive PCR detections per site and eDNA sample. `count` is a
 #'   matrix or data frame of traditional survey count data, with first
 #'   dimension equal to the number of sites (i) and second dimension equal to
 #'   the maximum number of traditional survey replicates at a given site (j).
@@ -44,7 +44,7 @@
 #'   covariate data, with first dimension equal to the number of sites (i).
 #'   `site_cov` should include informative column names. Empty cells should
 #'   be NA and will be removed during processing. Sites, i, should be consistent
-#'   in all qPCR, count, and site covariate data.
+#'   in all PCR, count, and site covariate data.
 #' @srrstats {G2.1a} Here are explicit documentation of vector input types
 #' @param cov A character vector indicating the site-level covariates to include
 #'   in the model. Default value is NULL.
@@ -108,7 +108,7 @@
 #'   count_type, and site_cov).
 #' \item  Dimensions of pcr_n and pcr_k are equal, and dimensions of count and
 #'   count_type are equal (if count_type provided).
-#' \item  Number of sites in qPCR and count data are equal.
+#' \item  Number of sites in PCR and count data are equal.
 #' \item  All data are numeric (i.e., integer or NA).
 #' \item  Empty data cells (NA) match in pcr_n and pcr_k and in count and
 #'   count_type.
@@ -234,7 +234,7 @@ joint_model <- function(data, cov = NULL, family = "poisson",
   ###
   #convert data to long format
 
-  # convert qPCR data to long format
+  # convert PCR data to long format
   #' @srrstats {G2.7} Use as.data.frame() to allow input list of any tabular
   #'   form (i.e., matrix, etc.)
   pcr_all <- as.data.frame(data$pcr_n) |>
@@ -275,14 +275,14 @@ joint_model <- function(data, cov = NULL, family = "poisson",
   trad_ind <- index_match$L_ind
   dna_ind <- unique(pcr_all$L_ind)[!unique(pcr_all$L_ind) %in% trad_ind]
 
-  # subset qPCR data -- paired
+  # subset PCR data -- paired
   pcr_all_trad <- pcr_all[pcr_all$L_ind %in% trad_ind, ]
   l_match_trad <- as.data.frame(cbind(unique(pcr_all_trad$L_ind),
                                       seq_along(unique(pcr_all_trad$L_ind))))
   colnames(l_match_trad) <- c("L_ind", "L_unique")
   pcr_all_trad <- dplyr::left_join(pcr_all_trad, l_match_trad, by = "L_ind")
 
-  # subset qPCR data -- unpaired
+  # subset PCR data -- unpaired
   if (length(dna_ind) > 0) {
     pcr_all_dna <- pcr_all[pcr_all$L_ind %in% dna_ind, ]
     l_match_dna <- as.data.frame(cbind(unique(pcr_all_dna$L_ind),

@@ -20,7 +20,7 @@
 #'   covariates to use for prediction. Default is NULL.
 #' @param probability A numeric value indicating the probability of detecting
 #'   presence. The default is 0.9.
-#' @param pcr_n An integer indicating the number of qPCR replicates per eDNA
+#' @param pcr_n An integer indicating the number of PCR replicates per eDNA
 #'   sample. The default is 3.
 #' @return A summary table of survey efforts necessary to detect species
 #'   presence, given mu, for each survey type.

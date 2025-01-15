@@ -21,7 +21,7 @@
 #'   mu is the catch rate of gear type 1.
 #' @param cov_val A numeric vector indicating the values of site-level
 #'   covariates to use for prediction. Default is NULL.
-#' @param pcr_n An integer indicating the number of qPCR replicates per eDNA
+#' @param pcr_n An integer indicating the number of PCR replicates per eDNA
 #'   sample. The default is 3.
 #' @param probability A numeric value indicating the probability of detecting
 #'   presence. The default is 0.9.

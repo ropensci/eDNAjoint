@@ -3,7 +3,7 @@
 \name{joint_model}
 \alias{joint_model}
 \title{Specify and fit joint model using count data from traditional surveys and
-eDNA qPCR data}
+eDNA PCR data}
 \usage{
 joint_model(
   data,
@@ -29,8 +29,8 @@ are \code{pcr_n}, \code{pcr_k}, \code{count}, \code{count_type}, and \code{site_
 \code{pcr_k} are matrices or data frames with first dimension equal to the
 number of sites (i) and second dimension equal to the maximum number of
 eDNA samples at a given site (m). \code{pcr_n} contains the total number of
-qPCR replicates per site and eDNA sample, and \code{pcr_k} contains the total
-number of positive qPCR detections per site and eDNA sample. \code{count} is a
+PCR replicates per site and eDNA sample, and \code{pcr_k} contains the total
+number of positive PCR detections per site and eDNA sample. \code{count} is a
 matrix or data frame of traditional survey count data, with first
 dimension equal to the number of sites (i) and second dimension equal to
 the maximum number of traditional survey replicates at a given site (j).
@@ -43,7 +43,7 @@ gear type). \code{site_cov} is an optional matrix or data frame of site-level
 covariate data, with first dimension equal to the number of sites (i).
 \code{site_cov} should include informative column names. Empty cells should
 be NA and will be removed during processing. Sites, i, should be consistent
-in all qPCR, count, and site covariate data.}
+in all PCR, count, and site covariate data.}
 
 \item{cov}{A character vector indicating the site-level covariates to include
 in the model. Default value is NULL.}
@@ -126,7 +126,7 @@ model specification is possible given the data files. These checks include:
 count_type, and site_cov).
 \item  Dimensions of pcr_n and pcr_k are equal, and dimensions of count and
 count_type are equal (if count_type provided).
-\item  Number of sites in qPCR and count data are equal.
+\item  Number of sites in PCR and count data are equal.
 \item  All data are numeric (i.e., integer or NA).
 \item  Empty data cells (NA) match in pcr_n and pcr_k and in count and
 count_type.

@@ -31,7 +31,7 @@ covariates to use for prediction. Default is NULL.}
 \item{probability}{A numeric value indicating the probability of detecting
 presence. The default is 0.9.}
 
-\item{pcr_n}{An integer indicating the number of qPCR replicates per eDNA
+\item{pcr_n}{An integer indicating the number of PCR replicates per eDNA
 sample. The default is 3.}
 }
 \value{
