@@ -263,7 +263,9 @@ joint_model <- function(data, cov = NULL, family = "poisson",
 
   # subset count data to remove sites without traditional samples
   count_df <- as.data.frame(data$count)
-  sub_count <- count_df[rowSums(is.na(count_df)) != ncol(count_df), ]
+  sub_count <- as.data.frame(
+    count_df[rowSums(is.na(count_df)) != ncol(count_df), ]
+  )
 
   # add site index to count data
   index_match <- as.data.frame(cbind(unique(count_all$L_ind),
