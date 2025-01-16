@@ -107,24 +107,24 @@ NULL
 #' @srrstatsNA {BS1.2b, BS1.2c} Vignette was removed from package because
 #'   of build size, but textual descriptions of priors and examples can be found
 #'   in sections 4.3 and 2.5 in the user guide
-#'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
+#'   (https://ednajoint.netlify.app/).
 #' @srrstatsNA {G1.5} Vignette was removed from package because of
 #'   build size, but example code that reproduces results in the publication
 #'   (Keller et al., 2022) where the model/algorithm was first developed can be
 #'   found in sections 2.2 and 3.2 in the user guide
-#'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
+#'   (https://ednajoint.netlify.app/).
 #' @srrstatsNA {BS6.3} Vignette was removed from package because of
 #'   build size, but examples of plotting posterior distributional estimates can
 #'   be found in sections 2.4.1 and 3.4.1 in the user guide
-#'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
+#'   (https://ednajoint.netlify.app/).
 #' @srrstatsNA {BS1.4,BS4.3,BS6.2} Vignette was removed from package because of
 #'   build size, but examples of convergence checking and plotting posterior
 #'   samples can be found in sections 2.4.1 and 3.4.1 in the user guide
-#'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
+#'   (https://ednajoint.netlify.app/).
 #' @srrstatsNA {BS4.0} Vignette was removed from package because of
 #'   build size, but documentation of sampling algorithm can be found in
 #'   section 4.2 in the user guide
-#'   (https://bookdown.org/abigailkeller/eDNAjoint_vignette/).
+#'   (https://ednajoint.netlify.app/).
 #' @srrstatsNA {PD3.0,PD3.1} This package does not manipulate probability
 #'   distributions
 #' @srrstatsNA {PD3.2,PD3.3,PD3.4,PD3.5,PD3.5a,PD4.3,PD4.4} This package does
