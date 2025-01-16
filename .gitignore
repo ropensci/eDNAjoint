@@ -20,3 +20,5 @@ src/stanExports_traditional_catchability_pois.o
 src/stanExports_traditional_gamma.o
 src/stanExports_traditional_negbin.o
 src/stanExports_traditional_pois.o
+.Rhistory
+eDNAjoint.Rproj
