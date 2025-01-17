@@ -2,6 +2,8 @@
 inst/doc
 src/eDNAjoint.so
 src/RcppExports.o
+.Rhistory
+eDNAjoint.Rproj
 src/stanExports_joint_continuous.o
 src/stanExports_joint_count.o
 src/stanExports_traditional_count.o
