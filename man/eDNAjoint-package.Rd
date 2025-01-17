@@ -33,13 +33,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Abigail G. Keller \email{agkeller@berkeley.edu}
-
-Other contributors:
-\itemize{
-  \item Ryan P. Kelly \email{rpkelly@uw.edu} [contributor]
-  \item Chitra M. Saraswati [reviewer]
-  \item Saras M. Windecker [reviewer]
-}
+\strong{Maintainer}: Anon Maintainer \email{ednajoint@gmail.com}
 
 }

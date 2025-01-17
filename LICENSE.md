@@ -553,7 +553,7 @@ and each file should have at least the “copyright” line and a pointer to
 where the full notice is found.
 
     <eDNAjoint: an R package for interpreting paired environmental DNA and traditional surveys.>
-    Copyright (C) <2024>  <Abigail Keller>
+    Copyright (C) <2024>  <Abigail XXXX>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -18,25 +18,17 @@
   "author": [
     {
       "@type": "Person",
-      "givenName": "Abigail G.",
-      "familyName": "Keller",
-      "email": "agkeller@berkeley.edu"
-    }
-  ],
-  "contributor": [
-    {
-      "@type": "Person",
-      "givenName": "Ryan P.",
-      "familyName": "Kelly",
-      "email": "rpkelly@uw.edu"
+      "givenName": "Anon",
+      "familyName": "Maintainer",
+      "email": "ednajoint@gmail.com"
     }
   ],
   "maintainer": [
     {
       "@type": "Person",
-      "givenName": "Abigail G.",
-      "familyName": "Keller",
-      "email": "agkeller@berkeley.edu"
+      "givenName": "Anon",
+      "familyName": "Maintainer",
+      "email": "ednajoint@gmail.com"
     }
   ],
   "softwareSuggestions": [
