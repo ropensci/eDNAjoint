@@ -7,45 +7,29 @@ survey data to jointly estimate parameters. These model variations are
 accessed based on the type of input data and/or user-defined input
 parameters, including distributional assumptions.
 
-``` r
-#' @srrstats {PD2.0} This software represents probability distributions using 
-#'   the 'Stan' programming language found in the model specifications in the 
-#'   /stan folder.
-```
-
-``` r
-#' @srrstats {PD1.0} Here the choices of distributions used in the model 
-#'   specifications are justified.
-```
-
 Probability distributions were chosen for the model specifications using
-the model developed in Keller et al. 2022 (corresponding to
-`stan/joint_binary_negbin.stan` and `stan/joint_binary_pois.stan`).
-These original models use:
+the model developed in Keller et al. 2022. These original models use:
 
 1.  a binomial distribution to represent the probability of a qPCR
-    detection (1) or non-detection(0) (Lahoz-Monfort et al., 2016)
+    detection (1) or non-detection (0) (Lahoz-Monfort et al., 2016)
 2.  a poisson or negative binomial distribution to represent how
     traditional survey count data are generated from an expected catch
     rate (Lindén and Mäntyniemi, 2011).
 3.  a normal distribution as the prior on the probability of a false
     positive eDNA detection. This prior is informative and specified by
-    the user as an input argument when running `jointModel()`
+    the user as an input argument when running `joint_model()`
     (Lahoz-Monfort et al., 2016).
 4.  a gamma distribution as the prior for the overdispersion parameter
     for traditional survey count data, if a negative binomial
     distribution is used. This prior can be informative and can be
     specified by the user as an input argument when running
-    `jointModel()`.
-5.  an ‘uninformative’ normal distribution is used as the prior for
-    `beta`, which scales the sensitivity of eDNA surveys relative to
-    traditional surveys.
+    `joint_model()`.
 
 Other variations on this original model specification include:
 
 1.  a gamma distribution to represent how continuous traditional survey
     data are generated from an expected catch rate.
-2.  a catchability coefficient if multiple traditional survey gear types
+2.  a gear scaling coefficient if multiple traditional survey gear types
     are used and have different catchabilities
 3.  a regression to include site-level covariates that scale the
     sensitivity of eDNA sampling relative to traditional surveys. A
@@ -56,6 +40,20 @@ This folder also contains ‘traditional models’, which can be used to
 model the traditional survey data in isolation. These models can be used
 as a comparison with the joint model that adds eDNA survey data to
 determine if and how the addition of eDNA data affects inference.
+
+The four files in the `/stan` folder represent four model variations:
+
+1.  `joint_continuous.stan`: joint model with continuous traditional
+    survey data
+2.  `joint_count.stan`: joint model with discrete count traditional
+    survey data
+3.  `traditional_continuous.stan`: traditional model with continuous
+    survey data
+4.  `traditional_count.stan`: traditional model with discrete count
+    survey data
+
+The `/stan/functions` folder contains helper function for the above
+files.
 
 ## References
 
