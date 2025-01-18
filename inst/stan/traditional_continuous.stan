@@ -49,7 +49,6 @@ transformed parameters {
 }
 
 model {
-
   // get lambda
   real lambda[n_C];
   lambda = get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C);
@@ -60,7 +59,6 @@ model {
 
   alpha ~ gamma(alphapriors[1], alphapriors[2]);
   beta ~ gamma(betapriors[1], betapriors[2]);
-
 }
 
 generated quantities{
@@ -83,5 +81,4 @@ generated quantities{
   log_lik = calc_loglik_tradmod_continuous(
     beta, E_trans, R_ind, n_C, ctch, coef, mat, alpha
   );
-
 }

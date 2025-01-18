@@ -96,7 +96,6 @@ transformed parameters {
 }
 
 model {
-
   // get lambda
   real lambda[n_C];
   lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C);
@@ -115,13 +114,11 @@ model {
     }
   }
 
-
   //priors
   log_p10 ~ normal(p10_priors[1], p10_priors[2]); // p10 prior
   alpha ~ normal(alphapriors[1], alphapriors[2]); // sitecov shrinkage priors
   beta_gamma ~ gamma(bgammapriors[1], bgammapriors[2]);
   alpha_gamma ~ gamma(agammapriors[1], agammapriors[2]);
-
 }
 
 generated quantities {
