@@ -87,7 +87,6 @@ transformed parameters {
 }
 
 model {
-
   // get lambda
   real lambda[n_C];
   lambda = get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C);
@@ -118,7 +117,6 @@ model {
   if (negbin == 1) {
     phi ~ gamma(phi_priors[1], phi_priors[2]); // phi prior
   }
-
 }
 
 generated quantities {
@@ -144,7 +142,6 @@ generated quantities {
     Nloc_dna, Nloc_trad, p_dna, p10, mat_site, alpha
   );
 
-
   ////////////////////////////////
   // get point-wise log likelihood
 
@@ -153,5 +150,4 @@ generated quantities {
     n_E, n_K, n_N, p_trad, L_ind, n_C, n_S, S_dna,
     Nloc_dna, K_dna, N_dna, p_dna, L_dna
   );
-
 }

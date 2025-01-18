@@ -39,11 +39,9 @@ transformed parameters {
   if (ctch == 1) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
   }
-
 }
 
 model {
-
   // get lambda
   real lambda[n_C];
   lambda = get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C);
@@ -61,7 +59,6 @@ model {
   if (negbin == 1) {
     phi ~ gamma(phi_priors[1], phi_priors[2]); // phi prior
   }
-
 }
 
 generated quantities{
@@ -83,5 +80,4 @@ generated quantities{
   log_lik = calc_loglik_tradmod_count(
     negbin, phi, n_E, n_C, ctch, coef, mat, mu_1, R_ind
   );
-
 }
