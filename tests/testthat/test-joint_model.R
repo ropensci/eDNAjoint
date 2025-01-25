@@ -433,7 +433,7 @@ test_that("joint_model input checks work - pt 1", {
                      paste0("https://ednajoint.netlify.app", "/usecase2.html"),
                      sep = "\n"))
 
-  #34a. make sure there are no NA in site_cov
+  #34. make sure there are no NA in site_cov
   site_cov <- rbind(c(4, 1, 0), c(1, 1, NA))
   colnames(site_cov) <- c("var_a", "var_b", "var_c")
   expect_error(joint_model(data = list(pcr_k = rbind(c(1, 1, 1), c(1, 1, NA)),
@@ -442,27 +442,14 @@ test_that("joint_model input checks work - pt 1", {
                                        site_cov = site_cov),
                            cov = c("var_a", "var_b"),
                            multicore = FALSE),
-               paste("site_cov should not contain missing values (i.e., NA).",
-                     "See the eDNAjoint guide for data formatting help: ",
-                     paste0("https://ednajoint.netlify.app", "/usecase2.html"),
-                     sep = "\n"))
-
-  #34b. make sure no column is entirely NA in site_cov
-  site_cov <- rbind(c(4, 1, NA), c(1, 1, NA))
-  colnames(site_cov) <- c("var_a", "var_b", "var_c")
-  expect_error(joint_model(data = list(pcr_k = rbind(c(1, 1, 1), c(1, 1, NA)),
-                                       pcr_n = rbind(c(3, 3, 3), c(3, 3, NA)),
-                                       count = rbind(c(4, 1, 1), c(1, 1, NA)),
-                                       site_cov = site_cov),
-                           cov = c("var_a", "var_b"),
-                           multicore = FALSE),
-               paste("site_cov contains a column with all NA.",
+               paste(paste0("site_cov should not contain missing values ",
+                            "\\(i.e., NA\\)."),
                      "See the eDNAjoint guide for data formatting help: ",
                      paste0("https://ednajoint.netlify.app", "/usecase2.html"),
                      sep = "\n"))
 
   #35. make sure no data are undefined
-  site_cov <- rbind(c(4, 1, Inf), c(1, 1, NA))
+  site_cov <- rbind(c(4, 1, Inf), c(1, 1, 1))
   colnames(site_cov) <- c("var_a", "var_b", "var_c")
   expect_error(joint_model(data = list(pcr_k = rbind(c(1, 1, 1), c(1, 1, NA)),
                                        pcr_n = rbind(c(3, 3, 3), c(3, 3, NA)),

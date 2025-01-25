@@ -1,6 +1,6 @@
 Package: eDNAjoint
 Title: Joint Modeling of Traditional and Environmental DNA Survey Data in a Bayesian Framework
-Version: 0.3
+Version: 0.3.1
 Maintainer: Anon Maintainer <ednajoint@gmail.com>
 Authors@R: 
     c(person("Anon", "Maintainer", role = c("aut", "cre"), email="ednajoint@gmail.com"))
