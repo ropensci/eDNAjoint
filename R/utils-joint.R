@@ -613,6 +613,17 @@ covariate_checks <- function(data, cov) {
     err_msg <- paste(err_msg1, err_msg2, err_msg3, sep = "\n")
     stop(err_msg)
   }
+
+  ## check for NA in site_cov
+  if (any(is.na(data$site_cov))) {
+    err_msg1 <- "site_cov should not contain missing values (i.e., NA)."
+    err_msg2 <- "See the eDNAjoint guide for data formatting help: "
+    err_msg3 <- paste0("https://ednajoint.netlify.app",
+                       "/usecase2.html")
+    err_msg <- paste(err_msg1, err_msg2, err_msg3, sep = "\n")
+    stop(err_msg)
+  }
+
   ## make sure no column is entirely NA in site_cov
   #' @srrstats {G5.8,G5.8c} Pre-processing routines to check for column with
   #'   all NA
