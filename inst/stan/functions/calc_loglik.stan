@@ -5,14 +5,14 @@ vector calc_loglik_dna(
   int n_S,
   int S_dna,
   int Nloc_dna,
-  int[] n_K,
-  int[] n_N,
+  array[] int n_K,
+  array[] int n_N,
   vector p_trad,
-  int[] L_ind,
-  int[] K_dna,
-  int[] N_dna,
-  real[] p_dna,
-  int[] L_dna){
+  array[] int L_ind,
+  array[] int K_dna,
+  array[] int N_dna,
+  array[] real p_dna,
+  array[] int L_dna){
 
     vector[n_S + S_dna] log_lik;
 
@@ -32,10 +32,10 @@ vector calc_loglik_dna(
 
 // calculate log likelihood of traditional count data
 vector calc_loglik_trad_count(
-  real[] lambda,
+  array[] real lambda,
   int negbin,
-  real[] phi,
-  int[] n_E,
+  array[] real phi,
+  array[] int n_E,
   int n_C){
 
     vector[n_C] log_lik;
@@ -55,10 +55,10 @@ vector calc_loglik_trad_count(
 
 // calculate log likelihood of traditional continuous data
 vector calc_loglik_trad_continuous(
-  real[] lambda,
+  array[] real lambda,
   vector beta_gamma,
-  real[] E_trans,
-  int[] R_ind,
+  array[] real E_trans,
+  array[] int R_ind,
   int n_C){
 
     vector[n_C] log_lik;
@@ -74,30 +74,30 @@ vector calc_loglik_trad_continuous(
 // calculate log likelihood of data in joint count model
 vector calc_loglik_count(
   int ctch,
-  real[] coef,
-  int[] mat,
+  array[] real coef,
+  array[] int mat,
   vector mu_trad,
-  int[] R_ind,
+  array[] int R_ind,
   int negbin,
-  real[] phi,
-  int[] n_E,
-  int[] n_K,
-  int[] n_N,
+  array[] real phi,
+  array[] int n_E,
+  array[] int n_K,
+  array[] int n_N,
   vector p_trad,
-  int[] L_ind,
+  array[] int L_ind,
   int n_C,
   int n_S,
   int S_dna,
   int Nloc_dna,
-  int[] K_dna,
-  int[] N_dna,
-  real[] p_dna,
-  int[] L_dna){
+  array[] int K_dna,
+  array[] int N_dna,
+  array[] real p_dna,
+  array[] int L_dna){
 
     vector[n_C + n_S + S_dna] log_lik;
 
     // get lambda
-    real lambda[n_C];
+    array[n_C] real lambda;
     lambda = get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C);
 
     // traditional data
@@ -117,29 +117,29 @@ vector calc_loglik_count(
 // calculate log likelihood of data in joint continuous model
 vector calc_loglik_continuous(
   int ctch,
-  real[] coef,
-  int[] mat,
+  array[] real coef,
+  array[] int mat,
   vector alpha_gamma,
   vector beta_gamma,
-  int[] R_ind,
-  real[] E_trans,
-  int[] n_K,
-  int[] n_N,
+  array[] int R_ind,
+  array[] real E_trans,
+  array[] int n_K,
+  array[] int n_N,
   vector p_trad,
-  int[] L_ind,
+  array[] int L_ind,
   int n_C,
   int n_S,
   int S_dna,
   int Nloc_dna,
-  int[] K_dna,
-  int[] N_dna,
-  real[] p_dna,
-  int[] L_dna){
+  array[] int K_dna,
+  array[] int N_dna,
+  array[] real p_dna,
+  array[] int L_dna){
 
     vector[n_C+n_S+S_dna] log_lik;
 
     // get lambda
-    real lambda[n_C];
+    array[n_C] real lambda;
     lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C);
 
     // traditional data
@@ -158,15 +158,15 @@ vector calc_loglik_continuous(
   }
 
 // calculate lambda for count data
-real[] get_lambda_count(
+array[] real get_lambda_count(
   int ctch,
-  real[] coef,
-  int[] mat,
+  array[] real coef,
+  array[] int mat,
   vector mu_trad,
-  int[] R_ind,
+  array[] int R_ind,
   int n_C){
 
-    real lambda[n_C];
+    array[n_C] real lambda;
 
     for (j in 1:n_C) {
       lambda[j] = (
@@ -178,15 +178,15 @@ real[] get_lambda_count(
 }
 
 // calculate lambda for continuous data
-real[] get_lambda_continuous(
+array[] real get_lambda_continuous(
   int ctch,
-  real[] coef,
-  int[] mat,
+  array[] real coef,
+  array[] int mat,
   vector alpha_gamma,
-  int[] R_ind,
+  array[] int R_ind,
   int n_C){
 
-    real lambda[n_C];
+    array[n_C] real lambda;
 
     for (j in 1:n_C) {
       lambda[j] = (
@@ -201,19 +201,19 @@ real[] get_lambda_continuous(
 // calculate log likelihood of data in traditional count model
 vector calc_loglik_tradmod_count(
   int negbin,
-  real[] phi,
-  int[] n_E,
+  array[] real phi,
+  array[] int n_E,
   int n_C,
   int ctch,
-  real[] coef,
-  int[] mat,
+  array[] real coef,
+  array[] int mat,
   vector mu_1,
-  int[] R_ind){
+  array[] int R_ind){
 
     vector[n_C] log_lik;
 
     //get lambda
-    real lambda[n_C];
+    array[n_C] real lambda;
     lambda = get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C);
 
     //store log likelihood of traditional data given model
@@ -225,18 +225,18 @@ vector calc_loglik_tradmod_count(
 // calculate log likelihood of data in traditional continuous model
 vector calc_loglik_tradmod_continuous(
   vector beta,
-  real[] E_trans,
-  int[] R_ind,
+  array[] real E_trans,
+  array[] int R_ind,
   int n_C,
   int ctch,
-  real[] coef,
-  int[] mat,
+  array[] real coef,
+  array[] int mat,
   vector alpha){
 
     vector[n_C] log_lik;
 
     //get lambda
-    real lambda[n_C];
+    array[n_C] real lambda;
     lambda = get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C);
 
     //store log likelihood of traditional data given model

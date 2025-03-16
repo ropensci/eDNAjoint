@@ -5,7 +5,7 @@ vector calc_p11(
   int Nloc_trad,
   vector mu_trad,
   matrix mat_site,
-  int[] trad_ind,
+  array[] int trad_ind,
   vector alpha){
 
     vector[Nloc_trad] p11_trad;

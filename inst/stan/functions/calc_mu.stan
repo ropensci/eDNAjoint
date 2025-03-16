@@ -2,15 +2,15 @@
 
 // calculate mu for joint models
 matrix calc_mu(
-  int[] trad_ind,
-  int[] dna_ind,
+  array[] int trad_ind,
+  array[] int dna_ind,
   vector mu_trad,
   int ctch,
   int nparams,
   vector q,
   int Nloc_dna,
   int Nloc_trad,
-  real[] p_dna,
+  array[] real p_dna,
   real p10,
   matrix mat_site,
   vector alpha){
@@ -24,7 +24,7 @@ matrix calc_mu(
 
     if (Nloc_dna > 0) {
       for (i in 1:Nloc_dna) {
-        real p11_dna[Nloc_dna];
+        array[Nloc_dna] real p11_dna;
         p11_dna[i] = p_dna[i] - p10;
         mu[dna_ind[i], 1] = (
           p11_dna[i]*exp(dot_product(to_vector(mat_site[dna_ind[i]]), alpha)) /
