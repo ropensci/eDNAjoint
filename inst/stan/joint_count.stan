@@ -67,7 +67,7 @@ parameters {
   // site-level beta covariates
   vector[nsitecov] alpha;
   // dispersion parameter
-  real<lower = 0> phi[(negbin == 1) ? 1 :  0];
+  array[(negbin == 1) ? 1 :  0] real<lower = 0> phi;
 }
 
 transformed parameters {
@@ -76,7 +76,7 @@ transformed parameters {
   // total detection probability
   vector<lower = 0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
-  real<lower = 0> coef[(ctch == 1) ? nparams + 1 : 0];
+  array[(ctch == 1) ? nparams + 1 : 0] real<lower = 0> coef;
 
   p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
@@ -88,7 +88,7 @@ transformed parameters {
 
 model {
   // get lambda
-  real lambda[n_C];
+  array[n_C] real lambda;
   lambda = get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C);
 
   if (negbin == 1) {

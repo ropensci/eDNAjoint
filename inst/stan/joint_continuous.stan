@@ -76,7 +76,7 @@ transformed parameters {
   // total detection probability
   vector<lower=0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
-  real<lower=0> coef[(ctch == 1) ? nparams + 1 : 0];
+  array[(ctch == 1) ? nparams + 1 : 0] real<lower=0> coef;
   // expected catch at each site for sites with traditional samples
   vector<lower=0>[Nloc_trad] mu_trad;
   // transformed traditional data so that E > 0
@@ -97,7 +97,7 @@ transformed parameters {
 
 model {
   // get lambda
-  real lambda[n_C];
+  array[n_C] real lambda;
   lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C);
 
   for (j in 1:n_C) {

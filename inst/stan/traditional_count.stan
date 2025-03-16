@@ -28,13 +28,13 @@ parameters {
   // expected density at each site
   vector<lower = 0>[Nloc] mu_1;
   // dispersion parameter
-  real<lower = 0> phi[(negbin == 1) ? 1 : 0];
+  array[(negbin == 1) ? 1 : 0] real<lower = 0> phi;
   // catchability coefficients
   vector<lower = -0.99999>[nparams] q_trans;
 }
 
 transformed parameters {
-  real<lower = 0> coef[(ctch == 1) ? nparams + 1 : 0];
+  array[(ctch == 1) ? nparams + 1 : 0] real<lower = 0> coef;
 
   if (ctch == 1) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
@@ -44,7 +44,7 @@ transformed parameters {
 
 model {
   // get lambda
-  real lambda[n_C];
+  array[n_C] real lambda;
   lambda = get_lambda_count(ctch, coef, mat, mu_1, R_ind, n_C);
 
   if (negbin == 1) {

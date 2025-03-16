@@ -35,7 +35,7 @@ parameters {
 
 transformed parameters {
   // traditional sample-specific catchability coefficient
-  real<lower = 0> coef[(ctch == 1) ? nparams + 1 :  0];
+  array[(ctch == 1) ? nparams + 1 :  0] real<lower = 0> coef;
   // transformed traditional data so that E > 0
   array[n_C] real<lower = 0> E_trans;
 
@@ -50,7 +50,7 @@ transformed parameters {
 
 model {
   // get lambda
-  real lambda[n_C];
+  array[n_C] real lambda;
   lambda = get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C);
 
   for (j in 1:n_C) {
