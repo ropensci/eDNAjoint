@@ -29,7 +29,7 @@ vegetation ('Veg'). All non-integer covariate data is standardized.}
 }
 }
 \source{
-\url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.6rs23}
+\url{https://datadryad.org/dataset/doi:10.5061/dryad.6rs23}
 }
 \usage{
 goby_data
