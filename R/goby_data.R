@@ -32,7 +32,7 @@
 #'     ('Other_fishes'), size of habitat ('Hab_size'), and presence of
 #'     vegetation ('Veg'). All non-integer covariate data is standardized.}
 #'}
-#' @source \url{https://datadryad.org/stash/dataset/doi:10.5061/dryad.6rs23}
+#' @source \url{https://datadryad.org/dataset/doi:10.5061/dryad.6rs23}
 #' @references Schmelzle, M.C. and Kinziger, A.P. (2016). Using occupancy
 #'   modelling to compare environmental DNA to traditional field methods for
 #'   regional-scale monitoring of an endangered aquatic species. Molecular

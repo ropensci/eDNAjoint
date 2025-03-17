@@ -23,7 +23,7 @@ to jointly estimate parameters like the false positive probability of
 eDNA detection and expected catch rate at a site. Optional model
 variations allow inclusion of site-level covariates that scale the
 sensitivity of eDNA sampling relative to traditional sampling, as well
-as estimation of catchability coefficients when multiple traditional
+as estimation of gear scaling coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
@@ -77,8 +77,8 @@ detection, $p_{10}$:
 ``` r
 # summarize p10 posterior
 joint_summarize(goby_fit$model, par = "p10")
-#>      mean se_mean    sd  2.5% 97.5%  n_eff  Rhat
-#> p10 0.004   0.001 0.007 0.001 0.008 37.305 1.077
+#>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
+#> p10 0.003       0 0.001 0.001 0.007 14324.77    1
 ```
 
 Or to find the number of eDNA samples and traditional survey samples

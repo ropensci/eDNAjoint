@@ -43,7 +43,7 @@ to jointly estimate parameters like the false positive probability of
 eDNA detection and expected catch rate at a site. Optional model
 variations allow inclusion of site-level covariates that scale the
 sensitivity of eDNA sampling relative to traditional sampling, as well
-as estimation of catchability coefficients when multiple traditional
+as estimation of gear scaling coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
