@@ -27,6 +27,10 @@ as estimation of gear scaling coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
+Check out a [paper about the
+package](https://doi.org/10.1111/2041-210X.70000) in Methods in Ecology
+and Evolution.
+
 <div style="text-align: center;">
 
 <img src="man/figures/basic_diagram_final-01.png" style="height:400px;" dpi="700"/>
@@ -77,8 +81,8 @@ detection, $p_{10}$:
 ``` r
 # summarize p10 posterior
 joint_summarize(goby_fit$model, par = "p10")
-#>      mean se_mean    sd  2.5% 97.5%    n_eff Rhat
-#> p10 0.003       0 0.001 0.001 0.007 14324.77    1
+#>      mean se_mean    sd  2.5% 97.5% n_eff  Rhat
+#> p10 0.007   0.005 0.011 0.001 0.058 5.982 1.538
 ```
 
 Or to find the number of eDNA samples and traditional survey samples
@@ -93,7 +97,7 @@ detection_calculate(goby_fit$model, mu = c(0.1, 0.5, 1),
                     cov_val = c(0, 0), probability = 0.9)
 #>       mu n_traditional n_eDNA
 #> [1,] 0.1            24     14
-#> [2,] 0.5             5      4
+#> [2,] 0.5             5      3
 #> [3,] 1.0             3      2
 ```
 
@@ -115,6 +119,11 @@ Conduct](https://ropensci.org/code-of-conduct/). By contributing to this
 project you agree to abide by its terms.
 
 ## References
+
+Keller, A.G., & Kelly, R.P. (2025). eDNAjoint: An R package for
+interpreting paired or semi-paired environmental DNA and traditional
+survey data in a Bayesian framework. *Methods in Ecology and Evolution*,
+00, 1–9. <https://doi.org/10.1111/2041-210X.70000>
 
 Keller, A.G., Grason, E.W., McDonald, P.S., Ramon-Laca, A., Kelly, R.P.
 (2022). Tracking an invasion front with environmental DNA. *Ecological

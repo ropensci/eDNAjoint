@@ -47,6 +47,8 @@ as estimation of gear scaling coefficients when multiple traditional
 gear types are used. Additional functions in the package facilitate
 interpretation of model fits.
 
+Check out a [paper about the package](https://doi.org/10.1111/2041-210X.70000) in Methods in Ecology and Evolution.
+
 ::: {style="text-align: center;"}
 <img src="man/figures/basic_diagram_final-01.png" style="height:400px;" dpi="700"/>
 :::
@@ -127,6 +129,10 @@ Conduct](https://ropensci.org/code-of-conduct/). By contributing to this
 project you agree to abide by its terms.
 
 ## References
+
+Keller, A.G., & Kelly, R.P. (2025). eDNAjoint: An R package for interpreting paired or semi-paired environmental DNA and traditional survey data in a
+Bayesian framework. *Methods in Ecology and Evolution*, 00,
+1–9. <https://doi.org/10.1111/2041-210X.70000>
 
 Keller, A.G., Grason, E.W., McDonald, P.S., Ramon-Laca, A., Kelly, R.P.
 (2022). Tracking an invasion front with environmental DNA. *Ecological
