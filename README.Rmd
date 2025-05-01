@@ -117,6 +117,12 @@ You can find much more detailed examples of the functions in *eDNAjoint*
 and the model underlying the package in the [package
 vignette](https://ednajoint.netlify.app/).
 
+## Citation
+
+Using *eDNAjoint* in a manuscript? Please consider citing either the manuscript about the package:
+
+Keller, A.G., & Kelly, R.P. (2025). eDNAjoint: An R package for interpreting paired or semi-paired environmental DNA and traditional survey data in a Bayesian framework. *Methods in Ecology and Evolution*, 00, 1–9. https://doi.org/10.1111/2041-210X.70000
+
 ## Contributing
 
 Interested in contributing to this package? See [some notes on
