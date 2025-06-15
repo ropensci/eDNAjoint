@@ -53,7 +53,7 @@ model {
   array[n_C] real lambda;
   lambda = get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C);
 
-  E_trans ~ gamma(lambda, beta[R_ind);  // Eq. 1.1
+  E_trans ~ gamma(lambda, beta[R_ind]);  // Eq. 1.1
 
   alpha ~ gamma(alphapriors[1], alphapriors[2]);
   beta ~ gamma(betapriors[1], betapriors[2]);
