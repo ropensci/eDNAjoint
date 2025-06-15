@@ -72,7 +72,7 @@ parameters {
 
 transformed parameters {
   // true-positive detection probability
-  vector<lower = 0, upper = 1>[Nloc_trad] p11_trad
+  vector<lower = 0, upper = 1>[Nloc_trad] p11_trad;
   // total detection probability
   vector<lower = 0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
