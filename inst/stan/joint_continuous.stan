@@ -90,7 +90,9 @@ transformed parameters {
     coef = to_array_1d(append_row(1, 1 + q_trans));
   }
 
-  E_trans = n_E + 0.0000000000001;
+  for (j in 1:n_C) {
+    E_trans[j] = n_E[j] + 0.0000000000001;
+  }
 }
 
 model {
