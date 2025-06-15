@@ -100,7 +100,7 @@ model {
   n_K ~ binomial(n_N, p_trad[L_ind]); // Eq. 1.4
 
   if (Nloc_dna > 0) {
-    K_dna ~ binomial(N_dna[i], p_dna[L_dna]); // Eq. 1.4
+    K_dna ~ binomial(N_dna, p_dna[L_dna]); // Eq. 1.4
   }
 
   //priors
