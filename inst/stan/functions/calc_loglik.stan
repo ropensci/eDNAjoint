@@ -170,7 +170,8 @@ array[] real get_lambda_count(
 
     for (j in 1:n_C) {
       lambda[j] = (
-        (ctch == 1) ? coef[mat[j]] * mu_trad[R_ind[j]] : mu_trad[R_ind[j]]
+        (ctch == 1) ? exp(coef[mat[j]] +
+        log(mu_trad[R_ind[j]])) : mu_trad[R_ind[j]]
       );
     }
 
@@ -190,8 +191,8 @@ array[] real get_lambda_continuous(
 
     for (j in 1:n_C) {
       lambda[j] = (
-        (ctch == 1) ? coef[mat[j]] *
-        alpha_gamma[R_ind[j]] : alpha_gamma[R_ind[j]]
+        (ctch == 1) ? exp(coef[mat[j]] +
+        log(alpha_gamma[R_ind[j]])) : alpha_gamma[R_ind[j]]
       );
     }
 

@@ -63,7 +63,7 @@ parameters {
   // total detection probability
   array[Nloc_dna] real<lower = 0, upper = 1> p_dna;
   // catchability coefficients
-  vector<lower = -0.99999>[nparams] q_trans;
+  vector[nparams] q_log;
   // site-level beta covariates
   vector[nsitecov] alpha;
   // dispersion parameter
@@ -82,7 +82,7 @@ transformed parameters {
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
 
   if (ctch) {
-    coef = to_array_1d(append_row(1, 1 + q_trans));
+    coef = to_array_1d(append_row(0, q_log));
   }
 }
 
@@ -126,7 +126,7 @@ generated quantities {
   p10 = exp(log_p10);
 
   if (ctch) {
-    q = q_trans + 1;
+    q = exp(q_log);
   }
 
   beta = mat_site[trad_ind] * alpha;

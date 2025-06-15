@@ -30,14 +30,14 @@ parameters {
   // dispersion parameter
   array[negbin] real<lower = 0> phi;
   // catchability coefficients
-  vector<lower = -0.99999>[nparams] q_trans;
+  vector[nparams] q_log;
 }
 
 transformed parameters {
   array[(ctch == 1) ? nparams + 1 : 0] real<lower = 0> coef;
 
   if (ctch) {
-    coef = to_array_1d(append_row(1, 1 + q_trans));
+    coef = to_array_1d(append_row(0, q_log));
   }
 
 }
@@ -69,7 +69,7 @@ generated quantities{
   // transform to interpretable params
 
   if (ctch) {
-    q = q_trans + 1;
+    q = exp(q_log);
   }
 
   mu = calc_mu_trad_count(Nloc, nparams, mu_1, q, ctch);

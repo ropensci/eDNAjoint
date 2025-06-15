@@ -30,7 +30,7 @@ parameters {
   // beta param for gamma distribution
   vector<lower = 0.01>[Nloc] beta;
   // catchability coefficients
-  vector<lower = -0.99999>[nparams] q_trans;
+  vector[nparams] q_log;
 }
 
 transformed parameters {
@@ -40,7 +40,7 @@ transformed parameters {
   array[n_C] real<lower = 0> E_trans;
 
   if (ctch) {
-    coef = to_array_1d(append_row(1, 1 + q_trans));
+    coef = to_array_1d(append_row(0, q_log));
   }
 
   for (j in 1:n_C) {
@@ -67,7 +67,7 @@ generated quantities{
   ////////////////////////////////////
   // transform to interpretable params
   if (ctch) {
-    q = q_trans + 1;
+    q = exp(q_log);
   }
 
   mu = calc_mu_trad_continuous(Nloc, nparams, alpha, beta, q, ctch);
