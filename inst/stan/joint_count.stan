@@ -92,7 +92,9 @@ model {
   lambda = get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C);
 
   if (negbin) {
-    n_E ~ neg_binomial_2(lambda, phi);  // Eq. 1.1
+    for (j in 1:n_C) {
+      n_E[j] ~ neg_binomial_2(lambda[j], phi);  // Eq. 1.1
+    }
   } else {
     n_E ~ poisson(lambda);  // Eq. 1.1
   }
