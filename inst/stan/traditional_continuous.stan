@@ -39,13 +39,11 @@ transformed parameters {
   // transformed traditional data so that E > 0
   array[n_C] real<lower = 0> E_trans;
 
-  if (ctch == 1) {
+  if (ctch) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
   }
 
-  for (j in 1:n_C) {
-    E_trans[j] = n_E[j] + 0.0000000000001;
-  }
+  E_trans = n_E + 0.0000000000001;
 }
 
 model {
@@ -53,9 +51,7 @@ model {
   array[n_C] real lambda;
   lambda = get_lambda_continuous(ctch, coef, mat, alpha, R_ind, n_C);
 
-  for (j in 1:n_C) {
-    E_trans[j] ~ gamma(lambda[j], beta[R_ind[j]]);  // Eq. 1.1
-  }
+  E_trans ~ gamma(lambda, beta[R_ind);  // Eq. 1.1
 
   alpha ~ gamma(alphapriors[1], alphapriors[2]);
   beta ~ gamma(betapriors[1], betapriors[2]);
@@ -68,7 +64,7 @@ generated quantities{
 
   ////////////////////////////////////
   // transform to interpretable params
-  if (ctch == 1) {
+  if (ctch) {
     q = q_trans + 1;
   }
 

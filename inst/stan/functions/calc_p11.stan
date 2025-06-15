@@ -11,7 +11,5 @@ vector calc_p11(
     vector[Nloc_trad] p11_trad;
 
     // Eq. 1.2
-    p11_trad = mu_trad ./ (mu_trad + exp(mat_site[trad_ind, ] * alpha));
-
-    return p11_trad;
+    return mu_trad ./ (mu_trad + exp(mat_site[trad_ind, ] * alpha));;
   }

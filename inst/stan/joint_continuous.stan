@@ -72,13 +72,13 @@ parameters {
 
 transformed parameters {
   // true-positive detection probability
-  vector<lower=0, upper = 1>[Nloc_trad] p11_trad;
+  vector<lower = 0, upper = 1>[Nloc_trad] p11_trad
   // total detection probability
-  vector<lower=0, upper = 1>[Nloc_trad] p_trad;
+  vector<lower = 0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
   array[(ctch == 1) ? nparams + 1 : 0] real<lower=0> coef;
   // expected catch at each site for sites with traditional samples
-  vector<lower=0>[Nloc_trad] mu_trad;
+  vector<lower = 0>[Nloc_trad] mu_trad;
   // transformed traditional data so that E > 0
   array[n_C] real<lower=0> E_trans;
 
@@ -86,13 +86,11 @@ transformed parameters {
   p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
 
-  if (ctch == 1) {
+  if (ctch) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
   }
 
-  for (j in 1:n_C) {
-    E_trans[j] = n_E[j] + 0.0000000000001;
-  }
+  E_trans = n_E + 0.0000000000001;
 }
 
 model {
@@ -100,18 +98,12 @@ model {
   array[n_C] real lambda;
   lambda = get_lambda_continuous(ctch, coef, mat, alpha_gamma, R_ind, n_C);
 
-  for (j in 1:n_C) {
-    E_trans[j] ~ gamma(lambda[j], beta_gamma[R_ind[j]]);  // Eq. 1.1
-  }
+  E_trans ~ gamma(lambda, beta_gamma[R_ind]);  // Eq. 1.1
 
-  for (i in 1:n_S) {
-    n_K[i] ~ binomial(n_N[i], p_trad[L_ind[i]]); // Eq. 1.4
-  }
+  n_K ~ binomial(n_N, p_trad[L_ind]); // Eq. 1.4
 
   if (Nloc_dna > 0) {
-    for (i in 1:S_dna){
-      K_dna[i] ~ binomial(N_dna[i], p_dna[L_dna[i]]); // Eq. 1.4
-    }
+    K_dna ~ binomial(N_dna, p_dna[L_dna]); // Eq. 1.4
   }
 
   //priors
@@ -133,7 +125,7 @@ generated quantities {
 
   p10 = exp(log_p10);
 
-  if (ctch == 1) {
+  if (ctch) {
     q = q_trans + 1;
   }
 

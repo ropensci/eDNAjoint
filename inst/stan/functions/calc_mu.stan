@@ -23,9 +23,8 @@ matrix calc_mu(
     }
 
     if (Nloc_dna > 0) {
+      array[Nloc_dna] real p11_dna = p_dna[i] - p10;
       for (i in 1:Nloc_dna) {
-        array[Nloc_dna] real p11_dna;
-        p11_dna[i] = p_dna[i] - p10;
         mu[dna_ind[i], 1] = (
           p11_dna[i]*exp(dot_product(to_vector(mat_site[dna_ind[i]]), alpha)) /
           (1 - p11_dna[i])
@@ -78,7 +77,7 @@ matrix calc_mu_trad_continuous(
 
     if (ctch == 1) {
       for (i in 1:nparams) {
-        mu[, i + 1] = to_vector(mu[, 1])*q[i];
+        mu[, i + 1] = to_vector(mu[, 1]) * q[i];
       }
     }
 

@@ -67,7 +67,7 @@ parameters {
   // site-level beta covariates
   vector[nsitecov] alpha;
   // dispersion parameter
-  array[(negbin == 1) ? 1 :  0] real<lower = 0> phi;
+  array[negbin] real<lower = 0> phi;
 }
 
 transformed parameters {
@@ -81,7 +81,7 @@ transformed parameters {
   p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3
 
-  if (ctch == 1) {
+  if (ctch) {
     coef = to_array_1d(append_row(1, 1 + q_trans));
   }
 }
@@ -91,30 +91,22 @@ model {
   array[n_C] real lambda;
   lambda = get_lambda_count(ctch, coef, mat, mu_trad, R_ind, n_C);
 
-  if (negbin == 1) {
-    for (j in 1:n_C) {
-      n_E[j] ~ neg_binomial_2(lambda[j], phi);  // Eq. 1.1
-    }
+  if (negbin) {
+    n_E ~ neg_binomial_2(lambda, phi);  // Eq. 1.1
   } else {
-    for (j in 1:n_C) {
-      n_E[j] ~ poisson(lambda[j]);  // Eq. 1.1
-    }
+    n_E ~ poisson(lambda);  // Eq. 1.1
   }
 
-  for (i in 1:n_S) {
-    n_K[i] ~ binomial(n_N[i], p_trad[L_ind[i]]); // Eq. 1.4
-  }
+  n_K ~ binomial(n_N, p_trad[L_ind]); // Eq. 1.4
 
   if (Nloc_dna > 0) {
-    for(i in 1:S_dna){
-      K_dna[i] ~ binomial(N_dna[i], p_dna[L_dna[i]]); // Eq. 1.4
-    }
+    K_dna ~ binomial(N_dna[i], p_dna[L_dna]); // Eq. 1.4
   }
 
   //priors
   log_p10 ~ normal(p10_priors[1], p10_priors[2]); // p10 prior
   alpha ~ normal(alphapriors[1], alphapriors[2]); // sitecov shrinkage priors
-  if (negbin == 1) {
+  if (negbin) {
     phi ~ gamma(phi_priors[1], phi_priors[2]); // phi prior
   }
 }
@@ -131,7 +123,7 @@ generated quantities {
 
   p10 = exp(log_p10);
 
-  if (ctch == 1) {
+  if (ctch) {
     q = q_trans + 1;
   }
 
