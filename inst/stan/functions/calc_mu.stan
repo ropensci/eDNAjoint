@@ -23,8 +23,9 @@ matrix calc_mu(
     }
 
     if (Nloc_dna > 0) {
-      array[Nloc_dna] real p11_dna = p_dna - p10;
+      array[Nloc_dna] real p11_dna;
       for (i in 1:Nloc_dna) {
+        p11_dna[i] = p_dna[i] - p10;
         mu[dna_ind[i], 1] = (
           p11_dna[i]*exp(dot_product(to_vector(mat_site[dna_ind[i]]), alpha)) /
           (1 - p11_dna[i])
