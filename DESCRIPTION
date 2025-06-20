@@ -1,6 +1,6 @@
 Package: eDNAjoint
 Title: Joint Modeling of Traditional and Environmental DNA Survey Data in a Bayesian Framework
-Version: 0.3.1
+Version: 0.3.3
 Maintainer: Abigail G. Keller <agkeller@berkeley.edu>
 Authors@R: 
     c(person("Abigail G.", "Keller", role = c("aut", "cre"), email="agkeller@berkeley.edu"),
