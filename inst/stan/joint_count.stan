@@ -76,7 +76,7 @@ transformed parameters {
   // total detection probability
   vector<lower = 0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
-  array[(ctch == 1) ? nparams + 1 : 0] real<lower = 0> coef;
+  array[(ctch == 1) ? nparams + 1 : 0] real coef;
 
   p11_trad = calc_p11(Nloc_trad, mu_trad, mat_site, trad_ind, alpha); // Eq. 1.2
   p_trad = p11_trad + exp(log_p10); // Eq. 1.3

@@ -35,7 +35,7 @@ parameters {
 
 transformed parameters {
   // traditional sample-specific catchability coefficient
-  array[(ctch == 1) ? nparams + 1 :  0] real<lower = 0> coef;
+  array[(ctch == 1) ? nparams + 1 :  0] real coef;
   // transformed traditional data so that E > 0
   array[n_C] real<lower = 0> E_trans;
 

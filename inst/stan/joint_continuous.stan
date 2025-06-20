@@ -76,7 +76,7 @@ transformed parameters {
   // total detection probability
   vector<lower = 0, upper = 1>[Nloc_trad] p_trad;
   // traditional sample-specific catchability coefficient
-  array[(ctch == 1) ? nparams + 1 : 0] real<lower=0> coef;
+  array[(ctch == 1) ? nparams + 1 : 0] real coef;
   // expected catch at each site for sites with traditional samples
   vector<lower = 0>[Nloc_trad] mu_trad;
   // transformed traditional data so that E > 0

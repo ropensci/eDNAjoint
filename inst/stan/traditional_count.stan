@@ -34,7 +34,7 @@ parameters {
 }
 
 transformed parameters {
-  array[(ctch == 1) ? nparams + 1 : 0] real<lower = 0> coef;
+  array[(ctch == 1) ? nparams + 1 : 0] real coef;
 
   if (ctch) {
     coef = to_array_1d(append_row(0, q_log));

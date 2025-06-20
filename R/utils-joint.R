@@ -156,10 +156,10 @@ init_joint_cov_catchability <- function(n_chain, pcr_all, q_names, cov,
         } else {
           as.array(c(3.5, rep(0, length(cov))))
         },
-        q_trans = if ("q" %in% names(initial_values[[i]])) {
-          as.data.frame(initial_values[[i]]$q)
+        q_log = if ("q" %in% names(initial_values[[i]])) {
+          as.data.frame(log(initial_values[[i]]$q))
         } else {
-          as.data.frame(stats::runif(length(q_names), 0.01, 1))
+          as.data.frame(log(stats::runif(length(q_names), 0.01, 1)))
         },
         p_dna = rep(0.4, dim(l_match_dna)[1]),
         p11_dna = rep(0.4, dim(l_match_dna)[1]) - 0.01
@@ -172,7 +172,7 @@ init_joint_cov_catchability <- function(n_chain, pcr_all, q_names, cov,
         mu = mu_means_all,
         log_p10 = stats::runif(1, log(0.0001), log(0.01)),
         alpha = as.array(c(3.5, rep(0, length(cov)))),
-        q_trans = as.data.frame(stats::runif(length(q_names), 0.01, 1)),
+        q_log = as.data.frame(log(stats::runif(length(q_names), 0.01, 1))),
         p_dna = rep(0.4, dim(l_match_dna)[1]),
         p11_dna = rep(0.4, dim(l_match_dna)[1]) - 0.01
       )
